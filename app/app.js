@@ -14,9 +14,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'utils/history';
-import 'sanitize.css/sanitize.css';
 
-import ThemeProvider from 'containers/ThemeProvider/provider';
+import ThemeProvider from 'containers/ThemeProvider';
 
 // Import root app
 import App from 'containers/App';

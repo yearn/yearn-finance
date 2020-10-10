@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { useInjectReducer } from 'utils/injectReducer';
-import { useDispatch, useSelector } from 'react-redux';
-import Button from 'components/Button';
+import Web3 from 'web3';
+import { useSelector } from 'react-redux';
 import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
-import reducer from './reducer';
 import { initOnboard } from './services';
-import ConnectedAccount from './connectedAccount';
-import * as actions from './actions';
+import Context from './context';
 
-const ConnectButtonWrapper = styled.div``;
-
-export default function Account() {
-  const dispatch = useDispatch();
+export default function ConnectionProvider(props) {
+  const { children } = props;
   const darkMode = useSelector(makeSelectDarkMode());
-
-  useInjectReducer({ key: 'account', reducer });
 
   const [address, setAddress] = useState(null);
   const [wallet, setWallet] = useState({});
   const [onboard, setOnboard] = useState(null);
+  const [web3, setWeb3] = useState(null);
 
   const initializeWallet = () => {
     const selectWallet = newWallet => {
       if (newWallet.provider) {
         setWallet(newWallet);
+        setWeb3(new Web3(newWallet.provider));
         window.localStorage.setItem('selectedWallet', newWallet.name);
       } else {
         setWallet({});
@@ -46,9 +39,6 @@ export default function Account() {
     if (previouslySelectedWallet && onboard) {
       onboard.walletSelect(previouslySelectedWallet);
     }
-    if (onboard) {
-      dispatch(actions.setAccount(onboard));
-    }
   };
 
   const changeDarkMode = () => {
@@ -61,22 +51,13 @@ export default function Account() {
   useEffect(reconnectWallet, [onboard]);
   useEffect(changeDarkMode, [darkMode]);
 
-  const connectWallet = () => {
+  const selectWallet = () => {
     onboard.walletSelect();
   };
 
-  let content;
-  if (wallet.provider && address) {
-    content = <ConnectedAccount onClick={connectWallet} address={address} />;
-  } else {
-    content = (
-      <ConnectButtonWrapper>
-        <Button onClick={connectWallet}>
-          <FormattedMessage id="account.connect" />
-        </Button>
-      </ConnectButtonWrapper>
-    );
-  }
-
-  return <React.Fragment>{content}</React.Fragment>;
+  return (
+    <Context.Provider value={{ onboard, wallet, address, selectWallet, web3 }}>
+      {children}
+    </Context.Provider>
+  );
 }

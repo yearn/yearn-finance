@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Account from 'containers/Account';
+import ConnectButton from 'components/ConnectButton';
 import ThemeToggle from 'containers/ThemeProvider/toggle';
 
 const Wrapper = styled.div``;
@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <Wrapper>
       <ThemeToggle />
-      <Account />
+      <ConnectButton />
     </Wrapper>
   );
 }

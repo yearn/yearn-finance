@@ -23,6 +23,9 @@ import App from 'containers/App';
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
 
+// Connection Provider
+import ConnectionProvider from 'containers/ConnectionProvider';
+
 // Load the favicon and the .htaccess file
 /* eslint-disable import/no-unresolved, import/extensions */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
@@ -44,9 +47,11 @@ const render = messages => {
     <Provider store={store}>
       <ThemeProvider>
         <LanguageProvider messages={messages}>
-          <ConnectedRouter history={history}>
-            <App />
-          </ConnectedRouter>
+          <ConnectionProvider>
+            <ConnectedRouter history={history}>
+              <App />
+            </ConnectedRouter>
+          </ConnectionProvider>
         </LanguageProvider>
       </ThemeProvider>
     </Provider>,

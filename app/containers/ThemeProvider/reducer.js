@@ -17,7 +17,6 @@ if (modeNotSet) {
   darkMode = defaultMode === DARK_MODE;
 } else {
   darkMode = localStorageDarkMode;
-  console.log('set to', darkMode);
 }
 
 export const initialState = {

@@ -2,7 +2,6 @@ import Onboard from 'bnc-onboard';
 
 const networkId = 1;
 const rpcUrl = '';
-// const apiUrl = process.env.REACT_APP_API_URL;
 const dappId = '9081ee55-aa99-4da1-88c6-0de7a2e2308a';
 
 export function initOnboard(subscriptions, darkMode) {

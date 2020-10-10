@@ -4,11 +4,10 @@
  *
  */
 
-import { CHANGE_THEME } from './constants';
+import { TOGGLE_DARK_MODE } from './constants';
 
-export function changeTheme(theme) {
+export function toggleDarkMode() {
   return {
-    type: CHANGE_THEME,
-    theme,
+    type: TOGGLE_DARK_MODE,
   };
 }

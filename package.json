@@ -65,6 +65,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.4.3",
+    "bnc-notify": "^1.4.0",
+    "bnc-onboard": "^1.14.0",
     "chalk": "^2.4.2",
     "compression": "1.7.4",
     "connected-react-router": "6.4.0",
@@ -81,6 +83,7 @@
     "minimist": "1.2.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",
+    "react-blockies": "^1.4.1",
     "react-dom": "16.8.6",
     "react-helmet": "6.0.0-beta",
     "react-intl": "2.8.0",

@@ -1,11 +1,12 @@
-import { takeLatest } from 'redux-saga/effects';
-import { CHANGE_THEME } from './constants';
+import { takeLatest, select } from 'redux-saga/effects';
+import { TOGGLE_DARK_MODE } from './constants';
+import { makeSelectDarkMode } from './selectors';
 
-export function* changeTheme(action) {
-  const { theme } = action;
-  localStorage.setItem('theme', theme);
+export function* toggleDarkMode() {
+  const mode = JSON.parse(yield select(makeSelectDarkMode()));
+  localStorage.setItem('darkMode', mode);
 }
 
 export default function* watchers() {
-  yield takeLatest(CHANGE_THEME, changeTheme);
+  yield takeLatest(TOGGLE_DARK_MODE, toggleDarkMode);
 }

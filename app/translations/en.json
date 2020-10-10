@@ -1,1 +1,10 @@
-[]
+{
+  "splash.enterButton": "YOLO",
+  "dashboard.products": "products",
+  "dashboard.stats": "stats",
+  "dashboard.gov": "gov",
+  "dashboard.labs": "labs",
+  "dashboard.community": "community",
+  "dashboard.docs": "docs",
+  "account.connect": "connect"
+}

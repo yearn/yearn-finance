@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
 /**
@@ -5,4 +6,10 @@ import { initialState } from './reducer';
  */
 const selectTheme = state => state.theme || initialState;
 
-export { selectTheme };
+const makeSelectDarkMode = () =>
+  createSelector(
+    selectTheme,
+    substate => substate.darkMode,
+  );
+
+export { selectTheme, makeSelectDarkMode };

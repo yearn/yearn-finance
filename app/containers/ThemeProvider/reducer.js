@@ -5,22 +5,31 @@
  */
 import produce from 'immer';
 
-import { CHANGE_THEME } from './constants';
+import { TOGGLE_DARK_MODE, DARK_MODE } from './constants';
 
-const defaultTheme = 'dark';
+const defaultMode = DARK_MODE;
+const localStorageDarkModeStr = localStorage.getItem('darkMode');
+const localStorageDarkMode = JSON.parse(localStorageDarkModeStr);
+const modeNotSet = localStorageDarkModeStr === null;
 
-const initialTheme = localStorage.getItem('theme') || defaultTheme;
+let darkMode;
+if (modeNotSet) {
+  darkMode = defaultMode === DARK_MODE;
+} else {
+  darkMode = localStorageDarkMode;
+  console.log('set to', darkMode);
+}
 
 export const initialState = {
-  selected: initialTheme,
+  darkMode,
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const languageProviderReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case CHANGE_THEME:
-        draft.selected = action.theme;
+      case TOGGLE_DARK_MODE:
+        draft.darkMode = !draft.darkMode;
         break;
     }
   });

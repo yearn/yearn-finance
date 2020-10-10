@@ -5,6 +5,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: 100%;
     width: 100%;
+    color: ${props => props.theme.text};
     margin: 0;
   }
 
@@ -17,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #app {
-    background-color: #fafafa;
+    background-color: ${props => props.theme.background};
     min-height: 100%;
     min-width: 100%;
   }

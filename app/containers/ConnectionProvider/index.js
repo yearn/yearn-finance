@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSelector } from 'react-redux';
 import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
-import { initOnboard } from './services';
+import { initOnboard, initNotify } from './services';
 import Context from './context';
 
 export default function ConnectionProvider(props) {
@@ -12,6 +12,7 @@ export default function ConnectionProvider(props) {
   const [address, setAddress] = useState(null);
   const [wallet, setWallet] = useState({});
   const [onboard, setOnboard] = useState(null);
+  const [notify, setNotify] = useState(null);
   const [web3, setWeb3] = useState(null);
 
   const initializeWallet = () => {
@@ -29,6 +30,7 @@ export default function ConnectionProvider(props) {
       wallet: selectWallet,
     };
     const newOnboard = initOnboard(onboardConfig, darkMode);
+    setNotify(initNotify(darkMode));
     setOnboard(newOnboard);
   };
 
@@ -56,7 +58,9 @@ export default function ConnectionProvider(props) {
   };
 
   return (
-    <Context.Provider value={{ onboard, wallet, address, selectWallet, web3 }}>
+    <Context.Provider
+      value={{ onboard, wallet, address, selectWallet, web3, notify }}
+    >
       {children}
     </Context.Provider>
   );

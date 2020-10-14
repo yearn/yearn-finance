@@ -16,9 +16,19 @@ export function useSelectWallet() {
   return selectWallet;
 }
 
+export function useOnboard() {
+  const { onboard } = useContext(context);
+  return onboard;
+}
+
 export function useWeb3() {
   const { web3 } = useContext(context);
   return web3;
+}
+
+export function useNotify() {
+  const { notify } = useContext(context);
+  return notify;
 }
 
 export function useRequireConnection() {

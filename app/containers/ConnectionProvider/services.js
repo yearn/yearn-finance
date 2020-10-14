@@ -1,8 +1,10 @@
 import Onboard from 'bnc-onboard';
+import Notify from 'bnc-notify';
 
 const networkId = 1;
-const rpcUrl = '';
+const rpcUrl = 'https://mainnet.infura.io/v3/bd80ce1ca1f94da48e151bb6868bb150';
 const dappId = '9081ee55-aa99-4da1-88c6-0de7a2e2308a';
+// const apiUrl = 'wss://api.blocknative.com/v0';
 
 export function initOnboard(subscriptions, darkMode) {
   return Onboard({
@@ -53,7 +55,14 @@ export function initOnboard(subscriptions, darkMode) {
       { checkName: 'connect' },
       { checkName: 'accounts' },
       { checkName: 'network' },
-      { checkName: 'balance', minimumBalance: '100000' },
     ],
+  });
+}
+
+export function initNotify(darkMode) {
+  return Notify({
+    dappId,
+    networkId,
+    darkMode,
   });
 }

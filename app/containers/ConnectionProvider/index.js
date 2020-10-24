@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
-import { useInjectReducer } from 'utils/injectReducer';
 import { initOnboard, initNotify } from './services';
 import { connectionConnected } from './actions';
 import ConnectionContext from './context';
-import reducer from './reducer';
 
 export default function ConnectionProvider(props) {
   const { children } = props;
@@ -17,8 +15,6 @@ export default function ConnectionProvider(props) {
   const [onboard, setOnboard] = useState(null);
   const [notify, setNotify] = useState(null);
   const [web3, setWeb3] = useState(null);
-
-  useInjectReducer({ key: 'connection', reducer });
 
   const dispatchConnectionConnected = () => {
     dispatch(connectionConnected());

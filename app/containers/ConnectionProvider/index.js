@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
+import { useInjectReducer } from 'utils/injectReducer';
 import { initOnboard, initNotify } from './services';
-import Context from './context';
+import { connectionConnected } from './actions';
+import ConnectionContext from './context';
+import reducer from './reducer';
 
 export default function ConnectionProvider(props) {
   const { children } = props;
   const darkMode = useSelector(makeSelectDarkMode());
-
+  const dispatch = useDispatch();
   const [address, setAddress] = useState(null);
   const [wallet, setWallet] = useState({});
   const [onboard, setOnboard] = useState(null);
   const [notify, setNotify] = useState(null);
   const [web3, setWeb3] = useState(null);
 
+  useInjectReducer({ key: 'connection', reducer });
+
+  const dispatchConnectionConnected = () => {
+    dispatch(connectionConnected());
+  };
+
   const initializeWallet = () => {
     const selectWallet = newWallet => {
       if (newWallet.provider) {
+        const newWeb3 = new Web3(newWallet.provider);
+        newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);
-        setWeb3(new Web3(newWallet.provider));
+        setWeb3(newWeb3);
         window.localStorage.setItem('selectedWallet', newWallet.name);
       } else {
         setWallet({});
@@ -58,10 +69,10 @@ export default function ConnectionProvider(props) {
   };
 
   return (
-    <Context.Provider
+    <ConnectionContext.Provider
       value={{ onboard, wallet, address, selectWallet, web3, notify }}
     >
       {children}
-    </Context.Provider>
+    </ConnectionContext.Provider>
   );
 }

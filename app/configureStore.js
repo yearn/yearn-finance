@@ -3,8 +3,13 @@
  */
 
 import { createStore, applyMiddleware, compose } from 'redux';
+import { drizzleSagas } from 'drizzle/store';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
+import { all, fork } from 'redux-saga/effects';
+
+import drizzleMW from 'drizzle/store/drizzle-middleware';
+
 import createReducer from './reducers';
 
 export default function configureStore(initialState = {}, history) {
@@ -27,14 +32,28 @@ export default function configureStore(initialState = {}, history) {
     /* eslint-enable */
   }
 
-  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+  const composeSagas = sagas =>
+    function*() {
+      yield all(sagas.map(fork));
+    };
+
+  const sagaMiddleware = createSagaMiddleware(
+    composeSagas(reduxSagaMonitorOptions),
+  );
 
   // Create the store with two middlewares
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
-  const middlewares = [sagaMiddleware, routerMiddleware(history)];
+
+  const middlewares = [drizzleMW, sagaMiddleware, routerMiddleware(history)];
 
   const enhancers = [applyMiddleware(...middlewares)];
+
+  // const store = generateStore({
+  //   middlewares,
+  //   appReducers: createReducer(),
+  //   disableReduxDevTools: false,
+  // });
 
   const store = createStore(
     createReducer(),
@@ -45,7 +64,11 @@ export default function configureStore(initialState = {}, history) {
   // Extensions
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
-  store.injectedSagas = {}; // Saga registry
+  store.injectedSagas = {}; // Saga registry[]
+  sagaMiddleware.run(composeSagas([...drizzleSagas]));
+
+  // console.log('zz', drizzleSagas[0]);
+  // drizzleSagaMiddleware.run(drizzleSagas[0]);
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   /* istanbul ignore next */

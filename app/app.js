@@ -15,16 +15,14 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'utils/history';
 
-import ThemeProvider from 'containers/ThemeProvider';
-
 // Import root app
 import App from 'containers/App';
 
-// Import Language Provider
+// Import Providers
+import ThemeProvider from 'containers/ThemeProvider';
 import LanguageProvider from 'containers/LanguageProvider';
-
-// Connection Provider
 import ConnectionProvider from 'containers/ConnectionProvider';
+import DrizzleProvider from 'containers/DrizzleProvider';
 
 // Load the favicon and the .htaccess file
 /* eslint-disable import/no-unresolved, import/extensions */
@@ -48,9 +46,11 @@ const render = messages => {
       <ThemeProvider>
         <LanguageProvider messages={messages}>
           <ConnectionProvider>
-            <ConnectedRouter history={history}>
-              <App />
-            </ConnectedRouter>
+            <DrizzleProvider store={store}>
+              <ConnectedRouter history={history}>
+                <App />
+              </ConnectedRouter>
+            </DrizzleProvider>
           </ConnectionProvider>
         </LanguageProvider>
       </ThemeProvider>

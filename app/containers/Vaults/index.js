@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Switch, Route } from 'react-router-dom';
-import {
-  useWeb3,
-  useRequireConnection,
-  useAddress,
-} from 'containers/ConnectionProvider/hooks';
-import { useSelector } from 'react-redux';
+import DrizzleContext from 'containers/DrizzleProvider/context';
+
+import { useRequireConnection } from 'containers/ConnectionProvider/hooks';
 
 const Wrapper = styled.div``;
 
-export default function Main(props) {
+export default function Main() {
   useRequireConnection();
+  const drizzleContext = useContext(DrizzleContext);
+  console.log('Drizzle context', drizzleContext);
+
   // const web3 = useWeb3();
   // const notify = useNotify();
   // const onboard = useOnboard();

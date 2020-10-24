@@ -14,10 +14,15 @@ import Splash from 'containers/Splash/Loadable';
 import Dashboard from 'containers/Dashboard/Loadable';
 import Main from 'containers/Main/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import _ from 'lodash';
+import { useInjectSaga } from 'utils/injectSaga';
+import { useInjectReducer } from 'utils/injectReducer';
 import GlobalStyle from '../../global-styles';
+import vaultsSaga from './sagas/vaultsSaga';
+import reducer from './reducer';
 
 export default function App() {
+  useInjectSaga({ key: 'vaults', saga: vaultsSaga });
+  useInjectReducer({ key: 'app', reducer });
   return (
     <div>
       <Switch>

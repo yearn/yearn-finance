@@ -21,6 +21,25 @@ export const drizzleMiddleware = drizzleInstance => store => next => action => {
     }
   }
 
+  if (type === 'ADD_CONTRACTS' && drizzleInstance) {
+    const { contracts } = action;
+    try {
+      const addContract = contract => {
+        drizzleInstance.addContract(contract);
+      };
+      _.each(contracts, addContract);
+    } catch (error) {
+      console.error('Attempt to add contracts failed.\n', error);
+      const notificationAction = {
+        type: 'ERROR_ADD_CONTRACTS',
+        error,
+        attemptedAction: action,
+      };
+      store.dispatch(notificationAction);
+      return;
+    }
+  }
+
   if (type === 'ADD_CONTRACT' && drizzleInstance) {
     try {
       const { contractConfig, events } = action;

@@ -17,20 +17,24 @@ import Main from 'containers/Main/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import GlobalStyle from '../../global-styles';
 import vaultsSaga from './sagas/vaultsSaga';
+import contractsSaga from './sagas/contractsSaga';
 import reducer from './reducer';
 import { selectReady } from './selectors';
 import { appReady } from './actions';
 
 export default function App() {
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
+  useInjectSaga({ key: 'contracts', saga: contractsSaga });
   useInjectReducer({ key: 'app', reducer });
+  const web3 = useWeb3();
   const dispatch = useDispatch();
   const ready = useSelector(selectReady());
   const appReadyChanged = () => {
-    if (!ready) {
-      dispatch(appReady());
+    if (ready) {
+      dispatch(appReady(web3));
     }
   };
   useEffect(appReadyChanged, [ready]);

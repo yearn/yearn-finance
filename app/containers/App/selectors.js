@@ -2,10 +2,14 @@ import { createSelector } from 'reselect';
 
 const selectApp = state => state.app;
 
-const selectReady = () =>
+export const selectReady = () =>
   createSelector(
     selectApp,
     substate => substate && substate.ready,
   );
 
-export { selectReady };
+export const selectVaults = () =>
+  createSelector(
+    selectApp,
+    substate => substate.vaults,
+  );

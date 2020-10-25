@@ -7,8 +7,9 @@ export function vaultsLoaded(vaults) {
   };
 }
 
-export function appReady() {
+export function appReady(web3) {
   return {
     type: c.APP_READY,
+    web3,
   };
 }

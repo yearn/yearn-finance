@@ -7,10 +7,11 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Splash from 'containers/Splash/Loadable';
+import { useSelector, useDispatch } from 'react-redux';
 import Dashboard from 'containers/Dashboard/Loadable';
 import Main from 'containers/Main/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
@@ -19,10 +20,20 @@ import { useInjectReducer } from 'utils/injectReducer';
 import GlobalStyle from '../../global-styles';
 import vaultsSaga from './sagas/vaultsSaga';
 import reducer from './reducer';
+import { selectReady } from './selectors';
+import { appReady } from './actions';
 
 export default function App() {
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
   useInjectReducer({ key: 'app', reducer });
+  const dispatch = useDispatch();
+  const ready = useSelector(selectReady());
+  const appReadyChanged = () => {
+    if (!ready) {
+      dispatch(appReady());
+    }
+  };
+  useEffect(appReadyChanged, [ready]);
   return (
     <div>
       <Switch>

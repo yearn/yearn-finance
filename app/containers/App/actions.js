@@ -6,3 +6,9 @@ export function vaultsLoaded(vaults) {
     vaults,
   };
 }
+
+export function appReady() {
+  return {
+    type: c.APP_READY,
+  };
+}

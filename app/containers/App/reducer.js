@@ -3,6 +3,7 @@ import {
   CONNECTION_CONNECTED,
   ADDRESS_UPDATED,
 } from 'containers/ConnectionProvider/constants';
+import { DRIZZLE_INITIALIZED } from 'containers/DrizzleProvider/constants';
 import { VAULTS_LOADED } from './constants';
 
 // The initial state of the App
@@ -43,7 +44,7 @@ const appReducer = (state = initialState, action) =>
         draft.loading.account = false;
         checkReadyState();
         break;
-      case 'DRIZZLE_INITIALIZED':
+      case DRIZZLE_INITIALIZED:
         draft.loading.drizzle = false;
         checkReadyState();
         break;

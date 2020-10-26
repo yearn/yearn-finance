@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
+import { useInjectReducer } from 'utils/injectReducer';
 import { initOnboard, initNotify } from './services';
-import { connectionConnected } from './actions';
+import { connectionConnected, addressUpdated } from './actions';
 import ConnectionContext from './context';
+import reducer from './reducer';
 
 export default function ConnectionProvider(props) {
+  useInjectReducer({ key: 'connection', reducer });
   const { children } = props;
   const darkMode = useSelector(makeSelectDarkMode());
   const dispatch = useDispatch();
@@ -17,7 +20,7 @@ export default function ConnectionProvider(props) {
   const [web3, setWeb3] = useState(null);
 
   const dispatchConnectionConnected = () => {
-    dispatch(connectionConnected());
+    dispatch(connectionConnected(address));
   };
 
   const initializeWallet = () => {
@@ -41,6 +44,12 @@ export default function ConnectionProvider(props) {
     setOnboard(newOnboard);
   };
 
+  const addressChanged = () => {
+    if (address) {
+      dispatch(addressUpdated(address));
+    }
+  };
+
   const reconnectWallet = () => {
     const previouslySelectedWallet = window.localStorage.getItem(
       'selectedWallet',
@@ -58,6 +67,7 @@ export default function ConnectionProvider(props) {
 
   useEffect(initializeWallet, []);
   useEffect(reconnectWallet, [onboard]);
+  useEffect(addressChanged, [address]);
   useEffect(changeDarkMode, [darkMode]);
 
   const selectWallet = () => {

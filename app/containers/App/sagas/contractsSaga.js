@@ -1,25 +1,31 @@
-import * as r from 'redux-saga/effects';
-import minimumVaultAbi from 'abi/minimumVault.json';
+import { put, takeLatest, select } from 'redux-saga/effects';
+import minimumVaultAbi from 'abi/yVault.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
+import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { selectVaults } from '../selectors';
 import { APP_READY } from '../constants';
 
-function* loadContracts(action) {
-  const { web3 } = action;
-  const vaults = yield r.select(selectVaults());
+function* loadVaultContracts() {
+  const vaults = yield select(selectVaults());
+  const vaultAddresses = _.map(vaults, vault => vault.address);
+  const address = yield select(selectAddress());
+  const contracts = [
+    {
+      abi: minimumVaultAbi,
+      addresses: vaultAddresses,
+      methods: [
+        { name: 'balance' },
+        {
+          name: 'balanceOf',
+          args: address,
+        },
+      ],
+    },
+  ];
 
-  const generateVaultContract = vault => {
-    const { address } = vault;
-    const contract = new web3.eth.Contract(minimumVaultAbi, address);
-    return {
-      contractName: address,
-      web3Contract: contract,
-    };
-  };
-  const vaultContracts = _.map(vaults, generateVaultContract);
-  yield r.put(addContracts(vaultContracts));
+  yield put(addContracts(contracts));
 }
 
 export default function* initialize() {
-  yield r.takeLatest(APP_READY, loadContracts);
+  yield takeLatest(APP_READY, loadVaultContracts);
 }

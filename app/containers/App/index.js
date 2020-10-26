@@ -18,6 +18,7 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
+import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 import GlobalStyle from '../../global-styles';
 import vaultsSaga from './sagas/vaultsSaga';
 import contractsSaga from './sagas/contractsSaga';
@@ -30,11 +31,12 @@ export default function App() {
   useInjectSaga({ key: 'contracts', saga: contractsSaga });
   useInjectReducer({ key: 'app', reducer });
   const web3 = useWeb3();
+  const drizzle = useDrizzle();
   const dispatch = useDispatch();
   const ready = useSelector(selectReady());
   const appReadyChanged = () => {
     if (ready) {
-      dispatch(appReady(web3));
+      dispatch(appReady(web3, drizzle));
     }
   };
   useEffect(appReadyChanged, [ready]);

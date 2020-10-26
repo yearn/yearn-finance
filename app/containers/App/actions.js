@@ -7,9 +7,10 @@ export function vaultsLoaded(vaults) {
   };
 }
 
-export function appReady(web3) {
+export function appReady(web3, drizzle) {
   return {
     type: c.APP_READY,
     web3,
+    drizzle,
   };
 }

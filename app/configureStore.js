@@ -5,11 +5,10 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { drizzleSagas } from 'drizzle/store';
 import { routerMiddleware } from 'connected-react-router';
-import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-
-import drizzleMW from 'drizzle/store/drizzle-middleware';
-
+import createSagaMiddleware from 'redux-saga';
+import drizzleMiddleware from 'drizzle/store/drizzle-middleware';
+import drizzleWeb3Middleware from 'middleware/drizzleWeb3';
 import createReducer from './reducers';
 
 export default function configureStore(initialState = {}, history) {
@@ -45,7 +44,12 @@ export default function configureStore(initialState = {}, history) {
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
 
-  const middlewares = [drizzleMW, sagaMiddleware, routerMiddleware(history)];
+  const middlewares = [
+    drizzleMiddleware,
+    drizzleWeb3Middleware,
+    sagaMiddleware,
+    routerMiddleware(history),
+  ];
 
   const enhancers = [applyMiddleware(...middlewares)];
 

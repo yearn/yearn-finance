@@ -1,5 +1,8 @@
 import produce from 'immer';
-import { CONNECTION_CONNECTED } from 'containers/ConnectionProvider/constants';
+import {
+  CONNECTION_CONNECTED,
+  ADDRESS_UPDATED,
+} from 'containers/ConnectionProvider/constants';
 import { VAULTS_LOADED } from './constants';
 
 // The initial state of the App
@@ -9,6 +12,7 @@ export const initialState = {
   loading: {
     vaults: true,
     drizzle: true,
+    account: true,
   },
 };
 
@@ -18,7 +22,11 @@ const appReducer = (state = initialState, action) =>
     // Utility functions
     const checkReadyState = () => {
       const { loading, connected } = draft;
-      const ready = !loading.vaults && !loading.drizzle && connected;
+      const ready =
+        !loading.vaults &&
+        !loading.drizzle &&
+        !draft.loading.account &&
+        connected;
       draft.ready = ready;
     };
 
@@ -30,6 +38,10 @@ const appReducer = (state = initialState, action) =>
         break;
       case CONNECTION_CONNECTED:
         draft.connected = true;
+        checkReadyState();
+        break;
+      case ADDRESS_UPDATED:
+        draft.loading.account = false;
         checkReadyState();
         break;
       case 'DRIZZLE_INITIALIZED':

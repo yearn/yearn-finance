@@ -9,7 +9,6 @@
 
 import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import Splash from 'containers/Splash/Loadable';
 import { useSelector, useDispatch } from 'react-redux';
 import Dashboard from 'containers/Dashboard/Loadable';

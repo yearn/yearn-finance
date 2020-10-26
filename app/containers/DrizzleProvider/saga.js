@@ -16,14 +16,14 @@ function* addContract(contractAddress, abi, events, fields) {
   yield drizzle.addContract(contractConfig, events);
   const drizzleContract = drizzle.contracts[contractAddress];
 
-  const callCache = method => {
+  const cacheCall = method => {
     if (method.args) {
       drizzleContract.methods[method.name].cacheCall(method.args);
     } else {
       drizzleContract.methods[method.name].cacheCall();
     }
   };
-  _.each(fields, callCache);
+  _.each(fields, cacheCall);
 }
 
 function* addContractBatch(contractBatch) {

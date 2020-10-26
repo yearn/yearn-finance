@@ -11,7 +11,7 @@ const DrizzleProvider = props => {
 
   const drizzle = new Drizzle(options, store);
   return (
-    <DrizzleContext.Provider value={drizzle}>
+    <DrizzleContext.Provider value={{ drizzle }}>
       {children}
     </DrizzleContext.Provider>
   );

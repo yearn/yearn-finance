@@ -1,9 +1,7 @@
 import * as r from 'redux-saga/effects';
-import * as a from './actions';
 import { DRIZZLE_ADD_CONTRACTS } from './constants';
 // import * as s from '../selectors';
-
-// function* callCache(contract, field) {}
+// import * as a from './actions';
 
 function* addContract(contractAddress, abi, events, fields) {
   const web3 = yield r.getContext('web3');
@@ -34,7 +32,7 @@ function* addContractBatch(contractBatch) {
 }
 
 export function* addContracts(action) {
-  const { web3, drizzle, contracts } = action;
+  const { contracts } = action;
   yield r.setContext(action);
   yield r.all(
     _.map(contracts, contractBatch => r.call(addContractBatch, contractBatch)),

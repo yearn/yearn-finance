@@ -8,9 +8,9 @@ import { VAULTS_LOADED } from './constants';
 // The initial state of the App
 export const initialState = {
   ready: false,
-  connected: false,
   loading: {
     vaults: true,
+    web3: true,
     drizzle: true,
     account: true,
   },
@@ -21,23 +21,22 @@ const appReducer = (state = initialState, action) =>
   produce(state, draft => {
     // Utility functions
     const checkReadyState = () => {
-      const { loading, connected } = draft;
+      const { loading } = draft;
       const ready =
         !loading.vaults &&
         !loading.drizzle &&
-        !draft.loading.account &&
-        connected;
+        !loading.account &&
+        !loading.web3;
       draft.ready = ready;
     };
 
     switch (action.type) {
       case VAULTS_LOADED:
-        draft.vaults = action.vaults;
         draft.loading.vaults = false;
         checkReadyState();
         break;
       case CONNECTION_CONNECTED:
-        draft.connected = true;
+        draft.loading.web3 = false;
         checkReadyState();
         break;
       case ADDRESS_UPDATED:

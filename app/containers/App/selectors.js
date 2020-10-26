@@ -1,15 +1,9 @@
 import { createSelector } from 'reselect';
 
-const selectApp = state => state.app;
+const selectStatus = state => state.status;
 
 export const selectReady = () =>
   createSelector(
-    selectApp,
+    selectStatus,
     substate => substate && substate.ready,
-  );
-
-export const selectVaults = () =>
-  createSelector(
-    selectApp,
-    substate => substate.vaults,
   );

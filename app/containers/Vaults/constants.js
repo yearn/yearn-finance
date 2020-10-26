@@ -1,0 +1,1 @@
+export const VAULTS_LOADED = 'VAULTS_LOADED';

@@ -18,17 +18,17 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import { useDrizzle } from 'containers/DrizzleProvider/hooks';
+import vaultsSaga from 'containers/Vaults/saga';
 import GlobalStyle from '../../global-styles';
-import vaultsSaga from './sagas/vaultsSaga';
-import contractsSaga from './sagas/contractsSaga';
+import saga from './saga';
 import reducer from './reducer';
 import { selectReady } from './selectors';
 import { appReady } from './actions';
 
 export default function App() {
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
-  useInjectSaga({ key: 'contracts', saga: contractsSaga });
-  useInjectReducer({ key: 'app', reducer });
+  useInjectSaga({ key: 'status', saga });
+  useInjectReducer({ key: 'status', reducer });
   const web3 = useWeb3();
   const drizzle = useDrizzle();
   const dispatch = useDispatch();

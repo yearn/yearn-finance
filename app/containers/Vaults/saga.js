@@ -1,7 +1,7 @@
 import request from 'utils/request';
 import { CONNECTION_CONNECTED } from 'containers/ConnectionProvider/constants';
 import * as r from 'redux-saga/effects';
-import * as a from '../actions';
+import * as a from './actions';
 // import * as s from '../selectors';
 
 export function* fetchVaults() {

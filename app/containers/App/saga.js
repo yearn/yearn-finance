@@ -2,8 +2,8 @@ import { put, takeLatest, select } from 'redux-saga/effects';
 import minimumVaultAbi from 'abi/yVault.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
-import { selectVaults } from '../selectors';
-import { APP_READY } from '../constants';
+import { selectVaults } from 'containers/Vaults/selectors';
+import { APP_READY } from './constants';
 
 function* loadVaultContracts() {
   const vaults = yield select(selectVaults());

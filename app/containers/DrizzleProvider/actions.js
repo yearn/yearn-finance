@@ -1,8 +1,8 @@
-import { ADD_CONTRACTS } from './constants';
+import { DRIZZLE_ADD_CONTRACTS } from './constants';
 
 export function addContracts(contracts) {
   return {
-    type: ADD_CONTRACTS,
+    type: DRIZZLE_ADD_CONTRACTS,
     contracts,
   };
 }

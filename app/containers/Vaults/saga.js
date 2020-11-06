@@ -6,7 +6,7 @@ import * as a from './actions';
 
 export function* fetchVaults() {
   try {
-    const url = `https://api.yearn.tools/vaults`;
+    const url = `https://api.yearn.tools/vaults?apy=true`;
     const vaults = yield r.call(request, url);
     yield r.put(a.vaultsLoaded(vaults));
   } catch (err) {

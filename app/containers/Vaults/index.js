@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Accordion } from 'react-bootstrap';
 
-import { useRequireConnection } from 'containers/ConnectionProvider/hooks';
+// import { useRequireConnection } from 'containers/ConnectionProvider/hooks';
+import { selectVaults } from 'containers/Vaults/selectors';
+import { useSelector } from 'react-redux';
+import Vault from 'components/Vault';
 
 const Wrapper = styled.div``;
 
 export default function Main() {
-  useRequireConnection();
-
+  const vaults = useSelector(selectVaults());
+  // useRequireConnection();
   // const web3 = useWeb3();
   // const notify = useNotify();
   // const onboard = useOnboard();
@@ -33,5 +37,12 @@ export default function Main() {
   //     notify.hash(hash);
   //   });
 
-  return <Wrapper>lil vailt</Wrapper>;
+  const renderVault = vault => <Vault vault={vault} key={vault.address} />;
+  const vaultEls = _.map(vaults, renderVault);
+
+  return (
+    <Wrapper>
+      <Accordion>{vaultEls}</Accordion>
+    </Wrapper>
+  );
 }

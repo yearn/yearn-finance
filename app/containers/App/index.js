@@ -20,7 +20,7 @@ import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 import vaultsSaga from 'containers/Vaults/saga';
 import GlobalStyle from '../../global-styles';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import saga from './saga';
 import reducer from './reducer';
 import { selectReady } from './selectors';

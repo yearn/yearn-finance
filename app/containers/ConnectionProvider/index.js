@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeSelectDarkMode } from 'containers/ThemeProvider/selectors';
+import { selectDarkMode } from 'containers/ThemeProvider/selectors';
 import { useInjectReducer } from 'utils/injectReducer';
 import { initOnboard, initNotify } from './services';
 import { connectionConnected, addressUpdated } from './actions';
@@ -11,7 +11,7 @@ import reducer from './reducer';
 export default function ConnectionProvider(props) {
   useInjectReducer({ key: 'connection', reducer });
   const { children } = props;
-  const darkMode = useSelector(makeSelectDarkMode());
+  const darkMode = useSelector(selectDarkMode());
   const dispatch = useDispatch();
   const [address, setAddress] = useState(null);
   const [wallet, setWallet] = useState({});

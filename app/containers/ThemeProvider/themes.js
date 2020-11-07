@@ -9,6 +9,7 @@ export const lightTheme = {
   toggleBorder: '#FFF',
   vaultBackground: '#FAFAFA',
   vaultBorder: '#CCC',
+  link: 'blue',
   ...common,
 };
 
@@ -18,5 +19,6 @@ export const darkTheme = {
   toggleBorder: '#6B8096',
   vaultBackground: '#444',
   vaultBorder: '#888',
+  link: 'antiquewhite',
   ...common,
 };

@@ -7,9 +7,3 @@ export const selectReady = () =>
     selectStatus,
     substate => substate && substate.ready,
   );
-
-export const selectDevMode = () =>
-  createSelector(
-    selectStatus,
-    substate => substate && substate.devMode,
-  );

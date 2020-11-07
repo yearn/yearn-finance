@@ -6,12 +6,12 @@ import { useSelector } from 'react-redux';
 import saga from './saga';
 import reducer from './reducer';
 import { lightTheme, darkTheme } from './themes';
-import { makeSelectDarkMode } from './selectors';
+import { selectDarkMode } from './selectors';
 
 const Theme = props => {
   useInjectSaga({ key: 'theme', saga });
   useInjectReducer({ key: 'theme', reducer });
-  const darkMode = useSelector(makeSelectDarkMode());
+  const darkMode = useSelector(selectDarkMode());
   const theme = darkMode ? darkTheme : lightTheme;
   return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>;
 };

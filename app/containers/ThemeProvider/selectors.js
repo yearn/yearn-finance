@@ -6,10 +6,10 @@ import { initialState } from './reducer';
  */
 const selectTheme = state => state.theme || initialState;
 
-const makeSelectDarkMode = () =>
+const selectDarkMode = () =>
   createSelector(
     selectTheme,
     substate => substate.darkMode,
   );
 
-export { selectTheme, makeSelectDarkMode };
+export { selectTheme, selectDarkMode };

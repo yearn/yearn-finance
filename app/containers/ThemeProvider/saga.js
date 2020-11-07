@@ -1,9 +1,9 @@
 import { takeLatest, select } from 'redux-saga/effects';
 import { TOGGLE_DARK_MODE } from './constants';
-import { makeSelectDarkMode } from './selectors';
+import { selectDarkMode } from './selectors';
 
 export function* toggleDarkMode() {
-  const mode = JSON.parse(yield select(makeSelectDarkMode()));
+  const mode = JSON.parse(yield select(selectDarkMode()));
   localStorage.setItem('darkMode', mode);
 }
 

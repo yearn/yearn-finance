@@ -54,7 +54,7 @@ export default function Vault(props) {
   const { vaultAlias, vaultIcon, tokenIcon, strategyName, balanceOf } = vault;
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
-  const vaultBalanceOf = (balanceOf / 10 ** 18).toFixed(2);
+  const vaultBalanceOf = (balanceOf / 10 ** 18).toFixed(0);
   return (
     <React.Fragment>
       <Card>
@@ -75,11 +75,10 @@ export default function Vault(props) {
             </UserBalance>
           </Wrapper>
         </Accordion.Toggle>
+        <Accordion.Collapse eventKey={vault.address}>
+          <Card.Body>Hello! Test</Card.Body>
+        </Accordion.Collapse>
       </Card>
-
-      <Accordion.Collapse eventKey={vault.address}>
-        <Card.Body>Hello! Test</Card.Body>
-      </Accordion.Collapse>
     </React.Fragment>
   );
 }

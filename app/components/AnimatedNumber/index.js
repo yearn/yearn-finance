@@ -1,7 +1,7 @@
 import React from 'react';
 import AnimatedNumber from 'animated-number-react';
 
-const defaultFormatter = v => v;
+const defaultFormatter = v => v.toFixed(0);
 
 export default function AnimatedNumberComponent({
   value,

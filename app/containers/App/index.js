@@ -28,8 +28,8 @@ import { appReady } from './actions';
 
 export default function App() {
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
-  useInjectSaga({ key: 'status', saga });
-  useInjectReducer({ key: 'status', reducer });
+  useInjectSaga({ key: 'app', saga });
+  useInjectReducer({ key: 'app', reducer });
   const web3 = useWeb3();
   const drizzle = useDrizzle();
   const dispatch = useDispatch();

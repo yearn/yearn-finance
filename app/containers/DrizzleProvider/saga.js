@@ -1,12 +1,26 @@
 import * as r from 'redux-saga/effects';
+import request from 'utils/request';
 import { DRIZZLE_ADD_CONTRACTS } from './constants';
+const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4';
 // import * as s from '../selectors';
 // import * as a from './actions';
+
+function* fetchAbi(address) {
+  const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${apiKey}`;
+  const resp = yield r.call(request, url);
+  const abi = JSON.parse(resp.result);
+  return abi;
+}
 
 function* addContract(contractAddress, abi, events, fields) {
   const web3 = yield r.getContext('web3');
   const drizzle = yield r.getContext('drizzle');
-  const contract = new web3.eth.Contract(abi, contractAddress);
+  let newAbi = abi;
+  if (!abi) {
+    newAbi = yield fetchAbi(contractAddress);
+  }
+  const contract = new web3.eth.Contract(newAbi, contractAddress);
+
   const contractConfig = {
     contractName: contractAddress,
     web3Contract: contract,

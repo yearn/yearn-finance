@@ -14,6 +14,9 @@ const appReducer = (state = initialState, action) =>
       case GOT_CONTRACT_VAR: {
         const { name: address, variable: field, value } = action;
         const vault = _.find(draft.data, { address });
+        if (!vault) {
+          break;
+        }
         vault[field] = value;
         draft.data = _.clone(draft.data);
         break;

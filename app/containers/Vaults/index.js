@@ -4,13 +4,39 @@ import { Accordion } from 'react-bootstrap';
 
 // import { useRequireConnection } from 'containers/ConnectionProvider/hooks';
 import { selectVaults } from 'containers/Vaults/selectors';
+import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
+import VaultDev from 'components/VaultDev';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  width: 1000px;
+  margin: 0 auto;
+`;
+
+const AddVault = styled.div`
+  margin: 0 auto;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Input = styled.input`
+  height: 30px;
+  font-size: 14px;
+  padding: 0px 7px;
+  width: 200px;
+`;
+
+const Button = styled.button`
+  height: 100%;
+  margin-left: 10px;
+`;
 
 export default function Main() {
   const vaults = useSelector(selectVaults());
+  const devMode = useSelector(selectDevMode());
   // useRequireConnection();
   // const web3 = useWeb3();
   // const notify = useNotify();
@@ -38,11 +64,25 @@ export default function Main() {
   //   });
 
   const renderVault = vault => <Vault vault={vault} key={vault.address} />;
-  const vaultEls = _.map(vaults, renderVault);
+  const renderDevVault = vault => (
+    <VaultDev vault={vault} key={vault.address} />
+  );
+  let vaultRows = _.map(vaults, renderVault);
+  let addVault;
+  if (devMode) {
+    addVault = (
+      <AddVault>
+        <Input placeholder="Address" />
+        <Button>Add Vault</Button>
+      </AddVault>
+    );
+    vaultRows = _.map(vaults, renderDevVault);
+  }
 
   return (
     <Wrapper>
-      <Accordion>{vaultEls}</Accordion>
+      {addVault}
+      <Accordion>{vaultRows}</Accordion>
     </Wrapper>
   );
 }

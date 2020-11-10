@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import Splash from 'containers/Splash/Loadable';
+import { Switch, Route, Redirect } from 'react-router-dom';
+// import Splash from 'containers/Splash/Loadable';
 import { useSelector, useDispatch } from 'react-redux';
-import Dashboard from 'containers/Dashboard/Loadable';
+// import Dashboard from 'containers/Dashboard/Loadable';
 import Main from 'containers/Main/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
@@ -11,11 +11,10 @@ import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 import vaultsSaga from 'containers/Vaults/saga';
 import GlobalStyle from '../../global-styles';
-
 import saga from './saga';
 import reducer from './reducer';
 import { selectReady } from './selectors';
-import { appReady } from './actions';
+import { appReady, appInitialized } from './actions';
 
 export default function App() {
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
@@ -30,12 +29,16 @@ export default function App() {
       dispatch(appReady(web3, drizzle));
     }
   };
+  const init = () => {
+    dispatch(appInitialized());
+  };
   useEffect(appReadyChanged, [ready]);
+  useEffect(init, []);
   return (
     <div>
+      <canvas id="matrix" />
       <Switch>
-        <Route exact path="/" component={Splash} />
-        <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/" render={() => <Redirect to="/vaults" />} />
         <Route path="/vaults" component={Main} />
         <Route path="/yusd" component={Main} />
         <Route path="/stats" component={Main} />

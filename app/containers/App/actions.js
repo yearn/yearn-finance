@@ -14,3 +14,9 @@ export function appReady(web3, drizzle) {
     drizzle,
   };
 }
+
+export function appInitialized() {
+  return {
+    type: c.APP_INITIALIZED,
+  };
+}

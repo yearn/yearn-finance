@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch } from 'react-redux';
 import Input from 'components/Input';
+import { ADD_VAULT } from 'containers/Vaults/constants';
 
 const Wrapper = styled.form`
   margin: 0 auto;
@@ -28,7 +29,7 @@ export default function AddVault(props) {
   const dispatch = useDispatch();
   const addVault = evt => {
     evt.preventDefault();
-    dispatch({ type: 'ADD_VAULT', address });
+    dispatch({ type: ADD_VAULT, address });
     setAddress('');
   };
 

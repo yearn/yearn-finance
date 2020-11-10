@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="9px" viewBox="0 0 14 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>chevron-down-24</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1088" height="387" rx="10"></rect>
+        <filter id="filter-3">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="yVaults-normal-vault-expanded-night" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1221.000000, -466.000000)">
+            <rect fill="transparent" x="0" y="0" width="1440" height="1173"></rect>
+            <g id="Rectangle-Copy" transform="translate(178.000000, 442.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+            </g>
+            <g id="Group-3-Copy-5" transform="translate(249.000000, 459.000000)">
+                <g id="chevron-down-24" transform="translate(967.000000, 0.000000)" filter="url(#filter-3)">
+                    <g transform="translate(12.000000, 12.000000) rotate(180.000000) translate(-12.000000, -12.000000) ">
+                        <path d="M5.22,8.72 C4.92754662,9.01281755 4.92754662,9.48718245 5.22,9.78 L11.47,16.03 C11.7628175,16.3224534 12.2371825,16.3224534 12.53,16.03 L18.78,9.78 C19.0553589,9.48449025 19.0472339,9.02399028 18.7616218,8.7383782 C18.4760097,8.45276612 18.0155098,8.44464114 17.72,8.72 L12,14.44 L6.28,8.72 C5.98718245,8.42754662 5.51281755,8.42754662 5.22,8.72 Z" id="Path" fill="#FFFFFF"></path>
+                        <rect id="Rectangle" fill-opacity="0" fill="#000000" fill-rule="nonzero" x="0" y="0" width="24" height="24"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

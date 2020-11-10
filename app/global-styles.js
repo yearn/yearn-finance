@@ -1,4 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
+import CalibreBold from 'fonts/Calibre-Bold.otf';
+import CalibreMedium from 'fonts/Calibre-Medium.otf';
+import CalibreSemibold from 'fonts/Calibre-Semibold.otf';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -7,10 +10,29 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     color: ${props => props.theme.text};
     margin: 0;
+    font-size: 26px;
+  }
+  @font-face {
+    font-family: 'Calibre Bold';
+    src: url(${CalibreBold}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Calibre Medium';
+    src: url(${CalibreMedium}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
   }
 
+  @font-face {
+    font-family: 'Calibre Semibold';
+    src: url(${CalibreSemibold}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
   body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Calibre Semibold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   body.fontLoaded {
@@ -37,11 +59,26 @@ const GlobalStyle = createGlobalStyle`
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: ${props => props.theme.vaultBackground};
   background-clip: border-box;
-  border: 1px solid ${props => props.theme.vaultBorder};
-  margin: 20px 0px;
+  background-color: ${props => props.theme.vaultBackground};
+  margin: 0px 0px;
+  margin-bottom: 7px;
   border-radius: 15px;
+  border: 4px solid;
+  border-color: ${props => props.theme.vaultBackground};
+  color: ${props => props.theme.vaultText};
+  transition: background-color .1s ease-out, border-color .15s ease-out;
+}
+
+a {
+  color: #fff;
+  outline: none;
+}
+
+.card.active {
+  border-color: ${props => props.theme.vaultBorderActive};
+  background-color: ${props => props.theme.vaultBackgroundActive};
+  transition: background-color .1s ease-in;
 }
 
 .card > hr {
@@ -62,16 +99,19 @@ const GlobalStyle = createGlobalStyle`
   border-bottom-width: 0;
 }
 
-.card > .card-header + .list-group,
-.card > .list-group + .card-footer {
-  border-top: 0;
-}
-
 .card-body {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-height: 1px;
-  padding: 1.25rem;
+  background-color: ${props => props.theme.vaultBackgroundMiddle};
+}
+
+.card-footer {
+  background-color: ${props => props.theme.vaultBackgroundActive};
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 15px;
+  opacity: 1;
 }
 
 .card-title {
@@ -96,9 +136,12 @@ const GlobalStyle = createGlobalStyle`
 }
 
 .card-header {
-  padding: 0.75rem 1.25rem;
+  padding: 0px;
   margin-bottom: 0;
-  background-color: ${props => props.theme.vaultBackground};
+  display: flex;
+  align-items: center;
+  height: 58px;
+  background-color: transparent;
 }
 
 .card-header-tabs {
@@ -133,10 +176,6 @@ const GlobalStyle = createGlobalStyle`
     margin-bottom: 0;
     margin-left: 15px;
   }
-}
-
-.card-group > .card {
-  margin-bottom: 15px;
 }
 
 @media (min-width: 576px) {
@@ -180,6 +219,7 @@ const GlobalStyle = createGlobalStyle`
 
 .accordion {
   overflow-anchor: none;
+  padding-bottom: 20px;
 }
 
 .accordion > .card {
@@ -187,14 +227,14 @@ const GlobalStyle = createGlobalStyle`
 }
 
 .collapse:not(.show) {
-  display: none;
+  height: 0px;
 }
 
 .collapsing {
   position: relative;
   height: 0;
   overflow: hidden;
-  transition: height 0.15s ease;
+  transition: height 0.05s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -202,6 +242,21 @@ const GlobalStyle = createGlobalStyle`
     transition: none;
   }
 }
+
+#matrix {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+canvas {
+  display: block;
+  pointer-events: none;
+}
+
 
 `;
 

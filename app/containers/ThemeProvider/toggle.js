@@ -17,11 +17,7 @@ export default function ConnectButton() {
     <Wrapper>
       <label>
         dark mode
-        <input
-          type="checkbox"
-          defaultChecked={darkMode}
-          onChange={toggleMode}
-        />
+        <input type="checkbox" checked={darkMode} onChange={toggleMode} />
       </label>
     </Wrapper>
   );

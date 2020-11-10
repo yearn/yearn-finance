@@ -5,7 +5,7 @@
  */
 import produce from 'immer';
 
-import { TOGGLE_DARK_MODE, DARK_MODE } from './constants';
+import { TOGGLE_DARK_MODE, SET_THEME_MODE, DARK_MODE } from './constants';
 
 const defaultMode = DARK_MODE;
 const localStorageDarkModeStr = localStorage.getItem('darkMode');
@@ -29,6 +29,9 @@ const languageProviderReducer = (state = initialState, action) =>
     switch (action.type) {
       case TOGGLE_DARK_MODE:
         draft.darkMode = !draft.darkMode;
+        break;
+      case SET_THEME_MODE:
+        draft.darkMode = action.mode === DARK_MODE;
         break;
     }
   });

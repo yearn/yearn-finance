@@ -8,7 +8,6 @@ const ConnectedAccount = styled.div`
   align-items: center;
   justify-self: end;
   cursor: pointer;
-  padding: 15px;
   & > canvas {
     border-radius: 50%;
   }
@@ -34,10 +33,10 @@ const transformAddress = address => {
 };
 
 export default function Account(props) {
-  const { address, onClick } = props;
+  const { address, onClick, className } = props;
 
   return (
-    <ConnectedAccount onClick={onClick}>
+    <ConnectedAccount onClick={onClick} className={className}>
       <Blockies
         seed={address}
         size={10}

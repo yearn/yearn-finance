@@ -25,9 +25,14 @@ const Wrapper = styled.button`
 `;
 
 export default function ConnectButton(props) {
-  const { onClick, disabled } = props;
+  const { onClick, disabled, className } = props;
   return (
-    <Wrapper type="button" disabled={disabled} onClick={onClick}>
+    <Wrapper
+      className={className}
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+    >
       {props.children}
     </Wrapper>
   );

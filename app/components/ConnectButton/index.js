@@ -8,16 +8,23 @@ import {
 } from 'containers/ConnectionProvider/hooks';
 import ConnectedAccount from './connectedAccount';
 
-export default function ConnectButton() {
+export default function ConnectButton(props) {
+  const { className } = props;
   const wallet = useWallet();
   const address = useAddress();
   const selectWallet = useSelectWallet();
   let content;
   if (wallet.provider && address) {
-    content = <ConnectedAccount onClick={selectWallet} address={address} />;
+    content = (
+      <ConnectedAccount
+        className={className}
+        onClick={selectWallet}
+        address={address}
+      />
+    );
   } else {
     content = (
-      <Button onClick={selectWallet}>
+      <Button className={className} onClick={selectWallet}>
         <FormattedMessage id="account.connect" />
       </Button>
     );

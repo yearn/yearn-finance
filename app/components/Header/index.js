@@ -18,6 +18,11 @@ const Toggles = styled.div`
   }
 `;
 
+const StyledConnectButton = styled(ConnectButton)`
+  margin-right: 15px;
+  margin-top: 15px;
+`;
+
 export default function Header() {
   return (
     <Wrapper>
@@ -25,7 +30,7 @@ export default function Header() {
         <ThemeToggle />
         <DevModeToggle />
       </Toggles>
-      <ConnectButton />
+      <StyledConnectButton />
     </Wrapper>
   );
 }

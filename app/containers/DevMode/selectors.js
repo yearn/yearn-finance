@@ -11,3 +11,9 @@ export const selectDevMode = () =>
     selectState,
     substate => substate.enabled,
   );
+
+export const selectDevModeUnlocked = () =>
+  createSelector(
+    selectState,
+    substate => substate.unlocked,
+  );

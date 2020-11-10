@@ -1,42 +1,69 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Accordion } from 'react-bootstrap';
+import styled, { css } from 'styled-components';
+import Accordion from 'react-bootstrap/Accordion';
+import ColumnList from 'components/Vault/columns';
 
-// import { useRequireConnection } from 'containers/ConnectionProvider/hooks';
 import { selectVaults } from 'containers/Vaults/selectors';
 import { selectDevMode } from 'containers/DevMode/selectors';
+import {
+  // selectWatchedContractAddresses,
+  selectLocation,
+} from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
-import VaultDev from 'components/VaultDev';
+import VaultsNavLinks from 'components/VaultsNavLinks';
+// import VaultDev from 'components/VaultDev';
+import AddVault from 'components/AddVault';
+
+import { matchPath } from 'react-router';
 
 const Wrapper = styled.div`
-  width: 1000px;
+  width: 1088px;
   margin: 0 auto;
 `;
 
-const AddVault = styled.div`
-  margin: 0 auto;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const ColumnHeader = styled.div`
+  margin-bottom: 10px;
+  padding-top: 20px;
+  font-size: 17px;
+  text-transform: uppercase;
 `;
 
-const Input = styled.input`
-  height: 30px;
-  font-size: 14px;
-  padding: 0px 7px;
-  width: 200px;
+const DevHeader = styled.div`
+  opacity: ${props => (props.devMode ? 1 : 0)};
+  transition: opacity 100ms ease-in, margin-top 100ms ease-out;
+  margin-top: -50px;
+  pointer-events: none;
+  ${props =>
+    props.devMode &&
+    css`
+      margin-top: 30px;
+      color: black;
+      transition: opacity 100ms ease-in, margin-top 100ms ease-out;
+      pointer-events: inherit;
+    `}
 `;
 
-const Button = styled.button`
-  height: 100%;
-  margin-left: 10px;
-`;
-
-export default function Main() {
+const Vaults = () => {
   const vaults = useSelector(selectVaults());
+  // const vaultsWithContractData = useContractData(vaults)
   const devMode = useSelector(selectDevMode());
+  // const contractAddresses = useSelector(selectWatchedContractAddresses());
+  const location = useSelector(selectLocation());
+  const { pathname } = location;
+  // const vaultContractAddresses = contractAddresses.vaults;
+  // const localVaultContractAddresses = contractAddresses.localVaults;
+
+  const routeIsDevelop = matchPath(pathname, {
+    path: '/vaults/develop',
+    exact: true,
+    strict: false,
+  });
+
+  const showDevVaults = routeIsDevelop && devMode;
+
+  // const tokenContracts = useSelector(selectContracts('tokens'));
+  // const localVaultContracts = useDrizzleContracts('localVaults');
   // useRequireConnection();
   // const web3 = useWeb3();
   // const notify = useNotify();
@@ -64,25 +91,32 @@ export default function Main() {
   //   });
 
   const renderVault = vault => <Vault vault={vault} key={vault.address} />;
-  const renderDevVault = vault => (
-    <VaultDev vault={vault} key={vault.address} />
-  );
+  // const renderVaultDev = address => (
+  //   <VaultDev address={address} key={address} />
+  // );
   let vaultRows = _.map(vaults, renderVault);
-  let addVault;
-  if (devMode) {
-    addVault = (
-      <AddVault>
-        <Input placeholder="Address" />
-        <Button>Add Vault</Button>
-      </AddVault>
-    );
-    vaultRows = _.map(vaults, renderDevVault);
+  if (showDevVaults) {
+    // vaultRows = _.map(localVaultContractAddresses, renderVaultDev);
+    vaultRows = <div>cavkle</div>;
   }
 
   return (
     <Wrapper>
-      {addVault}
+      <DevHeader devMode={devMode}>
+        <VaultsNavLinks />
+        <AddVault devVaults={showDevVaults} />
+      </DevHeader>
+      <ColumnList>
+        <ColumnHeader>Asset</ColumnHeader>
+        <ColumnHeader>Deposited</ColumnHeader>
+        <ColumnHeader>Vault Assets</ColumnHeader>
+        <ColumnHeader>Growth</ColumnHeader>
+        <ColumnHeader>Available to deposit</ColumnHeader>
+      </ColumnList>
       <Accordion>{vaultRows}</Accordion>
     </Wrapper>
   );
-}
+};
+
+Vaults.whyDidYouRender = true;
+export default Vaults;

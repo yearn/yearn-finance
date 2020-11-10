@@ -3,12 +3,16 @@ import {
   CONNECTION_CONNECTED,
   ADDRESS_UPDATED,
 } from 'containers/ConnectionProvider/constants';
-import { DRIZZLE_INITIALIZED } from 'containers/DrizzleProvider/constants';
+import {
+  DRIZZLE_INITIALIZED,
+  DRIZZLE_ADD_CONTRACTS,
+} from 'containers/DrizzleProvider/constants';
 import { VAULTS_LOADED } from './constants';
 
 // The initial state of the App
 export const initialState = {
   ready: false,
+  watchedContractAddresses: {},
   loading: {
     vaults: true,
     web3: true,
@@ -32,6 +36,19 @@ const appReducer = (state = initialState, action) =>
     };
 
     switch (action.type) {
+      case DRIZZLE_ADD_CONTRACTS: {
+        const { contracts } = action;
+        const watchedContractAddresses = {};
+        const addContracts = contract => {
+          const { contractType, addresses } = contract;
+          if (contractType) {
+            watchedContractAddresses[contractType] = addresses;
+          }
+        };
+        _.each(contracts, addContracts);
+        draft.watchedContractAddresses = watchedContractAddresses;
+        break;
+      }
       case VAULTS_LOADED:
         draft.loading.vaults = false;
         checkReadyState();

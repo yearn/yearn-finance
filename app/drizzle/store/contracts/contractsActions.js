@@ -33,3 +33,12 @@ export function gotContractVar(results) {
     payload: results,
   };
 }
+
+const DELETE_CONTRACT = 'DELETE_CONTRACT';
+
+export function deleteContract(contractName) {
+  return {
+    type: DELETE_CONTRACT,
+    contractName,
+  };
+}

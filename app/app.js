@@ -6,8 +6,10 @@
  */
 
 // Needed for redux-saga es6 generator support
-import '@babel/polyfill';
 
+import './wdyr';
+
+import '@babel/polyfill';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -34,6 +36,9 @@ import configureStore from './configureStore';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
+
+// Globally require lodash
+_ = require('lodash');
 
 // Create redux store with history
 const initialState = {};

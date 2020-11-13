@@ -15,6 +15,9 @@ const Wrapper = styled.input`
     border-color: ${props => props.theme.yearnBlue};
     box-shadow: 0 0 25pt 5pt ${props => props.theme.inputOutline};
   }
+  &:invalid:not(:focus) {
+    box-shadow: none;
+  }
   padding: 0px 13px;
 `;
 

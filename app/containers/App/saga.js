@@ -1,6 +1,6 @@
 import { put, call, takeLatest, take, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import minimalVaultAbi from 'abi/yVault.json';
+import vaultAbi from 'abi/yVault.json';
 import minimalErc20Abi from 'abi/minimalErc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
@@ -28,7 +28,7 @@ function* loadVaultContracts() {
       metadata: {
         version: '1',
       },
-      abi: minimalVaultAbi,
+      abi: vaultAbi,
       addresses: vaultAddresses,
       methods: [
         { name: 'name' },

@@ -75,6 +75,11 @@ function* addContract(
   const drizzleContract = drizzle.contracts[contractAddress];
 
   const cacheCall = method => {
+    const methodExists = _.find(newAbi, { name: method.name });
+    if (!methodExists) {
+      // Attempted to add method args that dont exist
+      return;
+    }
     if (method.args) {
       drizzleContract.methods[method.name].cacheCall(method.args);
     } else {

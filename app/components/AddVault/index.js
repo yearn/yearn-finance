@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch } from 'react-redux';
 import Input from 'components/Input';
-import { ADD_VAULT } from 'containers/Vaults/constants';
+import { ADD_CONTRACT } from 'containers/DrizzleProvider/constants';
 
 const Wrapper = styled.form`
   margin: 0 auto;
@@ -23,18 +23,18 @@ const Wrapper = styled.form`
     `}
 `;
 
-export default function AddVault(props) {
+export default function AddContract(props) {
   const { devVaults } = props;
   const [address, setAddress] = useState('');
   const dispatch = useDispatch();
-  const addVault = evt => {
+  const addContract = evt => {
     evt.preventDefault();
-    dispatch({ type: ADD_VAULT, address });
+    dispatch({ type: ADD_CONTRACT, address });
     setAddress('');
   };
 
   return (
-    <Wrapper devVaults={devVaults} onSubmit={addVault}>
+    <Wrapper devVaults={devVaults} onSubmit={addContract}>
       <Input
         type="text"
         placeholder="Add contract: 0x..."

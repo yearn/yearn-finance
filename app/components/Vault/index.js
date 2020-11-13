@@ -14,6 +14,7 @@ import Arrow from 'images/arrow.svg';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
+import { selectContract } from 'containers/App/selectors';
 
 const IconAndName = styled.div`
   display: flex;
@@ -90,24 +91,29 @@ const Vault = props => {
     tokenAddress,
     tokenSymbolAlias,
     decimals,
-    // token,
+    token,
+    name,
     totalAssets,
     balance,
     balanceOf,
     address,
   } = vault;
 
+  console.log('rend');
   const devMode = useSelector(selectDevMode());
+
   // const { balance, balanceOf } = contractData;
 
-  // const tokenContract = tokens[tokenAddress || token]; // TODO: Make sure both are in checksum format
-  const tokenBalance = '2';
-  // const tokenSymbol = tokenSymbolAlias || _.get(tokenContract, 'symbol');
-  const tokenSymbol = tokenSymbolAlias;
-  const vaultName = symbolAlias || tokenSymbol;
+  // const tokenContract = _.find(tokens, { address: tokenAddress || token }); // TODO: Make sure both are in checksum format
+  const tokenAddress1 = tokenAddress || token;
+  const tokenContract = useSelector(selectContract('tokens', tokenAddress1));
+  const tokenBalance = _.get(tokenContract, 'balanceOf');
+  const tokenSymbol = tokenSymbolAlias || _.get(tokenContract, 'symbol');
+  const vaultName = symbolAlias || tokenSymbol || name;
   const accordionEventKey = address;
   const currentEventKey = useContext(AccordionContext);
   const active = currentEventKey === accordionEventKey;
+  // const active = false;
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
   const tokenBalanceOf = new BigNumber(tokenBalance)

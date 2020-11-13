@@ -1,14 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { compose } from 'redux';
 import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import ColumnList from 'components/Vault/columns';
 
-import { selectVaults } from 'containers/Vaults/selectors';
+import { selectContracts, selectLocation } from 'containers/App/selectors';
 import { selectDevMode } from 'containers/DevMode/selectors';
-import {
-  // selectWatchedContractAddresses,
-  selectLocation,
-} from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import VaultsNavLinks from 'components/VaultsNavLinks';
@@ -45,8 +42,10 @@ const DevHeader = styled.div`
 `;
 
 const Vaults = () => {
-  const vaults = useSelector(selectVaults());
-  // const vaultsWithContractData = useContractData(vaults)
+  const vaults = useSelector(selectContracts('vaults'));
+  const localVaults = useSelector(selectContracts('localVaults'));
+  // const tokens = useSelector(selectContracts('tokens'));
+
   const devMode = useSelector(selectDevMode());
   // const contractAddresses = useSelector(selectWatchedContractAddresses());
   const location = useSelector(selectLocation());
@@ -62,7 +61,6 @@ const Vaults = () => {
 
   const showDevVaults = routeIsDevelop && devMode;
 
-  // const tokenContracts = useSelector(selectContracts('tokens'));
   // const localVaultContracts = useDrizzleContracts('localVaults');
   // useRequireConnection();
   // const web3 = useWeb3();
@@ -97,7 +95,7 @@ const Vaults = () => {
   let vaultRows = _.map(vaults, renderVault);
   if (showDevVaults) {
     // vaultRows = _.map(localVaultContractAddresses, renderVaultDev);
-    vaultRows = <div>cavkle</div>;
+    vaultRows = _.map(localVaults, renderVault);
   }
 
   return (
@@ -119,4 +117,4 @@ const Vaults = () => {
 };
 
 Vaults.whyDidYouRender = true;
-export default Vaults;
+export default compose(memo)(Vaults);

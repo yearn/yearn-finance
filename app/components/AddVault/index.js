@@ -39,9 +39,8 @@ export default function AddContract(props) {
         type="text"
         placeholder="Add contracts: 0x..., 0x..."
         value={addresses}
-        pattern="0[xX][0-9a-fA-F]+"
+        pattern="(0[xX][0-9a-fA-F]{40}[,]?\s?)+"
         minLength="42"
-        maxLength="42"
         required
         onChange={evt => setAddresses(evt.target.value)}
       />

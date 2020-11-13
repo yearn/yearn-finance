@@ -1,13 +1,27 @@
-import * as r from 'redux-saga/effects';
 import request from 'utils/request';
-import { DRIZZLE_ADD_CONTRACTS } from './constants';
+import {
+  select,
+  call,
+  put,
+  all,
+  setContext,
+  getContext,
+  takeLatest,
+} from 'redux-saga/effects';
+import { selectAddress } from 'containers/ConnectionProvider/selectors';
+
+import {
+  DELETE_CONTRACT,
+  ADD_CONTRACT,
+  DRIZZLE_ADD_CONTRACTS,
+} from './constants';
 const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4';
 // import * as s from '../selectors';
 // import * as a from './actions';
 
 function* fetchAbi(address) {
   const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${apiKey}`;
-  const resp = yield r.call(request, url);
+  const resp = yield call(request, url);
   console.log('Fetch ABI:', address);
   const abi = JSON.parse(resp.result);
   return abi;
@@ -22,8 +36,8 @@ function* addContract(
   metadata,
   allFields,
 ) {
-  const web3 = yield r.getContext('web3');
-  const drizzle = yield r.getContext('drizzle');
+  const web3 = yield getContext('web3');
+  const drizzle = yield getContext('drizzle');
   let newAbi = abi;
   if (!abi) {
     newAbi = yield fetchAbi(contractAddress);
@@ -69,6 +83,43 @@ function* addContract(
   _.each(newFields, cacheCall);
 }
 
+function* addWatchedContract(action) {
+  const vaultAddress = action.address;
+  const localVaults = JSON.parse(
+    localStorage.getItem('watchedContracts') || '[]',
+  );
+  const account = yield select(selectAddress());
+  const alreadyWatching = _.includes(localVaults, vaultAddress);
+  if (alreadyWatching) {
+    return;
+  }
+  const contracts = [
+    {
+      contractType: 'localVaults',
+      addresses: [vaultAddress],
+      allFields: true,
+      methods: [
+        {
+          name: 'balanceOf',
+          args: account,
+        },
+      ],
+    },
+  ];
+  yield put(addContracts(contracts));
+  localVaults.push(vaultAddress);
+  localStorage.setItem('watchedContracts', JSON.stringify(localVaults));
+}
+
+function* removeWatchedContract(action) {
+  const { contractName } = action;
+  let localVaults = JSON.parse(
+    localStorage.getItem('watchedContracts') || '[]',
+  );
+  localVaults = _.pull(localVaults, contractName);
+  localStorage.setItem('watchedContracts', JSON.stringify(localVaults));
+}
+
 function* addContractBatch(contractBatch) {
   const {
     abi,
@@ -79,7 +130,7 @@ function* addContractBatch(contractBatch) {
     metadata,
     allFields,
   } = contractBatch;
-  yield r.all(
+  yield all(
     _.map(addresses, address =>
       addContract(
         address,
@@ -96,12 +147,14 @@ function* addContractBatch(contractBatch) {
 
 export function* addContracts(action) {
   const { contracts } = action;
-  yield r.setContext(action);
-  yield r.all(
-    _.map(contracts, contractBatch => r.call(addContractBatch, contractBatch)),
+  yield setContext(action);
+  yield all(
+    _.map(contracts, contractBatch => call(addContractBatch, contractBatch)),
   );
 }
 
 export default function* initialize() {
-  yield r.takeLatest(DRIZZLE_ADD_CONTRACTS, addContracts);
+  yield takeLatest(DRIZZLE_ADD_CONTRACTS, addContracts);
+  yield takeLatest(DELETE_CONTRACT, removeWatchedContract);
+  yield takeLatest(ADD_CONTRACT, addWatchedContract);
 }

@@ -4,7 +4,7 @@ import minimalVaultAbi from 'abi/yVault.json';
 import minimalErc20Abi from 'abi/minimalErc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
-import { selectVaults } from 'containers/Vaults/selectors';
+import { selectVaults } from 'containers/App/selectors';
 import KonamiCode from 'konami-code-js';
 import runMatrix from 'utils/matrix';
 import { unlockDevMode } from 'containers/DevMode/actions';
@@ -16,7 +16,9 @@ function* loadVaultContracts() {
   const vaults = yield select(selectVaults());
   const vaultAddresses = _.map(vaults, vault => vault.address);
   const address = yield select(selectAddress());
-  const localVaults = JSON.parse(localStorage.getItem('watchedVaults') || '[]');
+  const localVaults = JSON.parse(
+    localStorage.getItem('watchedContracts') || '[]',
+  );
 
   const vaultTokenAddresses = _.map(vaults, vault => vault.tokenAddress);
 
@@ -41,7 +43,6 @@ function* loadVaultContracts() {
       contractType: 'tokens',
       abi: minimalErc20Abi,
       addresses: vaultTokenAddresses,
-      allFields: true,
       methods: [
         {
           name: 'balanceOf',
@@ -63,32 +64,6 @@ function* loadVaultContracts() {
   ];
   yield put(addContracts(contracts));
 }
-
-// function* addVault(action) {
-//   const vaultAddress = action.address;
-//   const localVaults = JSON.parse(localStorage.getItem('watchedVaults') || '[]');
-//   const account = yield select(selectAddress());
-//   const alreadyWatching = _.includes(localVaults, vaultAddress);
-//   if (alreadyWatching) {
-//     return;
-//   }
-//   const contracts = [
-//     {
-//       type: 'localVaults',
-//       addresses: [vaultAddress],
-//       allFields: true,
-//       methods: [
-//         {
-//           name: 'balanceOf',
-//           args: account,
-//         },
-//       ],
-//     },
-//   ];
-//   yield put(addContracts(contracts));
-//   localVaults.push(vaultAddress);
-//   localStorage.setItem('watchedVaults', JSON.stringify(localVaults));
-// }
 
 function konamiWatcher() {
   return eventChannel(emitter => {

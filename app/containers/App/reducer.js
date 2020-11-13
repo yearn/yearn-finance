@@ -6,6 +6,7 @@ import {
 import {
   DRIZZLE_INITIALIZED,
   DRIZZLE_ADD_CONTRACTS,
+  GOT_CONTRACT_VAR,
 } from 'containers/DrizzleProvider/constants';
 import { VAULTS_LOADED } from './constants';
 
@@ -19,11 +20,45 @@ export const initialState = {
     drizzle: true,
     account: true,
   },
+  vaults: [],
+  tokens: [],
+  localVaults: [],
+};
+
+const loadContractData = (state, draft, action) => {
+  const newDraft = draft;
+  switch (action.type) {
+    case GOT_CONTRACT_VAR: {
+      const {
+        name: address,
+        variable: field,
+        contractType,
+        metadata,
+        value,
+      } = action;
+      const item = _.find(draft[contractType], { address });
+      if (!item) {
+        const newItem = { address };
+        draft[contractType].push(newItem);
+        newItem[field] = _.clone(value);
+        newItem.metadata = metadata;
+        break;
+      }
+      item[field] = value;
+      item.metadata = metadata;
+      newDraft[contractType] = _.clone(draft[contractType]);
+      break;
+    }
+    default:
+      break;
+  }
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const appReducer = (state = initialState, action) =>
   produce(state, draft => {
+    loadContractData(state, draft, action);
+
     // Utility functions
     const checkReadyState = () => {
       const { loading } = draft;
@@ -51,6 +86,7 @@ const appReducer = (state = initialState, action) =>
       }
       case VAULTS_LOADED:
         draft.loading.vaults = false;
+        draft.vaults = action.vaults;
         checkReadyState();
         break;
       case CONNECTION_CONNECTED:

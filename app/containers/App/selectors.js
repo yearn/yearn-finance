@@ -9,6 +9,12 @@ export const selectReady = () =>
     substate => substate && substate.ready,
   );
 
+export const selectVaults = () =>
+  createSelector(
+    selectApp,
+    substate => substate.vaults,
+  );
+
 export const selectWatchedContractAddresses = () =>
   createSelector(
     selectApp,
@@ -19,4 +25,16 @@ export const selectLocation = () =>
   createSelector(
     selectRouter,
     routerState => routerState.location,
+  );
+
+export const selectContracts = contractType =>
+  createSelector(
+    selectApp,
+    substate => substate[contractType],
+  );
+
+export const selectContract = (contractType, contractAddress) =>
+  createSelector(
+    selectApp,
+    substate => _.find(substate[contractType], { address: contractAddress }),
   );

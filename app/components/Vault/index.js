@@ -26,7 +26,6 @@ const IconAndName = styled.div`
 const Icon = styled.img`
   width: 40px;
   margin-right: 20px;
-  margin-top: 10px;
 `;
 
 const IconName = styled.div`

@@ -219,7 +219,7 @@ a {
 
 .accordion {
   overflow-anchor: none;
-  padding-bottom: 20px;
+  padding-bottom: 80px;
 }
 
 .accordion > .card {

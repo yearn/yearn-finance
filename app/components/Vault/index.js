@@ -11,23 +11,29 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { purple } from '@material-ui/core/colors';
 import Arrow from 'images/arrow.svg';
+import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContract } from 'containers/App/selectors';
+import { getContractType } from 'utils/contracts';
 
 const IconAndName = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 60px calc(100% - 60px);
   align-items: center;
-  width: 250px;
 `;
 
 const Icon = styled.img`
   width: 40px;
   margin-right: 20px;
+  margin-top: 10px;
 `;
 
 const IconName = styled.div`
+  overflow: hidden;
+  padding-right: 10px;
+  text-overflow: ellipsis;
   margin-top: 8px;
 `;
 
@@ -39,6 +45,20 @@ const StyledArrow = styled.img`
 
 const A = styled.a`
   display: ilflex;
+`;
+
+const Td = styled.td`
+  &:not(:first-of-type) {
+    padding-left: 20px;
+  }
+`;
+
+const Table = styled.table`
+  font-size: 20px;
+  margin-left: 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-family: monospace;
 `;
 
 const truncateApy = apy => {
@@ -83,7 +103,7 @@ const LinkWrap = props => {
 };
 
 const Vault = props => {
-  const { vault } = props;
+  const { vault, showAllFields } = props;
   const {
     symbolAlias,
     vaultIcon,
@@ -100,13 +120,11 @@ const Vault = props => {
   } = vault;
 
   console.log('rend');
+
   const devMode = useSelector(selectDevMode());
-
-  // const { balance, balanceOf } = contractData;
-
-  // const tokenContract = _.find(tokens, { address: tokenAddress || token }); // TODO: Make sure both are in checksum format
-  const tokenAddress1 = tokenAddress || token;
-  const tokenContract = useSelector(selectContract('tokens', tokenAddress1));
+  const tokenContract = useSelector(
+    selectContract('tokens', tokenAddress || token),
+  );
   const tokenBalance = _.get(tokenContract, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContract, 'symbol');
   const vaultName = symbolAlias || tokenSymbol || name;
@@ -125,6 +143,90 @@ const Vault = props => {
   let vaultAssets = balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
+  const contractType = getContractType(vault);
+
+  let vaultBottom;
+  let vaultTop;
+  if (showAllFields) {
+    const renderField = (val, key) => {
+      let newVal = _.toString(val);
+      const valIsAddress = /0[xX][0-9a-fA-F]{40}/.test(newVal);
+      const valIsNumber = /^[0-9]*$/.test(newVal);
+      if (valIsAddress) {
+        newVal = (
+          <A href={`https://etherscan.io/address/${address}`} target="_blank">
+            {address}
+          </A>
+        );
+      } else if (valIsNumber) {
+        newVal = (
+          <AnimatedNumber value={newVal} formatter={v => v.toFixed(0)} />
+        );
+      }
+      return (
+        <tr key={key}>
+          <Td>{key}</Td>
+          <Td>{newVal}</Td>
+        </tr>
+      );
+    };
+
+    const vaultWithoutMetadata = _.omit(vault, 'metadata');
+    const fields = _.map(vaultWithoutMetadata, renderField);
+    vaultBottom = (
+      <Table>
+        <tbody>{fields}</tbody>
+      </Table>
+    );
+    vaultTop = (
+      <ColumnListDev>
+        <IconAndName>
+          <LinkWrap devMode={devMode} address={address}>
+            <Icon src={vaultIcon || tokenIcon} />
+          </LinkWrap>
+          <LinkWrap devMode={devMode} address={address}>
+            <IconName devMode={devMode}>{vaultName}</IconName>
+          </LinkWrap>
+        </IconAndName>
+        <div>{contractType}</div>
+        <div>
+          <AnimatedNumber value={vaultBalanceOf} />
+        </div>
+        <div>{vaultAssets}</div>
+        <div>
+          <AnimatedNumber value={tokenBalanceOf} />{' '}
+          <LinkWrap devMode={devMode} address={tokenAddress}>
+            {tokenSymbol}
+          </LinkWrap>
+        </div>
+      </ColumnListDev>
+    );
+  } else {
+    vaultBottom = <React.Fragment>cruft</React.Fragment>;
+    vaultTop = (
+      <ColumnList>
+        <IconAndName>
+          <LinkWrap devMode={devMode} address={address}>
+            <Icon src={vaultIcon || tokenIcon} />
+          </LinkWrap>
+          <LinkWrap devMode={devMode} address={address}>
+            <IconName devMode={devMode}>{vaultName}</IconName>
+          </LinkWrap>
+        </IconAndName>
+        <div>
+          <AnimatedNumber value={vaultBalanceOf} />
+        </div>
+        <div>{vaultAssets}</div>
+        <div>{apy}</div>
+        <div>
+          <AnimatedNumber value={tokenBalanceOf} />{' '}
+          <LinkWrap devMode={devMode} address={tokenAddress}>
+            {tokenSymbol}
+          </LinkWrap>
+        </div>
+      </ColumnList>
+    );
+  }
   return (
     <React.Fragment>
       <Card className={active && 'active'}>
@@ -133,33 +235,12 @@ const Vault = props => {
           variant="link"
           eventKey={accordionEventKey}
         >
-          <ColumnList>
-            <IconAndName>
-              <LinkWrap devMode={devMode} address={address}>
-                <Icon src={vaultIcon || tokenIcon} />
-              </LinkWrap>
-              <LinkWrap devMode={devMode} address={address}>
-                <IconName devMode={devMode}>{vaultName}</IconName>
-              </LinkWrap>
-            </IconAndName>
-
-            <div>
-              <AnimatedNumber value={vaultBalanceOf} />
-            </div>
-            <div>{vaultAssets}</div>
-            <div>{apy}</div>
-            <div>
-              <AnimatedNumber value={tokenBalanceOf} />{' '}
-              <LinkWrap devMode={devMode} address={tokenAddress}>
-                {tokenSymbol}
-              </LinkWrap>
-            </div>
-          </ColumnList>
+          {vaultTop}
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={accordionEventKey}>
           <Card.Body>
-            Hello! Test
+            {vaultBottom}
             <Card.Footer className={active && 'active'}>
               <ColorButton variant="contained" color="primary">
                 Deposit

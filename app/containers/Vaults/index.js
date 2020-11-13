@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import { compose } from 'redux';
 import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
-import ColumnList from 'components/Vault/columns';
-
+import VaultsHeader from 'components/VaultsHeader';
+import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import { selectContracts, selectLocation } from 'containers/App/selectors';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
@@ -17,13 +17,6 @@ import { matchPath } from 'react-router';
 const Wrapper = styled.div`
   width: 1088px;
   margin: 0 auto;
-`;
-
-const ColumnHeader = styled.div`
-  margin-bottom: 10px;
-  padding-top: 20px;
-  font-size: 17px;
-  text-transform: uppercase;
 `;
 
 const DevHeader = styled.div`
@@ -44,14 +37,9 @@ const DevHeader = styled.div`
 const Vaults = () => {
   const vaults = useSelector(selectContracts('vaults'));
   const localContracts = useSelector(selectContracts('localContracts'));
-  // const tokens = useSelector(selectContracts('tokens'));
-
   const devMode = useSelector(selectDevMode());
-  // const contractAddresses = useSelector(selectWatchedContractAddresses());
   const location = useSelector(selectLocation());
   const { pathname } = location;
-  // const vaultContractAddresses = contractAddresses.vaults;
-  // const localVaultContractAddresses = contractAddresses.localVaults;
 
   const routeIsDevelop = matchPath(pathname, {
     path: '/vaults/develop',
@@ -88,14 +76,16 @@ const Vaults = () => {
   //     notify.hash(hash);
   //   });
 
-  const renderVault = vault => <Vault vault={vault} key={vault.address} />;
-  // const renderVaultDev = address => (
-  //   <VaultDev address={address} key={address} />
-  // );
+  const renderVault = vault => (
+    <Vault vault={vault} key={vault.address} showAllFields={showDevVaults} />
+  );
   let vaultRows = _.map(vaults, renderVault);
+  let columnHeader;
   if (showDevVaults) {
-    // vaultRows = _.map(localVaultContractAddresses, renderVaultDev);
     vaultRows = _.map(localContracts, renderVault);
+    columnHeader = <VaultsHeaderDev />;
+  } else {
+    columnHeader = <VaultsHeader />;
   }
 
   return (
@@ -104,13 +94,7 @@ const Vaults = () => {
         <VaultsNavLinks />
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
-      <ColumnList>
-        <ColumnHeader>Asset</ColumnHeader>
-        <ColumnHeader>Deposited</ColumnHeader>
-        <ColumnHeader>Vault Assets</ColumnHeader>
-        <ColumnHeader>Growth</ColumnHeader>
-        <ColumnHeader>Available to deposit</ColumnHeader>
-      </ColumnList>
+      {columnHeader}
       <Accordion>{vaultRows}</Accordion>
     </Wrapper>
   );

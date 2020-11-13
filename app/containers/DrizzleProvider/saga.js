@@ -1,9 +1,9 @@
 import request from 'utils/request';
 import {
   select,
+  delay,
   call,
   put,
-  all,
   setContext,
   getContext,
   takeLatest,
@@ -87,10 +87,16 @@ function* addContract(
     }
   };
   _.each(newFields, cacheCall);
+  if (!abi) {
+    // TODO: Add ABI caching and remove delay
+    // TODO: Increase delay to maximum of 200 ms (5 etherscan calls per second per IP)
+    yield delay(0);
+  }
 }
 
 function* addWatchedContracts(action) {
-  const contractAddresses = action.addresses.split(',');
+  const addressesWithoutSpaces = action.addresses.replace(' ', '');
+  const contractAddresses = addressesWithoutSpaces.split(',');
   const watchedContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
@@ -133,27 +139,52 @@ function* addContractsBatch(contractBatch) {
     metadata,
     allFields,
   } = contractBatch;
-  yield all(
-    _.map(addresses, address =>
-      addContract(
-        address,
-        abi,
-        events,
-        methods,
-        contractType,
-        metadata,
-        allFields,
-      ),
-    ),
-  );
+
+  // Async
+  // yield all(
+  //   _.map(addresses, address =>
+  //     addContract(
+  //       address,
+  //       abi,
+  //       events,
+  //       methods,
+  //       contractType,
+  //       metadata,
+  //       allFields,
+  //     ),
+  //   ),
+  // );
+
+  // TODO: Refactor to use async once we implement multi-call
+  // Sync
+  // eslint-disable-next-line no-restricted-syntax
+  for (const address of addresses) {
+    yield addContract(
+      address,
+      abi,
+      events,
+      methods,
+      contractType,
+      metadata,
+      allFields,
+    );
+  }
 }
 
 export function* addContracts(action) {
   const { contracts } = action;
   yield setContext(action);
-  yield all(
-    _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
-  );
+  // Async
+  // yield all(
+  //   _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
+  // );
+
+  // TODO: Refactor to use async once we implement multi-call
+  // Sync
+  // eslint-disable-next-line no-restricted-syntax
+  for (const contract of contracts) {
+    yield addContractsBatch(contract);
+  }
 }
 
 export default function* initialize() {

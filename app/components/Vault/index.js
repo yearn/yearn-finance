@@ -19,8 +19,7 @@ import { selectContract } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 
 const IconAndName = styled.div`
-  display: grid;
-  grid-template-columns: 60px calc(100% - 60px);
+  display: flex;
   align-items: center;
 `;
 
@@ -44,7 +43,7 @@ const StyledArrow = styled.img`
 `;
 
 const A = styled.a`
-  display: ilflex;
+  display: inline-grid;
 `;
 
 const Td = styled.td`
@@ -180,14 +179,16 @@ const Vault = props => {
     );
     vaultTop = (
       <ColumnListDev>
-        <IconAndName>
-          <LinkWrap devMode={devMode} address={address}>
-            <Icon src={vaultIcon || tokenIcon} />
-          </LinkWrap>
-          <LinkWrap devMode={devMode} address={address}>
-            <IconName devMode={devMode}>{vaultName}</IconName>
-          </LinkWrap>
-        </IconAndName>
+        <div>
+          <IconAndName>
+            <LinkWrap devMode={devMode} address={address}>
+              <Icon src={vaultIcon || tokenIcon} />
+            </LinkWrap>
+            <LinkWrap devMode={devMode} address={address}>
+              <IconName devMode={devMode}>{vaultName}</IconName>
+            </LinkWrap>
+          </IconAndName>
+        </div>
         <div>{contractType}</div>
         <div>
           <AnimatedNumber value={vaultBalanceOf} />

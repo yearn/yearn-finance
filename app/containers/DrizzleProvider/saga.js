@@ -9,10 +9,11 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
+import { addContracts as addContractsAction } from './actions';
 
 import {
   DELETE_CONTRACT,
-  ADD_CONTRACT,
+  ADD_WATCHED_CONTRACTS,
   DRIZZLE_ADD_CONTRACTS,
 } from './constants';
 const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4';
@@ -83,20 +84,17 @@ function* addContract(
   _.each(newFields, cacheCall);
 }
 
-function* addWatchedContract(action) {
-  const vaultAddress = action.address;
-  const localVaults = JSON.parse(
+function* addWatchedContracts(action) {
+  const contractAddresses = action.addresses.split(',');
+  const watchedContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
   const account = yield select(selectAddress());
-  const alreadyWatching = _.includes(localVaults, vaultAddress);
-  if (alreadyWatching) {
-    return;
-  }
+  const addressesToAdd = _.difference(contractAddresses, watchedContracts);
   const contracts = [
     {
-      contractType: 'localVaults',
-      addresses: [vaultAddress],
+      contractType: 'localContracts',
+      addresses: addressesToAdd,
       allFields: true,
       methods: [
         {
@@ -106,21 +104,21 @@ function* addWatchedContract(action) {
       ],
     },
   ];
-  yield put(addContracts(contracts));
-  localVaults.push(vaultAddress);
-  localStorage.setItem('watchedContracts', JSON.stringify(localVaults));
+  yield put(addContractsAction(contracts));
+  watchedContracts.push(...addressesToAdd);
+  localStorage.setItem('watchedContracts', JSON.stringify(watchedContracts));
 }
 
 function* removeWatchedContract(action) {
   const { contractName } = action;
-  let localVaults = JSON.parse(
+  let localContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
-  localVaults = _.pull(localVaults, contractName);
-  localStorage.setItem('watchedContracts', JSON.stringify(localVaults));
+  localContracts = _.pull(localContracts, contractName);
+  localStorage.setItem('watchedContracts', JSON.stringify(localContracts));
 }
 
-function* addContractBatch(contractBatch) {
+function* addContractsBatch(contractBatch) {
   const {
     abi,
     addresses,
@@ -149,12 +147,12 @@ export function* addContracts(action) {
   const { contracts } = action;
   yield setContext(action);
   yield all(
-    _.map(contracts, contractBatch => call(addContractBatch, contractBatch)),
+    _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
   );
 }
 
 export default function* initialize() {
   yield takeLatest(DRIZZLE_ADD_CONTRACTS, addContracts);
   yield takeLatest(DELETE_CONTRACT, removeWatchedContract);
-  yield takeLatest(ADD_CONTRACT, addWatchedContract);
+  yield takeLatest(ADD_WATCHED_CONTRACTS, addWatchedContracts);
 }

@@ -43,7 +43,7 @@ const DevHeader = styled.div`
 
 const Vaults = () => {
   const vaults = useSelector(selectContracts('vaults'));
-  const localVaults = useSelector(selectContracts('localVaults'));
+  const localContracts = useSelector(selectContracts('localContracts'));
   // const tokens = useSelector(selectContracts('tokens'));
 
   const devMode = useSelector(selectDevMode());
@@ -95,7 +95,7 @@ const Vaults = () => {
   let vaultRows = _.map(vaults, renderVault);
   if (showDevVaults) {
     // vaultRows = _.map(localVaultContractAddresses, renderVaultDev);
-    vaultRows = _.map(localVaults, renderVault);
+    vaultRows = _.map(localContracts, renderVault);
   }
 
   return (

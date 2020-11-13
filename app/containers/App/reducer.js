@@ -22,7 +22,7 @@ export const initialState = {
   },
   vaults: [],
   tokens: [],
-  localVaults: [],
+  localContracts: [],
 };
 
 const loadContractData = (state, draft, action) => {

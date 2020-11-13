@@ -16,7 +16,7 @@ function* loadVaultContracts() {
   const vaults = yield select(selectVaults());
   const vaultAddresses = _.map(vaults, vault => vault.address);
   const address = yield select(selectAddress());
-  const localVaults = JSON.parse(
+  const localContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
 
@@ -51,8 +51,8 @@ function* loadVaultContracts() {
       ],
     },
     {
-      contractType: 'localVaults',
-      addresses: localVaults,
+      contractType: 'localContracts',
+      addresses: localContracts,
       allFields: true,
       methods: [
         {

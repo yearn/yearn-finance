@@ -16,7 +16,7 @@ export const lightTheme = {
   vaultText: common.white,
   inputBorder: common.black,
   inputText: common.black,
-  inputOutline: 'transparent',
+  inputOutline: common.white,
   link: 'blue',
   ...common,
 };

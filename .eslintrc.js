@@ -28,6 +28,7 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', prettierOptions],
     'arrow-body-style': [2, 'as-needed'],
+    'no-console': 0,
     'class-methods-use-this': 0,
     'import/imports-first': 0,
     'import/newline-after-import': 0,

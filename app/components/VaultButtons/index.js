@@ -43,7 +43,7 @@ export default function VaultButtons(props) {
   }))(Button);
 
   const deposit = () => {
-    vaultContract.methods.earn().send({ from: account });
+    vaultContract.methods.deposit.cacheSend(0, { from: account });
   };
   const renderButton = (method, key) => {
     const methodAlias = method.alias || method.name;

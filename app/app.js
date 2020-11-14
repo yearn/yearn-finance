@@ -25,6 +25,7 @@ import ThemeProvider from 'containers/ThemeProvider';
 import LanguageProvider from 'containers/LanguageProvider';
 import ConnectionProvider from 'containers/ConnectionProvider';
 import DrizzleProvider from 'containers/DrizzleProvider';
+import ModalProvider from 'containers/ModalProvider';
 
 // Load the favicon and the .htaccess file
 /* eslint-disable import/no-unresolved, import/extensions */
@@ -50,13 +51,15 @@ const render = messages => {
     <Provider store={store}>
       <ThemeProvider>
         <LanguageProvider messages={messages}>
-          <ConnectionProvider>
-            <DrizzleProvider store={store}>
-              <ConnectedRouter history={history}>
-                <App />
-              </ConnectedRouter>
-            </DrizzleProvider>
-          </ConnectionProvider>
+          <ModalProvider>
+            <ConnectionProvider>
+              <DrizzleProvider store={store}>
+                <ConnectedRouter history={history}>
+                  <App />
+                </ConnectedRouter>
+              </DrizzleProvider>
+            </ConnectionProvider>
+          </ModalProvider>
         </LanguageProvider>
       </ThemeProvider>
     </Provider>,

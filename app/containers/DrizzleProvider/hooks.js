@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { getWriteMethods } from 'utils/contracts';
 import context from './context';
 
 export function useDrizzle() {
@@ -12,4 +13,15 @@ export function useContract(address) {
     return {};
   }
   return drizzle.contracts[address];
+}
+
+export function useContractAbi(address) {
+  const contract = useContract(address);
+  return contract.abi;
+}
+
+export function useGetWriteMethods(address) {
+  const abi = useContractAbi(address);
+  const writeMethods = getWriteMethods(abi);
+  return writeMethods;
 }

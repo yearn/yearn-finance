@@ -11,6 +11,7 @@ module.exports = {
   plugins: ['prettier', 'redux-saga', 'react', 'react-hooks', 'jsx-a11y'],
   globals: {
     _: true,
+    ace: true,
   },
   env: {
     jest: true,

@@ -37,6 +37,7 @@ const ModalProvider = props => {
         key={key}
         show={show}
         metadata={metadata}
+        className={`${key}Modal`}
         onHide={() => closeModal(key)}
       />
     );

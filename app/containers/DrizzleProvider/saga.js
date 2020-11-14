@@ -62,7 +62,7 @@ function* addContract(
     _.each(viewableAbiFields, field => addField(field, newReadMethods));
   }
   if (allWriteMethods) {
-    _.each(viewableAbiFields, field => addField(field, writableAbiFields));
+    _.each(writableAbiFields, field => addField(field, newWriteMethods));
   }
 
   const contract = new web3.eth.Contract(newAbi, contractAddress);
@@ -114,6 +114,7 @@ function* addWatchedContracts(action) {
       contractType: 'localContracts',
       addresses: addressesToAdd,
       allReadMethods: true,
+      allWriteMethods: true,
       readMethods: [
         {
           name: 'balanceOf',

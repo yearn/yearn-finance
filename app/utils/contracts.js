@@ -2,14 +2,17 @@ export function getContractType(data) {
   const types = [
     {
       name: 'V2 Vault',
+      type: 'vault',
       fields: ['expectedReturn', 'emergencyShutdown'],
     },
     {
       name: 'V1 Vault',
+      type: 'vault',
       fields: ['min', 'max', 'balance'],
     },
     {
       name: 'Strategy',
+      type: 'strategy',
       fields: ['profitFactor', 'maxReportDelay'],
     },
   ];

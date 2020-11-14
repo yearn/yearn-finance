@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
-import { purple } from '@material-ui/core/colors';
-import { useSelector } from 'react-redux';
-import { selectAddress } from 'containers/ConnectionProvider/selectors';
-import { useContract } from 'containers/DrizzleProvider/hooks';
-import { useShowDevVaults } from 'containers/Vaults/hooks';
-import { withStyles } from '@material-ui/core/styles';
+import ButtonFilled from 'components/ButtonFilled';
+// import { useSelector } from 'react-redux';
+// import { selectAddress } from 'containers/ConnectionProvider/selectors';
+// import { useContract } from 'containers/DrizzleProvider/hooks';
+import { useModal } from 'containers/ModalProvider/hooks';
 
 const Wrapper = styled.div`
   display: grid;
@@ -21,46 +19,48 @@ const Wrapper = styled.div`
 export default function VaultButtons(props) {
   const { vault } = props;
   const { address, writeMethods } = vault;
-  const vaultContract = useContract(address);
-  const account = useSelector(selectAddress());
-  const showDevVaults = useShowDevVaults();
+  // const vaultContract = useContract(address);
+  // const account = useSelector(selectAddress());
+  // const [showModal, setShowModal] = useState(false);
+  // const closeModal = () => setShowModal(false);
+  // const openModal = () => setShowModal(true);
 
-  const ColorButton = withStyles(theme => ({
-    root: {
-      color: theme.palette.getContrastText(purple[500]),
-      fontFamily: 'Calibre Medium',
-      fontSize: '20px',
-      padding: '8px 20px 5px 20px',
-      margin: '10px 0px ',
-      width: '100%',
-      direction: 'ltr',
-      textTransform: showDevVaults ? 'inherit' : 'capitalize',
-      backgroundColor: '#0657F9',
-      '&:hover': {
-        backgroundColor: '#0657F9',
+  const argConfig = {
+    approve: {
+      _spender: {
+        defaultValue: '0x123',
+      },
+      _value: {
+        defaultValue: 55,
+        max: 100,
+        configurable: true,
       },
     },
-  }))(Button);
+  };
 
-  const deposit = () => {
-    vaultContract.methods.deposit.cacheSend(0, { from: account });
+  const { openModal } = useModal();
+  const openTransactionModal = method => {
+    const { inputs, name: methodName } = method;
+    const args = _.get(argConfig, methodName);
+    const modalArgs = { methodName, inputs, args, address };
+    openModal('transaction', modalArgs);
+    // vaultContract.methods.deposit.cacheSend(0, { from: account });
   };
   const renderButton = (method, key) => {
     const methodAlias = method.alias || method.name;
     return (
-      <ColorButton
+      <ButtonFilled
         key={key}
-        variant="contained"
-        onClick={deposit}
+        onClick={() => openTransactionModal(method)}
         color="primary"
         title={methodAlias}
       >
         {methodAlias}
-      </ColorButton>
+      </ButtonFilled>
     );
   };
 
   const vaultButtons = _.map(writeMethods, renderButton);
-
+  // <TransactionModal show={true} onHide={closeModal} />
   return <Wrapper>{vaultButtons}</Wrapper>;
 }

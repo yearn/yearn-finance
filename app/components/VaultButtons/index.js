@@ -5,25 +5,8 @@ import { purple } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { useContract } from 'containers/DrizzleProvider/hooks';
-// import { useShowDevVaults } from 'containers/Vaults/hooks';
+import { useShowDevVaults } from 'containers/Vaults/hooks';
 import { withStyles } from '@material-ui/core/styles';
-
-const ColorButton = withStyles(theme => ({
-  root: {
-    color: theme.palette.getContrastText(purple[500]),
-    fontFamily: 'Calibre Medium',
-    fontSize: '20px',
-    padding: '8px 20px 5px 20px',
-    margin: '10px 0px ',
-    width: '100%',
-    direction: 'ltr',
-    textTransform: 'inherit',
-    backgroundColor: '#0657F9',
-    '&:hover': {
-      backgroundColor: '#0657F9',
-    },
-  },
-}))(Button);
 
 const Wrapper = styled.div`
   display: grid;
@@ -40,7 +23,25 @@ export default function VaultButtons(props) {
   const { address, writeMethods } = vault;
   const vaultContract = useContract(address);
   const account = useSelector(selectAddress());
-  // const showDevVaults = useShowDevVaults();
+  const showDevVaults = useShowDevVaults();
+
+  const ColorButton = withStyles(theme => ({
+    root: {
+      color: theme.palette.getContrastText(purple[500]),
+      fontFamily: 'Calibre Medium',
+      fontSize: '20px',
+      padding: '8px 20px 5px 20px',
+      margin: '10px 0px ',
+      width: '100%',
+      direction: 'ltr',
+      textTransform: showDevVaults ? 'inherit' : 'capitalize',
+      backgroundColor: '#0657F9',
+      '&:hover': {
+        backgroundColor: '#0657F9',
+      },
+    },
+  }))(Button);
+
   const deposit = () => {
     vaultContract.methods.earn().send({ from: account });
   };

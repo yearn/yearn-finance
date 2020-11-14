@@ -32,16 +32,16 @@ const loadContractData = (state, draft, action) => {
       const {
         name: address,
         variable: field,
-        contractType,
+        group,
         metadata,
         readMethods,
         writeMethods,
         value,
       } = action;
-      const item = _.find(draft[contractType], { address });
+      const item = _.find(draft[group], { address });
       if (!item) {
         const newItem = { address };
-        draft[contractType].push(newItem);
+        draft[group].push(newItem);
         newItem[field] = _.clone(value);
         newItem.metadata = metadata;
         break;
@@ -50,7 +50,8 @@ const loadContractData = (state, draft, action) => {
       item.metadata = metadata;
       item.writeMethods = writeMethods;
       item.readMethods = readMethods;
-      newDraft[contractType] = _.clone(draft[contractType]);
+      item.group = group;
+      newDraft[group] = _.clone(draft[group]);
       break;
     }
     default:
@@ -79,9 +80,9 @@ const appReducer = (state = initialState, action) =>
         const { contracts } = action;
         const watchedContractAddresses = {};
         const addContracts = contract => {
-          const { contractType, addresses } = contract;
-          if (contractType) {
-            watchedContractAddresses[contractType] = addresses;
+          const { group, addresses } = contract;
+          if (group) {
+            watchedContractAddresses[group] = addresses;
           }
         };
         _.each(contracts, addContracts);

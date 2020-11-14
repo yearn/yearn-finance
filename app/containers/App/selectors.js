@@ -27,14 +27,14 @@ export const selectLocation = () =>
     routerState => routerState.location,
   );
 
-export const selectContracts = contractType =>
+export const selectContracts = group =>
   createSelector(
     selectApp,
-    substate => substate[contractType],
+    substate => substate[group],
   );
 
-export const selectContract = (contractType, contractAddress) =>
+export const selectContract = (group, contractAddress) =>
   createSelector(
     selectApp,
-    substate => _.find(substate[contractType], { address: contractAddress }),
+    substate => _.find(substate[group], { address: contractAddress }),
   );

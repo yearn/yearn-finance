@@ -191,7 +191,7 @@ function* callCallContractFn({
     const callResult = yield call(txObject.call, callArgs);
 
     const {
-      contractType,
+      group,
       metadata,
       readMethods,
       writeMethods,
@@ -204,7 +204,7 @@ function* callCallContractFn({
       args,
       value: callResult,
       fnIndex,
-      contractType,
+      group,
       metadata,
       readMethods,
       writeMethods,
@@ -243,7 +243,7 @@ function* callSyncContract(action) {
   delete contractFnsState.initialized;
   delete contractFnsState.synced;
   delete contractFnsState.events;
-  delete contractFnsState.contractType;
+  delete contractFnsState.group;
   delete contractFnsState.metadata;
   delete contractFnsState.readMethods;
   delete contractFnsState.writeMethods;

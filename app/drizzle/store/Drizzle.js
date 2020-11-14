@@ -66,7 +66,7 @@ class Drizzle {
   addContract(
     contractConfig,
     events = [],
-    contractType,
+    group,
     metadata,
     readMethods,
     writeMethods,
@@ -83,7 +83,7 @@ class Drizzle {
       this.store,
       events,
       null,
-      contractType,
+      group,
       metadata,
       readMethods,
       writeMethods,

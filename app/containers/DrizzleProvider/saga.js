@@ -32,7 +32,7 @@ function* addContract(
   contractAddress,
   abi,
   events,
-  contractType,
+  group,
   metadata,
   readMethods,
   writeMethods,
@@ -74,7 +74,7 @@ function* addContract(
   yield drizzle.addContract(
     contractConfig,
     events,
-    contractType,
+    group,
     metadata,
     newReadMethods.reverse(),
     newWriteMethods.reverse(),
@@ -111,7 +111,7 @@ function* addWatchedContracts(action) {
   const addressesToAdd = _.difference(contractAddresses, watchedContracts);
   const contracts = [
     {
-      contractType: 'localContracts',
+      group: 'localContracts',
       addresses: addressesToAdd,
       allReadMethods: true,
       allWriteMethods: true,
@@ -142,7 +142,7 @@ function* addContractsBatch(contractBatch) {
     abi,
     addresses,
     events,
-    contractType,
+    group,
     metadata,
     readMethods,
     writeMethods,
@@ -158,7 +158,7 @@ function* addContractsBatch(contractBatch) {
   //       abi,
   //       events,
   //       readMethods,
-  //       contractType,
+  //       group,
   //       metadata,
   //       allReadMethods,
   //     ),
@@ -173,7 +173,7 @@ function* addContractsBatch(contractBatch) {
       address,
       abi,
       events,
-      contractType,
+      group,
       metadata,
       readMethods,
       writeMethods,

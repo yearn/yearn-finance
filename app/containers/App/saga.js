@@ -25,7 +25,7 @@ function* loadVaultContracts() {
 
   const contracts = [
     {
-      contractType: 'vaults',
+      group: 'vaults',
       metadata: {
         version: '1',
       },
@@ -57,7 +57,7 @@ function* loadVaultContracts() {
       ],
     },
     {
-      contractType: 'tokens',
+      group: 'tokens',
       abi: minimalErc20Abi,
       addresses: vaultTokenAddresses,
       readMethods: [
@@ -68,7 +68,7 @@ function* loadVaultContracts() {
       ],
     },
     {
-      contractType: 'localContracts',
+      group: 'localContracts',
       addresses: localContracts,
       allWriteMethods: true,
       allReadMethods: true,

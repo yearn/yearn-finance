@@ -22,18 +22,23 @@ const ModalProvider = props => {
     setModalState(currentState);
   };
 
-  const openModal = (key, args) => {
+  const openModal = (key, metadata) => {
     const currentState = _.clone(modalState);
     currentState[key].show = true;
-    currentState[key].args = args;
+    currentState[key].metadata = metadata;
     setModalState(currentState);
   };
 
   const renderModal = (Modal, key) => {
     const modalStateForKey = modalState[key];
-    const { show, args } = modalStateForKey;
+    const { show, metadata } = modalStateForKey;
     return (
-      <Modal key={key} show={show} args={args} onHide={() => closeModal(key)} />
+      <Modal
+        key={key}
+        show={show}
+        metadata={metadata}
+        onHide={() => closeModal(key)}
+      />
     );
   };
   const modalEls = _.map(modals, renderModal);
@@ -43,7 +48,6 @@ const ModalProvider = props => {
     <ModalContext.Provider value={{ openModal, closeModal }}>
       {children}
       {modalEls}
-      crap
     </ModalContext.Provider>
   );
 };

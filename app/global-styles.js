@@ -110,7 +110,6 @@ a {
   background-color: ${props => props.theme.vaultBackgroundActive};
   display: flex;
   justify-content: flex-end;
-  padding-right: 15px;
   opacity: 1;
 }
 

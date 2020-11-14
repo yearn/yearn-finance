@@ -17,8 +17,9 @@ const ColorButton = withStyles(theme => ({
     fontFamily: 'Calibre Medium',
     fontSize: '20px',
     padding: '8px 20px 5px 20px',
-    margin: '10px',
+    margin: '10px 0px ',
     width: '100%',
+    direction: 'ltr',
     textTransform: 'inherit',
     backgroundColor: '#0657F9',
     '&:hover': {
@@ -30,11 +31,11 @@ const ColorButton = withStyles(theme => ({
 const Wrapper = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, 190px);
+  grid-template-columns: repeat(5, 1fr);
   width: 100%;
   grid-gap: 0px 20px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin: 20px;
+  direction: rtl;
 `;
 
 export default function VaultButtons(props) {

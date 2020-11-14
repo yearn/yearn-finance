@@ -7,21 +7,14 @@ import Accordion from 'react-bootstrap/Accordion';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
-import { purple } from '@material-ui/core/colors';
 import Arrow from 'images/arrow.svg';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContract } from 'containers/App/selectors';
-import {
-  useContract,
-  useGetWriteMethods,
-} from 'containers/DrizzleProvider/hooks';
-import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { getContractType } from 'utils/contracts';
+import VaultButtons from 'components/VaultButtons';
 
 const IconAndName = styled.div`
   display: flex;
@@ -38,16 +31,6 @@ const IconName = styled.div`
   padding-right: 10px;
   text-overflow: ellipsis;
   margin-top: 8px;
-`;
-
-const ButtonWrap = styled.div`
-  display: grid;
-  justify-content: center;
-  grid-template-columns: repeat(auto-fill, 190px);
-  width: 100%;
-  grid-gap: 0px 20px;
-  margin-bottom: 20px;
-  margin-top: 20px;
 `;
 
 const StyledArrow = styled.img`
@@ -82,22 +65,6 @@ const truncateApy = apy => {
   const apyStr = `${truncatedApy}%`;
   return apyStr;
 };
-
-const ColorButton = withStyles(theme => ({
-  root: {
-    color: theme.palette.getContrastText(purple[500]),
-    fontFamily: 'Calibre Medium',
-    fontSize: '20px',
-    padding: '8px 20px 5px 20px',
-    margin: '10px',
-    width: '100%',
-    textTransform: 'inherit',
-    backgroundColor: '#0657F9',
-    '&:hover': {
-      backgroundColor: '#0657F9',
-    },
-  },
-}))(Button);
 
 const LinkWrap = props => {
   const { devMode, children, address } = props;
@@ -134,7 +101,6 @@ const Vault = props => {
 
   console.log('rend');
 
-  const account = useSelector(selectAddress());
   const devMode = useSelector(selectDevMode());
   const tokenContract = useSelector(
     selectContract('tokens', tokenAddress || token),
@@ -146,8 +112,6 @@ const Vault = props => {
   const currentEventKey = useContext(AccordionContext);
   const active = currentEventKey === accordionEventKey;
   // const active = false;
-  const vaultContract = useContract(address);
-  const vaultWriteMethods = useGetWriteMethods(address);
 
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
@@ -162,25 +126,8 @@ const Vault = props => {
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
   const contractType = getContractType(vault);
 
-  const deposit = () => {
-    vaultContract.methods.earn().send({ from: account });
-  };
-
   let vaultBottom;
   let vaultTop;
-  const renderButton = (method, key) => (
-    <ColorButton
-      key={key}
-      variant="contained"
-      onClick={deposit}
-      color="primary"
-      title={method.name}
-    >
-      {method.name}
-    </ColorButton>
-  );
-  const vaultButtons = _.map(vaultWriteMethods, renderButton);
-
   if (showAllFields) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -278,7 +225,7 @@ const Vault = props => {
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
-              <ButtonWrap>{vaultButtons}</ButtonWrap>
+              <VaultButtons vault={vault} />
             </Card.Footer>
           </Card.Body>
         </Accordion.Collapse>

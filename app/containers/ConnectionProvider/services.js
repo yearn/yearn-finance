@@ -64,5 +64,6 @@ export function initNotify(darkMode) {
     dappId,
     networkId,
     darkMode,
+    desktopPosition: 'topRight',
   });
 }

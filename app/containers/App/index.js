@@ -7,7 +7,7 @@ import Main from 'containers/Main/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { useWeb3 } from 'containers/ConnectionProvider/hooks';
+import { useWeb3, useNotify } from 'containers/ConnectionProvider/hooks';
 import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 import vaultsSaga from 'containers/Vaults/saga';
 import GlobalStyle from '../../global-styles';
@@ -22,11 +22,12 @@ export default function App() {
   useInjectReducer({ key: 'app', reducer });
   const web3 = useWeb3();
   const drizzle = useDrizzle();
+  const notify = useNotify();
   const dispatch = useDispatch();
   const ready = useSelector(selectReady());
   const appReadyChanged = () => {
     if (ready) {
-      dispatch(appReady(web3, drizzle));
+      dispatch(appReady(web3, drizzle, notify));
     }
   };
   const init = () => {

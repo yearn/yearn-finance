@@ -10,6 +10,7 @@ import runMatrix from 'utils/matrix';
 import { unlockDevMode } from 'containers/DevMode/actions';
 import { setThemeMode } from 'containers/ThemeProvider/actions';
 import { DARK_MODE } from 'containers/ThemeProvider/constants';
+import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
 import { APP_READY, APP_INITIALIZED } from './constants';
 
 function* loadVaultContracts() {
@@ -99,7 +100,13 @@ function* startKonamiWatcher() {
   }
 }
 
+function* watchTransactions(action) {
+  const { notify, txHash } = action;
+  notify.hash(txHash);
+}
+
 export default function* initialize() {
   yield takeLatest(APP_READY, loadVaultContracts);
+  yield takeLatest(TX_BROADCASTED, watchTransactions);
   yield takeLatest(APP_INITIALIZED, startKonamiWatcher);
 }

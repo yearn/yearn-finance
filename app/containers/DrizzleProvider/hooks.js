@@ -17,6 +17,9 @@ export function useContract(address) {
 
 export function useContractAbi(address) {
   const contract = useContract(address);
+  if (!contract) {
+    return [];
+  }
   return contract.abi;
 }
 

@@ -25,7 +25,7 @@ const Wrapper = styled.button`
   width: 200px;
 `;
 
-export default function ConnectButton(props) {
+export default function Button(props) {
   const { onClick, disabled, className } = props;
   return (
     <Wrapper

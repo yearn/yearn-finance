@@ -8,7 +8,7 @@ import {
   getContext,
   takeLatest,
 } from 'redux-saga/effects';
-import { getReadMethods } from 'utils/contracts';
+import { getReadMethods, getWriteMethods } from 'utils/contracts';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { addContracts as addContractsAction } from './actions';
 import {
@@ -35,7 +35,9 @@ function* addContract(
   contractType,
   metadata,
   readMethods,
+  // writeMethods,
   allReadMethods,
+  allWriteMethods,
 ) {
   const web3 = yield getContext('web3');
   const drizzle = yield getContext('drizzle');
@@ -45,15 +47,22 @@ function* addContract(
   }
 
   const viewableAbiFields = getReadMethods(newAbi);
-  const newFields = _.clone(readMethods) || [];
-  const addField = field => {
-    const existingField = _.find(newFields, { name: field.name });
+  const writableAbiFields = getWriteMethods(newAbi);
+  const newReadMethods = _.clone(readMethods) || [];
+  // const newWriteMethods = _.clone(writeMethods) || [];
+
+  const addField = (field, originalFields) => {
+    const existingField = _.find(originalFields, { name: field.name });
     if (!existingField) {
-      newFields.push(field);
+      originalFields.push(field);
     }
   };
+
   if (allReadMethods) {
-    _.each(viewableAbiFields, addField);
+    _.each(viewableAbiFields, field => addField(field, newReadMethods));
+  }
+  if (allWriteMethods) {
+    _.each(viewableAbiFields, field => addField(field, writableAbiFields));
   }
 
   const contract = new web3.eth.Contract(newAbi, contractAddress);
@@ -77,7 +86,7 @@ function* addContract(
       drizzleContract.methods[method.name].cacheCall();
     }
   };
-  _.each(newFields, cacheCall);
+  _.each(newReadMethods, cacheCall);
   if (!abi) {
     // TODO: Add ABI caching and remove delay
     // TODO: Increase delay to maximum of 200 ms (5 etherscan calls per second per IP)
@@ -128,7 +137,9 @@ function* addContractsBatch(contractBatch) {
     contractType,
     metadata,
     readMethods,
+    writeMethods,
     allReadMethods,
+    allWriteMethods,
   } = contractBatch;
 
   // Async
@@ -157,7 +168,9 @@ function* addContractsBatch(contractBatch) {
       contractType,
       metadata,
       readMethods,
+      writeMethods,
       allReadMethods,
+      allWriteMethods,
     );
   }
 }

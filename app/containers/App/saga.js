@@ -38,6 +38,22 @@ function* loadVaultContracts() {
           args: address,
         },
       ],
+      writeMethods: [
+        {
+          name: 'deposit',
+        },
+        {
+          name: 'depositAll',
+          alias: 'Deposit All',
+        },
+        {
+          name: 'withdraw',
+        },
+        {
+          name: 'withdrawAll',
+          alias: 'Withdraw All',
+        },
+      ],
     },
     {
       contractType: 'tokens',
@@ -53,6 +69,7 @@ function* loadVaultContracts() {
     {
       contractType: 'localContracts',
       addresses: localContracts,
+      allWriteMethods: true,
       allReadMethods: true,
       readMethods: [
         {

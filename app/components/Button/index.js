@@ -7,7 +7,7 @@ const Wrapper = styled.button`
   background-color: transparent;
   text-transform: uppercase;
   border-radius: 13px;
-  padding: 10px 24px;
+  padding: 10px 10px;
   border: 2px solid #2f80ed;
   color: #2f80ed;
   white-space: nowrap;
@@ -22,6 +22,7 @@ const Wrapper = styled.button`
   &:disabled {
     opacity: 0.5;
   }
+  width: 200px;
 `;
 
 export default function ConnectButton(props) {

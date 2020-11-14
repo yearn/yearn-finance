@@ -16,6 +16,11 @@ import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContract } from 'containers/App/selectors';
+import {
+  useContract,
+  useGetWriteMethods,
+} from 'containers/DrizzleProvider/hooks';
+import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { getContractType } from 'utils/contracts';
 
 const IconAndName = styled.div`
@@ -33,6 +38,16 @@ const IconName = styled.div`
   padding-right: 10px;
   text-overflow: ellipsis;
   margin-top: 8px;
+`;
+
+const ButtonWrap = styled.div`
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, 190px);
+  width: 100%;
+  grid-gap: 0px 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 const StyledArrow = styled.img`
@@ -53,9 +68,9 @@ const Td = styled.td`
 
 const Table = styled.table`
   font-size: 20px;
-  margin-left: 40px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  padding-left: 40px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   font-family: monospace;
 `;
 
@@ -73,9 +88,9 @@ const ColorButton = withStyles(theme => ({
     color: theme.palette.getContrastText(purple[500]),
     fontFamily: 'Calibre Medium',
     fontSize: '20px',
-    padding: '8px 40px 5px 40px',
-    margin: '20px',
-    marginLeft: '0px',
+    padding: '8px 20px 5px 20px',
+    margin: '10px',
+    width: '100%',
     textTransform: 'inherit',
     backgroundColor: '#0657F9',
     '&:hover': {
@@ -119,6 +134,7 @@ const Vault = props => {
 
   console.log('rend');
 
+  const account = useSelector(selectAddress());
   const devMode = useSelector(selectDevMode());
   const tokenContract = useSelector(
     selectContract('tokens', tokenAddress || token),
@@ -130,6 +146,9 @@ const Vault = props => {
   const currentEventKey = useContext(AccordionContext);
   const active = currentEventKey === accordionEventKey;
   // const active = false;
+  const vaultContract = useContract(address);
+  const vaultWriteMethods = useGetWriteMethods(address);
+
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
   const tokenBalanceOf = new BigNumber(tokenBalance)
@@ -143,8 +162,25 @@ const Vault = props => {
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
   const contractType = getContractType(vault);
 
+  const deposit = () => {
+    vaultContract.methods.earn().send({ from: account });
+  };
+
   let vaultBottom;
   let vaultTop;
+  const renderButton = (method, key) => (
+    <ColorButton
+      key={key}
+      variant="contained"
+      onClick={deposit}
+      color="primary"
+      title={method.name}
+    >
+      {method.name}
+    </ColorButton>
+  );
+  const vaultButtons = _.map(vaultWriteMethods, renderButton);
+
   if (showAllFields) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -242,12 +278,7 @@ const Vault = props => {
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
-              <ColorButton variant="contained" color="primary">
-                Deposit
-              </ColorButton>
-              <ColorButton variant="contained" color="primary">
-                Withdraw
-              </ColorButton>
+              <ButtonWrap>{vaultButtons}</ButtonWrap>
             </Card.Footer>
           </Card.Body>
         </Accordion.Collapse>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import TransactionModal from 'components/TransactionModal';
+import { selectDevMode } from 'containers/DevMode/selectors';
+import { useSelector } from 'react-redux';
 import ModalContext from './context';
 
 const modals = {
@@ -7,6 +9,7 @@ const modals = {
 };
 
 const ModalProvider = props => {
+  const devMode = useSelector(selectDevMode());
   const makeInitialModalState = (acc, Modal, key) => {
     acc[key] = {
       show: false,
@@ -37,7 +40,7 @@ const ModalProvider = props => {
         key={key}
         show={show}
         metadata={metadata}
-        className={`${key}Modal`}
+        className={`${key}Modal ${devMode ? 'devMode' : ''}`}
         onHide={() => closeModal(key)}
       />
     );

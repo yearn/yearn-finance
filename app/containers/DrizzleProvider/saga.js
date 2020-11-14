@@ -32,10 +32,10 @@ function* addContract(
   contractAddress,
   abi,
   events,
-  fields,
   contractType,
   metadata,
-  allFields,
+  readMethods,
+  allReadMethods,
 ) {
   const web3 = yield getContext('web3');
   const drizzle = yield getContext('drizzle');
@@ -45,14 +45,14 @@ function* addContract(
   }
 
   const viewableAbiFields = getReadMethods(newAbi);
-  const newFields = _.clone(fields) || [];
+  const newFields = _.clone(readMethods) || [];
   const addField = field => {
     const existingField = _.find(newFields, { name: field.name });
     if (!existingField) {
       newFields.push(field);
     }
   };
-  if (allFields) {
+  if (allReadMethods) {
     _.each(viewableAbiFields, addField);
   }
 
@@ -97,8 +97,8 @@ function* addWatchedContracts(action) {
     {
       contractType: 'localContracts',
       addresses: addressesToAdd,
-      allFields: true,
-      methods: [
+      allReadMethods: true,
+      readMethods: [
         {
           name: 'balanceOf',
           args: account,
@@ -125,10 +125,10 @@ function* addContractsBatch(contractBatch) {
     abi,
     addresses,
     events,
-    methods,
     contractType,
     metadata,
-    allFields,
+    readMethods,
+    allReadMethods,
   } = contractBatch;
 
   // Async
@@ -138,10 +138,10 @@ function* addContractsBatch(contractBatch) {
   //       address,
   //       abi,
   //       events,
-  //       methods,
+  //       readMethods,
   //       contractType,
   //       metadata,
-  //       allFields,
+  //       allReadMethods,
   //     ),
   //   ),
   // );
@@ -154,10 +154,10 @@ function* addContractsBatch(contractBatch) {
       address,
       abi,
       events,
-      methods,
       contractType,
       metadata,
-      allFields,
+      readMethods,
+      allReadMethods,
     );
   }
 }

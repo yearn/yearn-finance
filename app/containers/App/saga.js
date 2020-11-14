@@ -30,7 +30,7 @@ function* loadVaultContracts() {
       },
       abi: vaultAbi,
       addresses: vaultAddresses,
-      methods: [
+      readMethods: [
         { name: 'name' },
         { name: 'balance' },
         {
@@ -43,7 +43,7 @@ function* loadVaultContracts() {
       contractType: 'tokens',
       abi: minimalErc20Abi,
       addresses: vaultTokenAddresses,
-      methods: [
+      readMethods: [
         {
           name: 'balanceOf',
           args: address,
@@ -53,8 +53,8 @@ function* loadVaultContracts() {
     {
       contractType: 'localContracts',
       addresses: localContracts,
-      allFields: true,
-      methods: [
+      allReadMethods: true,
+      readMethods: [
         {
           name: 'balanceOf',
           args: address,

@@ -429,7 +429,6 @@ canvas {
   position: relative;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  padding: 1rem;
 }
 
 .modal-footer {
@@ -461,7 +460,7 @@ canvas {
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 500px;
+    max-width: 900px;
     margin: 1.75rem auto;
   }
   .modal-dialog-scrollable {
@@ -495,6 +494,23 @@ canvas {
   .modal-xl {
     max-width: 1140px;
   }
+}
+
+#editor {
+  border-radius: 10px 0px 0px 10px;
+}
+
+.modal-dialog.transactionModal.devMode {
+  max-width: 80vw;
+  max-height: 80vh;
+  min-width: 700px;
+  min-height: 500px;
+  height: 80vh;
+}
+
+.modal-content {
+  background-color: ${props => props.theme.modalBackground};
+  height: 100%;
 }
 `;
 

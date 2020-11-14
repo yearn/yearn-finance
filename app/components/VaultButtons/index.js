@@ -4,10 +4,7 @@ import Button from '@material-ui/core/Button';
 import { purple } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
-import {
-  useGetWriteMethods,
-  useContract,
-} from 'containers/DrizzleProvider/hooks';
+import { useContract } from 'containers/DrizzleProvider/hooks';
 // import { useShowDevVaults } from 'containers/Vaults/hooks';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -40,28 +37,29 @@ const Wrapper = styled.div`
 
 export default function VaultButtons(props) {
   const { vault } = props;
-  const { address } = vault;
+  const { address, writeMethods } = vault;
   const vaultContract = useContract(address);
-  const vaultWriteMethods = useGetWriteMethods(address);
   const account = useSelector(selectAddress());
   // const showDevVaults = useShowDevVaults();
   const deposit = () => {
     vaultContract.methods.earn().send({ from: account });
   };
+  const renderButton = (method, key) => {
+    const methodAlias = method.alias || method.name;
+    return (
+      <ColorButton
+        key={key}
+        variant="contained"
+        onClick={deposit}
+        color="primary"
+        title={methodAlias}
+      >
+        {methodAlias}
+      </ColorButton>
+    );
+  };
 
-  const renderButton = (method, key) => (
-    <ColorButton
-      key={key}
-      variant="contained"
-      onClick={deposit}
-      color="primary"
-      title={method.name}
-    >
-      {method.name}
-    </ColorButton>
-  );
-
-  const vaultButtons = _.map(vaultWriteMethods, renderButton);
+  const vaultButtons = _.map(writeMethods, renderButton);
 
   return <Wrapper>{vaultButtons}</Wrapper>;
 }

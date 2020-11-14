@@ -189,7 +189,7 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    vaultBottom = <React.Fragment>cruft</React.Fragment>;
+    vaultBottom = <React.Fragment>Data</React.Fragment>;
     vaultTop = (
       <ColumnList>
         <IconAndName>

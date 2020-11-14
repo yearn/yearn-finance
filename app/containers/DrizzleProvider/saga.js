@@ -76,8 +76,8 @@ function* addContract(
     events,
     contractType,
     metadata,
-    newReadMethods,
-    newWriteMethods,
+    newReadMethods.reverse(),
+    newWriteMethods.reverse(),
   );
   const drizzleContract = drizzle.contracts[contractAddress];
 

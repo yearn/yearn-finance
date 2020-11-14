@@ -8,9 +8,9 @@ import {
   getContext,
   takeLatest,
 } from 'redux-saga/effects';
+import { getReadMethods } from 'utils/contracts';
 import { selectAddress } from 'containers/ConnectionProvider/selectors';
 import { addContracts as addContractsAction } from './actions';
-
 import {
   DELETE_CONTRACT,
   ADD_WATCHED_CONTRACTS,
@@ -44,16 +44,7 @@ function* addContract(
     newAbi = yield fetchAbi(contractAddress);
   }
 
-  const readAbiField = (acc, field) => {
-    const hasInputs = _.get(field, 'inputs', []).length;
-    const viewable = field.stateMutability === 'view';
-    if (hasInputs || !viewable) {
-      return acc;
-    }
-    acc.push({ name: field.name });
-    return acc;
-  };
-  const viewableAbiFields = _.reduce(newAbi, readAbiField, []);
+  const viewableAbiFields = getReadMethods(newAbi);
   const newFields = _.clone(fields) || [];
   const addField = field => {
     const existingField = _.find(newFields, { name: field.name });

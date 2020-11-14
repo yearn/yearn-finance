@@ -257,6 +257,12 @@ canvas {
   pointer-events: none;
 }
 
+.MuiButton-label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block !important;
+  white-space: nowrap;
+}
 
 `;
 

@@ -34,6 +34,8 @@ const loadContractData = (state, draft, action) => {
         variable: field,
         contractType,
         metadata,
+        readMethods,
+        writeMethods,
         value,
       } = action;
       const item = _.find(draft[contractType], { address });
@@ -46,6 +48,8 @@ const loadContractData = (state, draft, action) => {
       }
       item[field] = value;
       item.metadata = metadata;
+      item.writeMethods = writeMethods;
+      item.readMethods = readMethods;
       newDraft[contractType] = _.clone(draft[contractType]);
       break;
     }

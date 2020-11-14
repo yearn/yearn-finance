@@ -8,6 +8,8 @@ class DrizzleContract {
     contractArtifact = {},
     contractType,
     metadata,
+    readMethods,
+    writeMethods,
   ) {
     this.abi = web3Contract.options.jsonInterface;
     this.address = web3Contract.options.address;
@@ -17,6 +19,8 @@ class DrizzleContract {
     this.store = store;
     this.contractType = contractType;
     this.metadata = metadata;
+    this.readMethods = readMethods;
+    this.writeMethods = writeMethods;
 
     // Merge web3 contract instance into DrizzleContract instance.
     Object.assign(this, web3Contract);

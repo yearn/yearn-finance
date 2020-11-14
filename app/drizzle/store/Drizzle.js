@@ -63,7 +63,14 @@ class Drizzle {
     });
   }
 
-  addContract(contractConfig, events = [], contractType, metadata) {
+  addContract(
+    contractConfig,
+    events = [],
+    contractType,
+    metadata,
+    readMethods,
+    writeMethods,
+  ) {
     const web3Contract = getOrCreateWeb3Contract(
       this.store,
       contractConfig,
@@ -78,6 +85,8 @@ class Drizzle {
       null,
       contractType,
       metadata,
+      readMethods,
+      writeMethods,
     );
 
     if (this.contracts[drizzleContract.contractName]) {

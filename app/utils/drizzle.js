@@ -6,7 +6,9 @@ export function transformContractData(contractData) {
       valKeys.length &&
       key !== 'address' &&
       key !== 'contractType' &&
-      key !== 'metadata'
+      key !== 'metadata' &&
+      key !== 'readMethods' &&
+      key !== 'writeMethods'
     ) {
       newVal = val[valKeys[0]];
       acc[key] = _.get(newVal, 'value', '');

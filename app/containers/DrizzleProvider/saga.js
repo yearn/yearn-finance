@@ -35,7 +35,7 @@ function* addContract(
   contractType,
   metadata,
   readMethods,
-  // writeMethods,
+  writeMethods,
   allReadMethods,
   allWriteMethods,
 ) {
@@ -49,7 +49,7 @@ function* addContract(
   const viewableAbiFields = getReadMethods(newAbi);
   const writableAbiFields = getWriteMethods(newAbi);
   const newReadMethods = _.clone(readMethods) || [];
-  // const newWriteMethods = _.clone(writeMethods) || [];
+  const newWriteMethods = _.clone(writeMethods) || [];
 
   const addField = (field, originalFields) => {
     const existingField = _.find(originalFields, { name: field.name });
@@ -71,7 +71,14 @@ function* addContract(
     contractName: contractAddress,
     web3Contract: contract,
   };
-  yield drizzle.addContract(contractConfig, events, contractType, metadata);
+  yield drizzle.addContract(
+    contractConfig,
+    events,
+    contractType,
+    metadata,
+    newReadMethods,
+    newWriteMethods,
+  );
   const drizzleContract = drizzle.contracts[contractAddress];
 
   const cacheCall = method => {

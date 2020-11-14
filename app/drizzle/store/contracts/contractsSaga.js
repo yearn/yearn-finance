@@ -190,7 +190,13 @@ function* callCallContractFn({
   try {
     const callResult = yield call(txObject.call, callArgs);
 
-    const { contractType, metadata, contractName } = contract;
+    const {
+      contractType,
+      metadata,
+      readMethods,
+      writeMethods,
+      contractName,
+    } = contract;
     const dispatchArgs = {
       name: contractName,
       variable: contract.abi[fnIndex].name,
@@ -200,6 +206,8 @@ function* callCallContractFn({
       fnIndex,
       contractType,
       metadata,
+      readMethods,
+      writeMethods,
     };
 
     yield put({ type: 'GOT_CONTRACT_VAR', ...dispatchArgs });
@@ -237,6 +245,8 @@ function* callSyncContract(action) {
   delete contractFnsState.events;
   delete contractFnsState.contractType;
   delete contractFnsState.metadata;
+  delete contractFnsState.readMethods;
+  delete contractFnsState.writeMethods;
 
   // Iterate over functions and hashes
   for (const fnName in contractFnsState) {

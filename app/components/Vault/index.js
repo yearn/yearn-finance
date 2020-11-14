@@ -152,8 +152,12 @@ const Vault = props => {
       );
     };
 
-    const vaultWithoutMetadata = _.omit(vault, 'metadata');
-    const fields = _.map(vaultWithoutMetadata, renderField);
+    const strippedVault = _.omit(vault, [
+      'metadata',
+      'readMethods',
+      'writeMethods',
+    ]);
+    const fields = _.map(strippedVault, renderField);
     vaultBottom = (
       <Table>
         <tbody>{fields}</tbody>

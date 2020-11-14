@@ -4,15 +4,13 @@ import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import { selectContracts, selectLocation } from 'containers/App/selectors';
+import { selectContracts } from 'containers/App/selectors';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import VaultsNavLinks from 'components/VaultsNavLinks';
-// import VaultDev from 'components/VaultDev';
+import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AddVault from 'components/AddVault';
-
-import { matchPath } from 'react-router';
 
 const Wrapper = styled.div`
   width: 1088px;
@@ -38,16 +36,7 @@ const Vaults = () => {
   const vaults = useSelector(selectContracts('vaults'));
   const localContracts = useSelector(selectContracts('localContracts'));
   const devMode = useSelector(selectDevMode());
-  const location = useSelector(selectLocation());
-  const { pathname } = location;
-
-  const routeIsDevelop = matchPath(pathname, {
-    path: '/vaults/develop',
-    exact: true,
-    strict: false,
-  });
-
-  const showDevVaults = routeIsDevelop && devMode;
+  const showDevVaults = useShowDevVaults();
 
   // const localVaultContracts = useDrizzleContracts('localVaults');
   // useRequireConnection();

@@ -26,3 +26,50 @@ export function getContractType(data) {
 
   return contractType;
 }
+
+export function getMethods(abi) {
+  const findReadMethods = (acc, field) => {
+    const { name, inputs, type, stateMutability } = field;
+    const hasInputs = inputs && inputs.length;
+    const isViewable = stateMutability === 'view';
+    const isMethod = type === 'function';
+    if (hasInputs || !isViewable || !isMethod) {
+      return acc;
+    }
+    acc.push({ name });
+    return acc;
+  };
+
+  const findWriteMethods = (acc, field) => {
+    const { name, inputs, type, stateMutability } = field;
+    const isViewable = stateMutability === 'view';
+    const isPure = stateMutability === 'pure';
+    const isMethod = type === 'function';
+    if (isViewable || !isMethod || isPure) {
+      return acc;
+    }
+    acc.push({ name, inputs });
+    return acc;
+  };
+  const read = _.reduce(abi, findReadMethods, []);
+  const write = _.reduce(abi, findWriteMethods, []);
+  return {
+    read,
+    write,
+  };
+}
+
+export function getReadMethodsWithNoInputs(abi) {
+  const methods = getMethods(abi);
+  return methods.read;
+}
+
+export function getWriteMethods(abi) {
+  const methods = getMethods(abi);
+  return methods.write;
+}
+
+export function getReadMethods(abi) {
+  const methods = getMethods(abi);
+  return methods.read;
+}

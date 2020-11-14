@@ -6,6 +6,7 @@ import {
   put,
   setContext,
   getContext,
+  all,
   takeLatest,
 } from 'redux-saga/effects';
 import { getReadMethods, getWriteMethods } from 'utils/contracts';
@@ -151,52 +152,54 @@ function* addContractsBatch(contractBatch) {
   } = contractBatch;
 
   // Async
-  // yield all(
-  //   _.map(addresses, address =>
-  //     addContract(
-  //       address,
-  //       abi,
-  //       events,
-  //       readMethods,
-  //       group,
-  //       metadata,
-  //       allReadMethods,
-  //     ),
-  //   ),
-  // );
+  yield all(
+    _.map(addresses, address =>
+      addContract(
+        address,
+        abi,
+        events,
+        group,
+        metadata,
+        readMethods,
+        writeMethods,
+        allReadMethods,
+        allWriteMethods,
+      ),
+    ),
+  );
 
   // TODO: Refactor to use async once we implement multi-call
   // Sync
   // eslint-disable-next-line no-restricted-syntax
-  for (const address of addresses) {
-    yield addContract(
-      address,
-      abi,
-      events,
-      group,
-      metadata,
-      readMethods,
-      writeMethods,
-      allReadMethods,
-      allWriteMethods,
-    );
-  }
+  // for (const address of addresses) {
+  //   yield addContract(
+  //     address,
+  //     abi,
+  //     events,
+  //     group,
+  //     metadata,
+  //     readMethods,
+  //     writeMethods,
+  //     allReadMethods,
+  //     allWriteMethods,
+  //   );
+  // }
 }
 
 export function* addContracts(action) {
   const { contracts } = action;
   yield setContext(action);
-  // Async
-  // yield all(
-  //   _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
-  // );
+  // Async;
+  yield all(
+    _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
+  );
 
   // TODO: Refactor to use async once we implement multi-call
   // Sync
   // eslint-disable-next-line no-restricted-syntax
-  for (const contract of contracts) {
-    yield addContractsBatch(contract);
-  }
+  // for (const contract of contracts) {
+  //   yield addContractsBatch(contract);
+  // }
 }
 
 export default function* initialize() {

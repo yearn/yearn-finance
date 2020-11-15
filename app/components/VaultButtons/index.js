@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { useModal } from 'containers/ModalProvider/hooks';
 import BigNumber from 'bignumber.js';
+import { useContract } from 'containers/DrizzleProvider/hooks';
 
 const Wrapper = styled.div`
   display: grid;
@@ -20,6 +21,7 @@ export default function VaultButtons(props) {
   const { vault } = props;
   const { address, writeMethods } = vault;
   const account = useSelector(selectAccount());
+  const contract = useContract(address);
 
   const MAX_UINT256 = new BigNumber(2)
     .pow(256)
@@ -43,9 +45,8 @@ export default function VaultButtons(props) {
   const openTransactionModal = method => {
     const { inputs, name: methodName } = method;
     const args = _.get(argConfig, methodName);
-    const modalArgs = { methodName, inputs, args, address };
+    const modalArgs = { methodName, inputs, args, address, contract };
     openModal('transaction', modalArgs);
-    // vaultContract.methods.deposit.cacheSend(0, { from: account });
   };
   const renderButton = (method, key) => {
     const methodAlias = method.alias || method.name;

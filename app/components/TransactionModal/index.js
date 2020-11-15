@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import ButtonFilled from 'components/ButtonFilled';
-// import { useContract } from 'containers/DrizzleProvider/hooks';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 
 const Input = styled.input`
   display: block;
@@ -70,13 +70,13 @@ export default function TransactionModal(props) {
   const { show, onHide, metadata, className } = props;
   const [contractSource, setContractSource] = useState('');
   const [inputFields, setInputFields] = useState({});
+  const account = useSelector(selectAccount());
   const devMode = useSelector(selectDevMode());
   const methodName = _.get(metadata, 'methodName');
   const inputs = _.get(metadata, 'inputs');
   const args = _.get(metadata, 'args');
+  const contract = _.get(metadata, 'contract');
   const address = _.get(metadata, 'address');
-
-  // const contract = useContract(address);
 
   const textAreaRef = useRef(null);
   const modalOpened = () => {
@@ -88,6 +88,7 @@ export default function TransactionModal(props) {
         const sourceCode = _.get(contractMetadata, 'SourceCode', '');
         setContractSource(sourceCode);
       });
+      setInputFields({});
     }
   };
 
@@ -193,8 +194,8 @@ export default function TransactionModal(props) {
   const onSubmit = evt => {
     evt.preventDefault();
     const contractArgs = _.values(inputFields);
-    console.log(contractArgs);
-    // contract.methods[methodName].cacheSend(0, { from: account });
+    contract.methods[methodName].cacheSend(...contractArgs, { from: account });
+    onHide();
   };
 
   const inputEls = _.map(inputs, renderInput);

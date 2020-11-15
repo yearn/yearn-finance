@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import vaultAbi from 'abi/yVault.json';
 import minimalErc20Abi from 'abi/minimalErc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
-import { selectAddress } from 'containers/ConnectionProvider/selectors';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectVaults } from 'containers/App/selectors';
 import KonamiCode from 'konami-code-js';
 import runMatrix from 'utils/matrix';
@@ -16,7 +16,7 @@ import { APP_READY, APP_INITIALIZED } from './constants';
 function* loadVaultContracts() {
   const vaults = yield select(selectVaults());
   const vaultAddresses = _.map(vaults, vault => vault.address);
-  const address = yield select(selectAddress());
+  const account = yield select(selectAccount());
   const localContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
@@ -36,7 +36,7 @@ function* loadVaultContracts() {
         { name: 'balance' },
         {
           name: 'balanceOf',
-          args: address,
+          args: account,
         },
       ],
       writeMethods: [
@@ -55,7 +55,7 @@ function* loadVaultContracts() {
       readMethods: [
         {
           name: 'balanceOf',
-          args: address,
+          args: account,
         },
       ],
     },
@@ -67,7 +67,7 @@ function* loadVaultContracts() {
       readMethods: [
         {
           name: 'balanceOf',
-          args: address,
+          args: account,
         },
       ],
     },

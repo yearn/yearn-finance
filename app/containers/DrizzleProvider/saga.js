@@ -10,7 +10,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import { getReadMethods, getWriteMethods } from 'utils/contracts';
-import { selectAddress } from 'containers/ConnectionProvider/selectors';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts as addContractsAction } from './actions';
 import {
   DELETE_CONTRACT,
@@ -126,7 +126,7 @@ function* addWatchedContracts(action) {
   const watchedContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
-  const account = yield select(selectAddress());
+  const account = yield select(selectAccount());
   const addressesToAdd = _.difference(contractAddresses, watchedContracts);
   const contracts = [
     {

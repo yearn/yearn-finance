@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
 // import { useSelector } from 'react-redux';
-// import { selectAddress } from 'containers/ConnectionProvider/selectors';
+// import { selectAccount } from 'containers/ConnectionProvider/selectors';
 // import { useContract } from 'containers/DrizzleProvider/hooks';
 import { useModal } from 'containers/ModalProvider/hooks';
 
@@ -20,7 +20,7 @@ export default function VaultButtons(props) {
   const { vault } = props;
   const { address, writeMethods } = vault;
   // const vaultContract = useContract(address);
-  // const account = useSelector(selectAddress());
+  // const account = useSelector(selectAccount());
   // const [showModal, setShowModal] = useState(false);
   // const closeModal = () => setShowModal(false);
   // const openModal = () => setShowModal(true);

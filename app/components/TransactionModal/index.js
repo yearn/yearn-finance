@@ -16,6 +16,10 @@ const Input = styled.input`
   width: 100%;
 `;
 
+const Form = styled.form`
+  width: 100%;
+`;
+
 const Label = styled.label`
   font-size: 14px;
   top: 5px;
@@ -215,7 +219,7 @@ export default function TransactionModal(props) {
           <InputWrapper>
             <MethodName>{methodName}</MethodName>
             <InputsHeader>Input Arguments</InputsHeader>
-            <form onSubmit={onSubmit}>
+            <Form onSubmit={onSubmit}>
               <Inputs>{inputEls}</Inputs>
               <ButtonWrapper>
                 <ButtonFilled type="submit">Send Transaction</ButtonFilled>
@@ -223,7 +227,7 @@ export default function TransactionModal(props) {
                   Cancel Transaction
                 </ButtonFilled>
               </ButtonWrapper>
-            </form>
+            </Form>
           </InputWrapper>
         </BodyWrapper>
       </Modal.Body>

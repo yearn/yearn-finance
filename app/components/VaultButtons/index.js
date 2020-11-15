@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
-// import { useSelector } from 'react-redux';
-// import { selectAccount } from 'containers/ConnectionProvider/selectors';
-// import { useContract } from 'containers/DrizzleProvider/hooks';
+import { useSelector } from 'react-redux';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { useModal } from 'containers/ModalProvider/hooks';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
   display: grid;
@@ -19,19 +19,20 @@ const Wrapper = styled.div`
 export default function VaultButtons(props) {
   const { vault } = props;
   const { address, writeMethods } = vault;
-  // const vaultContract = useContract(address);
-  // const account = useSelector(selectAccount());
-  // const [showModal, setShowModal] = useState(false);
-  // const closeModal = () => setShowModal(false);
-  // const openModal = () => setShowModal(true);
+  const account = useSelector(selectAccount());
+
+  const MAX_UINT256 = new BigNumber(2)
+    .pow(256)
+    .minus(1)
+    .toFixed(0);
 
   const argConfig = {
     approve: {
       _spender: {
-        defaultValue: '0x123',
+        defaultValue: account,
       },
       _value: {
-        defaultValue: 55,
+        defaultValue: MAX_UINT256,
         max: 100,
         configurable: true,
       },

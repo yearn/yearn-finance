@@ -190,13 +190,7 @@ function* callCallContractFn({
   try {
     const callResult = yield call(txObject.call, callArgs);
 
-    const {
-      group,
-      metadata,
-      readMethods,
-      writeMethods,
-      contractName,
-    } = contract;
+    const { group, contractName } = contract;
     const dispatchArgs = {
       name: contractName,
       variable: contract.abi[fnIndex].name,
@@ -205,9 +199,6 @@ function* callCallContractFn({
       value: callResult,
       fnIndex,
       group,
-      metadata,
-      readMethods,
-      writeMethods,
     };
 
     yield put({ type: 'GOT_CONTRACT_VAR', ...dispatchArgs });

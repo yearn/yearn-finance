@@ -76,9 +76,6 @@ const contractsReducer = (state = initialState, action) => {
       [action.name]: {
         ...state[action.name],
         group: action.group,
-        metadata: action.metadata,
-        readMethods: action.readMethods,
-        writeMethods: action.writeMethods,
         [action.variable]: {
           ...state[action.name][action.variable],
           [action.argsHash]: {

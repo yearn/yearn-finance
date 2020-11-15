@@ -7,6 +7,7 @@ import {
   DRIZZLE_INITIALIZED,
   DRIZZLE_ADD_CONTRACTS,
   GOT_CONTRACT_VAR,
+  CONTRACT_INITIALIZED,
 } from 'containers/DrizzleProvider/constants';
 import { VAULTS_LOADED } from './constants';
 
@@ -28,29 +29,36 @@ export const initialState = {
 const loadContractData = (state, draft, action) => {
   const newDraft = draft;
   switch (action.type) {
-    case GOT_CONTRACT_VAR: {
+    case CONTRACT_INITIALIZED: {
       const {
         name: address,
-        variable: field,
         group,
         metadata,
         readMethods,
         writeMethods,
-        value,
       } = action;
       const item = _.find(draft[group], { address });
+      let newItem = item;
       if (!item) {
-        const newItem = { address };
+        newItem = { address };
         draft[group].push(newItem);
-        newItem[field] = _.clone(value);
-        newItem.metadata = metadata;
-        break;
       }
-      item[field] = value;
-      item.metadata = metadata;
-      item.writeMethods = writeMethods;
-      item.readMethods = readMethods;
-      item.group = group;
+      newItem.metadata = metadata;
+      newItem.writeMethods = writeMethods;
+      newItem.readMethods = readMethods;
+      newItem.group = group;
+      newDraft[group] = _.clone(draft[group]);
+      break;
+    }
+    case GOT_CONTRACT_VAR: {
+      const { name: address, variable: field, group, value } = action;
+      const item = _.find(draft[group], { address });
+      let newItem = item;
+      if (!item) {
+        newItem = { address };
+        draft[group].push(newItem);
+      }
+      newItem[field] = value;
       newDraft[group] = _.clone(draft[group]);
       break;
     }

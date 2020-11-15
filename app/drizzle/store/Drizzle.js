@@ -103,6 +103,10 @@ class Drizzle {
     this.store.dispatch({
       type: 'CONTRACT_INITIALIZED',
       name: contractConfig.contractName,
+      group,
+      readMethods,
+      writeMethods,
+      metadata,
     });
   }
 

@@ -97,6 +97,10 @@ export default function TransactionModal(props) {
     const defaultValue = _.get(inputArgs, 'defaultValue');
     // const maxValue = _.get(inputArgs, 'maxValue');
     // const configurable = _.get(inputArgs, 'configurable');
+    let pattern = null;
+    if (type === 'address') {
+      pattern = '(0[xX][0-9a-fA-F]{40}?)+';
+    }
     const inputDescription = `${inputName} (${type})`;
     return (
       <div key={key}>
@@ -105,6 +109,8 @@ export default function TransactionModal(props) {
           defaultValue={defaultValue}
           type="text"
           id={inputName}
+          required
+          pattern={pattern}
           placeholder={inputDescription}
         />
       </div>
@@ -165,6 +171,10 @@ export default function TransactionModal(props) {
   };
   useEffect(loadEditor, [textAreaRef, show, contractSource]);
 
+  const sendTransaction = evt => {
+    evt.preventDefault();
+  };
+
   const inputEls = _.map(inputs, renderInput);
   return (
     <Modal
@@ -182,13 +192,15 @@ export default function TransactionModal(props) {
           <InputWrapper>
             <MethodName>{methodName}</MethodName>
             <InputsHeader>Input Arguments</InputsHeader>
-            <Inputs>{inputEls}</Inputs>
-            <ButtonWrapper>
-              <ButtonFilled>Send Transaction</ButtonFilled>
-              <ButtonFilled onClick={onHide} color="secondary">
-                Cancel Transaction
-              </ButtonFilled>
-            </ButtonWrapper>
+            <form onSubmit={sendTransaction}>
+              <Inputs>{inputEls}</Inputs>
+              <ButtonWrapper>
+                <ButtonFilled type="submit">Send Transaction</ButtonFilled>
+                <ButtonFilled onClick={onHide} color="secondary">
+                  Cancel Transaction
+                </ButtonFilled>
+              </ButtonWrapper>
+            </form>
           </InputWrapper>
         </BodyWrapper>
       </Modal.Body>

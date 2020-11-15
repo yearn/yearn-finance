@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
 
 export default function ButtonFilled(props) {
-  const { onClick, disabled, children, title, color } = props;
+  const { onClick, disabled, children, type, title, onSubmit, color } = props;
   const showDevVaults = useShowDevVaults();
 
   const ColorButton = withStyles(() => ({
@@ -31,6 +31,8 @@ export default function ButtonFilled(props) {
       title={title}
       color={color}
       onClick={onClick}
+      onSubmit={onSubmit}
+      type={type}
       disabled={disabled}
     >
       {children}

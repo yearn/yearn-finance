@@ -5,5 +5,5 @@ const selectConnection = state => state.connection;
 export const selectAccount = () =>
   createSelector(
     selectConnection,
-    substate => substate.address,
+    substate => substate.account,
   );

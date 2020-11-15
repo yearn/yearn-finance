@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import context from './context';
 
-export function useAddress() {
-  const { address } = useContext(context);
-  return address;
+export function useAccount() {
+  const { account } = useContext(context);
+  return account;
 }
 
 export function useWallet() {

@@ -4,22 +4,22 @@ import Button from 'components/Button';
 import {
   useWallet,
   useSelectWallet,
-  useAddress,
+  useAccount,
 } from 'containers/ConnectionProvider/hooks';
 import ConnectedAccount from './connectedAccount';
 
 export default function ConnectButton(props) {
   const { className } = props;
   const wallet = useWallet();
-  const address = useAddress();
+  const account = useAccount();
   const selectWallet = useSelectWallet();
   let content;
-  if (wallet.provider && address) {
+  if (wallet.provider && account) {
     content = (
       <ConnectedAccount
         className={className}
         onClick={selectWallet}
-        address={address}
+        account={account}
       />
     );
   } else {

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { ADDRESS_UPDATED } from 'containers/ConnectionProvider/constants';
+import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 
 // The initial state of the App
 export const initialState = {};
@@ -8,8 +8,8 @@ export const initialState = {};
 const appReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case ADDRESS_UPDATED:
-        draft.address = action.address;
+      case ACCOUNT_UPDATED:
+        draft.account = action.account;
         break;
     }
   });

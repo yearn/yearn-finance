@@ -1,7 +1,7 @@
 import produce from 'immer';
 import {
   CONNECTION_CONNECTED,
-  ADDRESS_UPDATED,
+  ACCOUNT_UPDATED,
 } from 'containers/ConnectionProvider/constants';
 import {
   DRIZZLE_INITIALIZED,
@@ -106,7 +106,7 @@ const appReducer = (state = initialState, action) =>
         draft.loading.web3 = false;
         checkReadyState();
         break;
-      case ADDRESS_UPDATED:
+      case ACCOUNT_UPDATED:
         draft.loading.account = false;
         checkReadyState();
         break;

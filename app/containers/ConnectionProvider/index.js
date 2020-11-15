@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectDarkMode } from 'containers/ThemeProvider/selectors';
 import { useInjectReducer } from 'utils/injectReducer';
 import { initOnboard, initNotify } from './services';
-import { connectionConnected, addressUpdated } from './actions';
+import { connectionConnected, accountUpdated } from './actions';
 import ConnectionContext from './context';
 import reducer from './reducer';
 
@@ -13,14 +13,14 @@ export default function ConnectionProvider(props) {
   const { children } = props;
   const darkMode = useSelector(selectDarkMode());
   const dispatch = useDispatch();
-  const [address, setAddress] = useState(null);
+  const [account, setAccount] = useState(null);
   const [wallet, setWallet] = useState({});
   const [onboard, setOnboard] = useState(null);
   const [notify, setNotify] = useState(null);
   const [web3, setWeb3] = useState(null);
 
   const dispatchConnectionConnected = () => {
-    dispatch(connectionConnected(address));
+    dispatch(connectionConnected(account));
   };
 
   const initializeWallet = () => {
@@ -36,7 +36,7 @@ export default function ConnectionProvider(props) {
       }
     };
     const onboardConfig = {
-      address: setAddress,
+      address: setAccount,
       wallet: selectWallet,
     };
     const newOnboard = initOnboard(onboardConfig, darkMode);
@@ -44,9 +44,9 @@ export default function ConnectionProvider(props) {
     setOnboard(newOnboard);
   };
 
-  const addressChanged = () => {
-    if (address) {
-      dispatch(addressUpdated(address));
+  const accountChanged = () => {
+    if (account) {
+      dispatch(accountUpdated(account));
     }
   };
 
@@ -67,7 +67,7 @@ export default function ConnectionProvider(props) {
 
   useEffect(initializeWallet, []);
   useEffect(reconnectWallet, [onboard]);
-  useEffect(addressChanged, [address]);
+  useEffect(accountChanged, [account]);
   useEffect(changeDarkMode, [darkMode]);
 
   const selectWallet = () => {
@@ -76,7 +76,7 @@ export default function ConnectionProvider(props) {
 
   return (
     <ConnectionContext.Provider
-      value={{ onboard, wallet, address, selectWallet, web3, notify }}
+      value={{ onboard, wallet, account, selectWallet, web3, notify }}
     >
       {children}
     </ConnectionContext.Provider>

@@ -33,12 +33,12 @@ const transformAddress = address => {
 };
 
 export default function Account(props) {
-  const { address, onClick, className } = props;
+  const { account, onClick, className } = props;
 
   return (
     <ConnectedAccount onClick={onClick} className={className}>
       <Blockies
-        seed={address}
+        seed={account}
         size={10}
         scale={3}
         color="#07fdd7"
@@ -46,7 +46,7 @@ export default function Account(props) {
         spotColor="#a3a8e3"
         className="identicon"
       />
-      <Address>{transformAddress(address)}</Address>
+      <Address>{transformAddress(account)}</Address>
       <svg
         stroke="currentColor"
         fill="currentColor"

@@ -4,7 +4,7 @@
  *
  */
 
-import { CONNECTION_CONNECTED, ADDRESS_UPDATED } from './constants';
+import { CONNECTION_CONNECTED, ACCOUNT_UPDATED } from './constants';
 
 export function connectionConnected() {
   return {
@@ -12,9 +12,9 @@ export function connectionConnected() {
   };
 }
 
-export function addressUpdated(address) {
+export function accountUpdated(account) {
   return {
-    type: ADDRESS_UPDATED,
-    address,
+    type: ACCOUNT_UPDATED,
+    account,
   };
 }

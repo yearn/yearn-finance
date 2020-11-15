@@ -47,10 +47,10 @@ function* addContract(
     newAbi = yield fetchAbi(contractAddress);
   }
 
-  const viewableAbiFields = getReadMethods(newAbi);
-  const writableAbiFields = getWriteMethods(newAbi);
-  const newReadMethods = _.clone(readMethods) || [];
-  const newWriteMethods = _.clone(writeMethods) || [];
+  const allAbiReadMethods = getReadMethods(newAbi);
+  const allAbiWriteMethods = getWriteMethods(newAbi);
+  let newReadMethods = _.clone(readMethods) || [];
+  let newWriteMethods = _.clone(writeMethods) || [];
 
   const addField = (field, originalFields) => {
     const existingField = _.find(originalFields, { name: field.name });
@@ -59,11 +59,28 @@ function* addContract(
     }
   };
 
+  const mergeAbiFieldData = (method, abiFields) => {
+    const { name } = method;
+    let newMethod = method;
+    const abiField = _.find(abiFields, { name });
+    if (abiField) {
+      newMethod = _.extend(method, abiField);
+    }
+    return newMethod;
+  };
+
+  newReadMethods = _.map(newReadMethods, method =>
+    mergeAbiFieldData(method, allAbiReadMethods),
+  );
+  newWriteMethods = _.map(newWriteMethods, method =>
+    mergeAbiFieldData(method, allAbiWriteMethods),
+  );
+
   if (allReadMethods) {
-    _.each(viewableAbiFields, field => addField(field, newReadMethods));
+    _.each(allAbiReadMethods, field => addField(field, newReadMethods));
   }
   if (allWriteMethods) {
-    _.each(writableAbiFields, field => addField(field, newWriteMethods));
+    _.each(allAbiWriteMethods, field => addField(field, newWriteMethods));
   }
 
   const contract = new web3.eth.Contract(newAbi, contractAddress);
@@ -72,6 +89,7 @@ function* addContract(
     contractName: contractAddress,
     web3Contract: contract,
   };
+
   yield drizzle.addContract(
     contractConfig,
     events,

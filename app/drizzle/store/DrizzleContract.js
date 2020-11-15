@@ -35,7 +35,7 @@ class DrizzleContract {
         );
       }
 
-      if (item.type == 'function' && item.constant === false) {
+      if (item.type == 'function' && !item.constant) {
         this.methods[item.name].cacheSend = this.cacheSendFunction(
           item.name,
           i,

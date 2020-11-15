@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import ButtonFilled from 'components/ButtonFilled';
+// import { useContract } from 'containers/DrizzleProvider/hooks';
 
 const Input = styled.input`
   display: block;
@@ -68,12 +69,14 @@ const BodyWrapper = styled.div`
 export default function TransactionModal(props) {
   const { show, onHide, metadata, className } = props;
   const [contractSource, setContractSource] = useState('');
+  const [inputFields, setInputFields] = useState({});
   const devMode = useSelector(selectDevMode());
   const methodName = _.get(metadata, 'methodName');
   const inputs = _.get(metadata, 'inputs');
   const args = _.get(metadata, 'args');
   const address = _.get(metadata, 'address');
-  console.log('all meta', metadata);
+
+  // const contract = useContract(address);
 
   const textAreaRef = useRef(null);
   const modalOpened = () => {
@@ -83,7 +86,6 @@ export default function TransactionModal(props) {
       request(url).then(response => {
         const contractMetadata = _.first(response.result);
         const sourceCode = _.get(contractMetadata, 'SourceCode', '');
-        // const contractName = _.get(contractMetadata, 'ContractName', '');
         setContractSource(sourceCode);
       });
     }
@@ -91,7 +93,18 @@ export default function TransactionModal(props) {
 
   useEffect(modalOpened, [show]);
 
-  const renderInput = (input, key) => {
+  const updateField = (field, value) => {
+    const newInputFields = inputFields;
+    newInputFields[field] = value;
+    setInputFields(newInputFields);
+  };
+
+  const handleInputChange = evt => {
+    const { name, value } = evt.target;
+    updateField(name, value);
+  };
+
+  const renderInput = input => {
     const { type, name: inputName } = input;
     const inputArgs = _.get(args, inputName);
     const defaultValue = _.get(inputArgs, 'defaultValue');
@@ -102,14 +115,20 @@ export default function TransactionModal(props) {
       pattern = '(0[xX][0-9a-fA-F]{40}?)+';
     }
     const inputDescription = `${inputName} (${type})`;
+    const value = inputFields[inputName];
+    const fieldInitialized = _.has(inputFields, inputName);
+    if (!fieldInitialized) {
+      updateField(inputName, defaultValue);
+    }
     return (
-      <div key={key}>
+      <div key={inputName}>
         <Label htmlFor={inputName}>{inputDescription}</Label>
         <Input
-          defaultValue={defaultValue}
+          value={value}
           type="text"
-          id={inputName}
           required
+          onChange={handleInputChange}
+          name={inputName}
           pattern={pattern}
           placeholder={inputDescription}
         />
@@ -171,8 +190,11 @@ export default function TransactionModal(props) {
   };
   useEffect(loadEditor, [textAreaRef, show, contractSource]);
 
-  const sendTransaction = evt => {
+  const onSubmit = evt => {
     evt.preventDefault();
+    const contractArgs = _.values(inputFields);
+    console.log(contractArgs);
+    // contract.methods[methodName].cacheSend(0, { from: account });
   };
 
   const inputEls = _.map(inputs, renderInput);
@@ -192,7 +214,7 @@ export default function TransactionModal(props) {
           <InputWrapper>
             <MethodName>{methodName}</MethodName>
             <InputsHeader>Input Arguments</InputsHeader>
-            <form onSubmit={sendTransaction}>
+            <form onSubmit={onSubmit}>
               <Inputs>{inputEls}</Inputs>
               <ButtonWrapper>
                 <ButtonFilled type="submit">Send Transaction</ButtonFilled>

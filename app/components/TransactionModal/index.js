@@ -73,9 +73,9 @@ export default function TransactionModal(props) {
   const inputs = _.get(metadata, 'inputs');
   const args = _.get(metadata, 'args');
   const address = _.get(metadata, 'address');
+  console.log('all meta', metadata);
 
   const textAreaRef = useRef(null);
-  console.log('weerednd');
   const modalOpened = () => {
     if (show) {
       const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4'; // TODO: move to config constants files
@@ -123,13 +123,22 @@ export default function TransactionModal(props) {
 
   const nextLines = _.drop(sourceLines, startIdx);
 
-  const endIdx = _.findIndex(nextLines, line => {
-    // const solidityMatch =
-    //   _.includes(line, searchTextSolidity) && _.endsWith(line, '{');
-    const solidityMatch = false;
-    const vyperMatch = _.startsWith(line, '@');
-    return solidityMatch || vyperMatch;
-  });
+  const endIdx = (() => {
+    let solidityMatch;
+    let vyperMatch;
+    const foundIdx = _.findIndex(nextLines, line => {
+      solidityMatch = _.startsWith(line, '  }') || _.startsWith(line, '    }');
+      vyperMatch = _.startsWith(line, '@');
+      return solidityMatch || vyperMatch;
+    });
+    if (solidityMatch && foundIdx > 0) {
+      return foundIdx + 1;
+    }
+    if (vyperMatch && foundIdx > 0) {
+      return foundIdx - 2;
+    }
+    return 0;
+  })();
 
   let editor;
   const loadEditor = () => {
@@ -147,17 +156,14 @@ export default function TransactionModal(props) {
       setTimeout(() => {
         editor.gotoLine(startIdx);
         editor.selection.selectTo(startIdx + endIdx, 0);
-        console.log('edoittt', editor);
         editor.selection.selectTo(startIdx + endIdx, 0);
         const { session } = editor;
         const scrollTop = session.getScrollTop();
         session.setScrollTop(scrollTop + 285);
       }, 0);
-      console.log('jump to ', startIdx, startIdx + endIdx);
     }
   };
   useEffect(loadEditor, [textAreaRef, show, contractSource]);
-  // useEffect(loadContractText, [contractSource]);
 
   const inputEls = _.map(inputs, renderInput);
   return (
@@ -179,7 +185,9 @@ export default function TransactionModal(props) {
             <Inputs>{inputEls}</Inputs>
             <ButtonWrapper>
               <ButtonFilled>Send Transaction</ButtonFilled>
-              <ButtonFilled color="secondary">Cancel Transaction</ButtonFilled>
+              <ButtonFilled onClick={onHide} color="secondary">
+                Cancel Transaction
+              </ButtonFilled>
             </ButtonWrapper>
           </InputWrapper>
         </BodyWrapper>

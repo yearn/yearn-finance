@@ -44,15 +44,7 @@ function* loadVaultContracts() {
           name: 'deposit',
         },
         {
-          name: 'depositAll',
-          alias: 'Deposit All',
-        },
-        {
           name: 'withdraw',
-        },
-        {
-          name: 'withdrawAll',
-          alias: 'Withdraw All',
         },
       ],
     },

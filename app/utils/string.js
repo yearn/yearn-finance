@@ -32,3 +32,16 @@ export const abbreviateNumber = value => {
   }
   return newValue;
 };
+
+export const capitalize = val => {
+  if (!val) {
+    return '';
+  }
+  return val.charAt(0).toUpperCase() + val.slice(1);
+};
+
+export const camelCaseToSentenceCase = val => {
+  const capitalizedVal = capitalize(val);
+  const sentenceCase = capitalizedVal.replace(/([A-Z])/g, ' $1');
+  return sentenceCase;
+};

@@ -6,6 +6,7 @@ import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import ButtonFilled from 'components/ButtonFilled';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import BigNumber from 'bignumber.js';
 
 const Input = styled.input`
   display: block;
@@ -14,6 +15,9 @@ const Input = styled.input`
   padding: 4px 6px;
   height: 40px;
   width: 100%;
+  box-shadow: none;
+  border: ${props => (props.invalid ? '4px solid red' : '1px solid black')};
+  outline: none;
 `;
 
 const Form = styled.form`
@@ -26,14 +30,30 @@ const Label = styled.label`
   position: relative;
 `;
 
+const Checkbox = styled.input`
+  height: 25px;
+  width: 25px;
+`;
+
 const InputsHeader = styled.div`
-  margin-top: 30px;
+  margin-top: 70px;
   font-size: 31px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   align-self: flex-start;
 `;
 
 const MethodName = styled.div`
-  font-size: 48px;
+  font-size: 51px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ContractName = styled.div`
+  font-size: 28px;
+  margin-top: 10px;
   text-decoration: underline;
 `;
 
@@ -70,17 +90,53 @@ const BodyWrapper = styled.div`
   grid-template-columns: 50% 50%;
 `;
 
+const NormalizeInput = styled.div`
+  user-select: none;
+      font-size: 23px;
+      display: flex;
+      align-items: center;
+  }
+`;
+
+const Td = styled.td`
+  font-size: 20px;
+  padding-right: 25px;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 330px;
+  text-overflow: ellipsis;
+  &:first-of-type {
+    padding-right: 10px;
+  }
+`;
+
+const DisplayFields = styled.table`
+  margin-top: 45px;
+`;
+
+const InputArgsWrapper = styled.div`
+  display: ${props => (props.show ? 'inherit' : 'none')};
+`;
+
 export default function TransactionModal(props) {
-  const { show, onHide, metadata, className } = props;
+  const { show, onHide, modalMetadata, className } = props;
   const [contractSource, setContractSource] = useState('');
   const [inputFields, setInputFields] = useState({});
+  const [normalizeAmounts, setNormalizeAmounts] = useState(true);
   const account = useSelector(selectAccount());
   const devMode = useSelector(selectDevMode());
-  const methodName = _.get(metadata, 'methodName');
-  const inputs = _.get(metadata, 'inputs');
-  const args = _.get(metadata, 'args');
-  const contract = _.get(metadata, 'contract');
-  const address = _.get(metadata, 'address');
+  const methodName = _.get(modalMetadata, 'methodName');
+  const inputs = _.get(modalMetadata, 'inputs');
+  const inputArgs = _.get(modalMetadata, 'inputArgs');
+  const metadata = _.get(inputArgs, 'metadata');
+  const contractData = _.get(modalMetadata, 'contractData');
+  const contract = _.get(modalMetadata, 'contract');
+  const address = _.get(modalMetadata, 'address');
+  const contractName = _.get(contractData, 'name');
+  const contractAlias = _.get(contractData, 'symbolAlias');
+  const displayFields = _.get(metadata, 'displayFields');
+  const contractDisplayName = contractAlias || contractName;
 
   const textAreaRef = useRef(null);
   const modalOpened = () => {
@@ -96,44 +152,156 @@ export default function TransactionModal(props) {
     }
   };
 
-  useEffect(modalOpened, [show]);
+  const renderDisplayField = (field, idx) => {
+    const { value, decimals, name } = field;
+    const valueNormalized = new BigNumber(value)
+      .dividedBy(10 ** decimals)
+      .toFixed(8);
+    const valueStr = normalizeAmounts ? valueNormalized : value;
+    return (
+      <tr key={idx}>
+        <Td>{name}:</Td>
+        <Td>{valueStr}</Td>
+      </tr>
+    );
+  };
+  const displayFieldEls = _.map(displayFields, renderDisplayField);
 
-  const updateField = (field, value) => {
-    const newInputFields = inputFields;
-    newInputFields[field] = value;
+  const scaleAmountUp = (acc, field, key) => {
+    const { value, inputValue, decimals } = field;
+    if (!decimals) {
+      return acc;
+    }
+    const newInputValue = new BigNumber(inputValue)
+      .times(10 ** decimals)
+      .toFixed();
+    acc[key] = {
+      value,
+      inputValue: newInputValue,
+      decimals,
+    };
+    return acc;
+  };
+
+  const scaleAmountDown = (acc, field, key) => {
+    const { value, inputValue, decimals } = field;
+    if (!decimals) {
+      return acc;
+    }
+    const newInputValue = new BigNumber(inputValue)
+      .dividedBy(10 ** decimals)
+      .toFixed();
+    acc[key] = {
+      value,
+      inputValue: newInputValue,
+      decimals,
+    };
+    return acc;
+  };
+
+  const normalizeAmountsCheckboxChanged = () => {
+    let newInputFields;
+    if (normalizeAmounts) {
+      newInputFields = _.reduce(inputFields, scaleAmountDown, {});
+    } else {
+      newInputFields = _.reduce(inputFields, scaleAmountUp, {});
+    }
     setInputFields(newInputFields);
   };
 
-  const handleInputChange = evt => {
+  useEffect(normalizeAmountsCheckboxChanged, [normalizeAmounts]);
+  useEffect(modalOpened, [show]);
+
+  const updateField = (field, inputValue, decimals, skipNormalization) => {
+    const newInputFields = _.clone(inputFields);
+    let value = inputValue;
+    if (normalizeAmountsCheckboxChanged || skipNormalization) {
+      value = new BigNumber(value).times(10 ** decimals).toFixed(0);
+    }
+    newInputFields[field] = {
+      inputValue,
+      value,
+      decimals,
+    };
+    setInputFields(newInputFields);
+  };
+
+  const handleInputChange = (evt, decimals) => {
     const { name, value } = evt.target;
-    updateField(name, value);
+    updateField(name, value, decimals);
   };
 
   const renderInput = input => {
     const { type, name: inputName } = input;
-    const inputArgs = _.get(args, inputName);
-    const defaultValue = _.get(inputArgs, 'defaultValue');
-    // const maxValue = _.get(inputArgs, 'maxValue');
-    // const configurable = _.get(inputArgs, 'configurable');
+    const inputArg = _.get(inputArgs, inputName);
+    const max = _.get(inputArg, 'max');
+    const decimals = _.get(inputArg, 'decimals');
+    const defaultValueOriginal = _.get(inputArg, 'defaultValue', '');
+    let defaultValue = defaultValueOriginal;
+    if (decimals) {
+      const defaultValueNormalized = new BigNumber(defaultValueOriginal)
+        .dividedBy(10 ** decimals)
+        .toFixed();
+      defaultValue = normalizeAmounts
+        ? defaultValueNormalized
+        : defaultValueOriginal;
+    }
+
+    // const configurable = _.get(inputArg, 'configurable');
     let pattern = null;
     if (type === 'address') {
       pattern = '(0[xX][0-9a-fA-F]{40}?)+';
     }
     const inputDescription = `${inputName} (${type})`;
-    const value = inputFields[inputName];
+    const inputValue = _.get(inputFields[inputName], 'inputValue');
+    const value = _.get(inputFields[inputName], 'value');
+
+    const percentage = parseFloat(((value / max) * 100).toFixed(2));
+    const percentageStr = percentage ? `${percentage}%` : '0%';
     const fieldInitialized = _.has(inputFields, inputName);
     if (!fieldInitialized) {
-      updateField(inputName, defaultValue);
+      updateField(inputName, defaultValue, decimals, true);
     }
+    let inputType = 'text';
+    if (type === 'uint256') {
+      inputType = 'number';
+    }
+
+    // const setMax = () => {
+    //   updateField(inputName, max, decimals, true);
+    // };
+
+    const handleInputChangeWithDecimals = evt => {
+      handleInputChange(evt, decimals);
+    };
+
+    const maxNormalized = new BigNumber(max)
+      .dividedBy(10 ** decimals)
+      .toFixed(5);
+
+    const maxStr = normalizeAmounts ? maxNormalized : max;
+    const percentageText = max ? ` | percentage: ${percentageStr}` : null;
+
+    const decimalsText = decimals ? ` | decimals: ${decimals}` : null;
+    const maxText = max ? ` | max: ${maxStr}` : null;
+    const invalid = percentage > 100;
     return (
       <div key={inputName}>
-        <Label htmlFor={inputName}>{inputDescription}</Label>
+        <Label htmlFor={inputName}>
+          {inputDescription}
+          {decimalsText}
+          {maxText}
+          {percentageText}
+        </Label>
         <Input
-          value={value}
-          type="text"
+          value={inputValue}
+          type={inputType}
+          id={inputName}
+          invalid={invalid}
           required
-          onChange={handleInputChange}
+          onChange={handleInputChangeWithDecimals}
           name={inputName}
+          max={max}
           pattern={pattern}
           placeholder={inputDescription}
         />
@@ -195,12 +363,31 @@ export default function TransactionModal(props) {
   };
   useEffect(loadEditor, [textAreaRef, show, contractSource]);
 
-  const onSubmit = evt => {
+  const sendTransaction = evt => {
     evt.preventDefault();
-    const contractArgs = _.values(inputFields);
+    const contractArgs = _.map(inputs, input => inputFields[input.name].value);
     contract.methods[methodName].cacheSend(...contractArgs, { from: account });
     onHide();
   };
+
+  let normalizeInput;
+  const argDecimalsArr = _.filter(inputArgs, arg => arg.decimals) || [];
+  const canNormalizeAmounts = argDecimalsArr.length;
+  const showInputArgText = inputs && inputs.length;
+
+  if (canNormalizeAmounts) {
+    normalizeInput = (
+      <NormalizeInput>
+        <label htmlFor="normalizeAmounts">Normalize</label>
+        <Checkbox
+          type="checkbox"
+          id="normalizeAmounts"
+          checked={normalizeAmounts}
+          onChange={evt => setNormalizeAmounts(evt.target.checked)}
+        />
+      </NormalizeInput>
+    );
+  }
 
   const inputEls = _.map(inputs, renderInput);
   return (
@@ -217,9 +404,18 @@ export default function TransactionModal(props) {
             <div id="editor" ref={textAreaRef} />
           </Editor>
           <InputWrapper>
+            <ContractName>{contractDisplayName}</ContractName>
             <MethodName>{methodName}</MethodName>
-            <InputsHeader>Input Arguments</InputsHeader>
-            <Form onSubmit={onSubmit}>
+            <DisplayFields>
+              <tbody>{displayFieldEls}</tbody>
+            </DisplayFields>
+            <InputsHeader>
+              <InputArgsWrapper show={showInputArgText}>
+                Input Arguments
+              </InputArgsWrapper>
+              {normalizeInput}
+            </InputsHeader>
+            <Form autoComplete="off" onSubmit={sendTransaction}>
               <Inputs>{inputEls}</Inputs>
               <ButtonWrapper>
                 <ButtonFilled type="submit">Send Transaction</ButtonFilled>

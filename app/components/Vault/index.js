@@ -12,7 +12,7 @@ import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
-import { selectContract } from 'containers/App/selectors';
+import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import VaultButtons from 'components/VaultButtons';
 
@@ -99,14 +99,12 @@ const Vault = props => {
     address,
   } = vault;
 
-  console.log('rend');
-
   const devMode = useSelector(selectDevMode());
-  const tokenContract = useSelector(
-    selectContract('tokens', tokenAddress || token),
+  const tokenContractData = useSelector(
+    selectContractData('tokens', tokenAddress || token),
   );
-  const tokenBalance = _.get(tokenContract, 'balanceOf');
-  const tokenSymbol = tokenSymbolAlias || _.get(tokenContract, 'symbol');
+  const tokenBalance = _.get(tokenContractData, 'balanceOf');
+  const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   const vaultName = symbolAlias || tokenSymbol || name;
   const accordionEventKey = address;
   const currentEventKey = useContext(AccordionContext);
@@ -229,7 +227,7 @@ const Vault = props => {
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
-              <VaultButtons vault={vault} />
+              <VaultButtons vault={vault} token={tokenContractData} />
             </Card.Footer>
           </Card.Body>
         </Accordion.Collapse>

@@ -18,15 +18,22 @@ const Wrapper = styled.div`
 `;
 
 export default function VaultButtons(props) {
-  const { vault } = props;
-  const { address, writeMethods } = vault;
+  const { vault, token } = props;
+  const { address, writeMethods, decimals } = vault;
   const account = useSelector(selectAccount());
   const contract = useContract(address);
-
+  const tokenBalanceOf = token.balanceOf;
   const MAX_UINT256 = new BigNumber(2)
     .pow(256)
     .minus(1)
     .toFixed(0);
+
+  const vaultMetadata = {
+    displayFields: [
+      { name: 'Token balance', value: tokenBalanceOf, decimals },
+      { name: 'Vault balance', value: vault.balanceOf, decimals },
+    ],
+  };
 
   const argConfig = {
     approve: {
@@ -35,8 +42,24 @@ export default function VaultButtons(props) {
       },
       _value: {
         defaultValue: MAX_UINT256,
-        max: 100,
         configurable: true,
+      },
+    },
+    deposit: {
+      metadata: vaultMetadata,
+      _amount: {
+        defaultValue: tokenBalanceOf,
+        max: tokenBalanceOf,
+        decimals,
+      },
+    },
+    withdraw: {
+      metadata: vaultMetadata,
+      _shares: {
+        max: vault.balanceOf,
+        defaultValue: vault.balanceOf,
+        metadata: vaultMetadata,
+        decimals,
       },
     },
   };
@@ -44,8 +67,15 @@ export default function VaultButtons(props) {
   const { openModal } = useModal();
   const openTransactionModal = method => {
     const { inputs, name: methodName } = method;
-    const args = _.get(argConfig, methodName);
-    const modalArgs = { methodName, inputs, args, address, contract };
+    const inputArgs = _.get(argConfig, methodName);
+    const modalArgs = {
+      methodName,
+      inputs,
+      inputArgs,
+      address,
+      contract,
+      contractData: vault,
+    };
     openModal('transaction', modalArgs);
   };
   const renderButton = (method, key) => {

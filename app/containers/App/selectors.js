@@ -33,8 +33,8 @@ export const selectContracts = group =>
     substate => substate[group],
   );
 
-export const selectContract = (group, contractAddress) =>
+export const selectContractData = (group, contractAddress) =>
   createSelector(
     selectApp,
-    substate => _.find(substate[group], { address: contractAddress }),
+    substate => _.find(substate[group], { address: contractAddress }) || {},
   );

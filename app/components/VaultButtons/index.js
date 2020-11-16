@@ -27,9 +27,12 @@ export default function VaultButtons(props) {
     .minus(1)
     .toFixed(0);
 
+  const tokenMetadata = {
+    displayFields: [{ name: 'Token balance', value: tokenBalanceOf, decimals }],
+  };
+
   const vaultMetadata = {
     displayFields: [
-      { name: 'Token balance', value: tokenBalanceOf, decimals },
       { name: 'Vault balance', value: vault.balanceOf, decimals },
     ],
   };
@@ -45,7 +48,7 @@ export default function VaultButtons(props) {
       },
     },
     deposit: {
-      metadata: vaultMetadata,
+      metadata: tokenMetadata,
       _amount: {
         defaultValue: tokenBalanceOf,
         max: tokenBalanceOf,
@@ -57,7 +60,6 @@ export default function VaultButtons(props) {
       _shares: {
         max: vault.balanceOf,
         defaultValue: vault.balanceOf,
-        metadata: vaultMetadata,
         decimals,
       },
     },

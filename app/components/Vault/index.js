@@ -175,6 +175,7 @@ const Vault = props => {
       'metadata',
       'readMethods',
       'writeMethods',
+      'group',
     ]);
     const fields = _.map(strippedVault, renderField);
     vaultBottom = (

@@ -196,12 +196,12 @@ const Vault = props => {
           </IconAndName>
         </div>
         <div>{contractType}</div>
-        <div>
-          <AnimatedNumber value={vaultBalanceOf} />
-        </div>
         <div>{vaultAssets}</div>
         <div>
-          <AnimatedNumber value={tokenBalanceOf} />{' '}
+          <AnimatedNumber value={tokenBalanceOf} />
+        </div>
+        <div>
+          <AnimatedNumber value={vaultBalanceOf} />{' '}
           <LinkWrap devMode={devMode} address={tokenAddress}>
             {tokenSymbol}
           </LinkWrap>
@@ -220,13 +220,13 @@ const Vault = props => {
             <IconName devMode={devMode}>{vaultName}</IconName>
           </LinkWrap>
         </IconAndName>
-        <div>
-          <AnimatedNumber value={vaultBalanceOf} />
-        </div>
         <div>{vaultAssets}</div>
         <div>{apy}</div>
         <div>
-          <AnimatedNumber value={tokenBalanceOf} />{' '}
+          <AnimatedNumber value={tokenBalanceOf} />
+        </div>
+        <div>
+          <AnimatedNumber value={vaultBalanceOf} />{' '}
           <LinkWrap devMode={devMode} address={tokenAddress}>
             {tokenSymbol}
           </LinkWrap>

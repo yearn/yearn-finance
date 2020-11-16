@@ -13,10 +13,10 @@ export default function VaultsHeader() {
   return (
     <ColumnList>
       <ColumnHeader>Asset</ColumnHeader>
-      <ColumnHeader>Deposited</ColumnHeader>
       <ColumnHeader>Vault Assets</ColumnHeader>
       <ColumnHeader>Growth</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
+      <ColumnHeader>Deposited</ColumnHeader>
     </ColumnList>
   );
 }

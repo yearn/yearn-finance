@@ -13,7 +13,7 @@ const defaultOptions = {
   polls: {
     blocks: 3000,
   },
-  syncAlways: true,
+  syncAlways: false,
   networkWhitelist: [],
 };
 

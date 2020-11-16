@@ -15,6 +15,8 @@ import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import VaultButtons from 'components/VaultButtons';
+import ButtonFilledRed from 'components/ButtonFilledRed';
+import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 
 const IconAndName = styled.div`
   display: flex;
@@ -57,6 +59,20 @@ const Table = styled.table`
   font-family: monospace;
 `;
 
+const Footer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+`;
+
+const RemoveWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  margin-top: 30px;
+  display: ${props => (props.showDevVaults ? 'inherit' : 'none')};
+  justify-content: center;
+`;
+
 const truncateApy = apy => {
   if (!apy) {
     return 'N/A';
@@ -83,7 +99,7 @@ const LinkWrap = props => {
 };
 
 const Vault = props => {
-  const { vault, showAllFields } = props;
+  const { vault, showDevVaults } = props;
   const {
     symbolAlias,
     vaultIcon,
@@ -109,6 +125,7 @@ const Vault = props => {
   const accordionEventKey = address;
   const currentEventKey = useContext(AccordionContext);
   const active = currentEventKey === accordionEventKey;
+  const drizzle = useDrizzle();
   // const active = false;
 
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
@@ -124,9 +141,13 @@ const Vault = props => {
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
   const contractType = getContractType(vault);
 
+  const removeVault = () => {
+    drizzle.deleteContract(address);
+  };
+
   let vaultBottom;
   let vaultTop;
-  if (showAllFields) {
+  if (showDevVaults) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
       const valIsAddress = /0[xX][0-9a-fA-F]{40}/.test(newVal);
@@ -187,7 +208,7 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    vaultBottom = <React.Fragment>Data</React.Fragment>;
+    vaultBottom = null;
     vaultTop = (
       <ColumnList>
         <IconAndName>
@@ -227,7 +248,18 @@ const Vault = props => {
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
-              <VaultButtons vault={vault} token={tokenContractData} />
+              <Footer>
+                <VaultButtons vault={vault} token={tokenContractData} />
+                <RemoveWrapper showDevVaults={showDevVaults}>
+                  <ButtonFilledRed
+                    variant="contained"
+                    color="secondary"
+                    onClick={removeVault}
+                  >
+                    Remove Contract
+                  </ButtonFilledRed>
+                </RemoveWrapper>
+              </Footer>
             </Card.Footer>
           </Card.Body>
         </Accordion.Collapse>

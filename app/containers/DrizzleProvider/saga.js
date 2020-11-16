@@ -148,11 +148,11 @@ function* addWatchedContracts(action) {
 }
 
 function* removeWatchedContract(action) {
-  const { contractName } = action;
+  const { contractName: address } = action;
   let localContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
   );
-  localContracts = _.pull(localContracts, contractName);
+  localContracts = _.pull(localContracts, address);
   localStorage.setItem('watchedContracts', JSON.stringify(localContracts));
 }
 

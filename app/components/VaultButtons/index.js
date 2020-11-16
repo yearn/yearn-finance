@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(5, 1fr);
   width: 100%;
   grid-gap: 0px 20px;
-  margin: 20px;
   direction: rtl;
 `;
 

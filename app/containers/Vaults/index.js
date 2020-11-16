@@ -66,7 +66,7 @@ const Vaults = () => {
   //   });
 
   const renderVault = vault => (
-    <Vault vault={vault} key={vault.address} showAllFields={showDevVaults} />
+    <Vault vault={vault} key={vault.address} showDevVaults={showDevVaults} />
   );
   let vaultRows = _.map(vaults, renderVault);
   let columnHeader;

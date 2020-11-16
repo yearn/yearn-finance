@@ -61,7 +61,7 @@ const lineHeight = 16;
 
 const Editor = styled.div`
   font-size: 16px;
-  display: ${props => (props.show ? 'inherit' : 'none')};
+  display: ${props => (props.devMode ? 'inherit' : 'none')};
   line-height: ${lineHeight}px;
   width: 100%;
   height: 100%;
@@ -87,7 +87,7 @@ const ButtonWrapper = styled.div`
 const BodyWrapper = styled.div`
   display: grid;
   height: 100%;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: ${props => (props.devMode ? '50% 50%' : '1fr')};
 `;
 
 const NormalizeInput = styled.div`
@@ -399,8 +399,8 @@ export default function TransactionModal(props) {
       animation={false}
     >
       <Modal.Body>
-        <BodyWrapper>
-          <Editor show={devMode}>
+        <BodyWrapper devMode={devMode}>
+          <Editor devMode={devMode}>
             <div id="editor" ref={textAreaRef} />
           </Editor>
           <InputWrapper>

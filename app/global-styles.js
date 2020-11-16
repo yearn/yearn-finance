@@ -500,6 +500,12 @@ canvas {
   border-radius: 10px 0px 0px 10px;
 }
 
+.modal-dialog.transactionModal {
+  max-width: 551px;
+  min-height: 500px;
+  height: 80vh;
+}
+
 .modal-dialog.transactionModal.devMode {
   max-width: 80vw;
   max-height: 80vh;

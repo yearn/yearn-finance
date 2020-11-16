@@ -41,10 +41,10 @@ function* loadVaultContracts() {
       ],
       writeMethods: [
         {
-          name: 'deposit',
+          name: 'withdraw',
         },
         {
-          name: 'withdraw',
+          name: 'deposit',
         },
       ],
     },

@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-export default function Dashboard(props) {
+export default function Dashboard() {
   return (
     <Wrapper>
       <Link to="vaults">

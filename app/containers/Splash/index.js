@@ -23,7 +23,7 @@ const Logo = styled.div`
   margin-bottom: 20px;
 `;
 
-export default function HomePage(props) {
+export default function HomePage() {
   return (
     <Wrapper>
       <Logo>Yearn</Logo>

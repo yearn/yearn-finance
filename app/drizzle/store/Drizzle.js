@@ -1,4 +1,3 @@
-import { generateStore } from './generateStore';
 import defaultOptions from './defaultOptions';
 import merge from './mergeOptions';
 import DrizzleContract from './DrizzleContract';
@@ -53,13 +52,14 @@ class Drizzle {
     this.loadingContract = {};
 
     // Wait for window load event in case of injected web3.
-    isEnvReadyPromise.then(() => {
-      // Begin Drizzle initialization.
-      this.store.dispatch({
-        type: 'DRIZZLE_INITIALIZING',
-        drizzle: this,
-        options,
-      });
+    // isEnvReadyPromise.then(() => {
+    //   // Begin Drizzle initialization.
+
+    // });
+    this.store.dispatch({
+      type: 'DRIZZLE_INITIALIZING',
+      drizzle: this,
+      options,
     });
   }
 
@@ -95,19 +95,19 @@ class Drizzle {
       );
     }
 
-    this.store.dispatch({ type: 'CONTRACT_INITIALIZING', contractConfig });
+    // this.store.dispatch({ type: 'CONTRACT_INITIALIZING', contractConfig });
 
     this.contracts[drizzleContract.contractName] = drizzleContract;
     this.contractList.push(drizzleContract);
 
-    this.store.dispatch({
-      type: 'CONTRACT_INITIALIZED',
-      name: contractConfig.contractName,
-      group,
-      readMethods,
-      writeMethods,
-      metadata,
-    });
+    // this.store.dispatch({
+    //   type: 'CONTRACT_INITIALIZED',
+    //   name: contractConfig.contractName,
+    //   group,
+    //   readMethods,
+    //   writeMethods,
+    //   metadata,
+    // });
   }
 
   deleteContract(contractName) {

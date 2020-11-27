@@ -22,21 +22,24 @@ function* loadVaultContracts() {
   );
 
   const vaultTokenAddresses = _.map(vaults, vault => vault.tokenAddress);
-
   const contracts = [
     {
-      group: 'vaults',
+      namespace: 'vaults',
       metadata: {
         version: '1',
       },
       abi: vaultAbi,
+      allReadMethods: false,
       addresses: vaultAddresses,
       readMethods: [
-        { name: 'name' },
+        {
+          name: 'name',
+          constant: true,
+        },
         { name: 'balance' },
         {
           name: 'balanceOf',
-          args: account,
+          args: [account],
         },
       ],
       writeMethods: [
@@ -49,25 +52,26 @@ function* loadVaultContracts() {
       ],
     },
     {
-      group: 'tokens',
+      namespace: 'tokens',
       abi: minimalErc20Abi,
+      allReadMethods: false,
       addresses: vaultTokenAddresses,
       readMethods: [
         {
           name: 'balanceOf',
-          args: account,
+          args: [account],
         },
       ],
     },
     {
-      group: 'localContracts',
+      namespace: 'localContracts',
       addresses: localContracts,
       allWriteMethods: true,
       allReadMethods: true,
       readMethods: [
         {
           name: 'balanceOf',
-          args: account,
+          args: [account],
         },
       ],
     },

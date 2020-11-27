@@ -1,4 +1,5 @@
 import request from 'utils/request';
+
 import {
   select,
   delay,
@@ -33,7 +34,7 @@ function* addContract(
   contractAddress,
   abi,
   events,
-  group,
+  namespace,
   metadata,
   readMethods,
   writeMethods,
@@ -93,7 +94,7 @@ function* addContract(
   yield drizzle.addContract(
     contractConfig,
     events,
-    group,
+    namespace,
     metadata,
     newReadMethods.reverse(),
     newWriteMethods.reverse(),
@@ -112,7 +113,7 @@ function* addContract(
       drizzleContract.methods[method.name].cacheCall();
     }
   };
-  _.each(newReadMethods, cacheCall);
+
   if (!abi) {
     // TODO: Add ABI caching and remove delay
     // TODO: Increase delay to maximum of 200 ms (5 etherscan calls per second per IP)
@@ -130,14 +131,14 @@ function* addWatchedContracts(action) {
   const addressesToAdd = _.difference(contractAddresses, watchedContracts);
   const contracts = [
     {
-      group: 'localContracts',
+      namespace: 'localContracts',
       addresses: addressesToAdd,
       allReadMethods: true,
       allWriteMethods: true,
       readMethods: [
         {
           name: 'balanceOf',
-          args: account,
+          args: [account],
         },
       ],
     },
@@ -161,7 +162,7 @@ function* addContractsBatch(contractBatch) {
     abi,
     addresses,
     events,
-    group,
+    namespace,
     metadata,
     readMethods,
     writeMethods,
@@ -176,7 +177,7 @@ function* addContractsBatch(contractBatch) {
         address,
         abi,
         events,
-        group,
+        namespace,
         metadata,
         readMethods,
         writeMethods,
@@ -185,39 +186,21 @@ function* addContractsBatch(contractBatch) {
       ),
     ),
   );
-
-  // TODO: Refactor to use async once we implement multi-call
-  // Sync
-  // eslint-disable-next-line no-restricted-syntax
-  // for (const address of addresses) {
-  //   yield addContract(
-  //     address,
-  //     abi,
-  //     events,
-  //     group,
-  //     metadata,
-  //     readMethods,
-  //     writeMethods,
-  //     allReadMethods,
-  //     allWriteMethods,
-  //   );
-  // }
 }
 
 export function* addContracts(action) {
-  const { contracts } = action;
+  const { contracts, web3 } = action;
   yield setContext(action);
+
+  const batchCallRequest = contracts;
+  yield put({ type: 'BATCH_CALL_REQUEST', request: batchCallRequest });
+  // const initialContractsState = yield batchCall.execute(contracts);
+
+  // yield put({ type: 'CONTRACTS_SYNCED', contracts: initialContractsState });
   // Async;
   yield all(
     _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
   );
-
-  // TODO: Refactor to use async once we implement multi-call
-  // Sync
-  // eslint-disable-next-line no-restricted-syntax
-  // for (const contract of contracts) {
-  //   yield addContractsBatch(contract);
-  // }
 }
 
 export default function* initialize() {

@@ -5,8 +5,11 @@ import {
   take,
   takeEvery,
   takeLatest,
+  select,
   all,
 } from 'redux-saga/effects';
+
+import { selectContractsSubscriptions } from 'drizzle/store/contracts/contractsSelectors';
 import BlockTracker from 'eth-block-tracker-es5';
 
 /*
@@ -16,7 +19,7 @@ import BlockTracker from 'eth-block-tracker-es5';
 export function createBlockChannel({ drizzle, web3, syncAlways }) {
   return eventChannel(emit => {
     const blockEvents = web3.eth
-      .subscribe('newBlockHeaders', (error, result) => {
+      .subscribe('newBlockHeaders', error => {
         if (error) {
           emit({ type: 'BLOCKS_FAILED', error });
 
@@ -139,7 +142,12 @@ function* processBlockHeader({ blockHeader, drizzle, web3, syncAlways }) {
   }
 }
 
+function* dispatchSyncRequest(contract, address) {
+  // yield put({ type: 'CONTRACT_SYNCING', contract });
+}
+
 function* processBlock({ block, drizzle, web3, syncAlways }) {
+  const subscriptions = yield select(selectContractsSubscriptions());
   try {
     // Emit block for addition to store.
     // Regardless of syncing success/failure, this is still the latest block.
@@ -160,22 +168,45 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
 
     const txs = block.transactions;
 
+    const contractsPendingSync = {};
+
     if (txs.length > 0) {
       // Loop through txs looking for any contract address of interest
       for (let i = 0; i < txs.length; i++) {
         const from = txs[i].from || '';
         const fromContract = drizzle.findContractByAddress(from.toLowerCase());
+
         if (fromContract) {
-          yield put({ type: 'CONTRACT_SYNCING', contract: fromContract });
+          contractsPendingSync[from] = fromContract;
         }
 
         const to = txs[i].to || '';
         const toContract = drizzle.findContractByAddress(to.toLowerCase());
         if (toContract) {
-          yield put({ type: 'CONTRACT_SYNCING', contract: toContract });
+          contractsPendingSync[to] = toContract;
         }
       }
     }
+    const contractAddressesPendingSync = Object.keys(contractsPendingSync);
+
+    const buildBatchCallRequest = (acc, subscription) => {
+      const newSubscription = subscription;
+      const subscriptionAddresses = subscription.addresses;
+      const matchedAddreses = _.intersection(
+        subscriptionAddresses,
+        contractAddressesPendingSync,
+      );
+      const foundMatchedAddresses = matchedAddreses.length;
+      if (foundMatchedAddresses) {
+        newSubscription.addresses = matchedAddreses;
+        acc.push(newSubscription);
+      }
+      return acc;
+    };
+    const request = _.reduce(subscriptions, buildBatchCallRequest, []);
+    yield put({ type: 'BATCH_CALL_REQUEST', request });
+    // console.log('peding sync', contractAddressesPendingSync);
+    // yield all(_.map(contractsPendingSync, dispatchSyncRequest));
   } catch (error) {
     console.error('Error in block processing:');
     console.error(error);

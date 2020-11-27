@@ -1,5 +1,13 @@
 import { END, eventChannel } from 'redux-saga';
-import { call, put, select, take, takeEvery } from 'redux-saga/effects';
+import {
+  call,
+  put,
+  select,
+  take,
+  setContext,
+  getContext,
+  takeEvery,
+} from 'redux-saga/effects';
 import * as EventActions from './constants';
 
 /*
@@ -280,7 +288,17 @@ function isSendOrCallOptions(options) {
   return false;
 }
 
+function* executeBatchCall(action) {
+  const { request, batchCall } = action;
+  const requestNotEmpty = _.size(request);
+  if (requestNotEmpty) {
+    const response = yield batchCall.execute(request);
+    yield put({ type: 'BATCH_CALL_RESPONSE', payload: response });
+  }
+}
+
 function* contractsSaga() {
+  yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('SEND_CONTRACT_TX', callSendContractTx);
   yield takeEvery('CALL_CONTRACT_FN', callCallContractFn);
   yield takeEvery('CONTRACT_SYNCING', callSyncContract);

@@ -4,25 +4,40 @@
  *
  */
 
+import BatchCall from 'web3-batch-call';
+
 // eslint-disable-next-line no-unused-vars
 export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
   const { type } = action;
   if (type === 'APP_READY') {
     // eslint-disable-next-line no-param-reassign
+    const batchCall = new BatchCall({
+      web3: action.web3,
+      etherscan: {
+        apiKey: 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4',
+      },
+      logging: true,
+      simplifyResponse: true,
+    });
+
     drizzleWeb3 = {
       drizzle: action.drizzle,
       web3: action.web3,
       notify: action.notify,
+      batchCall,
     };
   }
 
   const newAction = action;
   const drizzleAction =
-    action.type.startsWith('DRIZZLE') || action.type === 'TX_BROADCASTED';
+    action.type.startsWith('DRIZZLE') ||
+    action.type === 'TX_BROADCASTED' ||
+    action.type === 'BATCH_CALL_REQUEST';
   if (drizzleAction && drizzleWeb3) {
     newAction.drizzle = drizzleWeb3.drizzle;
     newAction.web3 = drizzleWeb3.web3;
     newAction.notify = drizzleWeb3.notify;
+    newAction.batchCall = drizzleWeb3.batchCall;
   }
   return next(newAction);
 };

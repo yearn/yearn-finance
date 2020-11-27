@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 
 const selectApp = state => state.app;
 const selectRouter = state => state.router;
+const selectContractsData = state => state.contracts;
 
 export const selectReady = () =>
   createSelector(
@@ -33,8 +34,8 @@ export const selectContracts = group =>
     substate => substate[group],
   );
 
-export const selectContractData = (group, contractAddress) =>
+export const selectContractData = contractAddress =>
   createSelector(
-    selectApp,
-    substate => _.find(substate[group], { address: contractAddress }) || {},
+    selectContractsData,
+    substate => substate[contractAddress] || {},
   );

@@ -5,6 +5,7 @@ export const drizzleMiddleware = drizzleInstance => store => next => action => {
     drizzleInstance = action.drizzle;
   }
 
+  // console.log('action', action.type);
   if (
     type === 'ACCOUNTS_FETCHED' &&
     drizzleInstance &&

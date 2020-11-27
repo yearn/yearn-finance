@@ -100,6 +100,8 @@ const LinkWrap = props => {
 
 const Vault = props => {
   const { vault, showDevVaults } = props;
+  const vaultContractData = useSelector(selectContractData(vault.address));
+  _.merge(vault, vaultContractData);
   const {
     symbolAlias,
     vaultIcon,
@@ -117,8 +119,9 @@ const Vault = props => {
 
   const devMode = useSelector(selectDevMode());
   const tokenContractData = useSelector(
-    selectContractData('tokens', tokenAddress || token),
+    selectContractData(tokenAddress || token),
   );
+
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   const vaultName = symbolAlias || tokenSymbol || name;

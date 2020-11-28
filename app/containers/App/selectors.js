@@ -28,10 +28,10 @@ export const selectLocation = () =>
     routerState => routerState.location,
   );
 
-export const selectContracts = group =>
+export const selectContracts = namespace =>
   createSelector(
-    selectApp,
-    substate => substate[group],
+    selectContractsData,
+    substate => _.filter(substate, { namespace }),
   );
 
 export const selectContractData = contractAddress =>

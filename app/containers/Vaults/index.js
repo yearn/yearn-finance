@@ -1,16 +1,17 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useContext } from 'react';
 import { compose } from 'redux';
 import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import { selectContracts } from 'containers/App/selectors';
+import { selectVaults, selectContracts } from 'containers/App/selectors';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import VaultsNavLinks from 'components/VaultsNavLinks';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AddVault from 'components/AddVault';
+import AccordionContext from 'react-bootstrap/AccordionContext';
 
 const Wrapper = styled.div`
   width: 1088px;
@@ -33,45 +34,11 @@ const DevHeader = styled.div`
 `;
 
 const Vaults = () => {
-  const vaults = useSelector(selectContracts('vaults'));
-  const localContracts = useSelector(selectContracts('localContracts'));
   const devMode = useSelector(selectDevMode());
   const showDevVaults = useShowDevVaults();
 
-  // const localVaultContracts = useDrizzleContracts('localVaults');
-  // useRequireConnection();
-  // const web3 = useWeb3();
-  // const notify = useNotify();
-  // const onboard = useOnboard();
-  // const address = useAddress();
-  // get current account
-  // if (!web3 || !address || !onboard) {
-  //   return;
-  // }
-  // console.log('adrv, ', address, web3, onboard);
-  // const accounts = await web3.eth.getAccounts();
-  // console.log('accts', accounts);
-  // await onboard.walletCheck();
-  // const address1 = '0x19A329742EC1c25EFe894B5F81BDfd1D44A2C85e';
-  // send the transaction using web3.js and get the hash
-  // web3.eth
-  //   .sendTransaction({
-  //     from: address,
-  //     to: address,
-  //     value: '000000000000001',
-  //   })
-  //   .on('transactionHash', function(hash) {
-  //     // pass the hash to notify to track it
-  //     notify.hash(hash);
-  //   });
-
-  const renderVault = vault => (
-    <Vault vault={vault} key={vault.address} showDevVaults={showDevVaults} />
-  );
-  let vaultRows = _.map(vaults, renderVault);
   let columnHeader;
   if (showDevVaults) {
-    vaultRows = _.map(localContracts, renderVault);
     columnHeader = <VaultsHeaderDev />;
   } else {
     columnHeader = <VaultsHeader />;
@@ -84,10 +51,35 @@ const Vaults = () => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
       {columnHeader}
-      <Accordion>{vaultRows}</Accordion>
+      <Accordion>
+        <VaultsWrapper showDevVaults={showDevVaults} />
+      </Accordion>
     </Wrapper>
   );
 };
 
+const VaultsWrapper = props => {
+  const { showDevVaults } = props;
+  const vaults = useSelector(selectVaults('vaults'));
+  const localContracts = useSelector(selectContracts('localContracts'));
+  const currentEventKey = useContext(AccordionContext);
+  console.log('zoggg', localContracts);
+  const renderVault = vault => (
+    <Vault
+      vault={vault}
+      key={vault.address}
+      active={currentEventKey === vault.address}
+      showDevVaults={showDevVaults}
+    />
+  );
+
+  let vaultRows = _.map(vaults, renderVault);
+  if (showDevVaults) {
+    vaultRows = _.map(localContracts, renderVault);
+  }
+
+  return <React.Fragment>{vaultRows}</React.Fragment>;
+};
+
 Vaults.whyDidYouRender = true;
-export default compose(memo)(Vaults);
+export default Vaults;

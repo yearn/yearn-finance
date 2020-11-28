@@ -1,10 +1,9 @@
-import React, { useContext, memo } from 'react';
+import React, { memo } from 'react';
 import { compose } from 'redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
 import Accordion from 'react-bootstrap/Accordion';
-import AccordionContext from 'react-bootstrap/AccordionContext';
 import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import Arrow from 'images/arrow.svg';
@@ -99,7 +98,7 @@ const LinkWrap = props => {
 };
 
 const Vault = props => {
-  const { vault, showDevVaults } = props;
+  const { vault, showDevVaults, active } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -125,9 +124,7 @@ const Vault = props => {
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   const vaultName = symbolAlias || tokenSymbol || name;
-  const accordionEventKey = address;
-  const currentEventKey = useContext(AccordionContext);
-  const active = currentEventKey === accordionEventKey;
+
   const drizzle = useDrizzle();
   // const active = false;
 
@@ -240,15 +237,11 @@ const Vault = props => {
   return (
     <React.Fragment>
       <Card className={active && 'active'}>
-        <Accordion.Toggle
-          as={Card.Header}
-          variant="link"
-          eventKey={accordionEventKey}
-        >
+        <Accordion.Toggle as={Card.Header} variant="link" eventKey={address}>
           {vaultTop}
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
-        <Accordion.Collapse eventKey={accordionEventKey}>
+        <Accordion.Collapse eventKey={address}>
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>

@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects';
 
 import { selectContractsSubscriptions } from 'drizzle/store/contracts/contractsSelectors';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import BlockTracker from 'eth-block-tracker-es5';
 
 /*
@@ -142,11 +143,8 @@ function* processBlockHeader({ blockHeader, drizzle, web3, syncAlways }) {
   }
 }
 
-function* dispatchSyncRequest(contract, address) {
-  // yield put({ type: 'CONTRACT_SYNCING', contract });
-}
-
 function* processBlock({ block, drizzle, web3, syncAlways }) {
+  const account = yield select(selectAccount());
   const subscriptions = yield select(selectContractsSubscriptions());
   try {
     // Emit block for addition to store.
@@ -166,13 +164,45 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
       return;
     }
 
-    const txs = block.transactions;
-
     const contractsPendingSync = {};
+
+    const transferTopic =
+      '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+    const watchedTopics = [transferTopic];
+
+    const logs = yield web3.eth.getPastLogs({
+      fromBlock: block.number,
+      toBlock: block.number,
+      topics: watchedTopics,
+    });
+
+    const checkForTransactions = log => {
+      const { topics, address } = log;
+
+      const from = topics[1];
+      const to = topics[2];
+      if (!from || !to) {
+        return;
+      }
+      const fromMatch = _.endsWith(
+        from.toLowerCase(),
+        account.replace(/0x/, ''),
+      );
+      const toMatch = _.endsWith(to.toLowerCase(), account.replace(/0x/, ''));
+      const transactionAffectsUser = fromMatch || toMatch;
+      if (transactionAffectsUser) {
+        const contract = drizzle.findContractByAddress(address.toLowerCase());
+        const checksumAddress = web3.utils.toChecksumAddress(address);
+        contractsPendingSync[checksumAddress] = contract;
+      }
+    };
+    _.each(logs, checkForTransactions);
+
+    const txs = block.transactions;
 
     if (txs.length > 0) {
       // Loop through txs looking for any contract address of interest
-      for (let i = 0; i < txs.length; i++) {
+      for (let i = 0; i < txs.length; i += 1) {
         const from = txs[i].from || '';
         const fromContract = drizzle.findContractByAddress(from.toLowerCase());
 
@@ -189,9 +219,11 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
     }
     const contractAddressesPendingSync = Object.keys(contractsPendingSync);
 
-    const buildBatchCallRequest = (acc, subscription) => {
-      const newSubscription = subscription;
+    const request = [];
+    const buildBatchCallRequest = subscription => {
+      const newSubscription = _.clone(subscription);
       const subscriptionAddresses = subscription.addresses;
+
       const matchedAddreses = _.intersection(
         subscriptionAddresses,
         contractAddressesPendingSync,
@@ -199,14 +231,12 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
       const foundMatchedAddresses = matchedAddreses.length;
       if (foundMatchedAddresses) {
         newSubscription.addresses = matchedAddreses;
-        acc.push(newSubscription);
+        request.push(newSubscription);
       }
-      return acc;
     };
-    const request = _.reduce(subscriptions, buildBatchCallRequest, []);
+
+    _.each(subscriptions, buildBatchCallRequest);
     yield put({ type: 'BATCH_CALL_REQUEST', request });
-    // console.log('peding sync', contractAddressesPendingSync);
-    // yield all(_.map(contractsPendingSync, dispatchSyncRequest));
   } catch (error) {
     console.error('Error in block processing:');
     console.error(error);

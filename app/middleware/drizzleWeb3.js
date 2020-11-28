@@ -18,6 +18,7 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
       },
       logging: true,
       simplifyResponse: true,
+      store: localStorage,
     });
 
     drizzleWeb3 = {

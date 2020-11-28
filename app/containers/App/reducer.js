@@ -5,7 +5,6 @@ import {
 } from 'containers/ConnectionProvider/constants';
 import {
   DRIZZLE_INITIALIZED,
-  DRIZZLE_ADD_CONTRACTS,
   DELETE_CONTRACT,
   GOT_CONTRACT_VAR,
   CONTRACT_INITIALIZED,
@@ -93,19 +92,6 @@ const appReducer = (state = initialState, action) =>
     };
 
     switch (action.type) {
-      case DRIZZLE_ADD_CONTRACTS: {
-        const { contracts } = action;
-        const watchedContractAddresses = {};
-        const addContracts = contract => {
-          const { group, addresses } = contract;
-          if (group) {
-            watchedContractAddresses[group] = addresses;
-          }
-        };
-        _.each(contracts, addContracts);
-        draft.watchedContractAddresses = watchedContractAddresses;
-        break;
-      }
       case VAULTS_LOADED:
         draft.loading.vaults = false;
         draft.vaults = action.vaults;

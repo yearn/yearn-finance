@@ -63,7 +63,6 @@ const VaultsWrapper = props => {
   const vaults = useSelector(selectVaults('vaults'));
   const localContracts = useSelector(selectContracts('localContracts'));
   const currentEventKey = useContext(AccordionContext);
-  console.log('zoggg', localContracts);
   const renderVault = vault => (
     <Vault
       vault={vault}

@@ -1,5 +1,3 @@
-import request from 'utils/request';
-
 import {
   select,
   delay,
@@ -11,6 +9,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import { getReadMethods, getWriteMethods } from 'utils/contracts';
+import { getCachedAbi } from 'utils/abiStorage';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts as addContractsAction } from './actions';
 import {
@@ -18,17 +17,8 @@ import {
   ADD_WATCHED_CONTRACTS,
   DRIZZLE_ADD_CONTRACTS,
 } from './constants';
-const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4';
 // import * as s from '../selectors';
 // import * as a from './actions';
-
-function* fetchAbi(address) {
-  const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${apiKey}`;
-  const resp = yield call(request, url);
-  console.log('Fetch ABI:', address);
-  const abi = JSON.parse(resp.result);
-  return abi;
-}
 
 function* addContract(
   contractAddress,
@@ -45,7 +35,7 @@ function* addContract(
   const drizzle = yield getContext('drizzle');
   let newAbi = abi;
   if (!abi) {
-    newAbi = yield fetchAbi(contractAddress);
+    newAbi = yield getCachedAbi(contractAddress);
   }
 
   const allAbiReadMethods = getReadMethods(newAbi);
@@ -100,19 +90,6 @@ function* addContract(
     newWriteMethods.reverse(),
   );
   const drizzleContract = drizzle.contracts[contractAddress];
-
-  const cacheCall = method => {
-    const methodExists = _.find(newAbi, { name: method.name });
-    if (!methodExists) {
-      // Attempted to add method args that dont exist
-      return;
-    }
-    if (method.args) {
-      drizzleContract.methods[method.name].cacheCall(method.args);
-    } else {
-      drizzleContract.methods[method.name].cacheCall();
-    }
-  };
 
   if (!abi) {
     // TODO: Add ABI caching and remove delay
@@ -189,18 +166,17 @@ function* addContractsBatch(contractBatch) {
 }
 
 export function* addContracts(action) {
-  const { contracts, web3 } = action;
+  const { contracts: contractsBatch } = action;
   yield setContext(action);
 
-  const batchCallRequest = contracts;
-  yield put({ type: 'BATCH_CALL_REQUEST', request: batchCallRequest });
-  // const initialContractsState = yield batchCall.execute(contracts);
-
-  // yield put({ type: 'CONTRACTS_SYNCED', contracts: initialContractsState });
-  // Async;
   yield all(
-    _.map(contracts, contractBatch => call(addContractsBatch, contractBatch)),
+    _.map(contractsBatch, contractBatch =>
+      call(addContractsBatch, contractBatch),
+    ),
   );
+
+  const batchCallRequest = contractsBatch;
+  yield put({ type: 'BATCH_CALL_REQUEST', request: batchCallRequest });
 }
 
 export default function* initialize() {

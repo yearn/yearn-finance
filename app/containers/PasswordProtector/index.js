@@ -37,7 +37,7 @@ const EnterPasswordText = styled.div`
 `;
 
 const passwordValid = password => {
-  const requiredHash = '4b605e1badc0b8963a85107a79d10a63';
+  const requiredHash = '8a90332211210778609ca383980c8ac3';
   const passwordHash = md5(md5(password));
   const valid = passwordHash === requiredHash;
   return valid;

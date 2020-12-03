@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { useModal } from 'containers/ModalProvider/hooks';
 import BigNumber from 'bignumber.js';
-import { useContract } from 'containers/DrizzleProvider/hooks';
+import { useContract, useDrizzle } from 'containers/DrizzleProvider/hooks';
 
 const Wrapper = styled.div`
   display: grid;
@@ -18,10 +18,12 @@ const Wrapper = styled.div`
 
 export default function VaultButtons(props) {
   const { vault, token } = props;
-  const { address, writeMethods, decimals } = vault;
+  const { address, decimals } = vault;
   const account = useSelector(selectAccount());
   const contract = useContract(address);
   const tokenBalanceOf = token.balanceOf;
+  const drizzle = useDrizzle();
+  const writeMethods = _.get(drizzle, `contracts.${address}.writeMethods`, []);
   const MAX_UINT256 = new BigNumber(2)
     .pow(256)
     .minus(1)

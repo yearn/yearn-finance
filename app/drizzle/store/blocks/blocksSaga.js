@@ -145,6 +145,9 @@ function* processBlockHeader({ blockHeader, drizzle, web3, syncAlways }) {
 
 function* processBlock({ block, drizzle, web3, syncAlways }) {
   const account = yield select(selectAccount());
+  if (!account) {
+    return;
+  }
   const subscriptions = yield select(selectContractsSubscriptions());
   try {
     // Emit block for addition to store.

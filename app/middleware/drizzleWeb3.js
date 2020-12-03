@@ -21,6 +21,7 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
       store: localStorage,
     });
 
+    // eslint-disable-next-line no-param-reassign
     drizzleWeb3 = {
       drizzle: action.drizzle,
       web3: action.web3,

@@ -1,5 +1,4 @@
-import React, { memo, useEffect, useContext } from 'react';
-import { compose } from 'redux';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';

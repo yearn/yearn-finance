@@ -1,6 +1,5 @@
 import {
   select,
-  delay,
   call,
   put,
   setContext,
@@ -17,8 +16,6 @@ import {
   ADD_WATCHED_CONTRACTS,
   DRIZZLE_ADD_CONTRACTS,
 } from './constants';
-// import * as s from '../selectors';
-// import * as a from './actions';
 
 function* addContract(
   contractAddress,
@@ -89,13 +86,7 @@ function* addContract(
     newReadMethods.reverse(),
     newWriteMethods.reverse(),
   );
-  const drizzleContract = drizzle.contracts[contractAddress];
-
-  if (!abi) {
-    // TODO: Add ABI caching and remove delay
-    // TODO: Increase delay to maximum of 200 ms (5 etherscan calls per second per IP)
-    yield delay(0);
-  }
+  // const drizzleContract = drizzle.contracts[contractAddress];
 }
 
 function* addWatchedContracts(action) {
@@ -147,10 +138,28 @@ function* addContractsBatch(contractBatch) {
     allWriteMethods,
   } = contractBatch;
 
-  // Async
-  yield all(
-    _.map(addresses, address =>
-      addContract(
+  if (abi) {
+    // Async
+    yield all(
+      _.map(addresses, address =>
+        addContract(
+          address,
+          abi,
+          events,
+          namespace,
+          metadata,
+          readMethods,
+          writeMethods,
+          allReadMethods,
+          allWriteMethods,
+        ),
+      ),
+    );
+  } else {
+    // Sync
+    // eslint-disable-next-line no-restricted-syntax
+    for (const address of addresses) {
+      yield addContract(
         address,
         abi,
         events,
@@ -160,9 +169,9 @@ function* addContractsBatch(contractBatch) {
         writeMethods,
         allReadMethods,
         allWriteMethods,
-      ),
-    ),
-  );
+      );
+    }
+  }
 }
 
 export function* addContracts(action) {
@@ -175,8 +184,11 @@ export function* addContracts(action) {
     ),
   );
 
-  const batchCallRequest = contractsBatch;
-  yield put({ type: 'BATCH_CALL_REQUEST', request: batchCallRequest });
+  // Split up contract calls into batches (1 contract type per batch... vaults/tokens/localContracts) rather than call them all in the same RPC message
+  // eslint-disable-next-line no-restricted-syntax
+  for (const contractBatch of contractsBatch) {
+    yield put({ type: 'BATCH_CALL_REQUEST', request: [contractBatch] });
+  }
 }
 
 export default function* initialize() {

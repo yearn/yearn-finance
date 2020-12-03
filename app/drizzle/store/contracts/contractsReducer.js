@@ -29,11 +29,14 @@ const contractsReducer = (state = initialState, action) =>
           _.each(contractState, mergeState);
         };
         _.each(contracts, mergeContractState);
-
-        // draft.sub = _.clone(subscriptions);
-        // draft = state;
         break;
       }
+      case 'DELETE_CONTRACT': {
+        const { contractName: address } = action;
+        delete draft[address];
+        break;
+      }
+
       default:
         break;
     }

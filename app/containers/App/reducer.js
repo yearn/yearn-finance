@@ -5,7 +5,6 @@ import {
 } from 'containers/ConnectionProvider/constants';
 import {
   DRIZZLE_INITIALIZED,
-  DELETE_CONTRACT,
   GOT_CONTRACT_VAR,
   CONTRACT_INITIALIZED,
 } from 'containers/DrizzleProvider/constants';
@@ -60,14 +59,6 @@ const loadContractData = (state, draft, action) => {
       }
       newItem[field] = value;
       newDraft[group] = _.clone(draft[group]);
-      break;
-    }
-    case DELETE_CONTRACT: {
-      const { contractName: address } = action;
-      const { localContracts } = state;
-      console.log('remove', address);
-      _.remove(localContracts, { address });
-      newDraft.localContracts = _.clone(localContracts);
       break;
     }
     default:

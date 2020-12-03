@@ -160,7 +160,10 @@ const Vault = props => {
         );
       } else if (valIsNumber) {
         newVal = (
-          <AnimatedNumber value={newVal} formatter={v => v.toFixed(0)} />
+          <AnimatedNumber
+            value={newVal}
+            formatter={v => new BigNumber(v).toFixed(0)}
+          />
         );
       }
       return (

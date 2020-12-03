@@ -154,8 +154,8 @@ const Vault = props => {
       const valIsNumber = /^[0-9]*$/.test(newVal);
       if (valIsAddress) {
         newVal = (
-          <A href={`https://etherscan.io/address/${address}`} target="_blank">
-            {address}
+          <A href={`https://etherscan.io/address/${newVal}`} target="_blank">
+            {newVal}
           </A>
         );
       } else if (valIsNumber) {
@@ -171,12 +171,7 @@ const Vault = props => {
       );
     };
 
-    const strippedVault = _.omit(vault, [
-      'metadata',
-      'readMethods',
-      'writeMethods',
-      'group',
-    ]);
+    const strippedVault = _.omit(vault, ['group']);
     const fields = _.map(strippedVault, renderField);
     vaultBottom = (
       <Table>

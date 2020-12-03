@@ -215,7 +215,7 @@ export default function TransactionModal(props) {
   const updateField = (field, inputValue, decimals, skipNormalization) => {
     const newInputFields = _.clone(inputFields);
     let value = inputValue;
-    if (normalizeAmountsCheckboxChanged || skipNormalization) {
+    if ((normalizeAmountsCheckboxChanged || skipNormalization) && decimals) {
       value = new BigNumber(value).times(10 ** decimals).toFixed(0);
     }
     newInputFields[field] = {

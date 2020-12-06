@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import md5 from 'md5';
 
 const PasswordWall = styled.div`
-  background-image: url(https://pbs.twimg.com/media/Emh_6n2U4AAbJ1m?format=jpg&name=4096x4096);
+  background-image: url(https://media3.giphy.com/media/Q9aBxHn9fTqKs/giphy.gif?cid=ecf05e475fd60729d93b6de394665338aaa2cc698f9253b0&rid=giphy.gif);
   background-size: cover;
   position: absolute;
   top: 0;
@@ -33,12 +33,14 @@ const EnterPasswordText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  filter: drop-shadow(6px 5px 4px #44d);
+  filter: drop-shadow(0px 0px 14px #ccc);
+  font-family: monospace;
 `;
 
 const passwordValid = password => {
-  const requiredHash = '8a90332211210778609ca383980c8ac3';
-  const passwordHash = md5(md5(password));
+  const requiredHash = 'dbba1bfe930d953cabcc03d7b6ab05e6';
+  const passwordHash = md5(md5(md5(md5(password))));
+
   const valid = passwordHash === requiredHash;
   return valid;
 };
@@ -51,11 +53,11 @@ const PasswordProtector = props => {
   if (authenticated) {
     content = children;
   } else {
-    console.log('wrong password ser');
+    console.log('round 2');
     content = (
       <BlackBackground>
         <PasswordWall />
-        <EnterPasswordText>Enter password</EnterPasswordText>
+        <EnterPasswordText>enter password</EnterPasswordText>
       </BlackBackground>
     );
   }

@@ -189,7 +189,7 @@ const Vault = props => {
               <Icon src={vaultIcon || tokenIcon} />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address}>
-              <IconName devMode={devMode}>{vaultName}</IconName>
+              <IconName devMode={devMode}>{vaultName || address}</IconName>
             </LinkWrap>
           </IconAndName>
         </div>

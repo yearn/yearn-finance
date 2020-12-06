@@ -55,6 +55,7 @@ function* loadVaultContracts() {
       namespace: 'tokens',
       abi: minimalErc20Abi,
       allReadMethods: false,
+      syncOnce: true, // Additional syncs will be performed by watching logs
       addresses: vaultTokenAddresses,
       readMethods: [
         {

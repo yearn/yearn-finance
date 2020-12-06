@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
-import { useSelector } from 'react-redux';
-import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { useModal } from 'containers/ModalProvider/hooks';
 import BigNumber from 'bignumber.js';
 import { useContract, useDrizzle } from 'containers/DrizzleProvider/hooks';
@@ -19,7 +17,6 @@ const Wrapper = styled.div`
 export default function VaultButtons(props) {
   const { vault, token } = props;
   const { address, decimals } = vault;
-  const account = useSelector(selectAccount());
   const contract = useContract(address);
   const tokenBalanceOf = token.balanceOf;
   const drizzle = useDrizzle();
@@ -41,9 +38,6 @@ export default function VaultButtons(props) {
 
   const argConfig = {
     approve: {
-      _spender: {
-        defaultValue: account,
-      },
       _value: {
         defaultValue: MAX_UINT256,
         configurable: true,

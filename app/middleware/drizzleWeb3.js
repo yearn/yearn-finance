@@ -35,7 +35,8 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
   const drizzleAction =
     action.type.startsWith('DRIZZLE') ||
     action.type === 'TX_BROADCASTED' ||
-    action.type === 'BATCH_CALL_REQUEST';
+    action.type === 'BATCH_CALL_REQUEST' ||
+    action.type === 'BATCH_CALL_RESPONSE';
   if (drizzleAction && drizzleWeb3) {
     newAction.drizzle = drizzleWeb3.drizzle;
     newAction.web3 = drizzleWeb3.web3;

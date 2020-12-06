@@ -1,13 +1,8 @@
 import { END, eventChannel } from 'redux-saga';
-import {
-  call,
-  put,
-  select,
-  take,
-  setContext,
-  getContext,
-  takeEvery,
-} from 'redux-saga/effects';
+import { call, put, select, take, takeEvery } from 'redux-saga/effects';
+import minimalErc20Abi from 'abi/minimalErc20.json';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { addContracts } from 'containers/DrizzleProvider/actions';
 import * as EventActions from './constants';
 
 /*
@@ -297,8 +292,48 @@ function* executeBatchCall(action) {
   }
 }
 
+function* processResponse(action) {
+  const { payload, drizzle } = action;
+  const account = yield select(selectAccount());
+  const responseItemsWithTokens = _.filter(payload, item => item.token);
+  const findNewTokens = (acc, responseItem) => {
+    const { token } = responseItem;
+    const tokenContract = drizzle.findContractByAddress(token.toLowerCase());
+    if (!tokenContract) {
+      acc.push(token);
+    }
+    return acc;
+  };
+  const newTokenAddresses = _.reduce(
+    responseItemsWithTokens,
+    findNewTokens,
+    [],
+  );
+
+  const foundNewTokens = _.size(newTokenAddresses);
+  if (foundNewTokens) {
+    const tokenSubscriptions = [
+      {
+        namespace: 'tokens',
+        abi: minimalErc20Abi,
+        allReadMethods: false,
+        syncOnce: true, // Additional syncs will be performed by watching logs
+        addresses: newTokenAddresses,
+        readMethods: [
+          {
+            name: 'balanceOf',
+            args: [account],
+          },
+        ],
+      },
+    ];
+    yield put(addContracts(tokenSubscriptions));
+  }
+}
+
 function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
+  yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('SEND_CONTRACT_TX', callSendContractTx);
   yield takeEvery('CALL_CONTRACT_FN', callCallContractFn);
   yield takeEvery('CONTRACT_SYNCING', callSyncContract);

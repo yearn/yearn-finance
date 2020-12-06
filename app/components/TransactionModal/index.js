@@ -111,6 +111,12 @@ const Td = styled.td`
   }
 `;
 
+const Max = styled.div`
+  text-decoration: underline;
+  display: inline;
+  cursor: pointer;
+`;
+
 const DisplayFields = styled.table`
   margin-top: 45px;
 `;
@@ -215,8 +221,10 @@ export default function TransactionModal(props) {
   const updateField = (field, inputValue, decimals, skipNormalization) => {
     const newInputFields = _.clone(inputFields);
     let value = inputValue;
-    if ((normalizeAmountsCheckboxChanged || skipNormalization) && decimals) {
+    if ((normalizeAmounts || skipNormalization) && decimals) {
       value = new BigNumber(value).times(10 ** decimals).toFixed(0);
+    } else if ((normalizeAmounts || skipNormalization) && decimals) {
+      value = new BigNumber(value).dividedBy(10 ** decimals).toFixed(0);
     }
     newInputFields[field] = {
       inputValue,
@@ -228,7 +236,7 @@ export default function TransactionModal(props) {
 
   const handleInputChange = (evt, decimals) => {
     const { name, value } = evt.target;
-    updateField(name, value, decimals);
+    updateField(name, value, decimals, false);
   };
 
   const renderInput = input => {
@@ -270,27 +278,36 @@ export default function TransactionModal(props) {
     // const setMax = () => {
     //   updateField(inputName, max, decimals, true);
     // };
+    const maxNormalized = new BigNumber(max)
+      .dividedBy(10 ** decimals)
+      .toFixed(5);
+    const maxNormalizedComplete = new BigNumber(max)
+      .dividedBy(10 ** decimals)
+      .toFixed();
+
+    const maxStr = normalizeAmounts ? maxNormalized : max;
+    const maxInputStr = normalizeAmounts ? maxNormalizedComplete : max;
+
+    const setMax = () => {
+      updateField(inputName, maxInputStr, decimals, false);
+    };
 
     const handleInputChangeWithDecimals = evt => {
       handleInputChange(evt, decimals);
     };
 
-    const maxNormalized = new BigNumber(max)
-      .dividedBy(10 ** decimals)
-      .toFixed(5);
-
-    const maxStr = normalizeAmounts ? maxNormalized : max;
     const percentageText = max ? ` | percentage: ${percentageStr}` : null;
-
     const decimalsText = decimals ? ` | decimals: ${decimals}` : null;
-    const maxText = max ? ` | max: ${maxStr}` : null;
+    const maxDivider = max ? ` | ` : null;
+    const maxText = max ? `max: ${maxStr}` : null;
     const invalid = percentage > 100;
     return (
       <div key={inputName}>
         <Label htmlFor={inputName}>
           {inputDescription}
           {decimalsText}
-          {maxText}
+          {maxDivider}
+          <Max onClick={setMax}>{maxText}</Max>
           {percentageText}
         </Label>
         <Input

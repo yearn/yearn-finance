@@ -11,30 +11,34 @@ export function getContractType(data) {
       fields: ['min', 'max', 'balance'],
     },
     {
-      name: 'Strategy',
+      name: 'V2 Strategy',
       type: 'strategy',
-      fields: ['profitFactor', 'maxReportDelay'],
+      fields: ['apiVersion', 'strategist'],
+    },
+    {
+      name: 'V1 Strategy',
+      type: 'strategy',
+      fields: ['strategist'],
+    },
+    {
+      name: 'Token',
+      type: 'token',
+      fields: ['decimals', 'symbol', 'balanceOf'],
     },
   ];
 
   const keys = _.keys(data);
-  let contractType;
-  const checkType = type => {
-    const match = _.difference(type.fields, keys).length === 0;
-    if (match) {
-      contractType = type.name;
-    }
-  };
-  _.each(types, checkType);
+  const checkType = type => _.difference(type.fields, keys).length === 0;
+  const contractType = _.find(types, checkType);
 
-  return contractType;
+  return contractType ? contractType.name : 'Unknown';
 }
 
 export function getMethods(abi) {
   const findReadMethods = (acc, field) => {
     const { name, inputs, type, stateMutability } = field;
     const hasInputs = inputs && inputs.length;
-    const isViewable = stateMutability === 'view';
+    const isViewable = stateMutability === 'view' || stateMutability === 'pure';
     const isMethod = type === 'function';
     if (hasInputs || !isViewable || !isMethod) {
       return acc;

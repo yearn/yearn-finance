@@ -86,6 +86,16 @@ export default function VaultButtons(props) {
         decimals,
       },
     },
+    create_lock: {
+      _value: {
+        defaultValue: tokenBalanceOf,
+        max: tokenBalanceOf,
+        decimals,
+      },
+      _unlock_time: {
+        defaultValue: Math.floor(Date.now() / 1000 + 31557600 * 4), // 4 years from now
+      },
+    },
   };
 
   const removeVault = () => {
@@ -124,41 +134,65 @@ export default function VaultButtons(props) {
     openModal('transaction', modalArgs);
   };
 
+  const getNonceForAccount = () => 0;
+
   const approveToken = () => {
     const approveMethod = _.find(tokenContract.abi, { name: 'approve' });
     openTokenTransactionModal(approveMethod);
   };
 
-  const permitApproveToken = () => {
-    const value = new BigNumber(1000).times(10 ** 6).toFixed();
+  const verifyingContract = tokenContractAddress || usdc;
+
+  const permitContractAddress = address;
+
+  const permitApproveDeposit = amount => {
+    const deadline = MAX_UINT256;
+    const domainName = 'USD Coin';
+    const nonce = getNonceForAccount(account, tokenAddress);
     const msgParams = createPermitMessageData(
       account,
       address,
-      value,
-      MAX_UINT256,
-      token || usdc,
+      amount,
+      nonce,
+      deadline,
+      domainName,
+      verifyingContract,
     );
+
     const params = [account, msgParams];
     const method = 'eth_signTypedData_v4';
-
     web3.currentProvider.sendAsync(
       {
         method,
         params,
         from: account,
       },
-      (err, result) => {
-        if (err) return console.dir(err);
-        if (result.error) {
-          alert(result.error.message);
+      async (error, result) => {
+        if (error) {
+          console.log('Web3 send error:', error);
+          return;
         }
-        if (result.error) return console.error('ERROR', result);
+        if (result.error) {
+          console.log('Web3 result error:', result.error);
+          return;
+        }
 
         const signature = result.result.substring(2);
         const r = `0x${signature.substring(0, 64)}`;
         const s = `0x${signature.substring(64, 128)}`;
         const v = parseInt(signature.substring(128, 130), 16);
-        return { r, s, v };
+        const owner = account;
+        await contract.methods
+          .deposit(amount, [
+            owner,
+            permitContractAddress,
+            amount,
+            deadline,
+            v,
+            r,
+            s,
+          ])
+          .send({ from: account });
       },
     );
   };
@@ -172,7 +206,9 @@ export default function VaultButtons(props) {
         <ButtonFilled
           variant="contained"
           color="primary"
-          onClick={supportsPermit ? permitApproveToken : approveToken}
+          onClick={
+            supportsPermit ? () => permitApproveDeposit(5000000) : approveToken
+          }
         >
           Approve Token
         </ButtonFilled>

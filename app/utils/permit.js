@@ -2,19 +2,12 @@ export function createPermitMessageData(
   owner,
   spender,
   value,
+  nonce,
   deadline,
-  token,
+  domainName,
+  verifyingContract,
 ) {
-  const nonce = 0;
-  const message = {
-    owner,
-    spender,
-    value,
-    nonce,
-    deadline,
-  };
-
-  const typedData = {
+  const permitData = {
     types: {
       EIP712Domain: [
         { name: 'name', type: 'string' },
@@ -31,17 +24,20 @@ export function createPermitMessageData(
       ],
     },
     domain: {
-      name: 'USD Coin',
+      name: domainName,
       version: '2',
       chainId: 1,
-      verifyingContract: token,
+      verifyingContract,
     },
     primaryType: 'Permit',
-    message,
+    message: {
+      owner,
+      spender,
+      value,
+      nonce,
+      deadline,
+    },
   };
 
-  return JSON.stringify({
-    ...typedData,
-    message,
-  });
+  return JSON.stringify(permitData);
 }

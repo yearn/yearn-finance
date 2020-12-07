@@ -297,36 +297,40 @@ function* processResponse(action) {
   const account = yield select(selectAccount());
   const responseItemsWithTokens = _.filter(payload, item => item.token);
   const findNewTokens = (acc, responseItem) => {
-    const { token } = responseItem;
+    const { token, address } = responseItem;
     const tokenContract = drizzle.findContractByAddress(token.toLowerCase());
     if (!tokenContract) {
-      acc.push(token);
+      acc.push({ address, token });
     }
     return acc;
   };
-  const newTokenAddresses = _.reduce(
+  const newTokenContracts = _.reduce(
     responseItemsWithTokens,
     findNewTokens,
     [],
   );
 
-  const foundNewTokens = _.size(newTokenAddresses);
-  if (foundNewTokens) {
-    const tokenSubscriptions = [
-      {
-        namespace: 'tokens',
-        abi: erc20Abi,
-        allReadMethods: false,
-        syncOnce: true, // Additional syncs will be performed by watching logs
-        addresses: newTokenAddresses,
-        readMethods: [
-          {
-            name: 'balanceOf',
-            args: [account],
-          },
-        ],
-      },
-    ];
+  const generateSubscription = contract => {
+    const { address: vaultAddress, token } = contract;
+    return {
+      namespace: 'tokens',
+      abi: erc20Abi,
+      syncOnce: true,
+      addresses: [token],
+      readMethods: [
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+        {
+          name: 'allowance',
+          args: [account, vaultAddress],
+        },
+      ],
+    };
+  };
+  const tokenSubscriptions = _.map(newTokenContracts, generateSubscription);
+  if (tokenSubscriptions) {
     yield put(addContracts(tokenSubscriptions));
   }
 }

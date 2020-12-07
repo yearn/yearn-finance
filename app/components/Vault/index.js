@@ -14,8 +14,6 @@ import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import VaultButtons from 'components/VaultButtons';
-import ButtonFilledRed from 'components/ButtonFilledRed';
-import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 
 const IconAndName = styled.div`
   display: flex;
@@ -62,14 +60,6 @@ const Footer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-`;
-
-const RemoveWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  margin-top: 30px;
-  display: ${props => (props.showDevVaults ? 'inherit' : 'none')};
-  justify-content: center;
 `;
 
 const truncateApy = apy => {
@@ -125,9 +115,6 @@ const Vault = props => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   const vaultName = symbolAlias || tokenSymbol || name;
 
-  const drizzle = useDrizzle();
-  // const active = false;
-
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
   const tokenBalanceOf = new BigNumber(tokenBalance)
@@ -141,12 +128,9 @@ const Vault = props => {
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
   const contractType = getContractType(vault);
 
-  const removeVault = () => {
-    drizzle.deleteContract(address);
-  };
-
   let vaultBottom;
   let vaultTop;
+
   if (showDevVaults) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -244,16 +228,11 @@ const Vault = props => {
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
               <Footer>
-                <VaultButtons vault={vault} token={tokenContractData} />
-                <RemoveWrapper showDevVaults={showDevVaults}>
-                  <ButtonFilledRed
-                    variant="contained"
-                    color="secondary"
-                    onClick={removeVault}
-                  >
-                    Remove Contract
-                  </ButtonFilledRed>
-                </RemoveWrapper>
+                <VaultButtons
+                  vault={vault}
+                  token={tokenContractData}
+                  showDevVaults={showDevVaults}
+                />
               </Footer>
             </Card.Footer>
           </Card.Body>

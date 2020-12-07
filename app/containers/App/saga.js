@@ -1,7 +1,7 @@
 import { put, call, takeLatest, take, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import vaultAbi from 'abi/yVault.json';
-import minimalErc20Abi from 'abi/minimalErc20.json';
+import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectVaults } from 'containers/App/selectors';
@@ -53,7 +53,7 @@ function* loadVaultContracts() {
     },
     {
       namespace: 'tokens',
-      abi: minimalErc20Abi,
+      abi: erc20Abi,
       allReadMethods: false,
       syncOnce: true, // Additional syncs will be performed by watching logs
       addresses: vaultTokenAddresses,

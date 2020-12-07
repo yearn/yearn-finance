@@ -1,6 +1,6 @@
 import { END, eventChannel } from 'redux-saga';
 import { call, put, select, take, takeEvery } from 'redux-saga/effects';
-import minimalErc20Abi from 'abi/minimalErc20.json';
+import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import * as EventActions from './constants';
@@ -315,7 +315,7 @@ function* processResponse(action) {
     const tokenSubscriptions = [
       {
         namespace: 'tokens',
-        abi: minimalErc20Abi,
+        abi: erc20Abi,
         allReadMethods: false,
         syncOnce: true, // Additional syncs will be performed by watching logs
         addresses: newTokenAddresses,

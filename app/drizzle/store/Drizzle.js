@@ -90,9 +90,7 @@ class Drizzle {
     );
 
     if (this.contracts[drizzleContract.contractName]) {
-      throw new Error(
-        `Contract already exists: ${drizzleContract.contractName}`,
-      );
+      return;
     }
 
     // this.store.dispatch({ type: 'CONTRACT_INITIALIZING', contractConfig });

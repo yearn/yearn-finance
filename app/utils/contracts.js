@@ -25,6 +25,11 @@ export function getContractType(data) {
       type: 'token',
       fields: ['decimals', 'symbol', 'balanceOf'],
     },
+    {
+      name: 'Guest List',
+      type: 'guestList',
+      fields: ['bribe_cost'],
+    },
   ];
 
   const keys = _.keys(data);

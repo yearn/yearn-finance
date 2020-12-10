@@ -14,13 +14,14 @@ import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import VaultButtons from 'components/VaultButtons';
+import TokenIcon from 'components/TokenIcon';
 
 const IconAndName = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Icon = styled.img`
+const StyledTokenIcon = styled(TokenIcon)`
   width: 40px;
   margin-right: 20px;
 `;
@@ -93,7 +94,6 @@ const Vault = props => {
   _.merge(vault, vaultContractData);
   const {
     symbolAlias,
-    tokenIcon,
     tokenAddress,
     tokenSymbolAlias,
     decimals,
@@ -106,8 +106,9 @@ const Vault = props => {
   } = vault;
 
   const devMode = useSelector(selectDevMode());
+  const tokenContractAddress = tokenAddress || token;
   const tokenContractData = useSelector(
-    selectContractData(tokenAddress || token),
+    selectContractData(tokenContractAddress),
   );
 
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
@@ -169,7 +170,7 @@ const Vault = props => {
         <div>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address}>
-              <Icon src={tokenIcon} />
+              <StyledTokenIcon address={tokenContractAddress} />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address}>
               <IconName devMode={devMode}>{vaultName || address}</IconName>
@@ -195,7 +196,7 @@ const Vault = props => {
       <ColumnList>
         <IconAndName>
           <LinkWrap devMode={devMode} address={address}>
-            <Icon src={tokenIcon} />
+            <StyledTokenIcon address={tokenContractAddress} />
           </LinkWrap>
           <LinkWrap devMode={devMode} address={address}>
             <IconName devMode={devMode}>{vaultName}</IconName>

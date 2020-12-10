@@ -156,7 +156,7 @@ export default function CoverCard(props) {
 
   const countDown = abbreviateRelativeTime(currentTime, expirationTimestamp);
   const coverDaysLeft = daysFromNow(currentTime, expirationTimestamp);
-  const expiringSoon = coverDaysLeft < 5;
+  const expiringSoon = coverDaysLeft < 6;
 
   let cardContent;
   if (!claimTokenBalanceOf) {

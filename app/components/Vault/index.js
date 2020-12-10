@@ -93,7 +93,6 @@ const Vault = props => {
   _.merge(vault, vaultContractData);
   const {
     symbolAlias,
-    vaultIcon,
     tokenIcon,
     tokenAddress,
     tokenSymbolAlias,
@@ -170,7 +169,7 @@ const Vault = props => {
         <div>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address}>
-              <Icon src={vaultIcon || tokenIcon} />
+              <Icon src={tokenIcon} />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address}>
               <IconName devMode={devMode}>{vaultName || address}</IconName>
@@ -196,7 +195,7 @@ const Vault = props => {
       <ColumnList>
         <IconAndName>
           <LinkWrap devMode={devMode} address={address}>
-            <Icon src={vaultIcon || tokenIcon} />
+            <Icon src={tokenIcon} />
           </LinkWrap>
           <LinkWrap devMode={devMode} address={address}>
             <IconName devMode={devMode}>{vaultName}</IconName>

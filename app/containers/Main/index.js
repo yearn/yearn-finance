@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Vaults from 'containers/Vaults/Loadable';
 import Header from 'components/Header';
@@ -13,6 +13,7 @@ export default function Main() {
     <Wrapper>
       <Header />
       <Switch>
+        <Route exact path="/" render={() => <Redirect to="/vaults" />} />
         <Route path="/vaults" component={Vaults} />
         <Route path="/cover" component={Cover} />
       </Switch>

@@ -8,7 +8,6 @@ import { toggleDevMode } from './actions';
 import saga from './saga';
 import { selectDevMode, selectDevModeUnlocked } from './selectors';
 import reducer from './reducer';
-import { TailwindButton } from '../../components/TailwindButton';
 
 const Wrapper = styled.div`
   display: ${props => (props.devModeUnlocked ? 'inherit' : 'none')};
@@ -31,7 +30,6 @@ export default function DevModeToggle() {
         dev mode
         <input type="checkbox" checked={devMode} onChange={toggleMode} />
       </label>
-      <TailwindButton>Hello world</TailwindButton>
     </Wrapper>
   );
 }

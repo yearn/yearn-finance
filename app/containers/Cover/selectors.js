@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 
-const selectConnection = state => state.connection;
+const selectCover = state => state.cover;
 
-export const selectAccount = () =>
+export const selectProtocols = () =>
   createSelector(
-    selectConnection,
-    substate => substate && substate.account,
+    selectCover,
+    substate => substate && substate.protocols,
   );

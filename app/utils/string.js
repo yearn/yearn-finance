@@ -1,4 +1,6 @@
 /* eslint-disable */
+import BigNumber from 'bignumber.js';
+
 export const currencyTransform = val => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -31,6 +33,45 @@ export const abbreviateNumber = value => {
     newValue = shortValue + suffixes[suffixNum];
   }
   return newValue;
+};
+
+export const addCommasToNumber = val => {
+  while (/(\d+)(\d{3})/.test(val.toString())) {
+    val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
+  }
+  return val;
+};
+
+export const removeDecimals = val => {
+  return new BigNumber(val).toFixed(0);
+};
+
+export const abbreviateRelativeTime = (now, timestamp) => {
+  // timestamp is in seconds, not milliseconds.. not my choice! :<
+  const distance = timestamp * 1000 - now;
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+  );
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  return `${days}d ${hours}h ${minutes}m`;
+};
+
+export const daysFromNow = (now, timestamp) => {
+  // timestamp is in seconds, not milliseconds
+  const distance = timestamp * 1000 - now;
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  return days;
+};
+
+export const getShortenedAddress = address => {
+  if (!address) {
+    return '';
+  }
+  const beginning = address.substr(0, 6);
+  const end = address.substr(address.length - 4, address.length);
+  return `${beginning}...${end}`;
 };
 
 export const capitalize = val => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Blockies from 'react-blockies';
+import { getShortenedAddress } from 'utils/string';
 
 const ConnectedAccount = styled.div`
   position: relative;
@@ -23,15 +24,6 @@ const Address = styled.div`
   justify-self: flex-end;
 `;
 
-const transformAddress = address => {
-  if (!address) {
-    return '';
-  }
-  const beginning = address.substr(0, 6);
-  const end = address.substr(address.length - 4, address.length);
-  return `${beginning}...${end}`;
-};
-
 export default function Account(props) {
   const { account, onClick, className } = props;
 
@@ -46,7 +38,7 @@ export default function Account(props) {
         spotColor="#a3a8e3"
         className="identicon"
       />
-      <Address>{transformAddress(account)}</Address>
+      <Address>{getShortenedAddress(account)}</Address>
       <svg
         stroke="currentColor"
         fill="currentColor"

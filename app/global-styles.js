@@ -1,4 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
+import RobotoMedium from 'fonts/Roboto-Medium.ttf';
+import RobotoBold from 'fonts/Roboto-Bold.ttf';
+import RobotoLight from 'fonts/Roboto-Light.ttf';
+import RobotoMonoLight from 'fonts/RobotoMono-Light.ttf';
 import CalibreBold from 'fonts/Calibre-Bold.otf';
 import CalibreMedium from 'fonts/Calibre-Medium.otf';
 import CalibreSemibold from 'fonts/Calibre-Semibold.otf';
@@ -28,6 +32,31 @@ const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Calibre Semibold';
     src: url(${CalibreSemibold}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Roboto Medium';
+    src: url(${RobotoMedium}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Roboto Bold';
+    src: url(${RobotoBold}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Roboto Light';
+    src: url(${RobotoLight}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Roboto Mono Light';
+    src: url(${RobotoMonoLight}) format('opentype');
     font-weight: normal;
     font-style: normal;
   }

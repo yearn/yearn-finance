@@ -102,6 +102,7 @@
     "react-bootstrap": "^1.4.0",
     "react-dom": "16.8.6",
     "react-helmet": "6.0.0-beta",
+    "react-image-fallback": "^8.0.0",
     "react-intl": "2.8.0",
     "react-redux": "^7.2.1",
     "react-router-dom": "5.0.0",

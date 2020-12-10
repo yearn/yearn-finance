@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
 // import Splash from 'containers/Splash/Loadable';
 import { useSelector, useDispatch } from 'react-redux';
 // import Dashboard from 'containers/Dashboard/Loadable';
 import Main from 'containers/Main/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useWeb3, useNotify } from 'containers/ConnectionProvider/hooks';
@@ -38,14 +36,7 @@ export default function App() {
   return (
     <div>
       <canvas id="matrix" />
-      <Switch>
-        <Route exact path="/" render={() => <Redirect to="/vaults" />} />
-        <Route path="/vaults" component={Main} />
-        <Route path="/yusd" component={Main} />
-        <Route path="/stats" component={Main} />
-        <Route path="/gov" component={Main} />
-        <Route component={NotFoundPage} />
-      </Switch>
+      <Main />
       <GlobalStyle />
     </div>
   );

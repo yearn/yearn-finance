@@ -5,5 +5,6 @@ import Layout from './Layout';
 addDecorator(storyFn => <Layout>{storyFn()}</Layout>);
 
 export const parameters = {
+  layout: 'fullscreen',
   actions: { argTypesRegex: '^on[A-Z].*' },
 };

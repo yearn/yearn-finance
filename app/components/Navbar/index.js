@@ -92,7 +92,7 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
 const Navbar = () => {
   const [isActive, setIsActive] = React.useState(undefined);
   return (
-    <div className="relative bg-black h-14">
+    <div className="relative bg-black h-14 w-screen">
       <div className="px-4 sm:px-6">
         <div className="flex py-4 justify-between">
           <div className="flex self-center">

@@ -36,20 +36,24 @@ const FlyingMobileMenuTopDrawer = ({ setIsMobileOpen }) => (
 
 const FlyingMobileMenuItem = ({ setIsActive, menuItemText }) => (
   <button type="button" className="" onClick={() => setIsActive(menuItemText)}>
-    <span className="font-black uppercase text-white text-4xl">
+    <span className="font-black uppercase text-white text-4xl hover:text-yearn-blue  focus:text-yearn-blue">
       {menuItemText}
     </span>
   </button>
 );
 
-const FlyingMobileSecondMenuTopDrawer = ({ setIsActive, isActive }) => (
+const FlyingMobileSecondMenuTopDrawer = ({
+  mobileIsActive,
+  setMobileIsActive,
+  setIsMobileOpen,
+}) => (
   <div className="flex items-center justify-between">
     <div
       className="h-8 w-8 text-white"
       role="button"
       tabIndex="0"
-      onClick={() => setIsActive(false)}
-      onKeyPress={() => setIsActive(false)}
+      onClick={() => setMobileIsActive(false)}
+      onKeyPress={() => setMobileIsActive(false)}
     >
       <svg
         className="h-8 w-8"
@@ -66,12 +70,22 @@ const FlyingMobileSecondMenuTopDrawer = ({ setIsActive, isActive }) => (
         />
       </svg>
     </div>
-    <span className="text-white text-2xl font-black uppercase">{isActive}</span>
+    <span className="text-white text-2xl font-black uppercase">
+      {mobileIsActive}
+    </span>
     <div className="-mr-2">
       <button
         type="button"
         className="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-gray-500 focus:outline-none"
-        onClick={() => setIsActive(false)}
+        onClick={() => {
+          setIsMobileOpen(false);
+          setMobileIsActive(false);
+        }}
+        tabIndex="0"
+        onKeyPress={() => {
+          setIsMobileOpen(false);
+          setMobileIsActive(false);
+        }}
       >
         <span className="sr-only">Close menu</span>
         <svg
@@ -117,15 +131,130 @@ const secondMenuLinks = {
       description: 'Zap in and out of the pools',
     },
   ],
+  stats: [
+    {
+      href: '/vaults',
+      title: 'yVaults',
+      description: 'Deposit and earn',
+    },
+    {
+      href: '/vaults',
+      title: 'yCover',
+      description: 'Cover smart contract risk',
+    },
+    {
+      href: '/vaults',
+      title: 'yUSD',
+      description: 'Stable coin index',
+    },
+    {
+      href: 'https://zapier.io',
+      title: 'Zap',
+      description: 'Zap in and out of the pools',
+    },
+  ],
+  gov: [
+    {
+      href: '/vaults',
+      title: 'yVaults',
+      description: 'Deposit and earn',
+    },
+    {
+      href: '/vaults',
+      title: 'yCover',
+      description: 'Cover smart contract risk',
+    },
+    {
+      href: '/vaults',
+      title: 'yUSD',
+      description: 'Stable coin index',
+    },
+    {
+      href: 'https://zapier.io',
+      title: 'Zap',
+      description: 'Zap in and out of the pools',
+    },
+  ],
+  labs: [
+    {
+      href: '/vaults',
+      title: 'yVaults',
+      description: 'Deposit and earn',
+    },
+    {
+      href: '/vaults',
+      title: 'yCover',
+      description: 'Cover smart contract risk',
+    },
+    {
+      href: '/vaults',
+      title: 'yUSD',
+      description: 'Stable coin index',
+    },
+    {
+      href: 'https://zapier.io',
+      title: 'Zap',
+      description: 'Zap in and out of the pools',
+    },
+  ],
+  community: [
+    {
+      href: '/vaults',
+      title: 'yVaults',
+      description: 'Deposit and earn',
+    },
+    {
+      href: '/vaults',
+      title: 'yCover',
+      description: 'Cover smart contract risk',
+    },
+    {
+      href: '/vaults',
+      title: 'yUSD',
+      description: 'Stable coin index',
+    },
+    {
+      href: 'https://zapier.io',
+      title: 'Zap',
+      description: 'Zap in and out of the pools',
+    },
+  ],
+  docs: [
+    {
+      href: '/vaults',
+      title: 'yVaults',
+      description: 'Deposit and earn',
+    },
+    {
+      href: '/vaults',
+      title: 'yCover',
+      description: 'Cover smart contract risk',
+    },
+    {
+      href: '/vaults',
+      title: 'yUSD',
+      description: 'Stable coin index',
+    },
+    {
+      href: 'https://zapier.io',
+      title: 'Zap',
+      description: 'Zap in and out of the pools',
+    },
+  ],
 };
 
-const FlyingMobileSecondMenu = ({ setMobileIsActive, mobileIsActive }) => (
+const FlyingMobileSecondMenu = ({
+  setMobileIsActive,
+  mobileIsActive,
+  setIsMobileOpen,
+}) => (
   <div className="absolute top-0 w-screen h-screen inset-x-0 overflow-visible transition transform origin-top-right md:hidden">
     <div className="bg-black w-full h-full">
       <div className="pt-5 pb-6 px-5 h-full">
         <FlyingMobileSecondMenuTopDrawer
-          setIsActive={mobileIsActive}
-          isActive={setMobileIsActive}
+          mobileIsActive={mobileIsActive}
+          setMobileIsActive={setMobileIsActive}
+          setIsMobileOpen={setIsMobileOpen}
         />
 
         <div className="object-center h-full flex justify-center">
@@ -183,6 +312,7 @@ const FlyingMobileMenu = ({
       <FlyingMobileSecondMenu
         mobileIsActive={mobileIsActive}
         setMobileIsActive={setMobileIsActive}
+        setIsMobileOpen={setIsMobileOpen}
       />
     );
   }
@@ -204,6 +334,10 @@ const FlyingMobileMenu = ({
               <FlyingMobileMenuItem
                 setIsActive={setMobileIsActive}
                 menuItemText="gov"
+              />
+              <FlyingMobileMenuItem
+                setIsActive={setMobileIsActive}
+                menuItemText="labs"
               />
               <FlyingMobileMenuItem
                 setIsActive={setMobileIsActive}
@@ -346,7 +480,7 @@ const Navbar = () => {
   const [mobileIsActive, setMobileIsActive] = React.useState(false);
 
   return (
-    <div className="relative bg-black h-14 w-screen">
+    <div className="relative bg-black w-screen">
       <div className="px-4 sm:px-6">
         <div className="flex py-4 justify-between">
           <div className="-mr-2 -my-2 md:hidden">
@@ -397,7 +531,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Products"
+              text="products"
               links={[
                 {
                   title: 'yVaults',
@@ -444,7 +578,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Stats"
+              text="stats"
               links={[
                 {
                   title: 'yVaults',
@@ -491,7 +625,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Gov"
+              text="gov"
               links={[
                 {
                   title: 'yVaults',
@@ -538,7 +672,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Labs"
+              text="labs"
               links={[
                 {
                   title: 'yVaults',
@@ -585,7 +719,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Community"
+              text="community"
               links={[
                 {
                   title: 'yVaults',
@@ -632,7 +766,7 @@ const Navbar = () => {
             <MenuItem
               setIsActive={setIsActive}
               isActive={isActive}
-              text="Docs"
+              text="docs"
               links={[
                 {
                   title: 'yVaults',

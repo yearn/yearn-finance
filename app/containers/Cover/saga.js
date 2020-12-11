@@ -3,8 +3,9 @@ import { takeLatest, select, put, call } from 'redux-saga/effects';
 import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { coverDataLoaded } from './actions';
-import { COVER_DATA_FETCH, COVER_DATA_LOADED } from './constants';
+import { COVER_DATA_LOADED } from './constants';
 
 function* fetchCoverData() {
   try {
@@ -60,6 +61,6 @@ function* coverDataLoadedSaga(action) {
 }
 
 export default function* watchers() {
-  yield takeLatest(COVER_DATA_FETCH, fetchCoverData);
+  yield takeLatest(ACCOUNT_UPDATED, fetchCoverData);
   yield takeLatest(COVER_DATA_LOADED, coverDataLoadedSaga);
 }

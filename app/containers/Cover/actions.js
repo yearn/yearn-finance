@@ -1,10 +1,4 @@
-import { COVER_DATA_LOADED, COVER_DATA_FETCH } from './constants';
-
-export function fetchCoverData() {
-  return {
-    type: COVER_DATA_FETCH,
-  };
-}
+import { COVER_DATA_LOADED } from './constants';
 
 export function coverDataLoaded(payload) {
   return {

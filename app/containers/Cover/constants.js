@@ -1,2 +1,1 @@
-export const COVER_DATA_FETCH = 'COVER_DATA_FETCH';
 export const COVER_DATA_LOADED = 'COVER_DATA_LOADED';

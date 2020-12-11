@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import CoverCard from 'components/CoverCard';
 import { selectContracts } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
+import { selectProtocols } from 'containers/Cover/selectors';
 
 const Wrapper = styled.div`
   display: grid;
@@ -11,17 +12,11 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 
-function CoverCards(props) {
-  const { protocols } = props;
-  const [currentTime, setCurrentTime] = useState(Date.now());
-
+function CoverCards() {
+  const protocols = useSelector(selectProtocols());
   const claimTokens = useSelector(selectContracts('coverTokens'));
   const [protocolsWithClaim, setProtocolsWithClaim] = useState({});
 
-  const updateTime = () => {
-    setCurrentTime(Date.now());
-  };
-  setInterval(updateTime, 5000);
   const renderCoverCard = (protocol, key) => {
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
     const claimTokenContractData = _.find(claimTokens, {
@@ -40,7 +35,6 @@ function CoverCards(props) {
         protocol={protocol}
         key={key}
         claimTokenBalanceOf={claimTokenBalanceOf}
-        currentTime={currentTime}
       />
     );
   };

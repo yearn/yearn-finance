@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TokenIcon from 'components/TokenIcon';
 import {
@@ -9,12 +9,14 @@ import {
   removeDecimals,
 } from 'utils/string';
 import Icon from 'components/Icon';
+import { Link } from 'react-router-dom';
 
-const Wrapper = styled.div`
+const Wrapper = styled(Link)`
   height: 312px;
   background-color: ${props => props.theme.vaultBackground};
   border-radius: 15px;
   position: relative;
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,11 +93,25 @@ const ProtocolName = styled.div`
 `;
 
 const ProtocolUrl = styled.a`
+  text-decoration: underline;
   font-weight: 500;
   font-family: 'Roboto Medium';
   font-size: 16px;
   line-height: 16px;
-  margin-bottom: 14px;
+  position: absolute;
+  top: 189px;
+  margin: 0 auto;
+  justify-self: center;
+`;
+
+const ProtocolUrlPlaceholder = styled.div`
+  height: 30px;
+`;
+
+const Card = styled.div`
+  width: 100%;
+  position: relative;
+  display: grid;
 `;
 
 const Address = styled.div`
@@ -136,14 +152,17 @@ const TotalCollateral = styled.div`
 `;
 
 export default function CoverCard(props) {
-  const {
-    onClick,
-    disabled,
-    className,
-    protocol,
-    claimTokenBalanceOf,
-    currentTime,
-  } = props;
+  const { onClick, disabled, className, protocol, claimTokenBalanceOf } = props;
+
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
+  const updateTime = () => {
+    setCurrentTime(Date.now());
+  };
+  useEffect(() => {
+    setInterval(updateTime, 10000);
+  }, []);
+
   const { protocolDisplayName, protocolUrl, protocolTokenAddress } = protocol;
   const shortenedAddress = getShortenedAddress(protocolTokenAddress);
   const userHasClaimForProtocol = parseInt(claimTokenBalanceOf, 10) > 0;
@@ -187,9 +206,7 @@ export default function CoverCard(props) {
         <Middle>
           <StyledTokenIcon address={protocolTokenAddress} />
           <ProtocolName>{protocolDisplayName}</ProtocolName>
-          <ProtocolUrl href={`https://${protocolUrl}`} target="_blank">
-            {protocolUrl}
-          </ProtocolUrl>
+          <ProtocolUrlPlaceholder />
           <Address>
             {shortenedAddress} <Copy type="copy" />
           </Address>
@@ -208,13 +225,18 @@ export default function CoverCard(props) {
   }
 
   return (
-    <Wrapper
-      className={className}
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-    >
-      {cardContent}
-    </Wrapper>
+    <Card>
+      <Wrapper
+        className={className}
+        to={`/cover/${protocol.protocolAddress}`}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        {cardContent}
+      </Wrapper>
+      <ProtocolUrl href={`https://${protocolUrl}`} target="_blank">
+        {protocolUrl}
+      </ProtocolUrl>
+    </Card>
   );
 }

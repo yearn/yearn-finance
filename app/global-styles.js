@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import Roboto from 'fonts/Roboto-Regular.ttf';
 import RobotoMedium from 'fonts/Roboto-Medium.ttf';
 import RobotoBold from 'fonts/Roboto-Bold.ttf';
 import RobotoLight from 'fonts/Roboto-Light.ttf';
@@ -45,6 +46,12 @@ const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Roboto Bold';
     src: url(${RobotoBold}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Roboto';
+    src: url(${Roboto}) format('opentype');
     font-weight: normal;
     font-style: normal;
   }

@@ -19,22 +19,31 @@ function* fetchCoverData() {
 
 function* coverDataLoadedSaga(action) {
   const { payload } = action;
-  const claimTokens = [];
-  // const noClaimTokens = [];
+  const claimTokens = {};
+  const collateralTokens = {};
   const account = yield select(selectAccount());
   const addTokens = protocol => {
-    // const { claimAddress, noClaimAddress } = protocol.coverObjects[
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
-    claimTokens.push(claimAddress);
-    // noClaimTokens.push(noClaimAddress);
+    const { collaterals } = protocol;
+    const setCollateral = collateralArr => {
+      const collateralAddress = collateralArr[0];
+      const collateralActive = collateralArr[1];
+      if (collateralActive) {
+        collateralTokens[collateralAddress] = true;
+      }
+    };
+    _.each(collaterals, setCollateral);
+    claimTokens[claimAddress] = true;
   };
   _.each(payload.protocols, addTokens);
 
+  const claimTokenAddresses = Object.keys(claimTokens);
+  const collateralTokenAddresses = Object.keys(collateralTokens);
   const contracts = [
     {
       namespace: 'coverTokens',
       abi: erc20Abi,
-      addresses: claimTokens,
+      addresses: claimTokenAddresses,
       metadata: { tokenType: 'CLAIM' },
       readMethods: [
         {
@@ -43,18 +52,18 @@ function* coverDataLoadedSaga(action) {
         },
       ],
     },
-    // {
-    //   namespace: 'coverTokens',
-    //   abi: erc20Abi,
-    //   addresses: claimTokens,
-    //   metadata: { tokenType: 'NOCLAIM' },
-    //   readMethods: [
-    //     {
-    //       name: 'balanceOf',
-    //       args: [account],
-    //     },
-    //   ],
-    // },
+    {
+      namespace: 'tokens',
+      abi: erc20Abi,
+      addresses: collateralTokenAddresses,
+      metadata: { tokenType: 'collateral' },
+      readMethods: [
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+      ],
+    },
   ];
 
   yield put(addContracts(contracts));

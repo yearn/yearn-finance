@@ -10,8 +10,8 @@ import saga from './saga';
 
 const Wrapper = styled.div`
   margin: 0 auto;
-  max-width: 1080px;
-  padding: 100px 40px;
+  max-width: 1200px;
+  padding: 50px 40px;
 `;
 
 const Cover = () => {

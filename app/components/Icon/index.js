@@ -1,9 +1,18 @@
 /* eslint jsx-a11y/click-events-have-key-events: 0 */
 /* eslint jsx-a11y/no-noninteractive-element-interactions: 0 */
+
+/**
+ * TODO: Refactor
+ */
+
 import React from 'react';
 import Copy from './copy.svg';
 import Clock from './clock.svg';
+import ChevronLeft from './chevronLeft.svg';
 import Stats from './stats.svg';
+import ExternalLink from './externalLink.svg';
+import ArrowDown from './arrowDown.svg';
+import Info from './info.svg';
 
 export default function Icon(props) {
   const { onClick, disabled, className, type } = props;
@@ -11,6 +20,10 @@ export default function Icon(props) {
     copy: Copy,
     clock: Clock,
     stats: Stats,
+    chevronLeft: ChevronLeft,
+    externalLink: ExternalLink,
+    info: Info,
+    arrowDown: ArrowDown,
   };
   const src = icons[type];
 

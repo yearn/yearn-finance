@@ -81,6 +81,7 @@ const Middle = styled.div`
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 60px;
+  min-height: 60px;
   margin-bottom: 19px;
 `;
 
@@ -171,6 +172,8 @@ export default function CoverCard(props) {
     protocol.expirationTimestamps[protocol.claimNonce];
   const totalCollateral =
     protocol.coverObjects[protocol.claimNonce].collateralStaked;
+
+  const { collateralName } = protocol.coverObjects[protocol.claimNonce];
   const totalCollateralStr = addCommasToNumber(removeDecimals(totalCollateral));
 
   const countDown = abbreviateRelativeTime(currentTime, expirationTimestamp);
@@ -178,9 +181,15 @@ export default function CoverCard(props) {
   const expiringSoon = coverDaysLeft < 6;
 
   let cardContent;
+  let protocolUrlEl;
   if (!claimTokenBalanceOf) {
     cardContent = <Middle>Loading...</Middle>;
   } else {
+    protocolUrlEl = (
+      <ProtocolUrl href={`https://${protocolUrl}`} target="_blank">
+        {protocolUrl}
+      </ProtocolUrl>
+    );
     const userHasCover = parseInt(claimTokenBalanceOf, 10) > 0;
     let coverText;
     if (userHasCover) {
@@ -197,7 +206,9 @@ export default function CoverCard(props) {
         <Top>
           <div>
             <PercentLeft>5% left</PercentLeft>
-            <TotalCollateral>{totalCollateralStr} DAI</TotalCollateral>
+            <TotalCollateral>
+              {totalCollateralStr} {collateralName}
+            </TotalCollateral>
           </div>
           <div>
             <Stats type="stats" />
@@ -234,9 +245,7 @@ export default function CoverCard(props) {
       >
         {cardContent}
       </Wrapper>
-      <ProtocolUrl href={`https://${protocolUrl}`} target="_blank">
-        {protocolUrl}
-      </ProtocolUrl>
+      {protocolUrlEl}
     </Card>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ConnectButton from 'components/ConnectButton';
-import ThemeToggle from 'containers/ThemeProvider/toggle';
+// import ThemeToggle from 'containers/ThemeProvider/toggle';
 import DevModeToggle from 'containers/DevMode';
 
 const Wrapper = styled.div`
@@ -27,7 +27,6 @@ export default function Header() {
   return (
     <Wrapper>
       <Toggles>
-        <ThemeToggle />
         <DevModeToggle />
       </Toggles>
       <StyledConnectButton />

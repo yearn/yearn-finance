@@ -21,7 +21,7 @@ const Wrapper = styled.input`
   padding: 0px 13px;
 `;
 
-export default function ConnectButton(props) {
+export default function Input(props) {
   const { children, ...restProps } = props;
   return (
     <Wrapper {...restProps} type="text">

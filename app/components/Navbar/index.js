@@ -77,7 +77,10 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
         role="button"
         tabIndex="0"
       >
-        <span className="font-sans hover:text-yearn-blue text-white uppercase font-black group rounded-md inline-flex items-center text-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <span
+          css={[isActive === text && tw`text-yearn-blue`]}
+          className="font-sans hover:text-yearn-blue text-white uppercase font-black group rounded-md inline-flex items-center text-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
           {text}
         </span>
       </div>

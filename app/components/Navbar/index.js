@@ -103,7 +103,7 @@ const FlyingMobileSecondMenuTopDrawer = ({
   </div>
 );
 
-const secondMenuLinks = {
+const menuLinks = {
   products: [
     {
       href: '/vaults',
@@ -261,7 +261,7 @@ const FlyingMobileSecondMenu = ({
           ]}
         >
           <nav className="z-10 flex flex-col space-y-4 justify-center h-full">
-            {secondMenuLinks[mobileIsActive].map(link => (
+            {menuLinks[mobileIsActive].map(link => (
               <a href={link.href} className="flex">
                 <div
                   css={[
@@ -537,288 +537,17 @@ const Navbar = () => {
           )}
 
           <nav className="space-x-10 hidden md:flex">
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="products"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: 'https://google.co.uk',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="stats"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="gov"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="labs"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="community"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
-            <MenuItem
-              setIsActive={setIsActive}
-              isActive={isActive}
-              text="docs"
-              links={[
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-                {
-                  title: 'yVaults',
-                  description: 'Deposit and earn',
-                  href: '/vaults',
-                },
-              ]}
-            />
+            {Object.keys(menuLinks).map(menuLink => {
+              const links = menuLinks[menuLink];
+              return (
+                <MenuItem
+                  setIsActive={setIsActive}
+                  isActive={isActive}
+                  text={menuLink}
+                  links={links}
+                />
+              );
+            })}
           </nav>
 
           <div className="">

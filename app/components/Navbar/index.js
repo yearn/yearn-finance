@@ -3,34 +3,29 @@ import { useClickAway } from 'react-use';
 import tw, { css } from 'twin.macro';
 
 const FlyingMobileMenuTopDrawer = ({ setIsMobileOpen }) => (
-  <div className="flex items-center justify-between">
-    <div>
-      <img className="h-5 w-auto" src="/navbar-logo.inline.svg" alt="Logo" />
-    </div>
-    <div className="-mr-2">
-      <button
-        type="button"
-        className="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-gray-500 focus:outline-none"
-        onClick={() => setIsMobileOpen(false)}
+  <div className="flex items-end justify-end z-10">
+    <button
+      type="button"
+      className="-mr-2 self-end rounded-md p-2 inline-flex items-center justify-center text-white hover:text-gray-500 focus:outline-none"
+      onClick={() => setIsMobileOpen(false)}
+    >
+      <span className="sr-only">Close menu</span>
+      <svg
+        className="h-8 w-8"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
       >
-        <span className="sr-only">Close menu</span>
-        <svg
-          className="h-8 w-8"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
-    </div>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
   </div>
 );
 
@@ -47,7 +42,7 @@ const FlyingMobileSecondMenuTopDrawer = ({
   setMobileIsActive,
   setIsMobileOpen,
 }) => (
-  <div className="flex items-center justify-between">
+  <div className="flex items-center justify-between z-10">
     <div
       className="h-8 w-8 text-white"
       role="button"
@@ -257,8 +252,15 @@ const FlyingMobileSecondMenu = ({
           setIsMobileOpen={setIsMobileOpen}
         />
 
-        <div className="object-center h-full flex justify-center">
-          <nav className="flex flex-col space-y-4 justify-center h-full">
+        <div
+          className="relative object-center h-full flex justify-center -mt-4"
+          css={[
+            css`
+              background-image: url('/navbar-mobile-bg.png');
+            `,
+          ]}
+        >
+          <nav className="z-10 flex flex-col space-y-4 justify-center h-full">
             {secondMenuLinks[mobileIsActive].map(link => (
               <a href={link.href} className="flex">
                 <div
@@ -321,8 +323,15 @@ const FlyingMobileMenu = ({
       <div className="bg-black w-full h-full">
         <div className="pt-5 pb-6 px-5 h-full">
           <FlyingMobileMenuTopDrawer setIsMobileOpen={setIsMobileOpen} />
-          <div className="object-center h-full">
-            <nav className="flex flex-col space-y-2 items-center justify-center h-full">
+          <div
+            css={[
+              css`
+                background-image: url('/navbar-mobile-bg.png');
+              `,
+            ]}
+            className="object-center h-full relative -mt-4"
+          >
+            <nav className="flex flex-col space-y-2 items-center justify-center z-10 h-full w-full absolute">
               <FlyingMobileMenuItem
                 setIsActive={setMobileIsActive}
                 menuItemText="products"

@@ -15,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     color: ${props => props.theme.text};
     margin: 0;
-    font-size: 26px;
+    font-size: 16px;
   }
   @font-face {
     font-family: 'Calibre Bold';

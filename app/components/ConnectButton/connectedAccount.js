@@ -4,7 +4,6 @@ import Blockies from 'react-blockies';
 import { getShortenedAddress } from 'utils/string';
 
 const ConnectedAccount = styled.div`
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-self: end;

@@ -21,6 +21,7 @@ const Address = styled.div`
   font-weight: bold;
   text-overflow: ellipsis;
   justify-self: flex-end;
+  color: white;
 `;
 
 export default function Account(props) {
@@ -30,7 +31,7 @@ export default function Account(props) {
     <ConnectedAccount onClick={onClick} className={className}>
       <Blockies
         seed={account}
-        size={10}
+        size={8}
         scale={3}
         color="#07fdd7"
         bgColor="#b54cc4"

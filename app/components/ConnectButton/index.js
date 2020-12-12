@@ -1,12 +1,16 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Button from 'components/Button';
+import tw, { styled } from 'twin.macro';
 import {
   useWallet,
   useSelectWallet,
   useAccount,
 } from 'containers/ConnectionProvider/hooks';
 import ConnectedAccount from './connectedAccount';
+
+const StyledButton = styled.button(() => [
+  tw`text-white uppercase rounded-2xl border-white border-solid border-2 px-4`,
+]);
 
 export default function ConnectButton(props) {
   const { className } = props;
@@ -24,9 +28,9 @@ export default function ConnectButton(props) {
     );
   } else {
     content = (
-      <Button className={className} onClick={selectWallet}>
+      <StyledButton className={className} onClick={selectWallet}>
         <FormattedMessage id="account.connect" />
-      </Button>
+      </StyledButton>
     );
   }
 

@@ -38,7 +38,9 @@ function* coverDataLoadedSaga(action) {
   _.each(payload.protocols, addTokens);
 
   const claimTokenAddresses = Object.keys(claimTokens);
+
   const collateralTokenAddresses = Object.keys(collateralTokens);
+
   const contracts = [
     {
       namespace: 'coverTokens',
@@ -57,7 +59,14 @@ function* coverDataLoadedSaga(action) {
       abi: erc20Abi,
       addresses: collateralTokenAddresses,
       metadata: { tokenType: 'collateral' },
+      syncOnce: true,
       readMethods: [
+        {
+          name: 'name',
+        },
+        {
+          name: 'decimals',
+        },
         {
           name: 'balanceOf',
           args: [account],

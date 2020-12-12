@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-// import Icon from 'components/Icon';
+import { selectContractData } from 'containers/App/selectors';
+import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import TokenIcon from 'components/TokenIcon';
+import { addCommasToNumber } from 'utils/string';
 
 const Wrapper = styled.div`
   margin-left: 50px;
@@ -86,12 +89,42 @@ export default function CoverTallCard(props) {
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   // const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
+
   const claimNonce = _.get(protocol, 'claimNonce');
   const collateralName = _.get(
     protocol,
     `coverObjects.${claimNonce}.collateralName`,
   );
+  const collateralAddress = _.get(
+    protocol,
+    `coverObjects.${claimNonce}.collateralAddress`,
+  );
+  const expirationTimestamp =
+    _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;
+  const collateralData = useSelector(selectContractData(collateralAddress));
+  const collateralDecimals = collateralData.decimals;
+  const totalSupplyHex = _.get(
+    protocol,
+    `coverObjects.${claimNonce}.tokens.claimTotalSupply.hex`,
+  );
+  const totalSupply = addCommasToNumber(
+    new BigNumber(totalSupplyHex)
+      .dividedBy(10 ** collateralDecimals)
+      .toFixed(0),
+  );
 
+  const expirationDateTime = new Date(expirationTimestamp);
+
+  // const dateTime = `${expirationDateTime.getMonth()}/${expirationDateTime.getDay()}/${expirationDateTime.getYear()} ${expirationDateTime.getHours()}:${expirationDateTime.getMinutes()}:${expirationDateTime.getSeconds()}`;
+  const dateTime = expirationDateTime
+    .toLocaleString('en', {
+      month: '2-digit',
+      day: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    .replace(',', '');
   return (
     <div>
       <Wrapper>
@@ -101,10 +134,12 @@ export default function CoverTallCard(props) {
             <TokenName>{protocolDisplayName}</TokenName>
             <TokenTitle>claim tokens</TokenTitle>
           </IconWrapper>
-          <Time>5/31/2021 12:00 AM</Time>
+          <Time>{dateTime}</Time>
           <Label>Expiration Date</Label>
-          <Time>291,319.70 {collateralName}</Time>
-          <Label>Available Cover</Label>
+          <Time>
+            {totalSupply} {collateralName}
+          </Time>
+          <Label>Total Collateral</Label>
           <Time>0.10 DAI</Time>
           <Label>Token Price</Label>
           <PriceWrapper>

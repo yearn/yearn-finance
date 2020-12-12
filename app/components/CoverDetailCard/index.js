@@ -5,6 +5,9 @@ import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
+import { selectContractData } from 'containers/App/selectors';
+import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -108,6 +111,7 @@ const Max = styled.div`
   letter-spacing: 0.529412px;
   color: #000000;
   opacity: 0.4;
+  margin-right: 5px;
 `;
 
 const MaxWrapper = styled.div`
@@ -219,20 +223,35 @@ function CoverDetailCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralName`,
   );
-  const collateralAddress = _.get(
-    protocol,
-    `coverObjects.${claimNonce}.collateralAddress`,
+  // const collateralAddress = _.get(
+  //   protocol,
+  //   `coverObjects.${claimNonce}.collateralAddress`,
+  // );
+
+  const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+  const daiData = useSelector(selectContractData(daiAddress));
+  let daiBalanceOf = new BigNumber(daiData.balanceOf)
+    .dividedBy(10 ** 18)
+    .toFixed(2);
+  if (Number.isNaN(daiBalanceOf)) {
+    daiBalanceOf = '...';
+  }
+
+  const claimInputBottom = (
+    <React.Fragment>
+      <SmallTokenIcon address={daiAddress} />
+      <InputTextRight>DAI</InputTextRight>
+    </React.Fragment>
   );
 
   const claimInputTop = (
-    <MaxWrapper>
-      <Max>Max</Max>
-      <SmallTokenIcon address={collateralAddress} />
-      <InputTextRight>{collateralName}</InputTextRight>
-    </MaxWrapper>
+    <InputTextRight>
+      <MaxWrapper>
+        <Max>Max</Max>
+        <div>claim tokens</div>
+      </MaxWrapper>
+    </InputTextRight>
   );
-
-  const claimInputBottom = <InputTextRight>claim tokens</InputTextRight>;
 
   const top = (
     <Top>
@@ -286,7 +305,7 @@ function CoverDetailCard(props) {
           <AmountText>
             Amount <InfoIcon type="info" />
           </AmountText>
-          <BalanceText>Available cover: 291K {collateralName}</BalanceText>
+          <BalanceText>Your DAI: {daiBalanceOf}</BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
           <RoundedInput right={claimInputTop} />

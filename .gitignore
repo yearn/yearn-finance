@@ -8,3 +8,5 @@ stats.json
 .DS_Store
 npm-debug.log
 .idea
+# Outputed css
+app/assets/styles.css

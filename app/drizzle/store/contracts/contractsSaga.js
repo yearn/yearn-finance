@@ -330,7 +330,7 @@ function* processResponse(action) {
     };
   };
   const tokenSubscriptions = _.map(newTokenContracts, generateSubscription);
-  if (tokenSubscriptions) {
+  if (tokenSubscriptions.length) {
     yield put(addContracts(tokenSubscriptions));
   }
 }

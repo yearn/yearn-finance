@@ -219,10 +219,22 @@ function CoverDetailCard(props) {
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
   const claimNonce = _.get(protocol, 'claimNonce');
+
   const collateralName = _.get(
     protocol,
     `coverObjects.${claimNonce}.collateralName`,
   );
+  const expirationTimestamp =
+    _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;
+
+  const expirationDateTime = new Date(expirationTimestamp);
+
+  const dateTime = expirationDateTime.toLocaleString('en', {
+    month: '2-digit',
+    day: '2-digit',
+    year: '2-digit',
+  });
+
   // const collateralAddress = _.get(
   //   protocol,
   //   `coverObjects.${claimNonce}.collateralAddress`,
@@ -272,8 +284,8 @@ function CoverDetailCard(props) {
             {protocolDisplayName} ({protocolName})
           </b>{' '}
           claim token will pay out 1 {collateralName} in the event that there is
-          a successful attack on the protocol before the expiration date
-          (5/31/2021)
+          a successful attack on the protocol before the expiration date (
+          {dateTime})
         </MiddleText>
         <MiddleHeader>What is covered?</MiddleHeader>
         <MiddleDivider />
@@ -337,12 +349,11 @@ function CoverDetailCard(props) {
     </Bottom>
   );
   return (
-    <StyledBlueOutlineCard
-      className={className}
-      top={top}
-      middle={middle}
-      bottom={bottom}
-    />
+    <StyledBlueOutlineCard className={className}>
+      {top}
+      {middle}
+      {bottom}
+    </StyledBlueOutlineCard>
   );
 }
 

@@ -6,6 +6,7 @@ export default styled.div`
   font-family: 'Roboto';
   font-weight: 900;
   font-size: 20px;
+
   width: 100%;
   align-items: center;
   > div {

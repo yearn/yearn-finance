@@ -7,7 +7,7 @@ const StyledBackLink = styled(BackLink)`
   margin-top: 30px;
 `;
 
-function CoverProtocol(props) {
+function CoverProtocolHeader(props) {
   const { protocol } = props;
   const name = _.get(protocol, 'protocolDisplayName');
 
@@ -19,5 +19,5 @@ function CoverProtocol(props) {
   );
 }
 
-CoverProtocol.whyDidYouRender = true;
-export default CoverProtocol;
+CoverProtocolHeader.whyDidYouRender = true;
+export default CoverProtocolHeader;

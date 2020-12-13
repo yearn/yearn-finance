@@ -5,6 +5,9 @@ export default styled.div`
   grid-template-columns: 370px 140px 160px 140px 1fr;
   width: 100%;
   align-items: center;
+  font-family: 'Roboto';
+  font-weight: 900;
+  font-size: 20px;
   > div {
     overflow: hidden;
     white-space: nowrap;

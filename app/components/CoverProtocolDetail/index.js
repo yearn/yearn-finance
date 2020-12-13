@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import CoverDetailCard from 'components/CoverDetailCard';
-import CoverDetailCardSell from 'components/CoverDetailCardSell';
+// import CoverDetailCardSell from 'components/CoverDetailCardSell';
 import CoverTallCard from 'components/CoverTallCard';
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -19,7 +19,6 @@ function CoverProtocolDetail(props) {
     <Wrapper>
       <BuySellWrapper>
         <CoverDetailCard protocol={protocol} />
-        <CoverDetailCardSell protocol={protocol} />
       </BuySellWrapper>
       <CoverTallCard protocol={protocol} />
     </Wrapper>

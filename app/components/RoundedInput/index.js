@@ -45,5 +45,5 @@ function RoundedInput(props) {
   );
 }
 
-RoundedInput.whyDidYouRender = true;
+RoundedInput.whyDidYouRender = false;
 export default RoundedInput;

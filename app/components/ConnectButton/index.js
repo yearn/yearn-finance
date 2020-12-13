@@ -6,10 +6,14 @@ import {
   useSelectWallet,
   useAccount,
 } from 'containers/ConnectionProvider/hooks';
-import ConnectedAccount from './connectedAccount';
+import ConnectedAccount from './ConnectedAccount';
 
 const StyledButton = styled.button(() => [
-  tw`text-white uppercase rounded-2xl border-white border-solid border-2 px-4`,
+  tw`
+  text-white uppercase rounded-xl border-2 border-yearn-blue px-6
+  items-center justify-center align-middle 
+  font-thin text-base flex hover:text-yearn-blue pt-1
+  `,
 ]);
 
 export default function ConnectButton(props) {
@@ -18,6 +22,10 @@ export default function ConnectButton(props) {
   const account = useAccount();
   const selectWallet = useSelectWallet();
   let content;
+
+  if (window.location.pathname === '/') {
+    return <StyledButton>Launch App</StyledButton>;
+  }
   if (wallet.provider && account) {
     content = (
       <ConnectedAccount

@@ -114,7 +114,7 @@ const Navbar = () => {
   return (
     <div className="relative z-20 bg-black w-full">
       <div className="px-4 sm:px-6">
-        <div className="flex py-4 justify-between">
+        <div className="flex py-4 justify-between align-center">
           <div className="-mr-2 -my-2 md:hidden">
             <button
               type="button"
@@ -157,7 +157,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav className="space-x-10 hidden md:flex">
+          <nav className="space-x-10 hidden md:flex items-center">
             {Object.keys(menuLinks).map(menuLink => {
               const links = menuLinks[menuLink];
               return (

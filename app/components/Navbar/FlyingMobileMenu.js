@@ -202,7 +202,9 @@ export const FlyingMobileMenu = ({
         <div
           css={[
             css`
-              background-image: url('/navbar-mobile-bg.png');
+              background: url('/navbar-mobile-bg.png') no-repeat center center
+                fixed;
+              background-size: cover;
             `,
           ]}
           className="object-center h-full relative -mt-4"

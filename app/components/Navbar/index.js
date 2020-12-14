@@ -162,6 +162,7 @@ const Navbar = () => {
               const links = menuLinks[menuLink];
               return (
                 <MenuItem
+                  key={menuLink}
                   setIsActive={setIsActive}
                   isActive={isActive}
                   text={menuLink}

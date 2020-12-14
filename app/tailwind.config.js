@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: 'Roboto',
+        mono: 'Roboto Mono Light',
       },
       colors: {
         // uses root variables in tailwind.css

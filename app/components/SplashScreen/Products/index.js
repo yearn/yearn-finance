@@ -15,17 +15,17 @@ const RHSImageGovernance = ({
   imageSrc,
   learnMoreHref,
 }) => (
-  <div className="flex flex-col-reverse lg:flex-row space-x-0 lg:space-x-16">
-    <div className="flex flex-col space-y-4">
-      <div className="flex flex-col text-6xl text-white">
-        <span className="font-black">{headingText}</span>
-        <span className="uppercase text-3xl">{secondHeadingText}</span>
+  <div tw="flex flex-col-reverse lg:flex-row space-x-0 lg:space-x-16">
+    <div tw="flex flex-col space-y-4">
+      <div tw="flex flex-col text-6xl text-white">
+        <span tw="font-black">{headingText}</span>
+        <span tw="uppercase text-3xl">{secondHeadingText}</span>
       </div>
-      <span className="font-bold text-xl">{descriptionText}</span>
-      <span className="font-bold text-xl">{secondDescriptionText}</span>
+      <span tw="font-bold text-xl">{descriptionText}</span>
+      <span tw="font-bold text-xl">{secondDescriptionText}</span>
       <LearnMoreButton href={learnMoreHref}>Learn more</LearnMoreButton>
     </div>
-    <img src={imageSrc} alt="yvaults" className="mb-4 lg:mb-0 lg:w-5/12" />
+    <img src={imageSrc} alt="yvaults" tw="mb-4 lg:mb-0 lg:w-5/12" />
   </div>
 );
 
@@ -38,15 +38,15 @@ const LHSImageGovernance = ({
   learnMoreText,
   learnMoreHref,
 }) => (
-  <div className="flex flex-col lg:flex-row space-x-0 lg:space-x-16 space-y-4">
-    <img src={imageSrc} alt="yvaults" className="lg:w-5/12" />
-    <div className="flex flex-col mb-6 lg:mb-0 space-y-4">
-      <div className="flex flex-col text-6xl space-y-2 lg:-mt-4 text-white">
-        <span className="font-black">{headingText}</span>
-        <span className="uppercase text-3xl">{secondHeadingText}</span>
+  <div tw="flex flex-col lg:flex-row space-x-0 lg:space-x-16 space-y-4">
+    <img src={imageSrc} alt="yvaults" tw="lg:w-5/12" />
+    <div tw="flex flex-col mb-6 lg:mb-0 space-y-4">
+      <div tw="flex flex-col text-6xl space-y-2 lg:-mt-4 text-white">
+        <span tw="font-black">{headingText}</span>
+        <span tw="uppercase text-3xl">{secondHeadingText}</span>
       </div>
-      <span className="font-bold text-xl">{descriptionText}</span>
-      <span className="font-bold text-xl">{secondDescriptionText}</span>
+      <span tw="font-bold text-xl">{descriptionText}</span>
+      <span tw="font-bold text-xl">{secondDescriptionText}</span>
       <LearnMoreButton href={learnMoreHref}>{learnMoreText}</LearnMoreButton>
     </div>
   </div>
@@ -59,16 +59,14 @@ const LHSImageProduct = ({
   imageSrc,
   learnMoreHref,
 }) => (
-  <div className="flex flex-col lg:flex-row space-x-0 lg:space-x-24 space-y-4">
-    <img src={imageSrc} alt="yvaults" className="lg:w-5/12" />
-    <div className="flex flex-col mb-6 lg:mb-0 space-y-4">
-      <div className="flex flex-col text-6xl space-y-2 lg:-mt-4">
-        <span className="font-black">{headingText}</span>
-        <span className="text-yearn-blue uppercase text-3xl">
-          {secondHeadingText}
-        </span>
+  <div tw="flex flex-col lg:flex-row space-x-0 lg:space-x-24 space-y-4">
+    <img src={imageSrc} alt="yvaults" tw="lg:w-5/12" />
+    <div tw="flex flex-col mb-6 lg:mb-0 space-y-4">
+      <div tw="flex flex-col text-6xl space-y-2 lg:-mt-4">
+        <span tw="font-black">{headingText}</span>
+        <span tw="text-yearn-blue uppercase text-3xl">{secondHeadingText}</span>
       </div>
-      <span className="font-bold text-xl">{descriptionText}</span>
+      <span tw="font-bold text-xl">{descriptionText}</span>
       <LearnMoreButton href={learnMoreHref}>Learn more</LearnMoreButton>
     </div>
   </div>
@@ -81,38 +79,34 @@ const RHSImageProduct = ({
   imageSrc,
   learnMoreHref,
 }) => (
-  <div className="flex flex-col-reverse lg:flex-row space-x-0 lg:space-x-16">
-    <div className="flex flex-col space-y-4">
-      <div className="flex flex-col text-6xl space-y-2">
-        <span className="font-black">{headingText}</span>
-        <span className="text-yearn-blue uppercase text-3xl">
-          {secondHeadingText}
-        </span>
+  <div tw="flex flex-col-reverse lg:flex-row space-x-0 lg:space-x-16">
+    <div tw="flex flex-col space-y-4">
+      <div tw="flex flex-col text-6xl space-y-2">
+        <span tw="font-black">{headingText}</span>
+        <span tw="text-yearn-blue uppercase text-3xl">{secondHeadingText}</span>
       </div>
-      <span className="font-bold text-xl">{descriptionText}</span>
+      <span tw="font-bold text-xl">{descriptionText}</span>
       <LearnMoreButton href={learnMoreHref}>Learn more</LearnMoreButton>
     </div>
-    <img src={imageSrc} alt="yvaults" className="mb-4 lg:mb-0 lg:w-5/12" />
+    <img src={imageSrc} alt="yvaults" tw="mb-4 lg:mb-0 lg:w-5/12" />
   </div>
 );
 
 const Products = () => (
-  <div className="flex flex-col space-y-24 text-white px-10 w-screen">
-    <div className="flex flex-col lg:flex-row lg:space-x-12">
-      <div className="flex flex-col mb-6 lg:md-0">
-        <div className="inline-block font-black text-6xl mb-4">
-          <span className="inline-block float-left mr-2">Focused on</span>
-          <span className="inline-block float-left text-yearn-blue">
-            innovation
-          </span>
+  <div tw="flex flex-col space-y-24 text-white px-10 w-screen">
+    <div tw="flex flex-col lg:flex-row lg:space-x-12">
+      <div tw="flex flex-col mb-6 lg:mb-0">
+        <div tw="inline-block font-black text-6xl mb-4">
+          <span tw="inline-block float-left mr-2">Focused on</span>
+          <span tw="inline-block float-left text-yearn-blue">innovation</span>
         </div>
-        <span className="font-bold text-xl">
+        <span tw="font-bold text-xl">
           Yearn is creating next level financial products to scale human
           coordination on the internet. It’s a new frontier and we’re just
           getting started.
         </span>
       </div>
-      <img src={FocusedDefi} alt="focused defi" className="lg:w-7/12 w-full" />
+      <img src={FocusedDefi} alt="focused defi" tw="lg:w-7/12 w-full" />
     </div>
     <LHSImageProduct
       {...{

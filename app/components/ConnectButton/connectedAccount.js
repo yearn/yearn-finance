@@ -17,7 +17,7 @@ export default function Account(props) {
   // TODO: Provider.resolveName(account) + useState + useEffect hook
   return (
     <ConnectedAccount onClick={onClick} className={className}>
-      <span className="text-lg mt-1">{getShortenedAddress(account)}</span>
+      <span tw="text-lg mt-1">{getShortenedAddress(account)}</span>
     </ConnectedAccount>
   );
 }

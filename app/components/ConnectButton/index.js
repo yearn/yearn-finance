@@ -6,7 +6,7 @@ import {
   useSelectWallet,
   useAccount,
 } from 'containers/ConnectionProvider/hooks';
-import ConnectedAccount from './connectedAccount';
+import ConnectedAccount from './ConnectedAccount';
 
 const StyledButton = styled.button(() => [
   tw`

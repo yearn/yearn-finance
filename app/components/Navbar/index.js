@@ -15,12 +15,12 @@ import { Logo } from './logo';
 //         ? tw`opacity-100 animate-flyingMenuEntering`
 //         : tw`hidden opacity-0`,
 //     ]}
-//     className="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
+//     tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
 //   >
-//     <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-//       <div className=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
+//     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+//       <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
 //         {links.map(link => (
-//           <a href={link.href} className="flex items-start">
+//           <a href={link.href} tw="flex items-start">
 //             <div
 //               css={[
 //                 // amazing
@@ -34,12 +34,12 @@ import { Logo } from './logo';
 //                 `,
 //               ]}
 //             >
-//               <p className="text-base font-black text-white inline-block mr-2">
+//               <p tw="text-base font-black text-white inline-block mr-2">
 //                 {link.title}
 //               </p>
 //               <svg
 //                 css={[link.href[0] !== '/' && tw`inline-block`]}
-//                 className="hidden text-white h-4 self-start"
+//                 tw="hidden text-white h-4 self-start"
 //                 xmlns="http://www.w3.org/2000/svg"
 //                 fill="none"
 //                 viewBox="0 0 24 24"
@@ -52,7 +52,7 @@ import { Logo } from './logo';
 //                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
 //                 />
 //               </svg>
-//               <p className="mt-1 text-sm text-white">{link.description}</p>
+//               <p tw="mt-1 text-sm text-white">{link.description}</p>
 //             </div>
 //           </a>
 //         ))}
@@ -73,7 +73,7 @@ const MenuItem = ({
   });
 
   return (
-    <div className="relative">
+    <div tw="relative">
       <a
         // TODO: Uncomment when nested menus are ready
         // onClick={() => {
@@ -91,7 +91,7 @@ const MenuItem = ({
       >
         <span
           css={[isActive === text && tw`text-yearn-blue`]}
-          className="font-sans hover:text-yearn-blue text-white uppercase font-black group rounded-md inline-flex items-center text-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
         </span>
@@ -112,18 +112,18 @@ const Navbar = () => {
   const [mobileIsActive, setMobileIsActive] = React.useState(false);
 
   return (
-    <div className="relative z-20 bg-black w-full">
-      <div className="px-4 sm:px-6">
-        <div className="flex py-4 justify-between align-center">
-          <div className="-mr-2 -my-2 md:hidden">
+    <div tw="relative z-20 bg-black w-full">
+      <div tw="px-4 sm:px-6">
+        <div tw="flex py-4 justify-between items-center">
+          <div tw="-mr-2 -my-2 md:hidden">
             <button
               type="button"
               onClick={() => setIsMobileOpen(true)}
-              className="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
-              <span className="sr-only">Open menu</span>
+              <span tw="sr-only">Open menu</span>
               <svg
-                className="h-8 w-8"
+                tw="h-8 w-8"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -140,10 +140,10 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="flex self-center">
+          <div tw="flex self-center">
             <a href="/">
-              <span className="sr-only">Logo</span>
-              <div className="h-5 w-auto">
+              <span tw="sr-only">Logo</span>
+              <div tw="h-5 w-auto">
                 <Logo />
               </div>
             </a>
@@ -157,7 +157,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav className="space-x-10 hidden md:flex items-center">
+          <nav tw="space-x-10 hidden md:flex items-center">
             {Object.keys(menuLinks).map(menuLink => {
               const links = menuLinks[menuLink];
               return (

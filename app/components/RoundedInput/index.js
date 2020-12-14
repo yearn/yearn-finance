@@ -20,6 +20,9 @@ const Input = styled.input`
   padding: 0px 13px;
   padding-right: 40%;
   box-sizing: border-box;
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -35,15 +38,21 @@ const Right = styled.div`
   top: 0px;
 `;
 
-function RoundedInput(props) {
-  const { className, right } = props;
+export const RoundedInput = React.forwardRef((props, ref) => {
+  const { className, onChange, value, disabled, right } = props;
   return (
     <Wrapper className={className}>
-      <Input type="text" />
+      <Input
+        type="text"
+        value={value}
+        disabled={disabled}
+        onChange={onChange}
+        ref={ref}
+      />
       <Right>{right}</Right>
     </Wrapper>
   );
-}
+});
 
 RoundedInput.whyDidYouRender = false;
 export default RoundedInput;

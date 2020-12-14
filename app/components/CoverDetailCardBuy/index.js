@@ -239,13 +239,6 @@ function CoverDetailCardBuy(props) {
   const expirationTimestamp =
     _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;
 
-  // const claimAddress = _.get(
-  //   protocol,
-  //   `coverObjects.${claimNonce}.tokens.claimAddress`,
-  // );
-
-  // const claimTokenContractData = useSelector(selectContractData(claimAddress));
-
   const expirationDateTime = new Date(expirationTimestamp);
 
   const dateTime = expirationDateTime.toLocaleString('en', {
@@ -390,7 +383,7 @@ function CoverDetailCardBuy(props) {
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">
-            Approve
+            Buy Cover
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>

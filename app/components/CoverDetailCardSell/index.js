@@ -58,9 +58,13 @@ const Bottom = styled.div`
   padding: 0px 20px;
 `;
 
-const BuyHeader = styled.div`
-  margin-top: 13px;
+const SellHeader = styled.div`
   margin-left: 16px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  color: #ffffff;
 `;
 
 const StyledBlueOutlineCard = styled(BlueOutlineCard)`
@@ -262,7 +266,7 @@ function CoverDetailCardSell(props) {
   const top = (
     <Top>
       <StyledTokenIcon address={protocolTokenAddress} />
-      <BuyHeader>Sell your {protocolDisplayName} cover</BuyHeader>
+      <SellHeader>Sell your {protocolDisplayName} cover</SellHeader>
     </Top>
   );
   const middle = (
@@ -315,7 +319,7 @@ function CoverDetailCardSell(props) {
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">
-            Approve
+            Sell Cover
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>

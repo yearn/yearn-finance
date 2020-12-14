@@ -248,6 +248,7 @@ function CoverDetailCardBuy(props) {
   });
 
   const equivalentToRef = useRef(null);
+  const amountRef = useRef(null);
 
   const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
   const daiData = useSelector(selectContractData(daiAddress));
@@ -262,20 +263,40 @@ function CoverDetailCardBuy(props) {
     const newAmount = evt.target.value;
     setAmount(newAmount);
     const tokensNeeded = calculateAmountNeeded(newAmount, claimPool);
-
     let equivalentToVal = '0';
     if (claimPool.price && tokensNeeded) {
       equivalentToVal = tokensNeeded.toFixed(2);
     }
     equivalentToRef.current.value = equivalentToVal;
     setEquivalentTo(equivalentToVal);
-    // setEquivalentTo(equivalentToVal);
   };
 
   const updateEquivalentTo = evt => {
-    console.log('evt', evt);
-    // const newAmount = evt.target.value;
-    // setEquivalentTo(newAmount);
+    const newPurchaseAmount = evt.target.value;
+
+    /**
+     * TODO: Placeholder for Alan
+     * DAI to cover conversion
+     */
+    console.log('claim pool', claimPool);
+    const newAmount = newPurchaseAmount;
+
+    amountRef.current.value = newAmount;
+    setAmount(newAmount);
+  };
+
+  const setMaxClaimAmount = () => {
+    /**
+     * TODO: Placeholder for Alan
+     * Set max claim token amount
+     */
+    const maxAmount = 0;
+    setAmount(maxAmount);
+    amountRef.current.value = maxAmount;
+
+    const purchaseCost = 0;
+    setEquivalentTo(purchaseCost);
+    equivalentToRef.current.value = purchaseCost;
   };
 
   const daiSpendText =
@@ -290,7 +311,7 @@ function CoverDetailCardBuy(props) {
 
   const claimInputTop = (
     <InputTextRight>
-      <MaxWrapper>
+      <MaxWrapper onClick={setMaxClaimAmount}>
         <Max>Max</Max>
         <div>claim tokens</div>
       </MaxWrapper>
@@ -355,7 +376,7 @@ function CoverDetailCardBuy(props) {
           <RoundedInput
             right={claimInputTop}
             onChange={updateAmount}
-            defaultValue={amount}
+            ref={amountRef}
           />
           <EquivalentWrapper>
             <EquivalentText>Purchase cost:</EquivalentText>
@@ -368,7 +389,6 @@ function CoverDetailCardBuy(props) {
               right={claimInputBottom}
               onChange={updateEquivalentTo}
               ref={equivalentToRef}
-              disabled
             />
           </BottomInputWrapper>
         </BottomLeftBottom>

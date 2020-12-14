@@ -210,17 +210,18 @@ function CoverDetailCardSell(props) {
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
-  const claimNonce = _.get(protocol, 'claimNonce');
-  const collateralName = _.get(
-    protocol,
-    `coverObjects.${claimNonce}.collateralName`,
-  );
-  const collateralAddress = _.get(
-    protocol,
-    `coverObjects.${claimNonce}.collateralAddress`,
-  );
+  // const claimNonce = _.get(protocol, 'claimNonce');
+  // const collateralName = _.get(
+  //   protocol,
+  //   `coverObjects.${claimNonce}.collateralName`,
+  // );
+  // const collateralAddress = _.get(
+  //   protocol,
+  //   `coverObjects.${claimNonce}.collateralAddress`,
+  // );
 
   const equivalentToRef = useRef(null);
+  const amountRef = useRef(null);
 
   const updateAmount = evt => {
     const newAmount = evt.target.value;
@@ -240,25 +241,56 @@ function CoverDetailCardSell(props) {
       outAssetWeight,
       feePercent,
       covTokenPrice,
-    );
+    ).toFixed(2);
 
     equivalentToRef.current.value = sellEquivalent;
   };
 
+  const equivalentDai = _.get(equivalentToRef, 'current.value', '0');
+
+  const updateEquivalentTo = evt => {
+    const newPurchaseAmount = evt.target.value;
+
+    /**
+     * TODO: Placeholder for Alan
+     * DAI to cover conversion
+     */
+    console.log('claim pool', claimPool);
+    const newAmount = newPurchaseAmount;
+
+    amountRef.current.value = newAmount;
+    setAmount(newAmount);
+  };
+
+  const setMaxClaimAmount = () => {
+    /**
+     * TODO: Placeholder for Alan
+     * Set max claim token amount
+     */
+    const maxAmount = 0;
+    setAmount(maxAmount);
+    amountRef.current.value = maxAmount;
+
+    const purchaseCost = 0;
+    equivalentToRef.current.value = purchaseCost;
+  };
+
   const claimInputTop = (
     <InputTextRight>
-      <MaxWrapper>
+      <MaxWrapper onClick={setMaxClaimAmount}>
         <Max>Max</Max>
         <div>claim tokens</div>
       </MaxWrapper>
     </InputTextRight>
   );
 
+  const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
   const claimInputBottom = (
     <InputTextRight>
       <MaxWrapper>
-        <SmallTokenIcon address={collateralAddress} />
-        <InputTextRight>{collateralName}</InputTextRight>
+        <SmallTokenIcon address={daiAddress} />
+        <InputTextRight>DAI</InputTextRight>
       </MaxWrapper>
     </InputTextRight>
   );
@@ -287,6 +319,7 @@ function CoverDetailCardSell(props) {
       </MiddleContent>
     </Middle>
   );
+
   const bottom = (
     <Bottom>
       <BottomLeft>
@@ -299,7 +332,11 @@ function CoverDetailCardSell(props) {
           </BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
-          <RoundedInput onChange={updateAmount} right={claimInputTop} />
+          <RoundedInput
+            ref={amountRef}
+            onChange={updateAmount}
+            right={claimInputTop}
+          />
           <EquivalentWrapper>
             <EquivalentText>Sell price:</EquivalentText>
             <ArrowWrapper>
@@ -307,7 +344,11 @@ function CoverDetailCardSell(props) {
             </ArrowWrapper>
           </EquivalentWrapper>
           <BottomInputWrapper>
-            <RoundedInput ref={equivalentToRef} right={claimInputBottom} />
+            <RoundedInput
+              onChange={updateEquivalentTo}
+              ref={equivalentToRef}
+              right={claimInputBottom}
+            />
           </BottomInputWrapper>
         </BottomLeftBottom>
       </BottomLeft>
@@ -315,7 +356,7 @@ function CoverDetailCardSell(props) {
         <AmountText>Summary</AmountText>
         <SummaryText>
           You will sell {amount || '0'} claim tokens and will get back{' '}
-          {_.get(equivalentToRef, 'current.value', '0')} DAI.
+          {equivalentDai} DAI.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">
@@ -325,6 +366,7 @@ function CoverDetailCardSell(props) {
       </BottomRight>
     </Bottom>
   );
+
   return (
     <StyledBlueOutlineCard className={className}>
       {top}

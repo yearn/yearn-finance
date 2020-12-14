@@ -11,7 +11,7 @@ import './wdyr';
 
 import '@babel/polyfill';
 // Tailwind stuff
-import './assets/styles.css';
+import 'assets/styles.css';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';

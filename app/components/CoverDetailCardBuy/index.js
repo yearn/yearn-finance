@@ -7,7 +7,7 @@ import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
 import { useSelector } from 'react-redux';
 import { selectContractData } from 'containers/App/selectors';
-import { calculateAmountNeeded } from 'utils/cover';
+import { calculateAmountNeeded, calculateAmountOutFromBuy } from 'utils/cover';
 import { addCommasToNumber } from 'utils/string';
 import BigNumber from 'bignumber.js';
 
@@ -274,12 +274,15 @@ function CoverDetailCardBuy(props) {
   const updateEquivalentTo = evt => {
     const newPurchaseAmount = evt.target.value;
 
-    /**
-     * TODO: Placeholder for Alan
-     * DAI to cover conversion
-     */
-    console.log('claim pool', claimPool);
-    const newAmount = newPurchaseAmount;
+    const { daiInPool, covTokenWeight, price, swapFee } = claimPool;
+
+    const newAmount = calculateAmountOutFromBuy(
+      newPurchaseAmount,
+      daiInPool,
+      covTokenWeight,
+      swapFee,
+      price,
+    ).toFixed(2);
 
     amountRef.current.value = newAmount;
     setAmount(newAmount);

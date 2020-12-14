@@ -5,7 +5,10 @@ import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
-import { calculateAmountOutFromSell } from 'utils/cover';
+import {
+  calculateAmountOutFromSell,
+  calculateAmountInFromSell,
+} from 'utils/cover';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -229,18 +232,14 @@ function CoverDetailCardSell(props) {
 
     const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
 
-    const covTokenSellAmt = newAmount;
-    const covTokenInPool = covTokenBalance;
-    const outAssetWeight = 1 - covTokenWeight;
-    const feePercent = swapFee;
-    const covTokenPrice = price;
+    const daiWeight = 1 - covTokenWeight;
 
     const sellEquivalent = calculateAmountOutFromSell(
-      covTokenSellAmt,
-      covTokenInPool,
-      outAssetWeight,
-      feePercent,
-      covTokenPrice,
+      newAmount,
+      covTokenBalance,
+      daiWeight,
+      swapFee,
+      price,
     ).toFixed(2);
 
     equivalentToRef.current.value = sellEquivalent;
@@ -251,12 +250,18 @@ function CoverDetailCardSell(props) {
   const updateEquivalentTo = evt => {
     const newPurchaseAmount = evt.target.value;
 
-    /**
-     * TODO: Placeholder for Alan
-     * DAI to cover conversion
-     */
-    console.log('claim pool', claimPool);
-    const newAmount = newPurchaseAmount;
+    const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
+    const daiWeight = 1 - covTokenWeight;
+
+    const sellEquivalent = calculateAmountInFromSell(
+      newPurchaseAmount,
+      covTokenBalance,
+      daiWeight,
+      swapFee,
+      price,
+    ).toFixed(2);
+
+    const newAmount = sellEquivalent;
 
     amountRef.current.value = newAmount;
     setAmount(newAmount);
@@ -310,11 +315,8 @@ function CoverDetailCardSell(props) {
         <MiddleDivider />
         <MiddleText>
           In the case that you don’t want to be covered for your{' '}
-          {protocolDisplayName}
-          position anymore you can use this panel to sell your {
-            protocolName
-          }{' '}
-          claim tokens.
+          {protocolDisplayName} position anymore you can use this panel to sell
+          your {protocolName} claim tokens.
         </MiddleText>
       </MiddleContent>
     </Middle>

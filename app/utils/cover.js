@@ -97,16 +97,49 @@ export const calculateAmountNeeded = (assetAmount, claimPool) => {
 export const calculateAmountOutFromSell = (
   covTokenSellAmt,
   covTokenInPool,
-  outAssetWeight,
+  daiWeight,
   feePercent,
   covTokenPrice,
 ) => {
   const rateBeforeTrade = 1 / covTokenPrice;
-  const slippagePerUnit =
-    (1 - feePercent) / (2 * covTokenInPool * outAssetWeight);
+  const slippagePerUnit = (1 - feePercent) / (2 * covTokenInPool * daiWeight);
   const totalSlippage = covTokenSellAmt * slippagePerUnit;
   const rateAfterTrade = rateBeforeTrade * (1 + totalSlippage);
   const endPrice = 1 / rateAfterTrade;
   const amtOut = covTokenSellAmt * endPrice * 0.985; // add buffer to underestimate amtOut, user will receive more than amtOut
-  return amtOut;
+  return covTokenSellAmt > 0 && amtOut > 0 ? amtOut : 0;
+};
+
+/**
+ * @alan
+ */
+export const calculateAmountOutFromBuy = (
+  daiSellAmt,
+  daiInPool,
+  covTokenWeight,
+  feePercent,
+  covTokenPrice,
+) => {
+  const slippagePerUnit = (1 - feePercent) / (2 * daiInPool * covTokenWeight);
+  const totalSlippage = daiSellAmt * slippagePerUnit;
+  const endPrice = covTokenPrice * (1 + totalSlippage);
+  const amtOut = (daiSellAmt / endPrice) * 0.985; // add buffer to underestimate amtOut, user will receive more than amtOut
+  return daiSellAmt > 0 && amtOut > 0 ? amtOut : 0;
+};
+
+/**
+ * @alan
+ */
+export const calculateAmountInFromSell = (
+  amtOut,
+  covTokenInPool,
+  daiWeight,
+  feePercent,
+  covTokenPrice,
+) => {
+  // Same equation as calculateAmountOutFromSell but solving for covTokenSellAmt, given amtOut
+  const slippagePerUnit = (1 - feePercent) / (2 * covTokenInPool * daiWeight);
+  const totalSlippage = amtOut * slippagePerUnit;
+  const amtIn = amtOut / (covTokenPrice - totalSlippage);
+  return amtOut > 0 && amtIn > 0 && amtIn !== Infinity ? amtIn : 0;
 };

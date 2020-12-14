@@ -195,7 +195,14 @@ const ButtonWrapper = styled.div`
 `;
 
 function CoverDetailCardSell(props) {
-  const { className, protocol, setAmount, claimPool } = props;
+  const {
+    className,
+    protocol,
+    setAmount,
+    amount,
+    claimPool,
+    claimTokenBalanceOfNormalized,
+  } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -217,6 +224,7 @@ function CoverDetailCardSell(props) {
 
     // TODO: Placeholder for Alan
     console.log('claim pool', claimPool);
+
     const covTokenSellAmt = newAmount;
     const covTokenInPool = 0;
     const outAssetWeight = 0;
@@ -283,7 +291,9 @@ function CoverDetailCardSell(props) {
           <AmountText>
             Amount <InfoIcon type="info" />
           </AmountText>
-          <BalanceText>Your balance: 4349</BalanceText>
+          <BalanceText>
+            Your balance: {claimTokenBalanceOfNormalized}
+          </BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
           <RoundedInput onChange={updateAmount} right={claimInputTop} />
@@ -301,8 +311,8 @@ function CoverDetailCardSell(props) {
       <BottomRight>
         <AmountText>Summary</AmountText>
         <SummaryText>
-          You will sell 4959 {collateralName} claim tokens and will get back 500{' '}
-          {collateralName}. 
+          You will sell {amount || '0'} claim tokens and will get back{' '}
+          {_.get(equivalentToRef, 'current.value', '0')} DAI.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">

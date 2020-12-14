@@ -86,7 +86,14 @@ const PlusText = styled.div`
 `;
 
 export default function CoverTallCard(props) {
-  const { protocol, claimPool, amount, equivalentTo } = props;
+  const {
+    protocol,
+    claimPool,
+    amount,
+    equivalentTo,
+    claimTokenBalanceOfNormalized,
+    claimTokenBalanceOf,
+  } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   // const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -100,13 +107,6 @@ export default function CoverTallCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralAddress`,
   );
-
-  const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
-  const claimTokenContractData = useSelector(selectContractData(claimAddress));
-  const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
-  const claimTokenBalanceOfNormalized = new BigNumber(claimTokenBalanceOf)
-    .dividedBy(10 ** 18)
-    .toFixed(2);
 
   const expirationTimestamp =
     _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;

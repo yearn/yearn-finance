@@ -3,9 +3,12 @@ import styled from 'styled-components';
 import CoverDetailCardBuy from 'components/CoverDetailCardBuy';
 import CoverDetailCardSell from 'components/CoverDetailCardSell';
 import { useSelector } from 'react-redux';
+import { selectContractData } from 'containers/App/selectors';
 import { selectPoolData } from 'containers/Cover/selectors';
 import { getClaimPool } from 'utils/cover';
 import CoverTallCard from 'components/CoverTallCard';
+import BigNumber from 'bignumber.js';
+
 const Wrapper = styled.div`
   margin-top: 30px;
   display: flex;
@@ -29,6 +32,12 @@ function CoverProtocolDetail(props) {
     `coverObjects.${claimNonce}.tokens.claimAddress`,
   );
 
+  const claimTokenContractData = useSelector(selectContractData(claimAddress));
+  const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
+  const claimTokenBalanceOfNormalized = new BigNumber(claimTokenBalanceOf)
+    .dividedBy(10 ** 18)
+    .toFixed(2);
+
   if (!(poolData && claimAddress)) {
     return <div />;
   }
@@ -49,6 +58,7 @@ function CoverProtocolDetail(props) {
           amount={sellAmount}
           setAmount={setSellAmount}
           claimPool={claimPool}
+          claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
         />
       </BuySellWrapper>
       <CoverTallCard
@@ -56,6 +66,8 @@ function CoverProtocolDetail(props) {
         amount={buyAmount}
         equivalentTo={buyEquivalentTo}
         claimPool={claimPool}
+        claimTokenBalanceOf={claimTokenBalanceOf}
+        claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
       />
     </Wrapper>
   );

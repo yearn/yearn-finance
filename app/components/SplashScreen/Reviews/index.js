@@ -1,3 +1,4 @@
+import 'twin.macro';
 import React from 'react';
 import { ForbesLogo } from './Logos/Forbes';
 import { CoindeskLogo } from './Logos/Coindesk';
@@ -20,15 +21,15 @@ const Review = ({ logoName, reviewText }) => {
   const logo = getLogo(logoName);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div tw="flex flex-col justify-center items-center">
       {logo}
-      <span className="mt-4 italic font-medium text-xl">{reviewText}</span>
+      <span tw="mt-4 italic font-medium text-xl">{reviewText}</span>
     </div>
   );
 };
 
 export const Reviews = () => (
-  <div className="text-white w-100 min-w-min flex flex-col justify-center items-center pb-24 space-y-12">
+  <div tw="text-white w-full min-w-min flex flex-col justify-center items-center pb-24 space-y-12">
     {[
       {
         logoName: 'Forbes',
@@ -48,10 +49,10 @@ export const Reviews = () => (
     <div>
       <a
         href="/reviews"
-        className="flex text-center justify-center items-center text-yearn-blue font-medium text-2xl"
+        tw="flex text-center justify-center items-center text-yearn-blue font-medium text-2xl"
       >
         All Articles
-        <div className="h-5 w-5">
+        <div tw="h-5 w-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

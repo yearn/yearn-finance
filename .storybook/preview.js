@@ -8,6 +8,7 @@ import LanguageProvider from 'containers/LanguageProvider';
 import configureStore from '../app/configureStore';
 import { translationMessages } from '../app/i18n';
 import history from 'utils/history';
+import { GlobalStyles } from 'twin.macro';
 
 const initialState = {};
 const store = configureStore(initialState, history);
@@ -17,7 +18,10 @@ addDecorator(storyFn => (
     <LanguageProvider messages={translationMessages}>
       <ConnectionProvider>
         <DrizzleProvider store={store}>
-          <Layout>{storyFn()}</Layout>
+          <Layout>
+            <GlobalStyles />
+            {storyFn()}
+          </Layout>
         </DrizzleProvider>
       </ConnectionProvider>
     </LanguageProvider>

@@ -144,9 +144,10 @@ export default function CoverTallCard(props) {
   }
 
   const amountText = amount ? `+${addCommasToNumber(amount)}` : '';
-  const equivalentToText = equivalentTo
-    ? `+${addCommasToNumber(equivalentTo)}`
-    : '';
+  const equivalentToText =
+    equivalentTo && equivalentTo !== '0'
+      ? `+${addCommasToNumber(equivalentTo)}`
+      : '';
 
   const accountCoverage = new BigNumber(claimTokenBalanceOf)
     .times(claimPool.price)

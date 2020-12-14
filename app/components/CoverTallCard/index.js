@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import TokenIcon from 'components/TokenIcon';
 import { addCommasToNumber } from 'utils/string';
+import { calculateAmountNeeded } from 'utils/cover';
 
 const Wrapper = styled.div`
   margin-left: 50px;
@@ -85,7 +86,7 @@ const PlusText = styled.div`
 `;
 
 export default function CoverTallCard(props) {
-  const { protocol } = props;
+  const { protocol, claimPool, amount, equivalentTo } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   // const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -99,6 +100,14 @@ export default function CoverTallCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralAddress`,
   );
+
+  const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
+  const claimTokenContractData = useSelector(selectContractData(claimAddress));
+  const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
+  const claimTokenBalanceOfNormalized = new BigNumber(claimTokenBalanceOf)
+    .dividedBy(10 ** 18)
+    .toFixed(2);
+
   const expirationTimestamp =
     _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;
   const collateralData = useSelector(selectContractData(collateralAddress));
@@ -115,7 +124,6 @@ export default function CoverTallCard(props) {
 
   const expirationDateTime = new Date(expirationTimestamp);
 
-  // const dateTime = `${expirationDateTime.getMonth()}/${expirationDateTime.getDay()}/${expirationDateTime.getYear()} ${expirationDateTime.getHours()}:${expirationDateTime.getMinutes()}:${expirationDateTime.getSeconds()}`;
   const dateTime = expirationDateTime
     .toLocaleString('en', {
       month: '2-digit',
@@ -125,6 +133,26 @@ export default function CoverTallCard(props) {
       minute: '2-digit',
     })
     .replace(',', '');
+
+  const tokensNeeded = calculateAmountNeeded(amount, claimPool);
+
+  let tokenPrice = 'Unknown';
+  if (claimPool.price && amount && amount !== '0') {
+    tokenPrice = (tokensNeeded / parseFloat(amount)).toFixed(2);
+  } else if (claimPool.price) {
+    tokenPrice = claimPool.price.toFixed(2);
+  }
+
+  const amountText = amount ? `+${addCommasToNumber(amount)}` : '';
+  const equivalentToText = equivalentTo
+    ? `+${addCommasToNumber(equivalentTo)}`
+    : '';
+
+  const accountCoverage = new BigNumber(claimTokenBalanceOf)
+    .times(claimPool.price)
+    .dividedBy(10 ** 18)
+    .toFixed(2);
+
   return (
     <div>
       <Wrapper>
@@ -140,18 +168,20 @@ export default function CoverTallCard(props) {
             {totalSupply} {collateralName}
           </Time>
           <Label>Total Collateral</Label>
-          <Time>0.10 DAI</Time>
+          <Time>{tokenPrice}</Time>
           <Label>Token Price</Label>
           <PriceWrapper>
-            <Time>240 {collateralName}</Time>
-            <PlusText>+4959</PlusText>
+            <Time>
+              {claimTokenBalanceOfNormalized} {collateralName}
+            </Time>
+            <PlusText>{amountText}</PlusText>
           </PriceWrapper>
-          <Label>Your claim tokens balance</Label>
+          <Label>Cover amount</Label>
           <PriceWrapper>
-            <Time>0 {collateralName}</Time>
-            <PlusText>+500</PlusText>
+            <Time>${accountCoverage}</Time>
+            <PlusText>{equivalentToText}</PlusText>
           </PriceWrapper>
-          <Label>Your Cover</Label>
+          <Label>Value of cover</Label>
         </MiddleWrapper>
       </Wrapper>
     </div>

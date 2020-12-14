@@ -9,9 +9,10 @@
 
 import './wdyr';
 
+import { GlobalStyles } from 'twin.macro';
 import '@babel/polyfill';
 // Tailwind stuff
-import 'assets/styles.css';
+// import 'assets/styles.css';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -61,6 +62,7 @@ const render = messages => {
               <ConnectionProvider>
                 <DrizzleProvider store={store}>
                   <ConnectedRouter history={history}>
+                    <GlobalStyles />
                     <App />
                   </ConnectedRouter>
                 </DrizzleProvider>

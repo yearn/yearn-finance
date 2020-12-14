@@ -4,7 +4,6 @@ module.exports = {
       '@babel/preset-env',
       {
         modules: false,
-        loose: true,
       },
     ],
     '@babel/preset-react',

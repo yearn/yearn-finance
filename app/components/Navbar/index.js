@@ -112,7 +112,7 @@ const Navbar = () => {
   const [mobileIsActive, setMobileIsActive] = React.useState(false);
 
   return (
-    <div className="relative z-20 bg-black w-full">
+    <div className="hidden relative z-20 bg-black w-full">
       <div className="px-4 sm:px-6">
         <div className="flex py-4 justify-between">
           <div className="-mr-2 -my-2 md:hidden">

@@ -7,3 +7,9 @@ export const selectProtocols = () =>
     selectCover,
     substate => substate && substate.protocols,
   );
+
+export const selectPoolData = () =>
+  createSelector(
+    selectCover,
+    substate => substate && substate.poolData,
+  );

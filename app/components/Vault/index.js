@@ -30,7 +30,6 @@ const IconName = styled.div`
   overflow: hidden;
   padding-right: 10px;
   text-overflow: ellipsis;
-  margin-top: 8px;
 `;
 
 const StyledArrow = styled.img`

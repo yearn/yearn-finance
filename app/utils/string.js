@@ -36,6 +36,7 @@ export const abbreviateNumber = value => {
 };
 
 export const addCommasToNumber = val => {
+  if (!val) return '';
   while (/(\d+)(\d{3})/.test(val.toString())) {
     val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
   }

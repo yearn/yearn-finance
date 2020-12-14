@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
+import { calculateAmountOutFromSell } from 'utils/cover';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -57,9 +58,13 @@ const Bottom = styled.div`
   padding: 0px 20px;
 `;
 
-const BuyHeader = styled.div`
-  margin-top: 13px;
+const SellHeader = styled.div`
   margin-left: 16px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  color: #ffffff;
 `;
 
 const StyledBlueOutlineCard = styled(BlueOutlineCard)`
@@ -193,8 +198,15 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
-function CoverDetailCard(props) {
-  const { className, protocol } = props;
+function CoverDetailCardSell(props) {
+  const {
+    className,
+    protocol,
+    setAmount,
+    amount,
+    claimPool,
+    claimTokenBalanceOfNormalized,
+  } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -207,6 +219,31 @@ function CoverDetailCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralAddress`,
   );
+
+  const equivalentToRef = useRef(null);
+
+  const updateAmount = evt => {
+    const newAmount = evt.target.value;
+    setAmount(newAmount);
+
+    const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
+
+    const covTokenSellAmt = newAmount;
+    const covTokenInPool = covTokenBalance;
+    const outAssetWeight = 1 - covTokenWeight;
+    const feePercent = swapFee;
+    const covTokenPrice = price;
+
+    const sellEquivalent = calculateAmountOutFromSell(
+      covTokenSellAmt,
+      covTokenInPool,
+      outAssetWeight,
+      feePercent,
+      covTokenPrice,
+    );
+
+    equivalentToRef.current.value = sellEquivalent;
+  };
 
   const claimInputTop = (
     <InputTextRight>
@@ -229,7 +266,7 @@ function CoverDetailCard(props) {
   const top = (
     <Top>
       <StyledTokenIcon address={protocolTokenAddress} />
-      <BuyHeader>Sell your {protocolDisplayName} cover</BuyHeader>
+      <SellHeader>Sell your {protocolDisplayName} cover</SellHeader>
     </Top>
   );
   const middle = (
@@ -257,44 +294,45 @@ function CoverDetailCard(props) {
           <AmountText>
             Amount <InfoIcon type="info" />
           </AmountText>
-          <BalanceText>Your balance: 4349</BalanceText>
+          <BalanceText>
+            Your balance: {claimTokenBalanceOfNormalized}
+          </BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
-          <RoundedInput right={claimInputTop} />
+          <RoundedInput onChange={updateAmount} right={claimInputTop} />
           <EquivalentWrapper>
-            <EquivalentText>Equivalent to:</EquivalentText>
+            <EquivalentText>Sell price:</EquivalentText>
             <ArrowWrapper>
               <ArrowDown type="arrowDown" />
             </ArrowWrapper>
           </EquivalentWrapper>
           <BottomInputWrapper>
-            <RoundedInput right={claimInputBottom} />
+            <RoundedInput ref={equivalentToRef} right={claimInputBottom} />
           </BottomInputWrapper>
         </BottomLeftBottom>
       </BottomLeft>
       <BottomRight>
         <AmountText>Summary</AmountText>
         <SummaryText>
-          You will sell 4959 {collateralName} claim tokens and will get back 500{' '}
-          {collateralName}. 
+          You will sell {amount || '0'} claim tokens and will get back{' '}
+          {_.get(equivalentToRef, 'current.value', '0')} DAI.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">
-            Approve
+            Sell Cover
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>
     </Bottom>
   );
   return (
-    <StyledBlueOutlineCard
-      className={className}
-      top={top}
-      middle={middle}
-      bottom={bottom}
-    />
+    <StyledBlueOutlineCard className={className}>
+      {top}
+      {middle}
+      {bottom}
+    </StyledBlueOutlineCard>
   );
 }
 
-CoverDetailCard.whyDidYouRender = true;
-export default CoverDetailCard;
+CoverDetailCardSell.whyDidYouRender = false;
+export default CoverDetailCardSell;

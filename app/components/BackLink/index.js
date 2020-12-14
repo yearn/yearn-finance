@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { compose } from 'redux';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Icon from 'components/Icon';
@@ -33,4 +34,4 @@ function BackLink(props) {
 }
 
 BackLink.whyDidYouRender = true;
-export default BackLink;
+export default compose(memo)(BackLink);

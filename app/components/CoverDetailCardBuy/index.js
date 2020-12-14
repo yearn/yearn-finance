@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
-import { selectContractData } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
+import { selectContractData } from 'containers/App/selectors';
+import { calculateAmountNeeded } from 'utils/cover';
+import { addCommasToNumber } from 'utils/string';
 import BigNumber from 'bignumber.js';
 
 const StyledTokenIcon = styled(TokenIcon)`
@@ -61,8 +63,12 @@ const Bottom = styled.div`
 `;
 
 const BuyHeader = styled.div`
-  margin-top: 13px;
   margin-left: 16px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 24px;
+  color: #ffffff;
 `;
 
 const FullDocumentation = styled.a`
@@ -213,8 +219,15 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
-function CoverDetailCard(props) {
-  const { className, protocol } = props;
+function CoverDetailCardBuy(props) {
+  const {
+    className,
+    protocol,
+    claimPool,
+    amount,
+    setAmount,
+    setEquivalentTo,
+  } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -223,10 +236,18 @@ function CoverDetailCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralName`,
   );
-  // const collateralAddress = _.get(
-  //   protocol,
-  //   `coverObjects.${claimNonce}.collateralAddress`,
-  // );
+  const expirationTimestamp =
+    _.get(protocol, `coverObjects.${claimNonce}.expirationTimestamp`) * 1000;
+
+  const expirationDateTime = new Date(expirationTimestamp);
+
+  const dateTime = expirationDateTime.toLocaleString('en', {
+    month: '2-digit',
+    day: '2-digit',
+    year: '2-digit',
+  });
+
+  const equivalentToRef = useRef(null);
 
   const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
   const daiData = useSelector(selectContractData(daiAddress));
@@ -236,6 +257,29 @@ function CoverDetailCard(props) {
   if (Number.isNaN(daiBalanceOf)) {
     daiBalanceOf = '...';
   }
+
+  const updateAmount = evt => {
+    const newAmount = evt.target.value;
+    setAmount(newAmount);
+    const tokensNeeded = calculateAmountNeeded(newAmount, claimPool);
+
+    let equivalentToVal = '0';
+    if (claimPool.price && tokensNeeded) {
+      equivalentToVal = tokensNeeded.toFixed(2);
+    }
+    equivalentToRef.current.value = equivalentToVal;
+    setEquivalentTo(equivalentToVal);
+    // setEquivalentTo(equivalentToVal);
+  };
+
+  const updateEquivalentTo = evt => {
+    console.log('evt', evt);
+    // const newAmount = evt.target.value;
+    // setEquivalentTo(newAmount);
+  };
+
+  const daiSpendText =
+    (equivalentToRef.current && equivalentToRef.current.value) || '0';
 
   const claimInputBottom = (
     <React.Fragment>
@@ -272,8 +316,8 @@ function CoverDetailCard(props) {
             {protocolDisplayName} ({protocolName})
           </b>{' '}
           claim token will pay out 1 {collateralName} in the event that there is
-          a successful attack on the protocol before the expiration date
-          (5/31/2021)
+          a successful attack on the protocol before the expiration date (
+          {dateTime})
         </MiddleText>
         <MiddleHeader>What is covered?</MiddleHeader>
         <MiddleDivider />
@@ -308,43 +352,51 @@ function CoverDetailCard(props) {
           <BalanceText>Your DAI: {daiBalanceOf}</BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
-          <RoundedInput right={claimInputTop} />
+          <RoundedInput
+            right={claimInputTop}
+            onChange={updateAmount}
+            defaultValue={amount}
+          />
           <EquivalentWrapper>
-            <EquivalentText>Equivalent to:</EquivalentText>
+            <EquivalentText>Purchase cost:</EquivalentText>
             <ArrowWrapper>
               <ArrowDown type="arrowDown" />
             </ArrowWrapper>
           </EquivalentWrapper>
           <BottomInputWrapper>
-            <RoundedInput right={claimInputBottom} />
+            <RoundedInput
+              right={claimInputBottom}
+              onChange={updateEquivalentTo}
+              ref={equivalentToRef}
+              disabled
+            />
           </BottomInputWrapper>
         </BottomLeftBottom>
       </BottomLeft>
       <BottomRight>
         <AmountText>Summary</AmountText>
         <SummaryText>
-          You will spend 500 {collateralName} to acquire 4959{' '}
-          {protocolDisplayName} claim tokens, covering a position equivalent to
-          6.106 {protocolName} (at current market price of 81,88 $ per{' '}
-          {protocolName}).
+          You will spend {addCommasToNumber(daiSpendText)} DAI to acquire{' '}
+          {addCommasToNumber(amount)} {protocolDisplayName} claim tokens. Each
+          Badger claim token will be redeemable for 1 {collateralName} in the
+          event of a hack.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary">
-            Approve
+            Buy Cover
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>
     </Bottom>
   );
   return (
-    <StyledBlueOutlineCard
-      className={className}
-      top={top}
-      middle={middle}
-      bottom={bottom}
-    />
+    <StyledBlueOutlineCard className={className}>
+      {top}
+      {middle}
+      {bottom}
+    </StyledBlueOutlineCard>
   );
 }
 
-CoverDetailCard.whyDidYouRender = true;
-export default CoverDetailCard;
+CoverDetailCardBuy.whyDidYouRender = false;
+export default CoverDetailCardBuy;

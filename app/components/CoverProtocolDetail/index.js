@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import CoverDetailCard from 'components/CoverDetailCard';
+import CoverDetailCardBuy from 'components/CoverDetailCardBuy';
 import CoverDetailCardSell from 'components/CoverDetailCardSell';
+import { useSelector } from 'react-redux';
+import { selectContractData } from 'containers/App/selectors';
+import { selectPoolData } from 'containers/Cover/selectors';
+import { getClaimPool } from 'utils/cover';
 import CoverTallCard from 'components/CoverTallCard';
+import BigNumber from 'bignumber.js';
+
 const Wrapper = styled.div`
   margin-top: 30px;
   display: flex;
@@ -15,13 +21,54 @@ const BuySellWrapper = styled.div`
 
 function CoverProtocolDetail(props) {
   const { protocol } = props;
+
+  const [buyAmount, setBuyAmount] = useState();
+  const [sellAmount, setSellAmount] = useState();
+  const [buyEquivalentTo, setBuyEquivalentTo] = useState();
+  const poolData = useSelector(selectPoolData());
+  const claimNonce = _.get(protocol, 'claimNonce');
+  const claimAddress = _.get(
+    protocol,
+    `coverObjects.${claimNonce}.tokens.claimAddress`,
+  );
+
+  const claimTokenContractData = useSelector(selectContractData(claimAddress));
+  const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
+  const claimTokenBalanceOfNormalized = new BigNumber(claimTokenBalanceOf)
+    .dividedBy(10 ** 18)
+    .toFixed(2);
+
+  if (!(poolData && claimAddress)) {
+    return <div />;
+  }
+  const claimPool = getClaimPool(poolData, claimAddress);
+
   return (
     <Wrapper>
       <BuySellWrapper>
-        <CoverDetailCard protocol={protocol} />
-        <CoverDetailCardSell protocol={protocol} />
+        <CoverDetailCardBuy
+          protocol={protocol}
+          amount={buyAmount}
+          setAmount={setBuyAmount}
+          setEquivalentTo={setBuyEquivalentTo}
+          claimPool={claimPool}
+        />
+        <CoverDetailCardSell
+          protocol={protocol}
+          amount={sellAmount}
+          setAmount={setSellAmount}
+          claimPool={claimPool}
+          claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
+        />
       </BuySellWrapper>
-      <CoverTallCard protocol={protocol} />
+      <CoverTallCard
+        protocol={protocol}
+        amount={buyAmount}
+        equivalentTo={buyEquivalentTo}
+        claimPool={claimPool}
+        claimTokenBalanceOf={claimTokenBalanceOf}
+        claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
+      />
     </Wrapper>
   );
 }

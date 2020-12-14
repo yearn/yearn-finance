@@ -5,7 +5,7 @@ import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
-// import { calculateAmountOutFromSell } from 'utils/cover';
+import { calculateAmountOutFromSell } from 'utils/cover';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -195,7 +195,7 @@ const ButtonWrapper = styled.div`
 `;
 
 function CoverDetailCardSell(props) {
-  const { className, protocol, setAmount } = props;
+  const { className, protocol, setAmount, claimPool } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -215,7 +215,23 @@ function CoverDetailCardSell(props) {
     const newAmount = evt.target.value;
     setAmount(newAmount);
 
-    // equivalentToRef.current.value = sellEquivalent;
+    // TODO: Placeholder for Alan
+    console.log('claim pool', claimPool);
+    const covTokenSellAmt = newAmount;
+    const covTokenInPool = 0;
+    const outAssetWeight = 0;
+    const feePercent = 0;
+    const covTokenPrice = 0;
+
+    const sellEquivalent = calculateAmountOutFromSell(
+      covTokenSellAmt,
+      covTokenInPool,
+      outAssetWeight,
+      feePercent,
+      covTokenPrice,
+    );
+
+    equivalentToRef.current.value = sellEquivalent;
   };
 
   const claimInputTop = (

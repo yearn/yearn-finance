@@ -8,18 +8,6 @@ export const calculateEquivalentPrice = val => {
   return newVal;
 };
 
-// function calculatePrice(
-//   daiInPool,
-//   covTokensInPool,
-//   daiPrice,
-//   covTokenWeight,
-//   daiWeight,
-// ) {
-//   return (
-//     daiInPool / ((covTokensInPool * daiWeight) / (covTokenWeight * daiPrice))
-//   );
-// }
-
 const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // TODO: make this a shared constant
 
 /**
@@ -101,4 +89,24 @@ export const calculateAmountNeeded = (assetAmount, claimPool) => {
       ? (1.015 * (amountWanted * price)) / (1 - totalSlippage)
       : Infinity
     : 0;
+};
+
+/**
+ * @alan
+ */
+export const calculateAmountOutFromSell = (
+  covTokenSellAmt,
+  covTokenInPool,
+  outAssetWeight,
+  feePercent,
+  covTokenPrice,
+) => {
+  const rateBeforeTrade = 1 / covTokenPrice;
+  const slippagePerUnit =
+    (1 - feePercent) / (2 * covTokenInPool * outAssetWeight);
+  const totalSlippage = covTokenSellAmt * slippagePerUnit;
+  const rateAfterTrade = rateBeforeTrade * (1 + totalSlippage);
+  const endPrice = 1 / rateAfterTrade;
+  const amtOut = covTokenSellAmt * endPrice * 0.99; // add buffer to underestimate amtOut, user will receive more than amtOut
+  return amtOut;
 };

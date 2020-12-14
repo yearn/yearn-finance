@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CoverDetailCard from 'components/CoverDetailCard';
+import CoverDetailCardBuy from 'components/CoverDetailCardBuy';
+import CoverDetailCardSell from 'components/CoverDetailCardSell';
 import { useSelector } from 'react-redux';
 import { selectPoolData } from 'containers/Cover/selectors';
 import { getClaimPool } from 'utils/cover';
-
-// import CoverDetailCardSell from 'components/CoverDetailCardSell';
 import CoverTallCard from 'components/CoverTallCard';
 const Wrapper = styled.div`
   margin-top: 30px;
@@ -20,8 +19,9 @@ const BuySellWrapper = styled.div`
 function CoverProtocolDetail(props) {
   const { protocol } = props;
 
-  const [amount, setAmount] = useState();
-  const [equivalentTo, setEquivalentTo] = useState();
+  const [buyAmount, setBuyAmount] = useState();
+  const [sellAmount, setSellAmount] = useState();
+  const [buyEquivalentTo, setBuyEquivalentTo] = useState();
   const poolData = useSelector(selectPoolData());
   const claimNonce = _.get(protocol, 'claimNonce');
   const claimAddress = _.get(
@@ -37,18 +37,24 @@ function CoverProtocolDetail(props) {
   return (
     <Wrapper>
       <BuySellWrapper>
-        <CoverDetailCard
+        <CoverDetailCardBuy
           protocol={protocol}
-          amount={amount}
-          setAmount={setAmount}
-          setEquivalentTo={setEquivalentTo}
+          amount={buyAmount}
+          setAmount={setBuyAmount}
+          setEquivalentTo={setBuyEquivalentTo}
+          claimPool={claimPool}
+        />
+        <CoverDetailCardSell
+          protocol={protocol}
+          amount={sellAmount}
+          setAmount={setSellAmount}
           claimPool={claimPool}
         />
       </BuySellWrapper>
       <CoverTallCard
         protocol={protocol}
-        amount={amount}
-        equivalentTo={equivalentTo}
+        amount={buyAmount}
+        equivalentTo={buyEquivalentTo}
         claimPool={claimPool}
       />
     </Wrapper>

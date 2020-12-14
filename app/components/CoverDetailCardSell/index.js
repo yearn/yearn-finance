@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
+// import { calculateAmountOutFromSell } from 'utils/cover';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -193,8 +194,8 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
-function CoverDetailCard(props) {
-  const { className, protocol } = props;
+function CoverDetailCardSell(props) {
+  const { className, protocol, setAmount } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
@@ -207,6 +208,15 @@ function CoverDetailCard(props) {
     protocol,
     `coverObjects.${claimNonce}.collateralAddress`,
   );
+
+  const equivalentToRef = useRef(null);
+
+  const updateAmount = evt => {
+    const newAmount = evt.target.value;
+    setAmount(newAmount);
+
+    // equivalentToRef.current.value = sellEquivalent;
+  };
 
   const claimInputTop = (
     <InputTextRight>
@@ -260,15 +270,15 @@ function CoverDetailCard(props) {
           <BalanceText>Your balance: 4349</BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
-          <RoundedInput right={claimInputTop} />
+          <RoundedInput onChange={updateAmount} right={claimInputTop} />
           <EquivalentWrapper>
-            <EquivalentText>Equivalent to:</EquivalentText>
+            <EquivalentText>Sell price:</EquivalentText>
             <ArrowWrapper>
               <ArrowDown type="arrowDown" />
             </ArrowWrapper>
           </EquivalentWrapper>
           <BottomInputWrapper>
-            <RoundedInput right={claimInputBottom} />
+            <RoundedInput ref={equivalentToRef} right={claimInputBottom} />
           </BottomInputWrapper>
         </BottomLeftBottom>
       </BottomLeft>
@@ -287,14 +297,13 @@ function CoverDetailCard(props) {
     </Bottom>
   );
   return (
-    <StyledBlueOutlineCard
-      className={className}
-      top={top}
-      middle={middle}
-      bottom={bottom}
-    />
+    <StyledBlueOutlineCard className={className}>
+      {top}
+      {middle}
+      {bottom}
+    </StyledBlueOutlineCard>
   );
 }
 
-CoverDetailCard.whyDidYouRender = true;
-export default CoverDetailCard;
+CoverDetailCardSell.whyDidYouRender = false;
+export default CoverDetailCardSell;

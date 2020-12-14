@@ -219,7 +219,7 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
-function CoverDetailCard(props) {
+function CoverDetailCardBuy(props) {
   const {
     className,
     protocol,
@@ -405,5 +405,5 @@ function CoverDetailCard(props) {
   );
 }
 
-CoverDetailCard.whyDidYouRender = true;
-export default CoverDetailCard;
+CoverDetailCardBuy.whyDidYouRender = false;
+export default CoverDetailCardBuy;

@@ -222,14 +222,13 @@ function CoverDetailCardSell(props) {
     const newAmount = evt.target.value;
     setAmount(newAmount);
 
-    // TODO: Placeholder for Alan
-    console.log('claim pool', claimPool);
+    const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
 
     const covTokenSellAmt = newAmount;
-    const covTokenInPool = 0;
-    const outAssetWeight = 0;
-    const feePercent = 0;
-    const covTokenPrice = 0;
+    const covTokenInPool = covTokenBalance;
+    const outAssetWeight = 1 - covTokenWeight;
+    const feePercent = swapFee;
+    const covTokenPrice = price;
 
     const sellEquivalent = calculateAmountOutFromSell(
       covTokenSellAmt,

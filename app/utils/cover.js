@@ -107,6 +107,6 @@ export const calculateAmountOutFromSell = (
   const totalSlippage = covTokenSellAmt * slippagePerUnit;
   const rateAfterTrade = rateBeforeTrade * (1 + totalSlippage);
   const endPrice = 1 / rateAfterTrade;
-  const amtOut = covTokenSellAmt * endPrice * 0.99; // add buffer to underestimate amtOut, user will receive more than amtOut
+  const amtOut = covTokenSellAmt * endPrice * 0.985; // add buffer to underestimate amtOut, user will receive more than amtOut
   return amtOut;
 };

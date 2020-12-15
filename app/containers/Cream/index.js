@@ -1,3 +1,4 @@
+import { selectCTokenAddresses } from 'containers/Cream/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -17,19 +18,42 @@ const Wrapper = styled.div`
 
 const CreamBorrowMarketRow = ({ creamTokenAddress }) => {
   const creamTokenData = useSelector(selectContractData(creamTokenAddress));
+  const underlyingTokenData = useSelector(
+    selectContractData(creamTokenData.underlying),
+  );
 
-  console.log(creamTokenData);
+  let borrowRatePerYear = new BigNumber(
+    creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR,
+  )
+    .dividedBy(10 ** 16)
+    .toFixed(2);
+  if (Number.isNaN(borrowRatePerYear)) {
+    borrowRatePerYear = '...';
+  }
 
-  const borrowRatePerYear =
-    (creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR) / 1e16;
+  let walletBalance = new BigNumber(underlyingTokenData.balanceOf)
+    .dividedBy(10 ** underlyingTokenData.decimals) // Need to get tokenDecimals
+    .toFixed(2);
+  if (Number.isNaN(walletBalance)) {
+    walletBalance = '...';
+  }
+
+  let liquidity = new BigNumber(creamTokenData.getCash)
+    .dividedBy(10 ** underlyingTokenData.decimals) // Need to get tokenDecimals
+    .toFixed(2, BigNumber.ROUND_DOWN);
+  if (Number.isNaN(liquidity)) {
+    liquidity = '...';
+  }
 
   // (cyWETH) needs to be special-cased so it's APY is incorrect for now see
   // iearn-finance:src/stores/store.jsx:4197
 
   return (
     <tr>
-      <td>Token Name</td>
-      <td>{borrowRatePerYear}</td>
+      <td>{underlyingTokenData.symbol}</td>
+      <td>{`${borrowRatePerYear}%`}</td>
+      <td>{`${walletBalance} ${underlyingTokenData.symbol}`}</td>
+      <td>{liquidity}</td>
     </tr>
   );
 };
@@ -38,27 +62,18 @@ const Cream = () => {
   useInjectSaga({ key: 'cream', saga });
   useInjectReducer({ key: 'cream', reducer });
 
-  // Hardcoding cream token address temporarily until added to store.
-  // Actual contracts are syncing and stored, but list of addresses to loop over
-  // are yet to be stored.
-  // Started to look at this in app reducer, but backed off as wasn't sure about
-  // affecting the ready state if cream data does not start loading until user
-  // visits its page.
-  const creamTokenAddresses = [
-    '0x41c84c0e2EE0b740Cf0d31F63f3B6F627DC6b393',
-    '0x8e595470Ed749b85C6F7669de83EAe304C2ec68F',
-    '0x7589C9E17BCFcE1Ccaa1f921196FDa177F0207Fc',
-  ];
+  const creamTokenAddresses = useSelector(selectCTokenAddresses());
 
   return (
     <Wrapper>
-      <table>
+      <h1>Borrow Market</h1>
+      <table style={{ width: '100%' }}>
         <thead>
           <tr>
-            <th>Asset</th>
-            <th>APY</th>
-            <th>Wallet</th>
-            <th>Liquidity</th>
+            <th style={{ textAlign: 'left' }}>Asset</th>
+            <th style={{ textAlign: 'left' }}>APY</th>
+            <th style={{ textAlign: 'left' }}>Wallet</th>
+            <th style={{ textAlign: 'left' }}>Liquidity</th>
           </tr>
         </thead>
         <tbody>

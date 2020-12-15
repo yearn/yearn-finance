@@ -92,7 +92,6 @@ const Vault = props => {
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
-    symbolAlias,
     tokenAddress,
     tokenSymbolAlias,
     decimals,
@@ -102,6 +101,7 @@ const Vault = props => {
     balance,
     balanceOf,
     address,
+    vaultAlias,
   } = vault;
 
   const devMode = useSelector(selectDevMode());
@@ -112,7 +112,8 @@ const Vault = props => {
 
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
-  const vaultName = symbolAlias || tokenSymbol || name;
+
+  const vaultName = vaultAlias || name;
 
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);

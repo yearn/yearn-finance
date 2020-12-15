@@ -1,21 +1,19 @@
 import produce from 'immer';
-import { COVER_DATA_LOADED } from './constants';
+import { CREAM_CTOKENS_LOADED } from './constants';
 
-export const initialState = {};
+export const initialState = {
+  cTokenAddresses: [],
+};
 
 /* eslint-disable default-case, no-param-reassign */
-const appReducer = (state = initialState, action) =>
+const creamReducer = (state = initialState, action) =>
   produce(state, draft => {
-    const assignData = (val, key) => {
-      draft[key] = val;
-    };
     switch (action.type) {
-      case COVER_DATA_LOADED: {
-        const coverData = action.payload;
-        _.each(coverData, assignData);
+      case CREAM_CTOKENS_LOADED: {
+        draft.cTokenAddresses = action.payload;
         break;
       }
     }
   });
 
-export default appReducer;
+export default creamReducer;

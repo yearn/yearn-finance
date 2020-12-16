@@ -1,9 +1,11 @@
 import { createSelector } from 'reselect';
 
-const selectCover = state => state.cover;
+const selectCream = state => state.cream;
 
-export const selectProtocols = () =>
+export const selectCTokenAddresses = () =>
   createSelector(
-    selectCover,
-    substate => substate && substate.protocols,
+    selectCream,
+    // Having to fall back to [] as undefined is returned when state not ready yet
+    // thought this would have been taken care of by initialStare in reducer.js but its not...
+    substate => (substate && substate.cTokenAddresses) || [],
   );

@@ -1,8 +1,8 @@
-import { COVER_DATA_LOADED } from './constants';
+import { CREAM_CTOKENS_LOADED } from './constants';
 
-export function coverDataLoaded(payload) {
+export function creamCTokensLoaded(payload) {
   return {
-    type: COVER_DATA_LOADED,
+    type: CREAM_CTOKENS_LOADED,
     payload,
   };
 }

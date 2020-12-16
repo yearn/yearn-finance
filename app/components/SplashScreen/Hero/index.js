@@ -1,6 +1,7 @@
 import React from 'react';
 import { css } from 'twin.macro';
 import HeroBg from '../../../images/hero-bg.png';
+import { MarqueStats } from './MarqueeStats';
 
 export const Hero = () => (
   <div
@@ -40,5 +41,6 @@ export const Hero = () => (
         Launch App
       </button>
     </div>
+    <MarqueStats />
   </div>
 );

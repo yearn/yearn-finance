@@ -1,14 +1,11 @@
-import { selectCTokenAddresses } from 'containers/Cream/selectors';
-import { selectContractData } from 'containers/App/selectors';
+import BigNumber from 'bignumber.js';
+import { selectContracts, selectContractData } from 'containers/App/selectors';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-import BigNumber from 'bignumber.js';
-import reducer from './reducer';
-import saga from './saga';
 import { BLOCKS_PER_YEAR } from './constants';
+import saga from './saga';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -16,8 +13,8 @@ const Wrapper = styled.div`
   padding: 50px 40px;
 `;
 
-const CreamBorrowMarketRow = ({ creamTokenAddress }) => {
-  const creamTokenData = useSelector(selectContractData(creamTokenAddress));
+const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
+  const creamTokenData = useSelector(selectContractData(creamCTokenAddress));
   const underlyingTokenData = useSelector(
     selectContractData(creamTokenData.underlying),
   );
@@ -60,9 +57,9 @@ const CreamBorrowMarketRow = ({ creamTokenAddress }) => {
 
 const Cream = () => {
   useInjectSaga({ key: 'cream', saga });
-  useInjectReducer({ key: 'cream', reducer });
 
-  const creamTokenAddresses = useSelector(selectCTokenAddresses());
+  const creamCTokens = useSelector(selectContracts('creamCTokens'));
+  const creamCTokenAddresses = _.map(creamCTokens, token => token.address);
 
   return (
     <Wrapper>
@@ -77,10 +74,10 @@ const Cream = () => {
           </tr>
         </thead>
         <tbody>
-          {creamTokenAddresses.map(creamTokenAddress => (
+          {creamCTokenAddresses.map(creamCTokenAddress => (
             <CreamBorrowMarketRow
-              key={creamTokenAddress}
-              creamTokenAddress={creamTokenAddress}
+              key={creamCTokenAddress}
+              creamCTokenAddress={creamCTokenAddress}
             />
           ))}
         </tbody>

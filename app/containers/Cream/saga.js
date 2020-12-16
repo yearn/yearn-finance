@@ -1,14 +1,9 @@
 import comptrollerAbi from 'abi/creamComptroller.json';
-import priceOracleAbi from 'abi/creamPriceOracle.json';
 import CErc20DelegatorAbi from 'abi/CErc20Delegator.json';
 import erc20Abi from 'abi/erc20.json';
-import { creamCTokensLoaded } from 'containers/Cream/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { APP_READY } from 'containers/App/constants';
-import {
-  COMPTROLLER_ADDRESS,
-  PRICE_ORACLE_ADDRESS,
-} from 'containers/Cream/constants';
+import { COMPTROLLER_ADDRESS } from 'containers/Cream/constants';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { takeLatest, put, call, select } from 'redux-saga/effects';
@@ -23,7 +18,6 @@ function* subscribeToCreamData(action) {
   const cTokenAddresses = yield call(
     creamComptroller.methods.getAllMarkets().call,
   );
-  yield put(creamCTokensLoaded(cTokenAddresses));
 
   const underlyingTokensResponse = yield call(
     [batchCall, batchCall.execute],

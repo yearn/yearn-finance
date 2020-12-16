@@ -5,14 +5,14 @@ import { MarqueStats } from './MarqueeStats';
 
 export const Hero = () => (
   <div
-    tw="bg-black w-screen relative flex flex-col justify-center items-center"
+    tw="bg-black w-screen relative flex flex-col justify-center items-center overflow-hidden"
     css={[
       css`
         background: url(${HeroBg}) no-repeat center center fixed;
         background-size: cover;
-        height: 450px;
+        height: 100vh;
         @media (min-width: 1024px) {
-          height: 850px;
+          height: 100vh;
         }
       `,
     ]}

@@ -6,7 +6,7 @@ import { Hero } from './Hero';
 // import { Security } from './Security';
 
 export const SplashScreen = () => (
-  <div tw="flex flex-col space-y-16 bg-black">
+  <div tw="flex flex-col bg-black">
     <Hero />
     {/* TODO: Uncomment when designs are finalised :)  */}
     {/* <Products />

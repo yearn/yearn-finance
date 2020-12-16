@@ -8,9 +8,13 @@ export const Hero = () => (
     tw="bg-black w-screen relative flex flex-col justify-center items-center overflow-hidden"
     css={[
       css`
+        height: 100vh;
+        margin-top: -88px;
         background: url(${HeroBg}) no-repeat center center fixed;
         background-size: cover;
-        height: 100vh;
+        @media (max-width: 1024px) {
+          margin-top: -118px;
+        }
         @media (min-width: 1024px) {
           height: 100vh;
         }
@@ -34,12 +38,13 @@ export const Hero = () => (
         </div>
         <h4>accessible to anyone.</h4>
       </div>
-      <button
+      <a
         type="button"
-        tw="text-white bg-yearn-blue uppercase px-6 rounded-lg py-2"
+        tw="text-white bg-yearn-blue uppercase px-6 rounded-lg py-2 flex justify-center items-center text-lg align-middle"
+        href="/vaults"
       >
-        Launch App
-      </button>
+        <span>Launch App</span>
+      </a>
     </div>
     <MarqueStats />
   </div>

@@ -54,7 +54,7 @@ export const MarqueStats = () => {
                 left: 25%;
               `,
             ]}
-            tw="flex bg-transparent overflow-hidden absolute bottom-8 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl"
+            tw="flex bg-transparent overflow-hidden absolute bottom-2 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl"
           >
             <div tw="flex space-x-2">
               <span>Assets:</span>

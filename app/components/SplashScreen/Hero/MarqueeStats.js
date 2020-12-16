@@ -5,31 +5,56 @@ import request from 'utils/request';
 import { nFormat } from 'utils/nFormat';
 
 export const MarqueStats = () => {
-  const state = useAsync(
-    () => request('https://api.yearn.tools/vaults/holdings'),
-    [],
-    {},
-  );
+  // Note - Leaving here incase the api gets updated :)
+  // const state = useAsync(
+  //   () => request('https://api.yearn.tools/vaults/holdings'),
+  //   [],
+  //   {},
+  // );
   const cgstate = useAsync(
     () => request('https://api.coingecko.com/api/v3/coins/yearn-finance'),
     [],
     {},
   );
 
-  const { loading, error, value = {} } = state;
+  const tvlstate = useAsync(
+    () => request('https://api.yearn.tools/tvl'),
+    [],
+    {},
+  );
+
+  const {
+    loading: tvlloading,
+    error: tvlerror,
+    value: tvlvalue = {},
+  } = tvlstate;
+  // const { loading, error, value = {} } = state;
   const { loading: cgloading, error: cgerror, value: cgvalue = {} } = cgstate;
-  if (error) {
+  if (
+    // error ||
+    cgerror ||
+    tvlerror
+  ) {
     return null;
   }
-  if (cgerror) {
-    return null;
-  }
-  if (loading || cgloading) {
+  if (
+    // loading ||
+    cgloading ||
+    tvlloading
+  ) {
     return null;
   }
 
-  if (value && cgvalue) {
-    if (value[0] && cgvalue.market_data) {
+  if (
+    // value &&
+    cgvalue &&
+    tvlvalue
+  ) {
+    if (
+      // value[0] &&
+      cgvalue.market_data &&
+      tvlvalue.TvlUSD
+    ) {
       const {
         market_data: {
           total_volume: { usd: totalVolumeUSD },
@@ -37,12 +62,7 @@ export const MarqueStats = () => {
           market_cap: { usd: marketCapUSD },
         },
       } = cgvalue;
-      const totalPoolBalanceUSD = value.reduce((current, next) => {
-        if (next.holdings && next.holdings.poolBalanceUSD) {
-          return next.holdings.poolBalanceUSD + current;
-        }
-        return current;
-      }, 0);
+      const totalPoolBalanceUSD = tvlvalue.TvlUSD;
 
       return (
         <div>

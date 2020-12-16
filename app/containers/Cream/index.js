@@ -13,34 +13,39 @@ const Wrapper = styled.div`
   padding: 50px 40px;
 `;
 
+function getFieldValue(
+  rawValue,
+  decimals,
+  displayDecimals = 2,
+  roundingMode = BigNumber.RoundingMode,
+  nanValue = '...',
+) {
+  const value = new BigNumber(rawValue)
+    .dividedBy(10 ** decimals)
+    .toFixed(displayDecimals, roundingMode);
+  return Number.isNaN(value) ? nanValue : value;
+}
+
 const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
   const creamTokenData = useSelector(selectContractData(creamCTokenAddress));
   const underlyingTokenData = useSelector(
     selectContractData(creamTokenData.underlying),
   );
 
-  let borrowRatePerYear = new BigNumber(
+  const borrowRatePerYear = getFieldValue(
     creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR,
-  )
-    .dividedBy(10 ** 16)
-    .toFixed(2);
-  if (Number.isNaN(borrowRatePerYear)) {
-    borrowRatePerYear = '...';
-  }
-
-  let walletBalance = new BigNumber(underlyingTokenData.balanceOf)
-    .dividedBy(10 ** underlyingTokenData.decimals) // Need to get tokenDecimals
-    .toFixed(2);
-  if (Number.isNaN(walletBalance)) {
-    walletBalance = '...';
-  }
-
-  let liquidity = new BigNumber(creamTokenData.getCash)
-    .dividedBy(10 ** underlyingTokenData.decimals) // Need to get tokenDecimals
-    .toFixed(2, BigNumber.ROUND_DOWN);
-  if (Number.isNaN(liquidity)) {
-    liquidity = '...';
-  }
+    16,
+  );
+  const walletBalance = getFieldValue(
+    underlyingTokenData.balanceOf,
+    underlyingTokenData.decimals,
+  );
+  const liquidity = getFieldValue(
+    creamTokenData.getCash,
+    underlyingTokenData.decimals,
+    2,
+    BigNumber.ROUND_DOWN,
+  );
 
   // (cyWETH) needs to be special-cased so it's APY is incorrect for now see
   // iearn-finance:src/stores/store.jsx:4197

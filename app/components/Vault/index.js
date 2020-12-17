@@ -53,6 +53,7 @@ const Table = styled.table`
   padding-left: 40px;
   padding-top: 40px;
   padding-bottom: 20px;
+  border-collapse: initial;
   font-family: monospace;
 `;
 

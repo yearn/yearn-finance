@@ -164,8 +164,9 @@ const SummaryText = styled.div`
 `;
 
 const InfoIcon = styled(Icon)`
-  margin-left: 3px;
-  top: 2px;
+  margin-left: 2px;
+  top: -1px;
+  display: inline-block;
   position: relative;
 `;
 
@@ -186,7 +187,7 @@ const EquivalentWrapper = styled.div`
 
 const SmallTokenIcon = styled(TokenIcon)`
   width: 24px;
-  padding: 0px 7px;
+  margin: 0px 7px;
 `;
 
 const BottomInputWrapper = styled.div`

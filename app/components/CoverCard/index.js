@@ -121,16 +121,21 @@ const Address = styled.div`
   font-weight: normal;
   font-size: 16px;
   line-height: 21px;
+  display: flex;
+`;
+
+const CountdownText = styled.div`
+  display: flex;
 `;
 
 const Copy = styled(Icon)`
-  top: 4px;
+  top: 2px;
+  left: 6px;
   position: relative;
 `;
 
 const Clock = styled(Icon)`
-  top: 2px;
-  left: -2px;
+  left: -5px;
   position: relative;
 `;
 
@@ -227,9 +232,9 @@ export default function CoverCard(props) {
           expiringSoon={expiringSoon}
         >
           <div>{coverText}</div>
-          <div>
+          <CountdownText>
             <Clock type="clock" /> {countDown}
-          </div>
+          </CountdownText>
         </Bottom>
       </React.Fragment>
     );

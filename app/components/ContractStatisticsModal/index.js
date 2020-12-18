@@ -15,30 +15,49 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { BigNumber } from 'bignumber.js';
 
 const VaultWrapper = styled.div`
   background-color: rgb(6, 6, 27);
   padding: 15px;
 `;
 
+const VaultHeader = styled.div`
+  display: flex;
+`;
+
+const VaultInfo = styled.div`
+  flex-direction: column;
+  flex-basis: 80%;
+`;
+
+const VaultTitle = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 2.2rem;
+`;
+
+const VaultIconWrapper = styled.div`
+  height: 30px;
+  width: 30px;
+  margin: 5px 15px 15px 0px;
+`;
+
 const ChartsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  padding: 0 15px;
 `;
 
 const ChartHeader = styled.div`
   display: flex;
-  margin: 15px 0;
+  padding: 15px 0;
 `;
 
 const ChartInfo = styled.div`
   display: flex;
   flex-basis: 40%;
   flex-direction: column;
-`;
-
-const ModalTitle = styled.div`
-  font-size: 2.2rem;
 `;
 
 const ModalData = styled.div`
@@ -53,7 +72,21 @@ const ChartValue = styled.div`
   font-size: 1.6rem;
 `;
 
-const RangeSelector = styled.div``;
+const RangeSelectorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const RangeSelector = styled.div`
+  padding: 0 10px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.46);
+  ${({ active }) =>
+    active &&
+    `
+    color: white;
+  `}
+`;
 
 const ChartWrapper = styled.div`
   display: flex;
@@ -62,6 +95,7 @@ const ChartWrapper = styled.div`
   @media (max-width: 768px) {
     flex-basis: 100%;
   }
+  padding: 15px 5px 0 5px;
 `;
 
 const ChartContainer = styled.div`
@@ -70,6 +104,7 @@ const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 25px;
 `;
 
 const SkeletonWrapper = styled.div`
@@ -79,32 +114,6 @@ const SkeletonWrapper = styled.div`
 
 export default function TransactionModal(props) {
   const { show, onHide, modalMetadata, className } = props;
-
-  // {controllerAddress: "0x9E65Ad11b299CA0Abefc2799dDB6314Ef2d91080", tokenIcon: "https://raw.githubusercontent.com/iearn-finance/ye…7F958D2ee523a2206206994597C13D831ec7/logo-128.png", controllerName: "Controller", symbol: "yUSDT", timestamp: 1608330458360, …}
-  // address: "0x2f08119C6f07c006695E079AAFc638b8789FAf18"
-  // apy: {apyOneMonthSample: 6.716771478804928, symbol: "USDT", timestamp: 1608330400921, apyOneWeekSample: 8.41541148064962, apyInceptionSample: 13.028601359979724, …}
-  // balance: "1601971576900"
-  // balanceOf: "0"
-  // controllerAddress: "0x9E65Ad11b299CA0Abefc2799dDB6314Ef2d91080"
-  // controllerName: "Controller"
-  // decimals: 6
-  // delegated: false
-  // name: "yearn Tether USD"
-  // namespace: "vaults"
-  // strategyAddress: "0xc7e437033D849474074429Cbe8077c971Ea2a852"
-  // strategyName: "StrategyUSDT3pool"
-  // symbol: "yUSDT"
-  // symbolAlias: "yvUSDT"
-  // timestamp: 1608330458360
-  // tokenAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
-  // tokenIcon: "https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/tokens/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo-128.png"
-  // tokenName: "Tether USD"
-  // tokenSymbol: "USDT"
-  // tokenSymbolAlias: "USDT"
-  // vaultAlias: "USDT"
-  // vaultIcon: "https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/tokens/0x2f08119C6f07c006695E079AAFc638b8789FAf18/logo-128.png"
-  // wrapped: false
-
   const vault = _.get(modalMetadata, 'vault', {});
   const vaultAddress = vault.address;
   const contract = useContract(vaultAddress);
@@ -112,6 +121,7 @@ export default function TransactionModal(props) {
   const account = useSelector(selectAccount());
   const readMethods = getNumericReadMethodsWithNoInputs(abi);
   const [data, setData] = useState();
+  const [days, setDays] = useState(1);
 
   const provider =
     'https://eth-mainnet.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ';
@@ -147,11 +157,11 @@ export default function TransactionModal(props) {
     const blocksPerMinute = Math.floor(60 / blocksPerSecond);
     const blocksPerHour = 60 * blocksPerMinute;
     const blocksPerDay = blocksPerHour * 24;
-    const blocksPerMonth = blocksPerDay * 30;
+    const blocksRequested = blocksPerDay * days;
 
     const callOptions = {
-      blockHeight: blocksPerMonth,
-      blockResolution: blocksPerDay,
+      blockHeight: blocksRequested,
+      blockResolution: parseInt(blocksRequested / 10, 10),
     };
 
     const response = await batchCall.execute(contracts, callOptions);
@@ -163,15 +173,42 @@ export default function TransactionModal(props) {
       setTimeout(() => fetchData(), 0);
     } else {
       setData([]);
+      setDays(1);
     }
   };
   useEffect(modalToggled, [show]);
 
+  useEffect(() => {
+    const update = async () => {
+      await setData([]);
+      fetchData();
+    };
+    update();
+  }, [days]);
   const renderChart = (method, key) => {
     const chartData = _.get(data, method.name);
+    const scaleAllowList = ['balance', 'balanceOf', 'totalSupply'];
+    const dataShouldBeScaled = _.includes(scaleAllowList, method.name);
+    const scaleData = point => {
+      const { value } = point;
+      const newPoint = point;
+      if (dataShouldBeScaled) {
+        newPoint.value = new BigNumber(value)
+          .dividedBy(10 ** vault.decimals)
+          .toNumber();
+      } else {
+        newPoint.value = new BigNumber(value).toNumber();
+      }
+      return newPoint;
+    };
+
+    let scaledData;
+    if (chartData) {
+      scaledData = _.map(chartData, scaleData);
+    }
 
     let chartContent;
-    if (chartData) {
+    if (scaledData) {
       const tooltipStyle = {
         padding: '10px',
         margin: '0px',
@@ -179,11 +216,13 @@ export default function TransactionModal(props) {
         whiteSpace: 'nowrap',
         boxShadow: 'rgba(0, 0, 0, 0.4) 0px 0px 20px',
         backgroundColor: 'rgb(16, 16, 78)',
+        fontFamily:
+          'Calibre Semibold, Helvetica Neue ,Helvetica, Arial, sans-serif',
       };
       chartContent = (
-        <ResponsiveContainer width="96%" height={300}>
+        <ResponsiveContainer width="100%" height={300}>
           <AreaChart
-            data={chartData}
+            data={scaledData}
             margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
           >
             <defs>
@@ -199,7 +238,7 @@ export default function TransactionModal(props) {
               fillOpacity={1}
               fill="url(#chartGreen)"
             />
-            <YAxis domain={[0, max => max * 1.5]} hide />
+            <YAxis domain={[min => min * 0.8, max => max * 1.2]} hide />
             <XAxis
               tickFormatter={tick => (tick / 1000000).toFixed(2)}
               dataKey="blockNumber"
@@ -209,7 +248,9 @@ export default function TransactionModal(props) {
               minTickGap={50}
             />
             <Tooltip
-              formatter={value => [value]}
+              formatter={value =>
+                dataShouldBeScaled ? [value * 10 ** vault.decimals] : [value]
+              }
               labelFormatter={label => `Block ${label.toLocaleString()}`}
               contentStyle={tooltipStyle}
               cursor={{ stroke: 'rgb(237, 30, 255)', strokeWidth: 1.25 }}
@@ -219,7 +260,7 @@ export default function TransactionModal(props) {
       );
     } else {
       chartContent = (
-        <ResponsiveContainer width="96%" height={300}>
+        <ResponsiveContainer width="100%" height={300}>
           <SkeletonWrapper>
             <Skeleton variant="rect" animation="wave" height={300} />
           </SkeletonWrapper>
@@ -228,8 +269,8 @@ export default function TransactionModal(props) {
     }
 
     let currentValue;
-    if (chartData) {
-      currentValue = chartData[chartData.length - 1].value;
+    if (scaledData) {
+      currentValue = scaledData[scaledData.length - 1].value;
     } else {
       currentValue = (
         <SkeletonWrapper>
@@ -259,6 +300,15 @@ export default function TransactionModal(props) {
     }
   }, [data]);
 
+  const linkTo = contractAddress => (
+    <a
+      href={`https://etherscan.io/address/${contractAddress}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {contractAddress}
+    </a>
+  );
   return (
     <Modal
       dialogClassName={className}
@@ -269,15 +319,41 @@ export default function TransactionModal(props) {
     >
       <Modal.Body>
         <VaultWrapper>
-          <ModalTitle>
-            {vault.tokenSymbolAlias} - {vault.name}
-          </ModalTitle>
-          <ModalData>
-            {vault.controllerName}: {vault.controllerAddress}
-          </ModalData>
-          <ModalData>
-            {vault.strategyName}: {vault.strategyAddress}
-          </ModalData>
+          <VaultHeader>
+            <VaultInfo>
+              <VaultTitle>
+                <VaultIconWrapper>
+                  <img
+                    src={vault.vaultIcon}
+                    alt="token"
+                    width={30}
+                    height={30}
+                  />
+                </VaultIconWrapper>
+                {`${vault.tokenSymbolAlias} - ${vault.name}`}
+              </VaultTitle>
+              <ModalData>
+                {vault.strategyName}: {linkTo(vault.strategyAddress)}
+              </ModalData>
+              <ModalData>
+                {vault.controllerName}: {linkTo(vault.controllerAddress)}
+              </ModalData>
+            </VaultInfo>
+            <RangeSelectorWrapper>
+              <RangeSelector active={days === 1} onClick={() => setDays(1)}>
+                D
+              </RangeSelector>
+              <RangeSelector active={days === 7} onClick={() => setDays(7)}>
+                W
+              </RangeSelector>
+              <RangeSelector active={days === 30} onClick={() => setDays(30)}>
+                M
+              </RangeSelector>
+              <RangeSelector active={days === 365} onClick={() => setDays(365)}>
+                Y
+              </RangeSelector>
+            </RangeSelectorWrapper>
+          </VaultHeader>
           <ChartsWrapper>{charts}</ChartsWrapper>
         </VaultWrapper>
       </Modal.Body>

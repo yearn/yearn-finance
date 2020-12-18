@@ -28,39 +28,6 @@ export const initialState = {
 const loadContractData = (state, draft, action) => {
   const newDraft = draft;
   switch (action.type) {
-    case CONTRACT_INITIALIZED: {
-      const {
-        name: address,
-        group,
-        metadata,
-        readMethods,
-        writeMethods,
-      } = action;
-      const item = _.find(draft[group], { address });
-      let newItem = item;
-      if (!item) {
-        newItem = { address };
-        draft[group].push(newItem);
-      }
-      newItem.metadata = metadata;
-      newItem.writeMethods = writeMethods;
-      newItem.readMethods = readMethods;
-      newItem.group = group;
-      newDraft[group] = _.clone(draft[group]);
-      break;
-    }
-    case GOT_CONTRACT_VAR: {
-      const { name: address, variable: field, group, value } = action;
-      const item = _.find(draft[group], { address });
-      let newItem = item;
-      if (!item) {
-        newItem = { address };
-        draft[group].push(newItem);
-      }
-      newItem[field] = value;
-      newDraft[group] = _.clone(draft[group]);
-      break;
-    }
     default:
       break;
   }

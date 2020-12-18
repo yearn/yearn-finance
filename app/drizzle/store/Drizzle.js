@@ -66,7 +66,6 @@ class Drizzle {
   addContract(
     contractConfig,
     events = [],
-    group,
     metadata,
     readMethods,
     writeMethods,
@@ -83,7 +82,6 @@ class Drizzle {
       this.store,
       events,
       null,
-      group,
       metadata,
       readMethods,
       writeMethods,
@@ -93,25 +91,11 @@ class Drizzle {
       return;
     }
 
-    // this.store.dispatch({ type: 'CONTRACT_INITIALIZING', contractConfig });
-
     this.contracts[drizzleContract.contractName] = drizzleContract;
     this.contractList.push(drizzleContract);
-
-    // this.store.dispatch({
-    //   type: 'CONTRACT_INITIALIZED',
-    //   name: contractConfig.contractName,
-    //   group,
-    //   readMethods,
-    //   writeMethods,
-    //   metadata,
-    // });
   }
 
   deleteContract(contractName) {
-    // Deleting a contract means removing it from this instance's
-    // `contractList`, `contracts`, and `loadingContract`
-
     if (!this.contracts[contractName]) {
       throw new Error(`Contract does not exist: ${contractName}`);
     }

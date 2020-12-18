@@ -78,9 +78,10 @@ function* subscribeToCreamData(action) {
       ],
     },
     {
-      namespace: 'creamUnderlyingTokens',
+      namespace: 'tokens',
       abi: erc20Abi,
       addresses: underlyingTokenAddresses,
+      tags: ['creamUnderlyingTokens'],
       readMethods: [
         { name: 'name' },
         { name: 'symbol' },

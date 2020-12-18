@@ -1,4 +1,4 @@
-import { selectContractData, selectContracts } from 'containers/App/selectors';
+import { selectContractData, selectContracts, selectContractsByTag } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import { COMPTROLLER_ADDRESS, PRICE_ORACLE_ADDRESS } from './constants';
@@ -33,25 +33,7 @@ export const selectBorrowStats = createSelector(
   selectContractData(COMPTROLLER_ADDRESS),
   selectContracts('creamCTokens'),
   (creamUnderlyingTokens, otherTokens, oracleData, comptrollerData, creamCTokensData) => {
-    // In order to calculate the borrowLimit, we need underlying token data for
-    // each creamCToken, but some of these will be under the token namespace and
-    // some under the creamUnderlyingTokens namespace, as contract data is keyed by
-    // contract address, so there is a race to see which namespace wins.
-    const underlyingTokensData = _.concat(useSelector(selectContracts('tokens')), useSelector(selectContracts('creamUnderlyingTokens')));
-
-    // Currently underlyingTokensData contains tokens from "tokens" and
-    // "creamUnderlyingTokens" namespaces in order to deal with a race condition.
-    // The operation that adds decimal data to the creamUnderlyingTokens may not
-    // have finished yet, so we need to ensure the decimals data is present before
-    // proceeding.
-    const allDecimalsDataPresent = _.isUndefined(_.find(creamCTokensData, (creamCToken) => {
-      const underlyingToken = _.find(underlyingTokensData, { 'address': creamCToken.underlying });
-      return !_.has(underlyingToken, 'decimals');
-    }));
-
-    if (!allDecimalsDataPresent) {
-      return 0;
-    }
+    const underlyingTokensData = useSelector(selectContractsByTag('creamUnderlyingTokens'));
 
     const borrowStats = _.reduce(creamCTokensData, (stats, creamCToken) => {
         const underlyingToken = _.find(underlyingTokensData, { 'address': creamCToken.underlying });

@@ -152,124 +152,6 @@ function* callSendContractTx({
   }
 }
 
-/*
- * Call and Cache
- */
-
-function* callCallContractFn({
-  contract,
-  fnName,
-  fnIndex,
-  args,
-  argsHash,
-  sync = false,
-}) {
-  // keeping for pre-v1.1.5 compatibility with CALL_CONTRACT_FN event.
-  if (sync) {
-    return;
-  }
-
-  // Check for type of object and properties indicative of call/send options.
-  if (args.length) {
-    const finalArg = args.length > 1 ? args[args.length - 1] : args[0];
-    var callArgs = {};
-    var finalArgTest = false;
-
-    if (typeof finalArg === 'object') {
-      var finalArgTest = yield call(isSendOrCallOptions, finalArg);
-    }
-
-    if (finalArgTest) {
-      callArgs = finalArg;
-
-      args.length > 1 ? delete args[args.length - 1] : delete args[0];
-      args.length -= 1;
-    }
-  }
-
-  // Create the transaction object and execute the call.
-  const txObject = yield call(contract.methods[fnName], ...args);
-
-  try {
-    const callResult = yield call(txObject.call, callArgs);
-
-    const { contractName } = contract;
-    const dispatchArgs = {
-      name: contractName,
-      variable: contract.abi[fnIndex].name,
-      argsHash,
-      args,
-      value: callResult,
-      fnIndex,
-    };
-
-    yield put({ type: 'GOT_CONTRACT_VAR', ...dispatchArgs });
-  } catch (error) {
-    console.error(error);
-
-    const errorArgs = {
-      name: contract.contractName,
-      variable: contract.abi[fnIndex].name,
-      argsHash,
-      args,
-      error,
-      fnIndex,
-    };
-
-    yield put({ type: 'ERROR_CONTRACT_VAR', ...errorArgs });
-  }
-}
-
-/*
- * Sync Contract
- */
-
-function* callSyncContract(action) {
-  // Get contract state from store
-  const { contract } = action;
-  const { contractName } = contract;
-
-  const contractsState = yield select(getContractsState);
-  const contractFnsState = Object.assign({}, contractsState[contractName]);
-
-  // Remove unnecessary keys
-  delete contractFnsState.initialized;
-  delete contractFnsState.synced;
-  delete contractFnsState.events;
-  delete contractFnsState.metadata;
-  delete contractFnsState.readMethods;
-  delete contractFnsState.writeMethods;
-
-  // Iterate over functions and hashes
-  for (const fnName in contractFnsState) {
-    for (const argsHash in contractFnsState[fnName]) {
-      const { fnIndex } = contractFnsState[fnName][argsHash];
-      const { args } = contractFnsState[fnName][argsHash];
-
-      // Pull args and call fn for each given function
-      // keeping for pre-v1.1.5 compatibility with CALL_CONTRACT_FN event.
-      yield put({
-        type: 'CALL_CONTRACT_FN',
-        contract,
-        fnName,
-        fnIndex,
-        args,
-        argsHash,
-        sync: true,
-      });
-      yield call(callCallContractFn, {
-        contract,
-        fnName,
-        fnIndex,
-        args,
-        argsHash,
-      });
-    }
-  }
-  // When complete, dispatch CONTRACT_SYNCED
-  yield put({ type: 'CONTRACT_SYNCED', contractName });
-}
-
 const getContractsState = state => state.contracts;
 
 function isSendOrCallOptions(options) {
@@ -337,8 +219,6 @@ function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('SEND_CONTRACT_TX', callSendContractTx);
-  yield takeEvery('CALL_CONTRACT_FN', callCallContractFn);
-  yield takeEvery('CONTRACT_SYNCING', callSyncContract);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
 }
 

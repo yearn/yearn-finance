@@ -272,13 +272,11 @@ function CoverDetailCardBuy(props) {
     setEquivalentTo(equivalentToVal);
   };
 
-  const updateEquivalentTo = evt => {
-    const newPurchaseAmount = evt.target.value;
-
+  const updateEquivalentToVal = val => {
     const { daiInPool, covTokenWeight, price, swapFee } = claimPool;
 
     const newAmount = calculateAmountOutFromBuy(
-      newPurchaseAmount,
+      val,
       daiInPool,
       covTokenWeight,
       swapFee,
@@ -287,6 +285,11 @@ function CoverDetailCardBuy(props) {
 
     amountRef.current.value = newAmount;
     setAmount(newAmount);
+  };
+
+  const updateEquivalentTo = evt => {
+    const newPurchaseAmount = evt.target.value;
+    updateEquivalentToVal(newPurchaseAmount);
   };
 
   const setMaxClaimAmount = () => {
@@ -302,6 +305,8 @@ function CoverDetailCardBuy(props) {
     setEquivalentTo(purchaseCost);
     equivalentToRef.current.value = purchaseCost;
   };
+
+  const buyCover = () => {};
 
   const daiSpendText =
     (equivalentToRef.current && equivalentToRef.current.value) || '0';
@@ -406,7 +411,7 @@ function CoverDetailCardBuy(props) {
           event of a hack.
         </SummaryText>
         <ButtonWrapper>
-          <ButtonFilled variant="contained" color="primary">
+          <ButtonFilled variant="contained" color="primary" onClick={buyCover}>
             Buy Cover
           </ButtonFilled>
         </ButtonWrapper>

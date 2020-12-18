@@ -1930,6 +1930,17 @@
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
+"@material-ui/lab@^4.0.0-alpha.57":
+  version "4.0.0-alpha.57"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.57.tgz#e8961bcf6449e8a8dabe84f2700daacfcafbf83a"
+  integrity sha512-qo/IuIQOmEKtzmRD2E4Aa6DB4A87kmY6h0uYhjUmrrgmEAgbbw9etXpWPVXuRK6AGIQCjFzV6WO2i21m1R4FCw==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.11.2"
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+    react-is "^16.8.0 || ^17.0.0"
+
 "@material-ui/styles@^4.11.2":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.11.2.tgz#e70558be3f41719e8c0d63c7a3c9ae163fdc84cb"
@@ -20487,10 +20498,10 @@ web-namespaces@^1.0.0:
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.4.tgz#bc98a3de60dadd7faefc403d1076d529f5e030ec"
   integrity sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==
 
-web3-batch-call@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/web3-batch-call/-/web3-batch-call-1.0.9.tgz#a4f9164dc713e1f3d357d2d04459d469805b3d94"
-  integrity sha512-nId11WVtb97Et8yNpnKmvqrheGlzcepkw0ccRj7kKAlflveILce7CTMBshDEs7OkSnjAX0G/YqtUToWXxadWjw==
+web3-batch-call@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/web3-batch-call/-/web3-batch-call-1.0.10.tgz#a8e92d251bff0793a9a260d1c8fcfab7d8fab632"
+  integrity sha512-sUve4mqGAk4bEezJ+maKSRGjK4/Ipx07+ovE46HW3CtyCAceb64cCLU+/4kK+Fyd+Ih+nMswLgTnquckxwsRkQ==
   dependencies:
     cross-fetch "^3.0.6"
     delay "^4.4.0"

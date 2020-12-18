@@ -1,94 +1,106 @@
 import React, { useRef } from 'react';
 import { useClickAway } from 'react-use';
-import tw from 'twin.macro';
+import tw, { css } from 'twin.macro';
 import ConnectButton from 'components/ConnectButton';
 import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
 import { Logo } from './logo';
 
-// TODO: Uncomment when nested menus are ready
-// const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
-//   <div
-//     ref={clickAwayRef}
-//     css={[
-//       isActive
-//         ? tw`opacity-100 animate-flyingMenuEntering`
-//         : tw`hidden opacity-0`,
-//     ]}
-//     tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
-//   >
-//     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-//       <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
-//         {links.map(link => (
-//           <a href={link.href} tw="flex items-start">
-//             <div
-//               css={[
-//                 // amazing
-//                 css`
-//                   ${tw`w-full`};
-//                   &:hover {
-//                     > *:not(:last-child) {
-//                       ${tw`text-yearn-blue`}
-//                     }
-//                   }
-//                 `,
-//               ]}
-//             >
-//               <p tw="text-base font-black text-white inline-block mr-2">
-//                 {link.title}
-//               </p>
-//               <svg
-//                 css={[link.href[0] !== '/' && tw`inline-block`]}
-//                 tw="hidden text-white h-4 self-start"
-//                 xmlns="http://www.w3.org/2000/svg"
-//                 fill="none"
-//                 viewBox="0 0 24 24"
-//                 stroke="currentColor"
-//               >
-//                 <path
-//                   strokeLinecap="round"
-//                   strokeLinejoin="round"
-//                   strokeWidth={2}
-//                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-//                 />
-//               </svg>
-//               <p tw="mt-1 text-sm text-white">{link.description}</p>
-//             </div>
-//           </a>
-//         ))}
-//       </div>
-//     </div>
-//   </div>
-// );
+const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
+  <div
+    ref={clickAwayRef}
+    css={[
+      isActive
+        ? tw`opacity-100 animate-flyingMenuEntering`
+        : tw`hidden opacity-0`,
+    ]}
+    tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
+  >
+    <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
+      <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
+        {links.map(link => (
+          <a href={link.href} tw="flex items-start">
+            <div
+              css={[
+                // amazing
+                css`
+                  ${tw`w-full`};
+                  &:hover {
+                    > *:not(:last-child) {
+                      ${tw`text-yearn-blue`}
+                    }
+                  }
+                `,
+              ]}
+            >
+              <p tw="text-lg font-black font-sans text-white inline-block mr-2">
+                {link.title}
+              </p>
+              <svg
+                css={[link.href[0] !== '/' && tw`inline-block`]}
+                tw="hidden text-white h-4 self-start"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
-const MenuItem = ({
-  text,
-  isActive,
-  setIsActive,
-  // ,links
-}) => {
+const MenuItem = ({ text, isActive, setIsActive, links }) => {
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
   });
 
+  if (Array.isArray(links)) {
+    return (
+      <div tw="relative">
+        <button
+          type="button"
+          onClick={() => {
+            if (Array.isArray(links)) setIsActive(text);
+          }}
+          onMouseEnter={() => {
+            if (Array.isArray(links)) setIsActive(text);
+          }}
+          onKeyPress={() => {
+            if (Array.isArray(links)) setIsActive(text);
+          }}
+          tabIndex="0"
+        >
+          <p
+            css={[isActive === text && tw`text-yearn-blue`]}
+            tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            {text}
+          </p>
+        </button>
+        <FlyingMenu
+          clickAwayRef={ref}
+          isActive={text === isActive}
+          links={links}
+        />
+      </div>
+    );
+  }
+
   return (
     <div tw="relative">
-      <a
-        // TODO: Uncomment when nested menus are ready
-        // onClick={() => {
-        //   setIsActive(text);
-        // }}
-        // onMouseEnter={() => {
-        //   setIsActive(text);
-        // }}
-        // onKeyPress={() => {
-        //   setIsActive(text);
-        // }}
-        href={`/${text}`}
-        role="button"
-        tabIndex="0"
-      >
+      <a href={`${links.href}`} role="button" tabIndex="0">
         <span
           css={[isActive === text && tw`text-yearn-blue`]}
           tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -96,12 +108,6 @@ const MenuItem = ({
           {text}
         </span>
       </a>
-      {/* TODO: Uncomment later when ready */}
-      {/* <FlyingMenu
-        clickAwayRef={ref}
-        isActive={text === isActive}
-        links={links}
-      /> */}
     </div>
   );
 };

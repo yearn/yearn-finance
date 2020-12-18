@@ -29,14 +29,14 @@ module.exports = {
           to: { transform: 'opacity-0 translate-y-1' },
         },
         marquee: {
-          '0%': { transform: 'translate3d(calc(-0%), 0, 0)' },
-          '100%': { transform: 'translate3d(calc(-100%), 0, 0)' },
+          '0%': { transform: 'translate3d(calc(100%), 0, 0)' },
+          '100%': { transform: 'translate3d(calc(-150%), 0, 0)' },
         },
       },
       animation: {
         flyingMenuEntering: 'flyingMenuEntering ease-out duration-300',
         flyingMenuLeaving: 'flyingMenuLeaving ease-in duration-150',
-        marquee: 'marquee 10s linear infinite',
+        marquee: 'marquee 15s linear infinite',
       },
     },
   },

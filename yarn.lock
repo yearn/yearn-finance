@@ -15541,6 +15541,11 @@ path-type@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+pathseg@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/pathseg/-/pathseg-1.2.0.tgz#22af051e28037671e7799e296fe96c5dcbe53acd"
+  integrity sha512-+pQS7lTaoVIXhaCW7R3Wd/165APzZHWzYVqe7dxzdupxQwebgpBaCmf0/XZwmoA/rkDq3qvzO0qv4d5oFVrBRw==
+
 pbkdf2@^3.0.17, pbkdf2@^3.0.3:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.1.1.tgz#cb8724b0fada984596856d1a6ebafd3584654b94"
@@ -16836,6 +16841,15 @@ react-transition-group@^4.4.0, react-transition-group@^4.4.1:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-tsparticles@^1.18.11:
+  version "1.18.11"
+  resolved "https://registry.yarnpkg.com/react-tsparticles/-/react-tsparticles-1.18.11.tgz#4d74d46f652a787572aa0c34b7d5e19e0032b7ed"
+  integrity sha512-fMNHl9M2pTCtlodFOSbajI5UNDRaKPPHeo7gvu7CuHyvnhgsNp97iaQLNdOSkvwD2t1MBSXjW//PeNTCuEiLIg==
+  dependencies:
+    lodash "^4.17.20"
+    tslib "^2.0.3"
+    tsparticles "^1.18.11"
 
 react-universal-interface@^0.6.2:
   version "0.6.2"
@@ -19635,6 +19649,13 @@ tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
   integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
+
+tsparticles@^1.18.11:
+  version "1.18.11"
+  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.18.11.tgz#924d74cf40656727f5df047b53c4761463a4f6e7"
+  integrity sha512-F5czk8foRoywWHDYDT0eZhQwCXOHz7OGhJCsoybThTUIT+nwc1Eclltm/TMrnnxZZghF3Fo0VL8nN4inf+pQbA==
+  optionalDependencies:
+    pathseg "^1.2.0"
 
 tty-browserify@0.0.0:
   version "0.0.0"

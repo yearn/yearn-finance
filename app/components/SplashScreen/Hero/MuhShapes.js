@@ -1,9 +1,19 @@
 import React from 'react';
 import Particles from 'react-tsparticles';
-import 'twin.macro';
+import { css } from 'twin.macro';
 
 export const MuhShapes = () => (
-  <div tw="absolute overflow-hidden z-0 w-full h-full">
+  <div
+    tw="absolute overflow-hidden z-0 flex justify-center items-center h-full"
+    css={[
+      css`
+        > #tsparticles {
+          height: 100%;
+          width: 100%;
+        }
+      `,
+    ]}
+  >
     <Particles
       id="tsparticles"
       options={{
@@ -53,7 +63,7 @@ export const MuhShapes = () => (
           number: {
             density: {
               enable: true,
-              value_area: 1000,
+              value_area: 600,
             },
             value: 10,
           },

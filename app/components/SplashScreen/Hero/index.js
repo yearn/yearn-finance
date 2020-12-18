@@ -40,10 +40,10 @@ export const Hero = () => (
       </div>
       <a
         type="button"
-        tw="text-white bg-yearn-blue uppercase px-6 rounded-lg py-2 flex justify-center items-center text-lg align-middle"
+        tw="bg-yearn-blue px-6 rounded-lg py-2 flex justify-center items-center align-middle"
         href="/vaults"
       >
-        <span>Launch App</span>
+        <p tw="text-white uppercase text-lg font-sans">Launch App</p>
       </a>
     </div>
     <MarqueStats />

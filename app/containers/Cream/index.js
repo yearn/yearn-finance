@@ -1,10 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { selectContracts, selectContractData } from 'containers/App/selectors';
-import { selectCollateralEnabled, selectBorrowStats } from 'containers/Cream/selectors';
+import {
+  selectCollateralEnabled,
+  selectBorrowStats,
+} from 'containers/Cream/selectors';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
+import TokenIcon from 'components/TokenIcon';
 import { BLOCKS_PER_YEAR } from './constants';
 import saga from './saga';
 
@@ -12,6 +16,51 @@ const Wrapper = styled.div`
   margin: 0 auto;
   max-width: 1200px;
   padding: 50px 40px;
+`;
+
+const Td = styled.td`
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+`;
+
+const Table = styled.table`
+  font-size: 18px;
+  padding-bottom: 20px;
+  border-collapse: initial;
+  font-family: monospace;
+  width: 100%;
+  margin-bottom: 2rem;
+`;
+
+const TableTitle = styled.h1`
+  margin-bottom: 10px;
+  padding-top: 20px;
+  font-size: 24px;
+  text-transform: uppercase;
+`;
+
+const TableHeader = styled.th`
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 18px;
+  text-transform: uppercase;
+  text-align: left;
+`;
+
+const IconAndName = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledTokenIcon = styled(TokenIcon)`
+  width: 40px;
+  margin-right: 20px;
+`;
+
+const IconName = styled.div`
+  overflow: hidden;
+  padding-right: 10px;
+  text-overflow: ellipsis;
 `;
 
 function getFieldValue(
@@ -33,15 +82,30 @@ const CreamSupplyMarketRow = ({ creamCTokenAddress }) => {
     selectContractData(creamTokenData.underlying),
   );
 
-  const supplyAPY = getFieldValue(creamTokenData.supplyRatePerBlock * BLOCKS_PER_YEAR, 16);
-  const walletBalance = getFieldValue(underlyingTokenData.balanceOf, underlyingTokenData.decimals);
+  const supplyAPY = getFieldValue(
+    creamTokenData.supplyRatePerBlock * BLOCKS_PER_YEAR,
+    16,
+  );
+  const walletBalance = getFieldValue(
+    underlyingTokenData.balanceOf,
+    underlyingTokenData.decimals,
+  );
   const exchangeRate = creamTokenData.exchangeRateStored / 10 ** 18;
-  const supplied = getFieldValue(creamTokenData.balanceOf * exchangeRate, underlyingTokenData.decimals);
-  const collateralEnabled = useSelector(selectCollateralEnabled(creamCTokenAddress));
+  const supplied = getFieldValue(
+    creamTokenData.balanceOf * exchangeRate,
+    underlyingTokenData.decimals,
+  );
+  const collateralEnabled = useSelector(
+    selectCollateralEnabled(creamCTokenAddress),
+  );
 
   const borrowLimitStats = useSelector(selectBorrowStats);
   const borrowLimit = getFieldValue(borrowLimitStats.borrowLimitInUSD, 0, 2);
-  const borrowLimitUsedPercent = getFieldValue(borrowLimitStats.borrowLimitUsedPercent, 0, 2);
+  const borrowLimitUsedPercent = getFieldValue(
+    borrowLimitStats.borrowLimitUsedPercent,
+    0,
+    2,
+  );
 
   const underlyingSymbol = underlyingTokenData.symbol;
 
@@ -52,13 +116,20 @@ const CreamSupplyMarketRow = ({ creamCTokenAddress }) => {
 
   return (
     <tr>
-      <td>{underlyingTokenData.symbol}</td>
-      <td>{`${supplyAPY}%`}</td>
-      <td>{`${walletBalance} ${underlyingSymbol}`}</td>
-      <td>{`${supplied} ${underlyingSymbol}`}</td>
-      <td>{`${collateralEnabled}`}</td>
-      <td>{`${borrowLimit}`}</td>
-      <td>{`${borrowLimitUsedPercent}`}</td>
+      <Td>
+        <IconAndName>
+          <StyledTokenIcon address={underlyingTokenData.address} />
+          <IconName>
+            {underlyingTokenData.symbol || underlyingTokenData.address}
+          </IconName>
+        </IconAndName>
+      </Td>
+      <Td>{`${supplyAPY}%`}</Td>
+      <Td>{`${walletBalance} ${underlyingSymbol}`}</Td>
+      <Td>{`${supplied} ${underlyingSymbol}`}</Td>
+      <Td>{`${collateralEnabled ? 'yes' : 'no'}`}</Td>
+      <Td>{`$${borrowLimit}`}</Td>
+      <Td>{`${borrowLimitUsedPercent}`}%</Td>
     </tr>
   );
 };
@@ -69,9 +140,18 @@ const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
     selectContractData(creamTokenData.underlying),
   );
 
-  const borrowAPY = getFieldValue(creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR, 16);
-  const walletBalance = getFieldValue(underlyingTokenData.balanceOf, underlyingTokenData.decimals);
-  const borrowed = getFieldValue(creamTokenData.borrowBalanceStored, underlyingTokenData.decimals);
+  const borrowAPY = getFieldValue(
+    creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR,
+    16,
+  );
+  const walletBalance = getFieldValue(
+    underlyingTokenData.balanceOf,
+    underlyingTokenData.decimals,
+  );
+  const borrowed = getFieldValue(
+    creamTokenData.borrowBalanceStored,
+    underlyingTokenData.decimals,
+  );
   const liquidity = getFieldValue(
     creamTokenData.getCash,
     underlyingTokenData.decimals,
@@ -81,7 +161,11 @@ const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
 
   const borrowLimitStats = useSelector(selectBorrowStats);
   const borrowLimit = getFieldValue(borrowLimitStats.borrowLimitInUSD, 0, 2);
-  const borrowLimitUsedPercent = getFieldValue(borrowLimitStats.borrowLimitUsedPercent, 0, 2);
+  const borrowLimitUsedPercent = getFieldValue(
+    borrowLimitStats.borrowLimitUsedPercent,
+    0,
+    2,
+  );
 
   const underlyingSymbol = underlyingTokenData.symbol;
 
@@ -90,75 +174,79 @@ const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
 
   return (
     <tr>
-      <td>{underlyingTokenData.symbol}</td>
-      <td>{`${borrowAPY}%`}</td>
-      <td>{`${walletBalance} ${underlyingSymbol}`}</td>
-      <td>{`${borrowed} ${underlyingSymbol}`}</td>
-      <td>{`${liquidity} ${underlyingSymbol}`}</td>
-      <td>{`${borrowLimit}`}</td>
-      <td>{`${borrowLimitUsedPercent}`}</td>
+      <Td>
+        <IconAndName>
+          <StyledTokenIcon address={underlyingTokenData.address} />
+          <IconName>
+            {underlyingTokenData.symbol || underlyingTokenData.address}
+          </IconName>
+        </IconAndName>
+      </Td>
+      <Td>{`${borrowAPY}%`}</Td>
+      <Td>{`${walletBalance} ${underlyingSymbol}`}</Td>
+      <Td>{`${borrowed} ${underlyingSymbol}`}</Td>
+      <Td>{`${liquidity} ${underlyingSymbol}`}</Td>
+      <Td>{`$${borrowLimit}`}</Td>
+      <Td>{`${borrowLimitUsedPercent}`}%</Td>
     </tr>
   );
 };
 
 const Cream = () => {
-    useInjectSaga({ key: 'cream', saga });
+  useInjectSaga({ key: 'cream', saga });
 
-    const creamCTokens = useSelector(selectContracts('creamCTokens'));
-    const creamCTokenAddresses = _.map(creamCTokens, token => token.address);
+  const creamCTokens = useSelector(selectContracts('creamCTokens'));
+  const creamCTokenAddresses = _.map(creamCTokens, token => token.address);
 
-    return (
-      <Wrapper>
-        <h1>Supply Market</h1>
-        <table style={{ width: '100%' }}>
-          <thead>
+  return (
+    <Wrapper>
+      <TableTitle>Supply Market</TableTitle>
+      <Table>
+        <thead>
           <tr>
-            <th style={{ textAlign: 'left' }}>Asset</th>
-            <th style={{ textAlign: 'left' }}>APY</th>
-            <th style={{ textAlign: 'left' }}>Wallet</th>
-            <th style={{ textAlign: 'left' }}>Supplied</th>
-            <th style={{ textAlign: 'left' }}>Collateral enabled</th>
-            <th style={{ textAlign: 'left' }}>Borrow limit</th>
-            <th style={{ textAlign: 'left' }}>Borrow limit used %</th>
+            <TableHeader>Asset</TableHeader>
+            <TableHeader>APY</TableHeader>
+            <TableHeader>Wallet</TableHeader>
+            <TableHeader>Supplied</TableHeader>
+            <TableHeader>Collateral</TableHeader>
+            <TableHeader>Borrow limit</TableHeader>
+            <TableHeader>Borrow limit used</TableHeader>
           </tr>
-          </thead>
-          <tbody>
+        </thead>
+        <tbody>
           {creamCTokenAddresses.map(creamCTokenAddress => (
             <CreamSupplyMarketRow
               key={creamCTokenAddress}
               creamCTokenAddress={creamCTokenAddress}
             />
           ))}
-          </tbody>
-        </table>
+        </tbody>
+      </Table>
 
-
-        <h1>Borrow Market</h1>
-        <table style={{ width: '100%' }}>
-          <thead>
+      <TableTitle>Borrow Market</TableTitle>
+      <Table>
+        <thead>
           <tr>
-            <th style={{ textAlign: 'left' }}>Asset</th>
-            <th style={{ textAlign: 'left' }}>APY</th>
-            <th style={{ textAlign: 'left' }}>Wallet</th>
-            <th style={{ textAlign: 'left' }}>Borrowed</th>
-            <th style={{ textAlign: 'left' }}>Liquidity</th>
-            <th style={{ textAlign: 'left' }}>Borrow limit</th>
-            <th style={{ textAlign: 'left' }}>Borrow limit used %</th>
+            <TableHeader>Asset</TableHeader>
+            <TableHeader>APY</TableHeader>
+            <TableHeader>Wallet</TableHeader>
+            <TableHeader>Borrowed</TableHeader>
+            <TableHeader>Liquidity</TableHeader>
+            <TableHeader>Borrow limit</TableHeader>
+            <TableHeader>Borrow limit used</TableHeader>
           </tr>
-          </thead>
-          <tbody>
+        </thead>
+        <tbody>
           {creamCTokenAddresses.map(creamCTokenAddress => (
             <CreamBorrowMarketRow
               key={creamCTokenAddress}
               creamCTokenAddress={creamCTokenAddress}
             />
           ))}
-          </tbody>
-        </table>
-      </Wrapper>
-    );
-  }
-;
-
+        </tbody>
+      </Table>
+    </Wrapper>
+  );
+};
 Cream.whyDidYouRender = true;
 export default Cream;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from 'twin.macro';
-import HeroBg from '../../../images/hero-bg.png';
+import { MuhShapes } from './MuhShapes';
 import { MarqueStats } from './MarqueeStats';
 
 export const Hero = () => (
@@ -8,21 +8,13 @@ export const Hero = () => (
     tw="bg-black w-screen relative flex flex-col justify-center items-center overflow-hidden"
     css={[
       css`
-        height: 100vh;
-        margin-top: -88px;
-        background: url(${HeroBg}) no-repeat center center fixed;
-        background-size: cover;
-        @media (max-width: 1024px) {
-          margin-top: -118px;
-        }
-        @media (min-width: 1024px) {
-          height: 100vh;
-        }
+        height: calc(100vh - 108px);
       `,
     ]}
   >
     {/* <img tw="absolute w-full z-0" src={HeroBg} alt="hero background" /> */}
-    <div tw="flex flex-col justify-center items-center ">
+    <MuhShapes />
+    <div tw="flex flex-col justify-center items-center z-10 absolute">
       <div tw="inline-block text-4xl md:text-6xl mb-3 font-black">
         <h2 tw="inline-block text-white float-left mr-2 md:mr-4">DeFi made</h2>
         <h2 tw="inline-block text-yearn-blue float-left">simple.</h2>

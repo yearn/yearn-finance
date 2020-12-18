@@ -29,8 +29,8 @@ module.exports = {
           to: { transform: 'opacity-0 translate-y-1' },
         },
         marquee: {
-          '0%': { transform: 'translate3d(calc(-0%), 0, 0)' },
-          '100%': { transform: 'translate3d(calc(-100%), 0, 0)' },
+          '0%': { transform: 'translate3d(calc(50%), 0, 0)' },
+          '100%': { transform: 'translate3d(calc(-150%), 0, 0)' },
         },
       },
       animation: {

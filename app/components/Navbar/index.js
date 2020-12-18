@@ -33,7 +33,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
                 `,
               ]}
             >
-              <p tw="text-base font-black text-white inline-block mr-2">
+              <p tw="text-lg font-black font-sans text-white inline-block mr-2">
                 {link.title}
               </p>
               <svg
@@ -51,7 +51,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                 />
               </svg>
-              <p tw="mt-1 text-sm text-white">{link.description}</p>
+              <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
             </div>
           </a>
         ))}
@@ -82,12 +82,12 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
           }}
           tabIndex="0"
         >
-          <span
+          <p
             css={[isActive === text && tw`text-yearn-blue`]}
             tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {text}
-          </span>
+          </p>
         </button>
         <FlyingMenu
           clickAwayRef={ref}

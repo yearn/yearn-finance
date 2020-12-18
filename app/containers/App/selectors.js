@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 const selectApp = state => state.app;
 const selectRouter = state => state.router;
 const selectContractsData = state => state.contracts;
+const selectSubscriptionsData = state => state.subscriptions;
 
 export const selectReady = () =>
   createSelector(
@@ -32,6 +33,30 @@ export const selectContracts = namespace =>
   createSelector(
     selectContractsData,
     substate => _.filter(substate, { namespace }),
+  );
+
+export const selectContractsByTag = tag =>
+  createSelector(
+    selectContractsData,
+    selectSubscriptionsData,
+    (contractsData, subscriptionsData) => {
+      const subscriptionsMatch = _.filter(subscriptionsData, subscription =>
+        _.includes(subscription.tags, tag),
+      );
+      const addressesToSelect = {};
+      const addAddress = address => {
+        addressesToSelect[address] = true;
+      };
+      const extractAddresses = subscription => {
+        const { addresses } = subscription;
+        _.each(addresses, addAddress);
+      };
+      _.each(subscriptionsMatch, extractAddresses);
+      const contractAddresses = Object.keys(addressesToSelect);
+      const getContract = address => contractsData[address];
+      const contracts = _.map(contractAddresses, getContract);
+      return contracts;
+    },
   );
 
 export const selectContractData = contractAddress =>

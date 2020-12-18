@@ -182,8 +182,9 @@ const SummaryText = styled.div`
 `;
 
 const InfoIcon = styled(Icon)`
-  margin-left: 3px;
-  top: 2px;
+  margin-left: 2px;
+  top: -1px;
+  display: inline-block;
   position: relative;
 `;
 
@@ -204,7 +205,7 @@ const EquivalentWrapper = styled.div`
 
 const SmallTokenIcon = styled(TokenIcon)`
   width: 24px;
-  padding: 0px 7px;
+  margin: 0px 7px;
 `;
 
 const BottomInputWrapper = styled.div`
@@ -271,13 +272,11 @@ function CoverDetailCardBuy(props) {
     setEquivalentTo(equivalentToVal);
   };
 
-  const updateEquivalentTo = evt => {
-    const newPurchaseAmount = evt.target.value;
-
+  const updateEquivalentToVal = val => {
     const { daiInPool, covTokenWeight, price, swapFee } = claimPool;
 
     const newAmount = calculateAmountOutFromBuy(
-      newPurchaseAmount,
+      val,
       daiInPool,
       covTokenWeight,
       swapFee,
@@ -286,6 +285,11 @@ function CoverDetailCardBuy(props) {
 
     amountRef.current.value = newAmount;
     setAmount(newAmount);
+  };
+
+  const updateEquivalentTo = evt => {
+    const newPurchaseAmount = evt.target.value;
+    updateEquivalentToVal(newPurchaseAmount);
   };
 
   const setMaxClaimAmount = () => {
@@ -301,6 +305,8 @@ function CoverDetailCardBuy(props) {
     setEquivalentTo(purchaseCost);
     equivalentToRef.current.value = purchaseCost;
   };
+
+  const buyCover = () => {};
 
   const daiSpendText =
     (equivalentToRef.current && equivalentToRef.current.value) || '0';
@@ -405,7 +411,7 @@ function CoverDetailCardBuy(props) {
           event of a hack.
         </SummaryText>
         <ButtonWrapper>
-          <ButtonFilled variant="contained" color="primary">
+          <ButtonFilled variant="contained" color="primary" onClick={buyCover}>
             Buy Cover
           </ButtonFilled>
         </ButtonWrapper>

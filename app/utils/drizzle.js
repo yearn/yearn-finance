@@ -5,8 +5,8 @@ export function transformContractData(contractData) {
     if (
       valKeys.length &&
       key !== 'address' &&
-      key !== 'group' &&
       key !== 'metadata' &&
+      key !== 'tags' &&
       key !== 'readMethods' &&
       key !== 'writeMethods'
     ) {

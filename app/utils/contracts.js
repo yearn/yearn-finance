@@ -41,14 +41,14 @@ export function getContractType(data) {
 
 export function getMethods(abi) {
   const findReadMethods = (acc, field) => {
-    const { name, inputs, type, stateMutability } = field;
+    const { name, inputs, type, outputs, stateMutability } = field;
     const hasInputs = inputs && inputs.length;
     const isViewable = stateMutability === 'view' || stateMutability === 'pure';
     const isMethod = type === 'function';
     if (hasInputs || !isViewable || !isMethod) {
       return acc;
     }
-    acc.push({ name });
+    acc.push({ name, outputs });
     return acc;
   };
 
@@ -74,6 +74,19 @@ export function getMethods(abi) {
 export function getReadMethodsWithNoInputs(abi) {
   const methods = getMethods(abi);
   return methods.read;
+}
+
+export function getNumericReadMethodsWithNoInputs(abi) {
+  const methods = getMethods(abi);
+  const readMethods = methods.read;
+  const filterNumericInputs = method => {
+    const { outputs } = method;
+    const outputType = _.get(outputs, '[0].type');
+    const typeIsReadable = outputType === 'uint256' || outputType === 'uint';
+    return typeIsReadable;
+  };
+  const filteredReadMethods = _.filter(readMethods, filterNumericInputs);
+  return filteredReadMethods;
 }
 
 export function getWriteMethods(abi) {

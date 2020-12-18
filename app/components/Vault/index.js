@@ -15,6 +15,8 @@ import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import VaultButtons from 'components/VaultButtons';
 import TokenIcon from 'components/TokenIcon';
+import Icon from 'components/Icon';
+import { useModal } from 'containers/ModalProvider/hooks';
 
 const IconAndName = styled.div`
   display: flex;
@@ -53,6 +55,7 @@ const Table = styled.table`
   padding-left: 40px;
   padding-top: 40px;
   padding-bottom: 20px;
+  border-collapse: initial;
   font-family: monospace;
 `;
 
@@ -60,6 +63,13 @@ const Footer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
+`;
+
+const StatsIcon = styled(Icon)`
+  height: 17px;
+  position: relative;
+  top: -3px;
+  left: -22px;
 `;
 
 const truncateApy = apy => {
@@ -104,6 +114,8 @@ const Vault = props => {
     vaultAlias,
   } = vault;
 
+  const { openModal } = useModal();
+
   const devMode = useSelector(selectDevMode());
   const tokenContractAddress = tokenAddress || token;
   const tokenContractData = useSelector(
@@ -130,6 +142,12 @@ const Vault = props => {
 
   let vaultBottom;
   let vaultTop;
+
+  const openContractStatisticsModal = evt => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    openModal('contractStatistics', { vault });
+  };
 
   if (showDevVaults) {
     const renderField = (val, key) => {
@@ -221,6 +239,7 @@ const Vault = props => {
       <Card className={active && 'active'}>
         <Accordion.Toggle as={Card.Header} variant="link" eventKey={address}>
           {vaultTop}
+          <StatsIcon type="stats" onClick={openContractStatisticsModal} />
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={address}>
@@ -241,5 +260,5 @@ const Vault = props => {
     </React.Fragment>
   );
 };
-Vault.whyDidYouRender = true;
+Vault.whyDidYouRender = false;
 export default compose(memo)(Vault);

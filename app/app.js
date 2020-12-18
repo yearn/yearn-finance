@@ -58,16 +58,16 @@ const render = messages => {
       <PasswordProtector>
         <ThemeProvider>
           <LanguageProvider messages={messages}>
-            <ModalProvider>
-              <ConnectionProvider>
-                <DrizzleProvider store={store}>
+            <DrizzleProvider store={store}>
+              <ModalProvider>
+                <ConnectionProvider>
                   <ConnectedRouter history={history}>
                     <GlobalStyles />
                     <App />
                   </ConnectedRouter>
-                </DrizzleProvider>
-              </ConnectionProvider>
-            </ModalProvider>
+                </ConnectionProvider>
+              </ModalProvider>
+            </DrizzleProvider>
           </LanguageProvider>
         </ThemeProvider>
       </PasswordProtector>

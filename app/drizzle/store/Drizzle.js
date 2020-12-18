@@ -67,6 +67,7 @@ class Drizzle {
     contractConfig,
     events = [],
     metadata,
+    tags,
     readMethods,
     writeMethods,
   ) {
@@ -83,6 +84,7 @@ class Drizzle {
       events,
       null,
       metadata,
+      tags,
       readMethods,
       writeMethods,
     );

@@ -7,6 +7,7 @@ class DrizzleContract {
     events = [],
     contractArtifact = {},
     metadata,
+    tags,
     readMethods,
     writeMethods,
   ) {
@@ -17,6 +18,7 @@ class DrizzleContract {
     this.contractArtifact = contractArtifact;
     this.store = store;
     this.metadata = metadata;
+    this.tags = tags;
     this.readMethods = readMethods;
     this.writeMethods = writeMethods;
 

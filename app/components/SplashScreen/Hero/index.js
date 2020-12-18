@@ -28,15 +28,17 @@ export const Hero = () => (
         <h2 tw="inline-block text-yearn-blue float-left">simple.</h2>
       </div>
       <div tw="text-white font-bold md:text-3xl justify-center flex flex-col items-center mb-5 text-xl">
-        <h4 tw="">Yearn finance is a gateway to DeFi products.</h4>
-        <div tw="inline-block">
-          <h4 tw="inline-block float-left">Simple</h4>
-          <h4 tw="inline-block text-yearn-blue float-left mx-2">
-            intuitive and decentralized
+        <div tw="inline-block flex justify-center flex-col items-center ">
+          <h4 tw="inline-block float-left">
+            Yearn puts your crypto assets to work for you,
           </h4>
-          <h4 tw="inline-block  float-left">solutions</h4>
+          <div tw="flex space-x-2">
+            <h4 tw="">responsibly earning</h4>
+            <h4 tw="inline-block float-left text-yearn-blue">
+              sustainable yields.
+            </h4>
+          </div>
         </div>
-        <h4>accessible to anyone.</h4>
       </div>
       <a
         type="button"

@@ -6,9 +6,25 @@ import { useContract } from 'containers/DrizzleProvider/hooks';
 import { useSelector } from 'react-redux';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { getNumericReadMethodsWithNoInputs } from 'utils/contracts';
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from 'recharts';
 
-const BodyWrapper = styled.div`
-  min-height: 400px;
+const ChartsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function TransactionModal(props) {
@@ -64,22 +80,50 @@ export default function TransactionModal(props) {
     };
 
     const response = await batchCall.execute(contracts, callOptions);
-    setData(response);
+    setData(response[0]);
   };
 
   const modalOpened = () => {
     if (show) {
-      fetchData();
+      setTimeout(() => fetchData(), 0);
     }
   };
   useEffect(modalOpened, [show]);
 
-  let content;
-  if (!data) {
-    content = <div>Loading...</div>;
-  } else {
-    content = <div>{JSON.stringify(data, 0, null)}</div>;
-  }
+  const renderChart = (method, key) => {
+    let chartContent = <div>loading...</div>;
+    const chartData = _.get(data, method.name);
+    if (chartData) {
+      chartContent = (
+        <LineChart
+          width={400}
+          height={250}
+          data={chartData}
+          margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+        >
+          <Line type="monotone" dataKey="value" stroke="#8884d8" />
+          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+          <XAxis dataKey="blockNumber" />
+          <YAxis />
+          <Tooltip />
+        </LineChart>
+      );
+    }
+    return (
+      <ChartWrapper key={key}>
+        <div>{method.name}</div>
+        <div>{chartContent}</div>
+      </ChartWrapper>
+    );
+  };
+
+  let charts = _.map(filteredReadMethods, renderChart);
+
+  useEffect(() => {
+    if (data) {
+      charts = _.map(filteredReadMethods, renderChart);
+    }
+  }, [data]);
 
   return (
     <Modal
@@ -90,7 +134,7 @@ export default function TransactionModal(props) {
       animation={false}
     >
       <Modal.Body>
-        <BodyWrapper>{content}</BodyWrapper>
+        <ChartsWrapper>{charts}</ChartsWrapper>
       </Modal.Body>
     </Modal>
   );

@@ -542,6 +542,11 @@ canvas {
   height: 80vh;
 }
 
+.modal-dialog.contractStatisticsModal {
+  max-width: 80vw;
+  min-height: 80vh;
+}
+
 .modal-dialog.transactionModal.devMode {
   max-width: 80vw;
   max-height: 80vh;

@@ -4,9 +4,10 @@ import { css } from 'twin.macro';
 
 export const MuhShapes = () => (
   <div
-    tw="absolute overflow-hidden z-0 flex justify-center items-center h-full"
+    tw="absolute overflow-hidden z-0 flex justify-center items-center w-full"
     css={[
       css`
+        height: calc(100vh - 208px);
         > #tsparticles {
           height: 100%;
           width: 100%;
@@ -36,9 +37,6 @@ export const MuhShapes = () => (
             },
           },
           modes: {
-            push: {
-              quantity: 4,
-            },
             repulse: {
               distance: 100,
               duration: 0.4,
@@ -65,78 +63,97 @@ export const MuhShapes = () => (
               enable: true,
               value_area: 600,
             },
-            value: 10,
+            value: 12,
           },
           shape: {
+            type: 'images',
             images: [
               {
+                type: 'image',
                 src:
                   'https://s3.amazonaws.com/v2.yearn.finance/Splash/blue-arc.svg',
-                height: 126,
-                width: 250,
+                height: 130,
+                width: 240,
               },
               {
-                src: 'https://s3.amazonaws.com/v2.yearn.finance/Splash/b.svg',
-                height: 244,
-                width: 62,
-              },
-              {
+                type: 'image',
                 src:
-                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/circle.svg',
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/white-b.svg',
+                height: 70,
+                width: 240,
+              },
+              {
+                type: 'image',
+                src:
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/cirlce.svg',
                 height: 100,
                 width: 100,
               },
               {
+                type: 'image',
                 src:
-                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/triangle.svg',
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/white-triangle.svg',
                 height: 120,
                 width: 120,
               },
               {
+                type: 'image',
                 src:
                   'https://s3.amazonaws.com/v2.yearn.finance/Splash/green-circle.svg',
-                height: 50,
-                width: 50,
+                height: 100,
+                width: 100,
               },
               {
-                src: 'https://s3.amazonaws.com/v2.yearn.finance/Splash/yfi.svg',
-                height: 135,
-                width: 135,
-              },
-              {
+                type: 'image',
                 src:
-                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/yellow-arc.svg',
-                height: 126,
-                width: 126,
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/smiley.svg',
+                height: 100,
+                width: 100,
               },
               {
-                src: 'https://s3.amazonaws.com/v2.yearn.finance/Splash/arc.svg',
-                height: 126,
-                width: 126,
+                type: 'image',
+                src: 'https://s3.amazonaws.com/v2.yearn.finance/Splash/yfi.svg',
+                height: 100,
+                width: 100,
               },
               {
+                type: 'image',
+                src:
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/yellow-quarter-circle.svg',
+                height: 100,
+                width: 100,
+              },
+              {
+                type: 'image',
+                src:
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/red-arc.svg',
+                height: 100,
+                width: 100,
+              },
+              {
+                type: 'image',
                 src:
                   'https://s3.amazonaws.com/v2.yearn.finance/Splash/yellow-square.svg',
-                height: 122,
-                width: 62,
+                height: 100,
+                width: 100,
               },
               {
+                type: 'image',
                 src:
-                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/square.svg',
-                height: 122,
-                width: 62,
+                  'https://s3.amazonaws.com/v2.yearn.finance/Splash/blue-square.svg',
+                height: 100,
+                width: 100,
               },
               {
+                type: 'image',
                 src:
                   'https://s3.amazonaws.com/v2.yearn.finance/Splash/red-rectangle.svg',
-                height: 122,
-                width: 62,
+                height: 120,
+                width: 60,
               },
             ],
-            type: 'images',
           },
         },
-        detectRetina: true,
       }}
     />
   </div>

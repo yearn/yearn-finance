@@ -13,6 +13,7 @@ const StyledButton = styled.button(() => [
   rounded-xl border-2 border-yearn-blue px-4
   items-center justify-center align-middle 
   flex hover:text-yearn-blue py-1
+  uppercase
   `,
 ]);
 
@@ -23,15 +24,6 @@ export default function ConnectButton(props) {
   const selectWallet = useSelectWallet();
   let content;
 
-  if (window.location.pathname === '/') {
-    return (
-      <StyledButton>
-        <p tw="text-white uppercase font-thin text-base font-sans">
-          Launch App
-        </p>
-      </StyledButton>
-    );
-  }
   if (wallet.provider && account) {
     content = (
       <ConnectedAccount
@@ -43,7 +35,10 @@ export default function ConnectButton(props) {
   } else {
     content = (
       <StyledButton className={className} onClick={selectWallet}>
-        <FormattedMessage id="account.connect" />
+        <p tw="font-sans">
+          Launch App
+          {/* <FormattedMessage id="account.connect" /> */}
+        </p>
       </StyledButton>
     );
   }

@@ -76,8 +76,8 @@ export const MarqueStats = () => {
             ]}
             tw="flex bg-transparent overflow-hidden absolute bottom-2 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl"
           >
-            <div tw="flex space-x-2">
-              <span>Assets:</span>
+            <div tw="flex space-x-3">
+              <span>TVL:</span>
               <span tw="text-yearn-green not-italic font-black">
                 ${nFormat(totalPoolBalanceUSD)}
               </span>
@@ -86,19 +86,19 @@ export const MarqueStats = () => {
               <span>Profits:</span>
               <span tw="text-yearn-blue not-italic font-black">$100M</span>
             </div> */}
-            <div tw="flex space-x-2">
+            {/* <div tw="flex space-x-2">
               <span>YFI:</span>
               <span tw="text-yearn-red not-italic font-black">
                 ${currentPriceUSD}
               </span>
-            </div>
-            <div tw="flex space-x-2">
+            </div> */}
+            <div tw="flex space-x-3">
               <span>MC:</span>
               <span tw="text-yearn-blue not-italic font-black">
                 ${nFormat(marketCapUSD)}
               </span>
             </div>
-            <div tw="flex space-x-2">
+            <div tw="flex space-x-3">
               <span>Volume:</span>
               <span tw="text-yearn-yellow not-italic font-black">
                 ${nFormat(totalVolumeUSD)}

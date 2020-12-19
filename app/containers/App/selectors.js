@@ -29,6 +29,12 @@ export const selectLocation = () =>
     routerState => routerState.location,
   );
 
+export const selectAllContracts = () =>
+  createSelector(
+    selectContractsData,
+    substate => substate,
+  );
+
 export const selectContracts = namespace =>
   createSelector(
     selectContractsData,

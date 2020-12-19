@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import TransactionModal from 'components/TransactionModal';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
+import TransactionModal from 'components/TransactionModal';
 import ContractStatisticsModal from 'components/ContractStatisticsModal';
+import CreamModal from 'components/CreamModal';
 import ModalContext from './context';
 
 const modals = {
   transaction: TransactionModal,
   contractStatistics: ContractStatisticsModal,
+  cream: CreamModal,
 };
 
 const ModalProvider = props => {

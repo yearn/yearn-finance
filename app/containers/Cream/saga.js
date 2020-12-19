@@ -4,7 +4,6 @@ import CErc20DelegatorAbi from 'abi/CErc20Delegator.json';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectReady } from 'containers/App/selectors';
-import { APP_READY } from 'containers/App/constants';
 import {
   COMPTROLLER_ADDRESS,
   PRICE_ORACLE_ADDRESS,
@@ -67,9 +66,10 @@ function* subscribeToCreamData(action) {
             args: [account],
           },
         ],
-        _.map(cTokenAddresses, cTokenAddress => {
-          return { name: 'markets', args: [cTokenAddress] };
-        }),
+        _.map(cTokenAddresses, cTokenAddress => ({
+          name: 'markets',
+          args: [cTokenAddress],
+        })),
       ),
     },
     {
@@ -122,6 +122,5 @@ function* subscribeToCreamData(action) {
 }
 
 export default function* watchers() {
-  yield takeLatest(APP_READY, subscribeToCreamData);
   yield takeLatest(INITIALIZE_CREAM, subscribeToCreamData);
 }

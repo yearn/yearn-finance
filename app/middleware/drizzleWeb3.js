@@ -38,7 +38,8 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
     action.type === 'APP_READY' ||
     action.type === 'TX_BROADCASTED' ||
     action.type === 'BATCH_CALL_REQUEST' ||
-    action.type === 'BATCH_CALL_RESPONSE';
+    action.type === 'BATCH_CALL_RESPONSE' ||
+    action.type === 'INITIALIZE_CREAM';
   if (drizzleAction && drizzleWeb3) {
     newAction.drizzle = drizzleWeb3.drizzle;
     newAction.web3 = drizzleWeb3.web3;

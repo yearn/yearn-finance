@@ -4,6 +4,9 @@ import ReactImageFallback from 'react-image-fallback';
 
 export default function TokenIcon(props) {
   const { address, className } = props;
+  if (!address) {
+    return null;
+  }
   const checksumAddress = web3.utils.toChecksumAddress(address);
   const url = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/tokens/${checksumAddress}/logo-128.png`;
   const fallbackUrl = `https://i.imgur.com/7lETB36.png`;

@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
-import BigNumber from 'bignumber.js';
-import { useSelector } from 'react-redux';
-import { selectContracts, selectContractData, selectAllContracts } from 'containers/App/selectors';
-import {
-  selectCollateralEnabled,
-  selectBorrowStats,
-} from 'containers/Cream/selectors';
+import { selectContracts, selectAllContracts } from 'containers/App/selectors';
+import { selectBorrowStats } from 'containers/Cream/selectors';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
@@ -13,10 +8,7 @@ import CreamTable from 'components/CreamTable';
 import { getSupplyTableData, getBorrowTableData } from 'utils/cream';
 import { useModal } from 'containers/ModalProvider/hooks';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { useInjectSaga } from 'utils/injectSaga';
 import { initializeCream } from './actions';
-import { BLOCKS_PER_YEAR } from './constants';
 import saga from './saga';
 
 const Wrapper = styled.div`

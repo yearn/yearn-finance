@@ -19,7 +19,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
       <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
         {links.map(link => (
-          <a href={link.href} tw="flex items-start">
+          <a key={link.href} href={link.href} tw="flex items-start">
             <div
               css={[
                 // amazing

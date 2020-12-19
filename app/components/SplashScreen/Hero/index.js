@@ -37,7 +37,7 @@ export const Hero = () => (
         tw="bg-yearn-blue px-6 rounded-lg py-2 flex justify-center items-center align-middle"
         href="/vaults"
       >
-        <p tw="text-white uppercase text-lg font-sans">Launch App</p>
+        <p tw="text-white uppercase text-lg font-sans">Go to Vaults</p>
       </a>
     </div>
     <MarqueStats />

@@ -16853,14 +16853,15 @@ react-transition-group@^4.4.0, react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-tsparticles@^1.18.11:
-  version "1.18.11"
-  resolved "https://registry.yarnpkg.com/react-tsparticles/-/react-tsparticles-1.18.11.tgz#4d74d46f652a787572aa0c34b7d5e19e0032b7ed"
-  integrity sha512-fMNHl9M2pTCtlodFOSbajI5UNDRaKPPHeo7gvu7CuHyvnhgsNp97iaQLNdOSkvwD2t1MBSXjW//PeNTCuEiLIg==
+react-tsparticles@1.19.0-alpha.5:
+  version "1.19.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/react-tsparticles/-/react-tsparticles-1.19.0-alpha.5.tgz#2c439a35dcd22b53460d438fcc46f206ee2dde42"
+  integrity sha512-LbJ4jMFKXsWHjrsB5Qt3S/oKtgX0KQTOt19MGVh56+Ubfh3P+2z25u8lOmmXk0ispPcasILkglU90n3balAfcA==
   dependencies:
     lodash "^4.17.20"
+    react ">=16"
     tslib "^2.0.3"
-    tsparticles "^1.18.11"
+    tsparticles "^1.19.0-alpha.5"
 
 react-universal-interface@^0.6.2:
   version "0.6.2"
@@ -16895,6 +16896,14 @@ react@16.14.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+react@>=16:
+  version "17.0.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.1.tgz#6e0600416bd57574e3f86d92edba3d9008726127"
+  integrity sha512-lG9c9UuMHdcAexXtigOZLX8exLWkW0Ku29qPRU8uhF2R9BN96dLCt0psvzPLlHc5OWkgymP3qwTRgbnw5BKx3w==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 reactcss@^1.2.0:
   version "1.2.3"
@@ -19661,10 +19670,10 @@ tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
   integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
 
-tsparticles@^1.18.11:
-  version "1.18.11"
-  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.18.11.tgz#924d74cf40656727f5df047b53c4761463a4f6e7"
-  integrity sha512-F5czk8foRoywWHDYDT0eZhQwCXOHz7OGhJCsoybThTUIT+nwc1Eclltm/TMrnnxZZghF3Fo0VL8nN4inf+pQbA==
+tsparticles@^1.19.0-alpha.5:
+  version "1.19.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/tsparticles/-/tsparticles-1.19.0-alpha.5.tgz#87ccc0884350cfa1536a5ce7e0b0b3dc5a48afd8"
+  integrity sha512-Or11usaw6aM7a3WEcRnBGGUbAIAsyQSlhmpUbHCF3TzEqIdGcVLrS6rxomehM8b8MAGMfsrUSg8ANCGhenK2vw==
   optionalDependencies:
     pathseg "^1.2.0"
 

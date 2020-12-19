@@ -17,7 +17,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
     tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
   >
     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-      <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-4 py-6">
+      <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-2 py-6">
         {links.map(link => (
           <a key={link.href} href={link.href} tw="flex items-start">
             <div
@@ -51,7 +51,9 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                 />
               </svg>
-              <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
+              {link.description && (
+                <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
+              )}
             </div>
           </a>
         ))}

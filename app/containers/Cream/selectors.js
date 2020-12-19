@@ -53,17 +53,15 @@ export const selectBorrowStats = createSelector(
   selectContractData(PRICE_ORACLE_ADDRESS),
   selectContractData(COMPTROLLER_ADDRESS),
   selectContracts('creamCTokens'),
+  selectContractsByTag('creamUnderlyingTokens'),
   (
     creamUnderlyingTokens,
     otherTokens,
     oracleData,
     comptrollerData,
     creamCTokensData,
+    underlyingTokensData,
   ) => {
-    const underlyingTokensData = useSelector(
-      selectContractsByTag('creamUnderlyingTokens'),
-    );
-
     if (_.isEmpty(comptrollerData)) {
       return {};
     }

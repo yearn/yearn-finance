@@ -77,16 +77,15 @@ export const menuLinks = {
       title: 'Medium',
       // description: 'Yearn Community Aggregator',
     },
-    {
-      href:
-        'https://github.com/iearn-finance/yearn-protocol/blob/develop/SECURITY.md',
-      title: 'Security & Bug Bounty',
-      // description: 'Yearn Community Aggregator',
-    },
   ],
   docs: {
     href: 'https://docs.yearn.finance/',
     title: 'Docs',
     description: 'Yearn finance documentation',
+  },
+  security: {
+    href:
+      'https://github.com/iearn-finance/yearn-protocol/blob/develop/SECURITY.md',
+    title: 'Security',
   },
 };

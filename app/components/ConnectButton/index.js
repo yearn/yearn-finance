@@ -10,9 +10,9 @@ import ConnectedAccount from './ConnectedAccount';
 
 const StyledButton = styled.button(() => [
   tw`
-  text-white uppercase rounded-xl border-2 border-yearn-blue px-6
+  rounded-xl border-2 border-yearn-blue px-4
   items-center justify-center align-middle 
-  font-thin text-base flex hover:text-yearn-blue pt-1
+  flex hover:text-yearn-blue py-1
   `,
 ]);
 
@@ -24,7 +24,13 @@ export default function ConnectButton(props) {
   let content;
 
   if (window.location.pathname === '/') {
-    return <StyledButton>Launch App</StyledButton>;
+    return (
+      <StyledButton>
+        <p tw="text-white uppercase font-thin text-base font-sans">
+          Launch App
+        </p>
+      </StyledButton>
+    );
   }
   if (wallet.provider && account) {
     content = (

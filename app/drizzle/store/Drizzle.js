@@ -66,6 +66,7 @@ class Drizzle {
   addContract(
     contractConfig,
     events = [],
+    namespace,
     metadata,
     tags,
     readMethods,

@@ -3,6 +3,7 @@ import priceOracleAbi from 'abi/creamPriceOracle.json';
 import CErc20DelegatorAbi from 'abi/CErc20Delegator.json';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { selectReady } from 'containers/App/selectors';
 import { APP_READY } from 'containers/App/constants';
 import {
   COMPTROLLER_ADDRESS,
@@ -22,8 +23,9 @@ import {
 
 function* subscribeToCreamData(action) {
   const initialized = yield getContext('initialized');
+  const appReady = yield select(selectReady());
   const { web3, batchCall } = action;
-  if (initialized || !web3) {
+  if (initialized || !appReady) {
     return;
   }
   yield setContext({ initialized: true });

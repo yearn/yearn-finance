@@ -1,14 +1,15 @@
+import React, { useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import { selectContracts, selectContractData } from 'containers/App/selectors';
 import {
   selectCollateralEnabled,
   selectBorrowStats,
 } from 'containers/Cream/selectors';
-import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
+import { initializeCream } from './actions';
 import { BLOCKS_PER_YEAR } from './constants';
 import saga from './saga';
 
@@ -194,6 +195,12 @@ const CreamBorrowMarketRow = ({ creamCTokenAddress }) => {
 
 const Cream = () => {
   useInjectSaga({ key: 'cream', saga });
+  const dispatch = useDispatch();
+
+  const initialize = () => {
+    dispatch(initializeCream());
+  };
+  useEffect(initialize, []);
 
   const creamCTokens = useSelector(selectContracts('creamCTokens'));
   const creamCTokenAddresses = _.map(creamCTokens, token => token.address);

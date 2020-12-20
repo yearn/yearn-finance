@@ -62,9 +62,9 @@ export const selectBorrowStats = createSelector(
     creamCTokensData,
     underlyingTokensData,
   ) => {
-    if (_.isEmpty(comptrollerData)) {
-      return {};
-    }
+    // if (_.isEmpty(comptrollerData)) {
+    //   return {};
+    // }
     const borrowStats = _.reduce(
       creamCTokensData,
       (stats, creamCToken) => {
@@ -82,12 +82,15 @@ export const selectBorrowStats = createSelector(
           .dividedBy(10 ** underlyingToken.decimals)
           .toFixed();
 
-        const exchangeRate = creamCToken.exchangeRateStored / 10 ** 18;
+        const exchangeRate = new BigNumber(creamCToken.exchangeRateStored)
+          .dividedBy(10 ** 18)
+          .toFixed();
 
         // Borrow limit in USD
         const collateralEnabled = comptrollerData.getAssetsIn.includes(
           creamCToken.address,
         );
+
         const supplied =
           (creamCToken.balanceOf * exchangeRate) /
           10 ** underlyingToken.decimals;
@@ -96,30 +99,27 @@ export const selectBorrowStats = createSelector(
           creamCToken.address,
         );
 
-        let borrowLimit = 0;
-        if (collateralEnabled) {
-          borrowLimit = new BigNumber(supplied)
-            .times(underlyingTokenPriceNormalized)
-            .times(collateralFactor);
-        }
+        const borrowLimit = collateralEnabled
+          ? supplied * underlyingTokenPriceNormalized * collateralFactor
+          : 0;
 
-        // Borrow value in USD
-        const borrowBalanceNormalized = new BigNumber(creamCToken)
-          .dividedBy(10 ** creamCToken.decimals)
-          .toFixed();
+        const balanceStoredNormalized = new BigNumber(
+          creamCToken.borrowBalanceStored,
+        ).dividedBy(10 ** creamCToken.decimals);
 
-        const borrowed = new BigNumber(exchangeRate)
-          .times(borrowBalanceNormalized)
-          .times(underlyingTokenPriceNormalized)
+        const underlyingPriceNormalized = new BigNumber(
+          underlyingTokenPriceNormalized,
+        ).dividedBy(10 ** underlyingToken.decimals);
+        const borrowed = balanceStoredNormalized
+          .times(exchangeRate)
+          .times(underlyingPriceNormalized)
           .toFixed();
 
         const newStats = stats;
-
-        const { borrowLimitInUSD, borrowValueInUSD } = stats;
-        newStats.borrowLimitInUSD = new BigNumber(borrowLimitInUSD)
+        newStats.borrowLimitInUSD = new BigNumber(newStats.borrowLimitInUSD)
           .plus(borrowLimit)
           .toFixed();
-        newStats.borrowValueInUSD = new BigNumber(borrowValueInUSD)
+        newStats.borrowValueInUSD = new BigNumber(newStats.borrowValueInUSD)
           .plus(borrowed)
           .toFixed();
 
@@ -129,7 +129,7 @@ export const selectBorrowStats = createSelector(
     );
 
     borrowStats.borrowLimitUsedPercent =
-      (borrowStats.borrowValueInUSD / borrowStats.borrowLimitInUSD) * 100 || 0;
+      (borrowStats.borrowValueInUSD / borrowStats.borrowLimitInUSD) * 100;
 
     return borrowStats;
   },

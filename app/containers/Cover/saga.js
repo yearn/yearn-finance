@@ -5,7 +5,7 @@ import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { coverDataLoaded } from './actions';
-import { COVER_DATA_LOADED } from './constants';
+import { COVER_DATA_LOADED, INITIALIZE_COVER } from './constants';
 
 function* fetchCoverData() {
   try {
@@ -80,5 +80,6 @@ function* coverDataLoadedSaga(action) {
 
 export default function* watchers() {
   yield takeLatest(ACCOUNT_UPDATED, fetchCoverData);
+  yield takeLatest(INITIALIZE_COVER, fetchCoverData);
   yield takeLatest(COVER_DATA_LOADED, coverDataLoadedSaga);
 }

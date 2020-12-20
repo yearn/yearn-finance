@@ -52,9 +52,22 @@ const tokenTransform = asset => {
 
 const percentTransform = val => `${val}%`;
 
-const tokenSymbolTransform = (val, row) => `${val} ${row.underlyingSymbol}`;
+const tokenSymbolTransform = (val, row) => `${val} ${row.underlying.symbol}`;
 
-const dollarTransform = val => `$${val}`;
+// const dollarTransform = val => `$${val}`;
+
+const CollateralToggle = props => {
+  const { enabled, rowData } = props;
+  console.log('rowdata', rowData);
+  if (enabled) {
+    return 'yes';
+  }
+  return 'no';
+};
+
+const collateralTransform = (enabled, rowData) => (
+  <CollateralToggle enabled={enabled} rowData={rowData} />
+);
 
 export default function Cream() {
   useInjectSaga({ key: 'cream', saga });
@@ -111,7 +124,7 @@ export default function Cream() {
         key: 'supply',
         transform: tokenSymbolTransform,
       },
-      { key: 'collateral' },
+      { key: 'collateral', transform: collateralTransform },
     ],
     rows: assetsSupplied,
   };
@@ -128,7 +141,7 @@ export default function Cream() {
         key: 'wallet',
         transform: tokenSymbolTransform,
       },
-      { key: 'collateral' },
+      { key: 'collateral', transform: collateralTransform },
     ],
     rows: assetsSuppliable,
   };

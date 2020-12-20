@@ -169,7 +169,7 @@ export default function TransactionModal(props) {
   };
 
   const modalToggled = () => {
-    if (show) {
+    if (show && account) {
       setTimeout(() => fetchData(), 0);
     } else {
       setData([]);
@@ -181,10 +181,13 @@ export default function TransactionModal(props) {
   useEffect(() => {
     const update = async () => {
       await setData([]);
-      fetchData();
+      if (account) {
+        fetchData();
+      }
     };
     update();
   }, [days]);
+
   const renderChart = (method, key) => {
     const chartData = _.get(data, method.name);
     const scaleAllowList = ['balance', 'balanceOf', 'totalSupply'];

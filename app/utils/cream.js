@@ -22,6 +22,10 @@ export const getSupplyData = ({
   allContracts,
   borrowLimitStats,
 }) => {
+  const comptrollerData = allContracts[COMPTROLLER_ADDRESS];
+  if (!comptrollerData) {
+    return {};
+  }
   const getSupplyRows = creamCTokenAddress => {
     const creamTokenData = allContracts[creamCTokenAddress];
     const underlyingTokenData = allContracts[creamTokenData.underlying];
@@ -40,12 +44,13 @@ export const getSupplyData = ({
       underlyingTokenData.decimals,
     );
 
-    const comptrollerData = allContracts[COMPTROLLER_ADDRESS];
+    const underlying = underlyingTokenData;
+
     const collateralEnabled = comptrollerData.getAssetsIn.includes(
       creamCTokenAddress,
     );
 
-    const collateral = collateralEnabled ? 'yes' : 'no';
+    const collateral = collateralEnabled;
 
     const borrowLimit = getFieldValue(borrowLimitStats.borrowLimitInUSD, 0, 2);
     const borrowLimitUsedPercent = getFieldValue(
@@ -54,7 +59,6 @@ export const getSupplyData = ({
       2,
     );
 
-    const underlyingSymbol = underlyingTokenData.symbol;
     return {
       apy: supplyAPY,
       asset: underlyingTokenData,
@@ -63,7 +67,7 @@ export const getSupplyData = ({
       collateral,
       borrowLimit,
       borrowLimitUsed: borrowLimitUsedPercent,
-      underlyingSymbol,
+      underlying,
     };
   };
 
@@ -106,7 +110,7 @@ export const getBorrowData = ({
       2,
     );
 
-    const underlyingSymbol = underlyingTokenData.symbol;
+    const underlying = underlyingTokenData;
     return {
       apy: borrowAPY,
       asset: underlyingTokenData,
@@ -115,7 +119,7 @@ export const getBorrowData = ({
       liquidity,
       borrowLimit,
       borrowLimitUsed: borrowLimitUsedPercent,
-      underlyingSymbol,
+      underlying,
     };
   };
   const borrowTableRows = creamCTokenAddresses.map(getBorrowRows);

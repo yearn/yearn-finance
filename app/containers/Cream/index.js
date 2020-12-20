@@ -52,7 +52,7 @@ const tokenTransform = asset => {
 
 const percentTransform = val => `${val}%`;
 
-const tokenSymbolTransform = (val, row) => `${val} ${row.underlying.symbol}`;
+const tokenSymbolTransform = (val, row) => `${val} ${row.asset.symbol}`;
 
 // const dollarTransform = val => `$${val}`;
 
@@ -112,6 +112,8 @@ export default function Cream() {
     openModal('cream', row);
   };
 
+  const boolTransform = val => (val ? 'yes' : 'no');
+
   const assetsSuppliedTable = {
     rowClickHandler: supplyRowClickHandler,
     columns: [
@@ -119,6 +121,11 @@ export default function Cream() {
       {
         key: 'apy',
         transform: percentTransform,
+      },
+      {
+        key: 'allowance',
+        alias: 'Allowed',
+        transform: boolTransform,
       },
       {
         key: 'supplied',
@@ -137,6 +144,10 @@ export default function Cream() {
       {
         key: 'apy',
         transform: percentTransform,
+      },
+      {
+        key: 'allowance',
+        transform: boolTransform,
       },
       {
         key: 'wallet',

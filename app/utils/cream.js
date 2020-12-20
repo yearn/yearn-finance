@@ -44,8 +44,6 @@ export const getSupplyData = ({
       underlyingTokenData.decimals,
     );
 
-    const underlying = underlyingTokenData;
-
     const collateralEnabled = comptrollerData.getAssetsIn.includes(
       creamCTokenAddress,
     );
@@ -59,6 +57,8 @@ export const getSupplyData = ({
       2,
     );
 
+    const allowance = underlyingTokenData.allowance > 0;
+
     return {
       apy: supplyAPY,
       asset: underlyingTokenData,
@@ -66,8 +66,8 @@ export const getSupplyData = ({
       supplied,
       collateral,
       borrowLimit,
+      allowance,
       borrowLimitUsed: borrowLimitUsedPercent,
-      underlying,
     };
   };
 

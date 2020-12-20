@@ -80,7 +80,7 @@ function* subscribeToCreamData(action) {
       },
       {
         name: 'allowance',
-        args: [account, underlyingTokenAddress],
+        args: [account, cyTokenAddress],
       },
     ],
   });

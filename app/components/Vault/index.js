@@ -17,7 +17,7 @@ import VaultButtons from 'components/VaultButtons';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
-import { theme } from 'twin.macro';
+import tw, { theme, css } from 'twin.macro';
 
 const IconAndName = styled.div`
   display: flex;
@@ -234,7 +234,25 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    vaultBottom = null;
+    // Earnings
+    // TODO: Populate? how data source pls
+    vaultBottom = (
+      <ColumnList css={[tw`py-6`]}>
+        <div>
+          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
+        </div>
+        {[
+          { value: '2.156', name: 'Historical earning' },
+          { value: '2.156', name: 'Projected earning' },
+          { value: '2.156', name: 'Available to Withdraw' },
+        ].map(earning => (
+          <div>
+            <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
+            <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
+          </div>
+        ))}
+      </ColumnList>
+    );
     vaultTop = (
       <ColumnList>
         <IconAndName>

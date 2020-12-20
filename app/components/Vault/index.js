@@ -72,6 +72,7 @@ const Footer = styled.div`
 const StatsIcon = styled(Icon)`
   height: 17px;
   position: relative;
+  cursor: pointer;
   top: -3px;
   left: -22px;
 `;

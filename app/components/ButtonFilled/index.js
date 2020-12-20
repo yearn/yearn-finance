@@ -10,8 +10,8 @@ export default function ButtonFilled(props) {
 
   const ColorButton = withStyles(() => ({
     root: {
-      fontFamily: 'Calibre Medium',
-      fontSize: '20px',
+      fontFamily: 'Roboto',
+      fontSize: '16px',
       padding: '8px 20px 5px 20px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
@@ -22,6 +22,7 @@ export default function ButtonFilled(props) {
       '&:hover': {
         backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       },
+      textAlign: 'center',
     },
   }))(Button);
 

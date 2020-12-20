@@ -101,7 +101,6 @@ const ProtocolUrl = styled.a`
   line-height: 16px;
   position: absolute;
   top: 189px;
-  margin: 0 auto;
   justify-self: center;
 `;
 

@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKS_PER_YEAR } from 'containers/Cream/constants';
-import { COMPTROLLER_ADDRESS } from 'containers/Cream/constants';
+import {
+  BLOCKS_PER_YEAR,
+  COMPTROLLER_ADDRESS,
+} from 'containers/Cream/constants';
 
 function getFieldValue(
   rawValue,
@@ -15,7 +17,7 @@ function getFieldValue(
   return Number.isNaN(value) ? nanValue : value;
 }
 
-export const getSupplyTableData = ({
+export const getSupplyData = ({
   creamCTokenAddresses,
   allContracts,
   borrowLimitStats,
@@ -69,7 +71,7 @@ export const getSupplyTableData = ({
   return supplyTableRows;
 };
 
-export const getBorrowTableData = ({
+export const getBorrowData = ({
   creamCTokenAddresses,
   allContracts,
   borrowLimitStats,

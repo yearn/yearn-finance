@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
 import CreamTable from 'components/CreamTable';
-import { getSupplyTableData, getBorrowTableData } from 'utils/cream';
+import { getSupplyData, getBorrowData } from 'utils/cream';
 import { useModal } from 'containers/ModalProvider/hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeCream } from './actions';
@@ -71,23 +71,52 @@ export default function Cream() {
   const borrowLimitStats = useSelector(selectBorrowStats);
   const { openModal } = useModal();
 
-  const supplyTableRows = getSupplyTableData({
+  const allSupplyData = getSupplyData({
     creamCTokenAddresses,
     allContracts,
     borrowLimitStats,
   });
 
-  const borrowTableRows = getBorrowTableData({
+  const assetsSupplied = _.filter(allSupplyData, data => data.supplied > 0);
+  const assetsSuppliable = _.filter(
+    allSupplyData,
+    data => parseInt(data.supplied, 10) === 0,
+  );
+
+  const allBorrowData = getBorrowData({
     creamCTokenAddresses,
     allContracts,
     borrowLimitStats,
   });
+
+  const assetsBorrowed = _.filter(allBorrowData, data => data.borrowed > 0);
+  const assetsBorrowable = _.filter(
+    allBorrowData,
+    data => parseInt(data.borrowed, 10) === 0,
+  );
 
   const supplyRowClickHandler = row => {
     openModal('cream', row);
   };
 
-  const supplyTableData = {
+  const assetsSuppliedTable = {
+    rowClickHandler: supplyRowClickHandler,
+    columns: [
+      { key: 'asset', transform: tokenTransform },
+      {
+        key: 'apy',
+        transform: percentTransform,
+      },
+      {
+        key: 'supply',
+        transform: tokenSymbolTransform,
+      },
+      { key: 'collateral' },
+    ],
+    rows: assetsSupplied,
+  };
+
+  const assetsSuppliableTable = {
     rowClickHandler: supplyRowClickHandler,
     columns: [
       { key: 'asset', transform: tokenTransform },
@@ -99,21 +128,12 @@ export default function Cream() {
         key: 'wallet',
         transform: tokenSymbolTransform,
       },
-      {
-        key: 'supplied',
-        transform: tokenSymbolTransform,
-      },
       { key: 'collateral' },
-      {
-        key: 'borrowLimit',
-        transform: dollarTransform,
-      },
-      { key: 'borrowLimitUsed', transform: percentTransform },
     ],
-    rows: supplyTableRows,
+    rows: assetsSuppliable,
   };
 
-  const borrowTableData = {
+  const assetsBorrowableTableData = {
     columns: [
       { key: 'asset', transform: tokenTransform },
       {
@@ -124,20 +144,34 @@ export default function Cream() {
         key: 'wallet',
         transform: tokenSymbolTransform,
       },
+      { key: 'liquidity', transform: tokenSymbolTransform },
+    ],
+    rows: assetsBorrowable,
+  };
+
+  const assetsBorrowedTableData = {
+    columns: [
+      { key: 'asset', transform: tokenTransform },
+      {
+        key: 'apy',
+        transform: percentTransform,
+      },
       { key: 'borrowed', transform: tokenSymbolTransform },
       { key: 'liquidity', transform: tokenSymbolTransform },
-      { key: 'borrowLimit', transform: dollarTransform },
-      { key: 'borrowLimitUsed', transform: percentTransform },
     ],
-    rows: borrowTableRows,
+    rows: assetsBorrowed,
   };
 
   return (
     <Wrapper>
-      <TableTitle>Supply Market</TableTitle>
-      <CreamTable data={supplyTableData} />
-      <TableTitle>Borrow Market</TableTitle>
-      <CreamTable data={borrowTableData} />
+      <TableTitle>Supplied</TableTitle>
+      <CreamTable data={assetsSuppliedTable} />
+      <TableTitle>Suppliable</TableTitle>
+      <CreamTable data={assetsSuppliableTable} />
+      <TableTitle>Borrowed</TableTitle>
+      <CreamTable data={assetsBorrowedTableData} />
+      <TableTitle>Borrowable</TableTitle>
+      <CreamTable data={assetsBorrowableTableData} />
     </Wrapper>
   );
 }

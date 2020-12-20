@@ -121,7 +121,8 @@ export default function Cream() {
         transform: percentTransform,
       },
       {
-        key: 'supply',
+        key: 'supplied',
+        alias: 'Supply',
         transform: tokenSymbolTransform,
       },
       { key: 'collateral', transform: collateralTransform },

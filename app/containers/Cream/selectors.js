@@ -62,9 +62,9 @@ export const selectBorrowStats = createSelector(
     creamCTokensData,
     underlyingTokensData,
   ) => {
-    // if (_.isEmpty(comptrollerData)) {
-    //   return {};
-    // }
+    if (_.isEmpty(comptrollerData)) {
+      return {};
+    }
     const borrowStats = _.reduce(
       creamCTokensData,
       (stats, creamCToken) => {

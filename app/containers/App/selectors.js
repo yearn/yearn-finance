@@ -70,3 +70,5 @@ export const selectContractData = contractAddress =>
     selectContractsData,
     substate => substate[contractAddress] || {},
   );
+
+export const selectSelectedAccount = state => state.connection.account;

@@ -55,6 +55,40 @@ function* subscribeToCreamData(action) {
     item => item.underlying,
   );
 
+  const underlyingTokenMap = {};
+  const addCyToken = (underlyingAddress, idx) => {
+    underlyingTokenMap[underlyingAddress] = cTokenAddresses[idx];
+  };
+  _.each(underlyingTokenAddresses, addCyToken);
+
+  const generateTokenSubscription = (
+    cyTokenAddress,
+    underlyingTokenAddress,
+  ) => ({
+    namespace: 'tokens',
+    abi: erc20Abi,
+    syncOnce: true,
+    tags: ['creamUnderlyingTokens'],
+    addresses: [underlyingTokenAddress],
+    readMethods: [
+      { name: 'name' },
+      { name: 'symbol' },
+      { name: 'decimals' },
+      {
+        name: 'balanceOf',
+        args: [account],
+      },
+      {
+        name: 'allowance',
+        args: [account, underlyingTokenAddress],
+      },
+    ],
+  });
+  const tokenSubscriptions = _.map(
+    underlyingTokenMap,
+    generateTokenSubscription,
+  );
+
   const subscriptions = [
     {
       namespace: 'creamComptroller',
@@ -67,9 +101,10 @@ function* subscribeToCreamData(action) {
             args: [account],
           },
         ],
-        _.map(cTokenAddresses, cTokenAddress => {
-          return { name: 'markets', args: [cTokenAddress] };
-        }),
+        _.map(cTokenAddresses, cTokenAddress => ({
+          name: 'markets',
+          args: [cTokenAddress],
+        })),
       ),
     },
     {
@@ -96,18 +131,6 @@ function* subscribeToCreamData(action) {
       ],
     },
     {
-      namespace: 'tokens',
-      abi: erc20Abi,
-      addresses: underlyingTokenAddresses,
-      tags: ['creamUnderlyingTokens'],
-      readMethods: [
-        { name: 'name' },
-        { name: 'symbol' },
-        { name: 'decimals' },
-        { name: 'balanceOf', args: [account] },
-      ],
-    },
-    {
       namespace: 'creamOracle',
       addresses: [PRICE_ORACLE_ADDRESS],
       abi: priceOracleAbi,
@@ -116,6 +139,7 @@ function* subscribeToCreamData(action) {
         args: [cTokenAddress],
       })),
     },
+    ...tokenSubscriptions,
   ];
 
   yield put(addContracts(subscriptions));

@@ -17,6 +17,7 @@ import VaultButtons from 'components/VaultButtons';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
+import { theme } from 'twin.macro';
 
 const IconAndName = styled.div`
   display: flex;
@@ -32,6 +33,9 @@ const IconName = styled.div`
   overflow: hidden;
   padding-right: 10px;
   text-overflow: ellipsis;
+  &:hover {
+    color: ${theme('colors.yearn.blue')};
+  }
 `;
 
 const StyledArrow = styled.img`
@@ -98,6 +102,7 @@ const LinkWrap = props => {
 };
 
 const Vault = props => {
+  const [isHovered, setIsHovered] = React.useState(false);
   const { vault, showDevVaults, active } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
@@ -113,6 +118,7 @@ const Vault = props => {
     address,
     vaultAlias,
   } = vault;
+  // console.log(vault);
 
   const { openModal } = useModal();
 
@@ -124,6 +130,7 @@ const Vault = props => {
 
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
+  const tokenName = name || _.get(tokenContractData, 'name');
 
   const vaultName = vaultAlias || name;
 
@@ -185,16 +192,33 @@ const Vault = props => {
     );
     vaultTop = (
       <ColumnListDev>
-        <div>
-          <IconAndName>
+        <IconAndName>
+          {isHovered ? (
             <LinkWrap devMode={devMode} address={address}>
-              <StyledTokenIcon address={tokenContractAddress} />
+              <IconName
+                onMouseLeave={() => setIsHovered(false)}
+                devMode={devMode}
+              >
+                {tokenName}
+              </IconName>
             </LinkWrap>
-            <LinkWrap devMode={devMode} address={address}>
-              <IconName devMode={devMode}>{vaultName || address}</IconName>
-            </LinkWrap>
-          </IconAndName>
-        </div>
+          ) : (
+            <>
+              <LinkWrap devMode={devMode} address={address}>
+                <StyledTokenIcon address={tokenContractAddress} />
+              </LinkWrap>
+              <LinkWrap devMode={devMode} address={address}>
+                <IconName
+                  onMouseLeave={() => setIsHovered(false)}
+                  onMouseEnter={() => setIsHovered(true)}
+                  devMode={devMode}
+                >
+                  {vaultName}
+                </IconName>
+              </LinkWrap>
+            </>
+          )}
+        </IconAndName>
         <div>{contractType}</div>
         <div>
           <AnimatedNumber value={vaultBalanceOf} />
@@ -213,12 +237,31 @@ const Vault = props => {
     vaultTop = (
       <ColumnList>
         <IconAndName>
-          <LinkWrap devMode={devMode} address={address}>
-            <StyledTokenIcon address={tokenContractAddress} />
-          </LinkWrap>
-          <LinkWrap devMode={devMode} address={address}>
-            <IconName devMode={devMode}>{vaultName}</IconName>
-          </LinkWrap>
+          {isHovered ? (
+            <LinkWrap devMode={devMode} address={address}>
+              <IconName
+                onMouseLeave={() => setIsHovered(false)}
+                devMode={devMode}
+              >
+                {tokenName}
+              </IconName>
+            </LinkWrap>
+          ) : (
+            <>
+              <LinkWrap devMode={devMode} address={address}>
+                <StyledTokenIcon address={tokenContractAddress} />
+              </LinkWrap>
+              <LinkWrap devMode={devMode} address={address}>
+                <IconName
+                  onMouseLeave={() => setIsHovered(false)}
+                  onMouseEnter={() => setIsHovered(true)}
+                  devMode={devMode}
+                >
+                  {vaultName}
+                </IconName>
+              </LinkWrap>
+            </>
+          )}
         </IconAndName>
         <div>
           <AnimatedNumber value={vaultBalanceOf} />

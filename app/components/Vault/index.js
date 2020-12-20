@@ -223,8 +223,8 @@ const Vault = props => {
         <div>
           <AnimatedNumber value={vaultBalanceOf} />
         </div>
-        <div>{vaultAssets}</div>
         <div>{apy}</div>
+        <div>{vaultAssets}</div>
         <div>
           <AnimatedNumber value={tokenBalanceOf} />{' '}
           <LinkWrap devMode={devMode} address={tokenAddress}>

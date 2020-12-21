@@ -120,8 +120,9 @@ export default function TransactionModal(props) {
   const abi = _.get(contract, 'abi');
   const account = useSelector(selectAccount());
   const readMethods = getNumericReadMethodsWithNoInputs(abi);
+  const defaultDays = 90;
   const [data, setData] = useState();
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState(defaultDays);
 
   const provider =
     'https://eth-mainnet.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ';
@@ -173,7 +174,7 @@ export default function TransactionModal(props) {
       setTimeout(() => fetchData(), 0);
     } else {
       setData([]);
-      setDays(1);
+      setDays(defaultDays);
     }
   };
   useEffect(modalToggled, [show]);
@@ -344,16 +345,22 @@ export default function TransactionModal(props) {
             </VaultInfo>
             <RangeSelectorWrapper>
               <RangeSelector active={days === 1} onClick={() => setDays(1)}>
-                D
+                1D
               </RangeSelector>
               <RangeSelector active={days === 7} onClick={() => setDays(7)}>
-                W
+                1W
               </RangeSelector>
               <RangeSelector active={days === 30} onClick={() => setDays(30)}>
-                M
+                1M
+              </RangeSelector>
+              <RangeSelector active={days === 90} onClick={() => setDays(90)}>
+                3M
+              </RangeSelector>
+              <RangeSelector active={days === 180} onClick={() => setDays(180)}>
+                6M
               </RangeSelector>
               <RangeSelector active={days === 365} onClick={() => setDays(365)}>
-                Y
+                1Y
               </RangeSelector>
             </RangeSelectorWrapper>
           </VaultHeader>

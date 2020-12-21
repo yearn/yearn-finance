@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
 const selectApp = state => state.app;
 const selectRouter = state => state.router;
 const selectContractsData = state => state.contracts;
@@ -81,6 +82,21 @@ export const selectContractData = contractAddress =>
       };
       _.each(contractData, setFlattenedData);
       return flattenedData;
+    },
+  );
+
+export const selectTokenAllowance = (tokenAddress, spenderAddress) =>
+  createSelector(
+    selectAccount(),
+    selectAllContracts(),
+    (account, allContracts) => {
+      const token = allContracts[tokenAddress];
+      const allowances = _.get(token, 'allowance');
+      const tokenAllowanceObject = _.find(allowances, allowance =>
+        _.includes(allowance.args, spenderAddress),
+      );
+      const tokenAllowance = _.get(tokenAllowanceObject, 'value');
+      return tokenAllowance;
     },
   );
 

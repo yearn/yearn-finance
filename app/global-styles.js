@@ -17,6 +17,9 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-size: 16px;
   }
+  a {
+    text-decoration: underline;
+  }
   @font-face {
     font-family: 'Calibre Bold';
     src: url(${CalibreBold}) format('opentype');

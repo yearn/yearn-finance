@@ -77,6 +77,30 @@ function* loadVaultContracts() {
       ],
     },
   ];
+
+  const generateVaultTokenAllowanceSubscriptions = vault => {
+    const vaultAddress = vault.address;
+    const { tokenAddress } = vault;
+    return {
+      namespace: 'tokens',
+      abi: erc20Abi,
+      syncOnce: true,
+      addresses: [tokenAddress],
+      readMethods: [
+        {
+          name: 'allowance',
+          args: [account, vaultAddress],
+        },
+      ],
+    };
+  };
+
+  const vaultTokenAllowanceSubscriptions = _.map(
+    vaults,
+    generateVaultTokenAllowanceSubscriptions,
+  );
+
+  contracts.push(...vaultTokenAllowanceSubscriptions);
   yield put(addContracts(contracts));
 }
 

@@ -52,7 +52,7 @@ function* subscribeToCreamData(action) {
 
   const underlyingTokenAddresses = _.map(
     underlyingTokensResponse,
-    item => item.underlying,
+    item => item.underlying[0].value,
   );
 
   const underlyingTokenMap = {};
@@ -84,6 +84,7 @@ function* subscribeToCreamData(action) {
       },
     ],
   });
+
   const tokenSubscriptions = _.map(
     underlyingTokenMap,
     generateTokenSubscription,
@@ -108,12 +109,12 @@ function* subscribeToCreamData(action) {
       ),
     },
     {
-      namespace: 'creamCTokens',
+      tags: ['creamCTokens'],
       abi: CErc20DelegatorAbi,
       addresses: cTokenAddresses,
       readMethods: [
         { name: 'name' },
-        { name: 'symbol' }, // just testing
+        { name: 'symbol' },
         { name: 'decimals' },
         { name: 'borrowRatePerBlock' },
         { name: 'supplyRatePerBlock' },

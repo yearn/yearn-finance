@@ -39,6 +39,19 @@ export function getContractType(data) {
   return contractType ? contractType.name : 'Unknown';
 }
 
+export function flattenData(data) {
+  const flattenedData = {};
+  const setFlattenedData = (val, key) => {
+    if (_.isArray(val)) {
+      flattenedData[key] = _.first(val).value;
+    } else {
+      flattenedData[key] = val;
+    }
+  };
+  _.each(data, setFlattenedData);
+  return flattenedData;
+}
+
 export function getMethods(abi) {
   const findReadMethods = (acc, field) => {
     const { name, inputs, type, outputs, stateMutability } = field;

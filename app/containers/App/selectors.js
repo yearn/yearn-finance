@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-
+import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 const selectApp = state => state.app;
 const selectRouter = state => state.router;
@@ -61,8 +61,9 @@ export const selectContractsByTag = tag =>
       _.each(subscriptionsMatch, extractAddresses);
       const contractAddresses = Object.keys(addressesToSelect);
       const getContract = address => contractsData[address];
-      const contracts = _.map(contractAddresses, getContract);
-      return contracts;
+      const contracts = _.compact(_.map(contractAddresses, getContract));
+      const flattenedContracts = _.map(contracts, flattenData);
+      return flattenedContracts;
     },
   );
 
@@ -72,15 +73,7 @@ export const selectContractData = contractAddress =>
     substate => {
       const contractData = substate[contractAddress] || {};
 
-      const flattenedData = {};
-      const setFlattenedData = (val, key) => {
-        if (_.isArray(val)) {
-          flattenedData[key] = _.first(val).value;
-        } else {
-          flattenedData[key] = val;
-        }
-      };
-      _.each(contractData, setFlattenedData);
+      const flattenedData = flattenData(contractData);
       return flattenedData;
     },
   );

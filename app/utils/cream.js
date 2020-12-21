@@ -3,6 +3,7 @@ import {
   BLOCKS_PER_YEAR,
   COMPTROLLER_ADDRESS,
 } from 'containers/Cream/constants';
+import { flattenData } from 'utils/contracts';
 
 function getFieldValue(
   rawValue,
@@ -22,13 +23,15 @@ export const getSupplyData = ({
   allContracts,
   borrowLimitStats,
 }) => {
-  const comptrollerData = allContracts[COMPTROLLER_ADDRESS];
+  const comptrollerData = flattenData(allContracts[COMPTROLLER_ADDRESS]);
   if (!comptrollerData) {
     return {};
   }
   const getSupplyRows = creamCTokenAddress => {
-    const creamTokenData = allContracts[creamCTokenAddress];
-    const underlyingTokenData = allContracts[creamTokenData.underlying];
+    const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
+    const underlyingTokenData = flattenData(
+      allContracts[creamTokenData.underlying],
+    );
 
     const supplyAPY = getFieldValue(
       creamTokenData.supplyRatePerBlock * BLOCKS_PER_YEAR,
@@ -81,8 +84,10 @@ export const getBorrowData = ({
   borrowLimitStats,
 }) => {
   const getBorrowRows = creamCTokenAddress => {
-    const creamTokenData = allContracts[creamCTokenAddress];
-    const underlyingTokenData = allContracts[creamTokenData.underlying];
+    const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
+    const underlyingTokenData = flattenData(
+      allContracts[creamTokenData.underlying],
+    );
 
     const borrowAPY = getFieldValue(
       creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR,

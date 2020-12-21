@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
-import { selectContracts, selectAllContracts } from 'containers/App/selectors';
+import {
+  selectContractsByTag,
+  selectAllContracts,
+} from 'containers/App/selectors';
 import { selectBorrowStats } from 'containers/Cream/selectors';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
@@ -57,8 +60,7 @@ const tokenSymbolTransform = (val, row) => `${val} ${row.asset.symbol}`;
 // const dollarTransform = val => `$${val}`;
 
 const CollateralToggle = props => {
-  const { enabled, rowData } = props;
-  console.log('rowdata', rowData);
+  const { enabled } = props;
   if (enabled) {
     return 'yes';
   }
@@ -78,8 +80,11 @@ export default function Cream() {
   };
   useEffect(initialize, []);
 
-  const creamCTokens = useSelector(selectContracts('creamCTokens'));
-  const creamCTokenAddresses = _.map(creamCTokens, token => token.address);
+  const creamCTokens = useSelector(selectContractsByTag('creamCTokens'));
+
+  const creamCTokenAddresses = _.map(creamCTokens, token =>
+    _.get(token, 'address'),
+  );
   const allContracts = useSelector(selectAllContracts());
   const borrowLimitStats = useSelector(selectBorrowStats);
   const { openModal } = useModal();

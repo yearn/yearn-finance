@@ -19,7 +19,7 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
         apiKey: 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4',
       },
       logging: true,
-      simplifyResponse: true,
+      simplifyResponse: false,
       store: localStorage,
     });
 

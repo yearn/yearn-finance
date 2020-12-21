@@ -177,7 +177,8 @@ function* processResponse(action) {
   const account = yield select(selectAccount());
   const responseItemsWithTokens = _.filter(payload, item => item.token);
   const findNewTokens = (acc, responseItem) => {
-    const { token, address } = responseItem;
+    const { address } = responseItem;
+    const token = _.get(responseItem, 'token[0].value');
     const tokenContract = drizzle.findContractByAddress(token.toLowerCase());
     if (!tokenContract) {
       acc.push({ address, token });

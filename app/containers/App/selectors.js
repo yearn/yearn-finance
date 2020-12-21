@@ -68,5 +68,24 @@ export const selectContractsByTag = tag =>
 export const selectContractData = contractAddress =>
   createSelector(
     selectContractsData,
+    substate => {
+      const contractData = substate[contractAddress] || {};
+
+      const flattenedData = {};
+      const setFlattenedData = (val, key) => {
+        if (_.isArray(val)) {
+          flattenedData[key] = _.first(val).value;
+        } else {
+          flattenedData[key] = val;
+        }
+      };
+      _.each(contractData, setFlattenedData);
+      return flattenedData;
+    },
+  );
+
+export const selectContractDataComplex = contractAddress =>
+  createSelector(
+    selectContractsData,
     substate => substate[contractAddress] || {},
   );

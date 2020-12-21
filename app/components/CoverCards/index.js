@@ -27,8 +27,10 @@ function CoverCards() {
       protocolsWithClaim,
       setProtocolsWithClaim,
     };
-
-    const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
+    const claimTokenBalanceOf = _.get(
+      claimTokenContractData,
+      'balanceOf[0].value',
+    );
     return (
       <CoverCard
         tokenClaimState={tokenClaimState}
@@ -45,7 +47,10 @@ function CoverCards() {
     const claimTokenContractData = _.find(claimTokens, {
       address: claimAddress,
     });
-    const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
+    const claimTokenBalanceOf = _.get(
+      claimTokenContractData,
+      'balanceOf[0].value',
+    );
     newProtocol.claimTokenBalanceOf = claimTokenBalanceOf;
     return newProtocol;
   };

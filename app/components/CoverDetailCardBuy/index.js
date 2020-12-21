@@ -6,7 +6,7 @@ import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
 import { useSelector } from 'react-redux';
-import { selectContractData } from 'containers/App/selectors';
+import { selectContractDataComplex } from 'containers/App/selectors';
 import { calculateAmountNeeded, calculateAmountOutFromBuy } from 'utils/cover';
 import { addCommasToNumber } from 'utils/string';
 import BigNumber from 'bignumber.js';
@@ -252,12 +252,13 @@ function CoverDetailCardBuy(props) {
   const amountRef = useRef(null);
 
   const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-  const daiData = useSelector(selectContractData(daiAddress));
-  let daiBalanceOf = new BigNumber(daiData.balanceOf)
+  const daiData = useSelector(selectContractDataComplex(daiAddress));
+  const daiBalanceOf = _.get(daiData, 'balanceOf[0].value');
+  let daiBalanceOfNormalized = new BigNumber(daiBalanceOf)
     .dividedBy(10 ** 18)
     .toFixed(2);
-  if (Number.isNaN(daiBalanceOf)) {
-    daiBalanceOf = '...';
+  if (Number.isNaN(daiBalanceOfNormalized)) {
+    daiBalanceOfNormalized = '...';
   }
 
   const updateAmount = evt => {
@@ -379,7 +380,7 @@ function CoverDetailCardBuy(props) {
           <AmountText>
             Amount <InfoIcon type="info" />
           </AmountText>
-          <BalanceText>Your DAI: {daiBalanceOf}</BalanceText>
+          <BalanceText>Your DAI: {daiBalanceOfNormalized}</BalanceText>
         </BottomLeftTop>
         <BottomLeftBottom>
           <RoundedInput

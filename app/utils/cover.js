@@ -14,6 +14,9 @@ const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // TODO: make t
  * Code ripped from yearn.finance v1 repo @alan
  */
 export const getClaimPool = (poolData, claimAddress) => {
+  if (!poolData) {
+    return null;
+  }
   const poolDataArr = Object.entries(poolData);
   let claimPoolData = poolDataArr
     .filter(data => {

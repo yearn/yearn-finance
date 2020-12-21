@@ -4,6 +4,7 @@ import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
+import { getClaimPool } from 'utils/cover';
 import { coverDataLoaded } from './actions';
 import { COVER_DATA_LOADED, INITIALIZE_COVER } from './constants';
 
@@ -33,9 +34,12 @@ function* coverDataLoadedSaga(action) {
       }
     };
     _.each(collaterals, setCollateral);
-    claimTokens[claimAddress] = true;
+    const claimPool = getClaimPool(payload.poolData, claimAddress);
+    claimTokens[claimAddress] = claimPool;
   };
   _.each(payload.protocols, addTokens);
+
+  console.log(claimTokens);
 
   const claimTokenAddresses = Object.keys(claimTokens);
 

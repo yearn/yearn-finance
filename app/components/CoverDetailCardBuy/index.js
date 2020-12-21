@@ -6,9 +6,13 @@ import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
 import { useSelector } from 'react-redux';
-import { selectContractDataComplex } from 'containers/App/selectors';
+import {
+  selectContractDataComplex,
+  selectTokenAllowance,
+} from 'containers/App/selectors';
 import { calculateAmountNeeded, calculateAmountOutFromBuy } from 'utils/cover';
 import { addCommasToNumber } from 'utils/string';
+import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
 const StyledTokenIcon = styled(TokenIcon)`
@@ -220,6 +224,8 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
+// const MAX_UINT256 = new BigNumber(2).pow(256).minus(1);
+
 function CoverDetailCardBuy(props) {
   const {
     className,
@@ -253,6 +259,14 @@ function CoverDetailCardBuy(props) {
 
   const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
   const daiData = useSelector(selectContractDataComplex(daiAddress));
+
+  const claimPoolAddress = Web3.utils.toChecksumAddress(claimPool.address);
+
+  const claimPoolAllowance = useSelector(
+    selectTokenAllowance(daiAddress, claimPoolAddress),
+  );
+  const poolAllowedToSpendDai = claimPoolAllowance > 0;
+
   const daiBalanceOf = _.get(daiData, 'balanceOf[0].value');
   let daiBalanceOfNormalized = new BigNumber(daiBalanceOf)
     .dividedBy(10 ** 18)
@@ -295,7 +309,7 @@ function CoverDetailCardBuy(props) {
 
   const setMaxClaimAmount = () => {
     /**
-     * TODO: Placeholder for Alan
+     * TODO: Placeholder for Graham
      * Set max claim token amount
      */
     const maxAmount = 0;
@@ -307,7 +321,16 @@ function CoverDetailCardBuy(props) {
     equivalentToRef.current.value = purchaseCost;
   };
 
-  const buyCover = () => {};
+  const buyCover = async () => {
+    /**
+     * TODO: Placeholder for Graham
+     */
+    if (!poolAllowedToSpendDai) {
+      // Send approval TX
+      // dai.approve(claimPoolAddress, MAX_UINT256);
+    }
+    // Send purchase TX
+  };
 
   const daiSpendText =
     (equivalentToRef.current && equivalentToRef.current.value) || '0';
@@ -408,8 +431,8 @@ function CoverDetailCardBuy(props) {
         <SummaryText>
           You will spend {addCommasToNumber(daiSpendText)} DAI to acquire{' '}
           {addCommasToNumber(amount)} {protocolDisplayName} claim tokens. Each
-          Badger claim token will be redeemable for 1 {collateralName} in the
-          event of a hack.
+          {protocolDisplayName} claim token will be redeemable for 1{' '}
+          {collateralName} in the event of a hack.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary" onClick={buyCover}>

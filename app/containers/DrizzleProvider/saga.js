@@ -5,7 +5,7 @@ import {
   setContext,
   getContext,
   all,
-  takeLatest,
+  takeEvery,
 } from 'redux-saga/effects';
 import { getReadMethods, getWriteMethods } from 'utils/contracts';
 import { getCachedAbi } from 'utils/abiStorage';
@@ -189,15 +189,16 @@ export function* addContracts(action) {
     ),
   );
 
-  // Split up contract calls into batches (1 contract type per batch... vaults/tokens/localContracts) rather than call them all in the same RPC message
-  // eslint-disable-next-line no-restricted-syntax
-  for (const contractBatch of contractsBatch) {
-    yield put({ type: 'BATCH_CALL_REQUEST', request: [contractBatch] });
-  }
+  // // Split up contract calls into batches (1 contract type per batch... vaults/tokens/localContracts) rather than call them all in the same RPC message
+  // // eslint-disable-next-line no-restricted-syntax
+  // for (const contractBatch of contractsBatch) {
+  //   yield put({ type: 'BATCH_CALL_REQUEST', request: [contractBatch] });
+  // }
+  yield put({ type: 'BATCH_CALL_REQUEST', request: contractsBatch });
 }
 
 export default function* initialize() {
-  yield takeLatest(DRIZZLE_ADD_CONTRACTS, addContracts);
-  yield takeLatest(DELETE_CONTRACT, removeWatchedContract);
-  yield takeLatest(ADD_WATCHED_CONTRACTS, addWatchedContracts);
+  yield takeEvery(DRIZZLE_ADD_CONTRACTS, addContracts);
+  yield takeEvery(DELETE_CONTRACT, removeWatchedContract);
+  yield takeEvery(ADD_WATCHED_CONTRACTS, addWatchedContracts);
 }

@@ -4,6 +4,7 @@ const selectApp = state => state.app;
 const selectRouter = state => state.router;
 const selectContractsData = state => state.contracts;
 const selectSubscriptionsData = state => state.subscriptions;
+const selectConnection = state => state.connection;
 
 export const selectReady = () =>
   createSelector(
@@ -71,4 +72,8 @@ export const selectContractData = contractAddress =>
     substate => substate[contractAddress] || {},
   );
 
-export const selectSelectedAccount = state => state.connection.account;
+export const selectSelectedAccount = () =>
+  createSelector(
+    selectConnection,
+    substate => substate && substate.account,
+  );

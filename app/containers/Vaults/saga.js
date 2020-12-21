@@ -1,17 +1,28 @@
 import request from 'utils/request';
 import { APP_INITIALIZED } from 'containers/App/constants';
+import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { call, put, takeLatest, select } from 'redux-saga/effects';
-import { selectSelectedAccount } from 'containers/App/selectors';
+import { selectSelectedAccount, selectVaults } from 'containers/App/selectors';
 import { vaultsLoaded } from './actions';
+import { VAULTS_LOADED } from './constants';
 
 function* fetchVaults() {
   try {
-    const selectedAccount = yield select(selectSelectedAccount);
+    const url = `https://api.yearn.tools/vaults?apy=true`;
+    const vaults = yield call(request, url);
+    yield put(vaultsLoaded(vaults));
+  } catch (err) {
+    console.log('Error reading vaults', err);
+  }
+}
+
+function* fetchUserVaultStatistics() {
+  try {
+    const selectedAccount = yield select(selectSelectedAccount());
+    const vaults = yield select(selectVaults());
 
     const userVaultStatisticsUrl = `https://api.yearn.tools/user/${selectedAccount}/vaults?statistics=true&apy=true`;
-    const url = `https://api.yearn.tools/vaults?apy=true`;
     const userVaultStatistics = yield call(request, userVaultStatisticsUrl);
-    const vaults = yield call(request, url);
     const vaultsWithUserStatistics = vaults.reduce((current, next) => {
       const userDepositedInNextVault = userVaultStatistics.find(
         userVaultStatistic => next.vaultAlias === userVaultStatistic.vaultAlias,
@@ -30,4 +41,5 @@ function* fetchVaults() {
 
 export default function* initialize() {
   yield takeLatest(APP_INITIALIZED, fetchVaults);
+  yield takeLatest([VAULTS_LOADED, ACCOUNT_UPDATED], fetchUserVaultStatistics);
 }

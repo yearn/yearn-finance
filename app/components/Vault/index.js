@@ -17,7 +17,51 @@ import VaultButtons from 'components/VaultButtons';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
-import tw, { theme, css } from 'twin.macro';
+import tw, { theme } from 'twin.macro';
+
+const formatVaultStatistic = stat => {
+  switch (stat) {
+    // depositedAmount: "0"
+    //         depositedShares: "0"
+    //         earnings: "1534851627416"
+    //         totalDeposits: "285159143497674298"
+    //         totalTransferredIn: "0"
+    //         totalTransferredOut: "0"
+    //         totalWithdrawals: "285160678349301714"
+
+    case 'depositedAmount': {
+      return 'Available to withdraw';
+    }
+    case 'depositedShares': {
+      return 'Deposited Shares';
+    }
+    case 'totalDeposits': {
+      return 'Total Deposits';
+    }
+    case 'totalTransferredIn': {
+      return 'Total Transferred In';
+    }
+    case 'totalTransferredOut': {
+      return 'Total Transferred Out';
+    }
+    case 'totalWithdrawals': {
+      return 'Total Withdrawals';
+    }
+    case 'earnings': {
+      return 'Historical Earnings';
+    }
+    default: {
+      return '';
+    }
+  }
+};
+
+const statisticsToShow = [
+  'earnings',
+  'totalDeposits',
+  'totalWithdrawals',
+  'depositedAmount',
+];
 
 const IconAndName = styled.div`
   display: flex;
@@ -118,8 +162,8 @@ const Vault = props => {
     balanceOf,
     address,
     vaultAlias,
+    statistics,
   } = vault;
-  // console.log(vault);
 
   const { openModal } = useModal();
 
@@ -209,13 +253,14 @@ const Vault = props => {
                 <StyledTokenIcon address={tokenContractAddress} />
               </LinkWrap>
               <LinkWrap devMode={devMode} address={address}>
-                <IconName
+                <div
+                  tw="flex"
                   onMouseLeave={() => setIsHovered(false)}
                   onMouseEnter={() => setIsHovered(true)}
-                  devMode={devMode}
                 >
-                  {vaultName}
-                </IconName>
+                  <IconName devMode={devMode}>{vaultName}</IconName>
+                  <Icon type="info" />
+                </div>
               </LinkWrap>
             </>
           )}
@@ -234,25 +279,36 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    // Earnings
-    // TODO: Populate? how data source pls
-    vaultBottom = (
-      <ColumnList css={[tw`py-6`]}>
-        <div>
-          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
-        </div>
-        {[
-          { value: '2.156', name: 'Historical earning' },
-          { value: '2.156', name: 'Projected earning' },
-          { value: '2.156', name: 'Available to Withdraw' },
-        ].map(earning => (
+    if (statistics) {
+      const formattedUserVaultStatistics = Object.keys(statistics)
+        .filter(statistic => statisticsToShow.find(show => show === statistic))
+        .map(statistic => {
+          const formattedValue = new BigNumber(statistics[statistic])
+            .dividedBy(10 ** decimals)
+            .toFixed(8);
+
+          return {
+            name: formatVaultStatistic(statistic),
+            value: formattedValue > 0 ? formattedValue : 0,
+          };
+        });
+
+      vaultBottom = (
+        <ColumnList css={[tw`py-6`]}>
           <div>
-            <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
-            <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
+            <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
           </div>
-        ))}
-      </ColumnList>
-    );
+          {formattedUserVaultStatistics.map(earning => (
+            <div>
+              <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
+              <p tw="font-sans font-medium text-sm opacity-50">
+                {earning.name}
+              </p>
+            </div>
+          ))}
+        </ColumnList>
+      );
+    }
     vaultTop = (
       <ColumnList>
         <IconAndName>
@@ -271,13 +327,14 @@ const Vault = props => {
                 <StyledTokenIcon address={tokenContractAddress} />
               </LinkWrap>
               <LinkWrap devMode={devMode} address={address}>
-                <IconName
+                <div
+                  tw="flex"
                   onMouseLeave={() => setIsHovered(false)}
                   onMouseEnter={() => setIsHovered(true)}
-                  devMode={devMode}
                 >
-                  {vaultName}
-                </IconName>
+                  <IconName devMode={devMode}>{vaultName}</IconName>
+                  <Icon type="info" />
+                </div>
               </LinkWrap>
             </>
           )}

@@ -1,6 +1,7 @@
 import request from 'utils/request';
 import { takeLatest, select, put, call } from 'redux-saga/effects';
 import erc20Abi from 'abi/erc20.json';
+import Web3 from 'web3';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
@@ -39,11 +40,25 @@ function* coverDataLoadedSaga(action) {
   };
   _.each(payload.protocols, addTokens);
 
-  console.log(claimTokens);
-
   const claimTokenAddresses = Object.keys(claimTokens);
+  const claimPools = Object.values(claimTokens);
+
+  const extractAddress = pool => Web3.utils.toChecksumAddress(pool.address);
+  const claimPoolAddresses = _.map(claimPools, extractAddress);
 
   const collateralTokenAddresses = Object.keys(collateralTokens);
+
+  const daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'; // TODO: add to global constants
+
+  const generateClaimPoolAllowanceReadMethods = address => ({
+    name: 'allowance',
+    args: [account, address],
+  });
+
+  const claimPoolAllowanceReadMethods = _.map(
+    claimPoolAddresses,
+    generateClaimPoolAllowanceReadMethods,
+  );
 
   const contracts = [
     {
@@ -76,6 +91,13 @@ function* coverDataLoadedSaga(action) {
           args: [account],
         },
       ],
+    },
+    {
+      namespace: 'tokens',
+      abi: erc20Abi,
+      addresses: [daiAddress],
+      syncOnce: true,
+      readMethods: claimPoolAllowanceReadMethods,
     },
   ];
 

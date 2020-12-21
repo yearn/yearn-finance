@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useClickAway } from 'react-use';
 import tw, { css } from 'twin.macro';
 import ConnectButton from 'components/ConnectButton';
+import { Link } from 'react-router-dom';
 import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
 import { Logo } from './logo';
@@ -19,7 +20,11 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
       <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-2 py-6">
         {links.map(link => (
-          <a key={link.href} href={link.href} tw="flex items-start">
+          <a
+            key={link.href}
+            href={link.href}
+            tw="flex items-start no-underline"
+          >
             <div
               css={[
                 // amazing
@@ -102,14 +107,14 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
 
   return (
     <div tw="relative">
-      <a href={`${links.href}`} role="button" tabIndex="0">
+      <Link to={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
         <span
           css={[isActive === text && tw`text-yearn-blue`]}
           tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
         </span>
-      </a>
+      </Link>
     </div>
   );
 };
@@ -149,12 +154,12 @@ const Navbar = () => {
           </div>
 
           <div tw="flex self-center">
-            <a href="/">
+            <Link to="/" tw="no-underline">
               <span tw="sr-only">Logo</span>
               <div tw="h-5 w-auto">
                 <Logo />
               </div>
-            </a>
+            </Link>
           </div>
 
           {isMobileOpen && (

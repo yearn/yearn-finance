@@ -1,5 +1,6 @@
 import React from 'react';
 import { css } from 'twin.macro';
+import { Link } from 'react-router-dom';
 import { MuhShapes } from './MuhShapes';
 import { MarqueStats } from './MarqueeStats';
 
@@ -32,13 +33,15 @@ export const Hero = () => (
           </div>
         </div>
       </div>
-      <a
+      <Link
         type="button"
-        tw="bg-yearn-blue px-6 rounded-lg py-2 flex justify-center items-center align-middle"
-        href="/vaults"
+        tw="bg-yearn-blue px-6 rounded-lg py-2 flex justify-center items-center align-middle no-underline"
+        to="/vaults"
       >
-        <p tw="text-white uppercase text-lg font-sans">Go to Vaults</p>
-      </a>
+        <p tw="text-white uppercase text-lg font-sans no-underline">
+          Go to Vaults
+        </p>
+      </Link>
     </div>
     <MarqueStats />
   </div>

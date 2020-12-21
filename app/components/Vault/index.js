@@ -313,10 +313,10 @@ const Vault = props => {
         </div>
         {statisticsToShow.map(statistic => (
           <div>
-            <p tw="font-sans font-bold text-lg text-white">
+            <p tw="font-sans font-bold text-lg text-white">0</p>
+            <p tw="font-sans font-medium text-sm opacity-50">
               {formatVaultStatistic(statistic)}
             </p>
-            <p tw="font-sans font-medium text-sm opacity-50">0</p>
           </div>
         ))}
       </ColumnList>

@@ -22,9 +22,28 @@ const contractsReducer = (state = initialState, action) =>
           if (!addressInitialized) {
             draft[address] = {};
           }
-
           const mergeState = (val, key) => {
-            draft[address][key] = val;
+            const existingState = _.get(state, `${address}.${key}`, []);
+            const valIsNotArray = !_.isArray(val);
+            if (valIsNotArray) {
+              draft[address][key] = val;
+            } else {
+              const newState = existingState;
+
+              const addIfInputUnique = item => {
+                const { input } = item;
+                const matchingInput = _.find(existingState, { input });
+                if (!input || !matchingInput) {
+                  newState.push(item);
+                } else if (matchingInput) {
+                  matchingInput.value = item.value;
+                } else {
+                  console.log('Error in contracts reducer'); // Should not be able to get here
+                }
+              };
+              _.each(val, addIfInputUnique);
+              draft[address][key] = newState;
+            }
           };
           _.each(contractState, mergeState);
         };

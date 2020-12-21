@@ -152,8 +152,6 @@ function* callSendContractTx({
   }
 }
 
-const getContractsState = state => state.contracts;
-
 function isSendOrCallOptions(options) {
   if ('from' in options) return true;
   if ('gas' in options) return true;

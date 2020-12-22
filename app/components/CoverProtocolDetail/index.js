@@ -50,6 +50,7 @@ function CoverProtocolDetail(props) {
           protocol={protocol}
           amount={buyAmount}
           setAmount={setBuyAmount}
+          equivalentTo={buyEquivalentTo}
           setEquivalentTo={setBuyEquivalentTo}
           claimPool={claimPool}
         />

@@ -1,4 +1,4 @@
-import { COVER_DATA_LOADED, INITIALIZE_COVER } from './constants';
+import { COVER_DATA_LOADED, INITIALIZE_COVER, BUY_COVER } from './constants';
 
 export function initializeCover() {
   return {
@@ -9,6 +9,13 @@ export function initializeCover() {
 export function coverDataLoaded(payload) {
   return {
     type: COVER_DATA_LOADED,
+    payload,
+  };
+}
+
+export function buyCover(payload) {
+  return {
+    type: BUY_COVER,
     payload,
   };
 }

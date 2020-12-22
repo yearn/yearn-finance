@@ -279,8 +279,9 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    if (statistics) {
-      const formattedUserVaultStatistics = Object.keys(statistics)
+    const formattedUserVaultStatistics =
+      statistics &&
+      Object.keys(statistics)
         .filter(statistic => statisticsToShow.find(show => show === statistic))
         .map(statistic => {
           const formattedValue = new BigNumber(statistics[statistic])
@@ -293,22 +294,33 @@ const Vault = props => {
           };
         });
 
-      vaultBottom = (
-        <ColumnList css={[tw`py-6`]}>
+    vaultBottom = statistics ? (
+      <ColumnList css={[tw`py-6`]}>
+        <div>
+          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
+        </div>
+        {formattedUserVaultStatistics.map(earning => (
           <div>
-            <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
+            <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
+            <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
           </div>
-          {formattedUserVaultStatistics.map(earning => (
-            <div>
-              <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
-              <p tw="font-sans font-medium text-sm opacity-50">
-                {earning.name}
-              </p>
-            </div>
-          ))}
-        </ColumnList>
-      );
-    }
+        ))}
+      </ColumnList>
+    ) : (
+      <ColumnList css={[tw`py-6`]}>
+        <div>
+          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
+        </div>
+        {statisticsToShow.map(statistic => (
+          <div>
+            <p tw="font-sans font-bold text-lg text-white">0</p>
+            <p tw="font-sans font-medium text-sm opacity-50">
+              {formatVaultStatistic(statistic)}
+            </p>
+          </div>
+        ))}
+      </ColumnList>
+    );
     vaultTop = (
       <ColumnList>
         <IconAndName>
@@ -328,12 +340,14 @@ const Vault = props => {
               </LinkWrap>
               <LinkWrap devMode={devMode} address={address}>
                 <div
-                  tw="flex"
+                  tw="flex items-center"
                   onMouseLeave={() => setIsHovered(false)}
                   onMouseEnter={() => setIsHovered(true)}
                 >
                   <IconName devMode={devMode}>{vaultName}</IconName>
-                  <Icon type="info" />
+                  <div tw="h-4 w-4">
+                    <Icon type="info" />
+                  </div>
                 </div>
               </LinkWrap>
             </>

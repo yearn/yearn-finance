@@ -29,22 +29,20 @@ export const getSupplyData = ({
   }
   const getSupplyRows = creamCTokenAddress => {
     const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
-    const underlyingTokenData = flattenData(
-      allContracts[creamTokenData.underlying],
-    );
+    const underlyingTokenData = allContracts[creamTokenData.underlying];
 
     const supplyAPY = getFieldValue(
       creamTokenData.supplyRatePerBlock * BLOCKS_PER_YEAR,
       16,
     );
     const walletBalance = getFieldValue(
-      underlyingTokenData.balanceOf,
-      underlyingTokenData.decimals,
+      underlyingTokenData.balanceOf[0].value,
+      underlyingTokenData.decimals[0].value,
     );
     const exchangeRate = creamTokenData.exchangeRateStored / 10 ** 18;
     const supplied = getFieldValue(
       creamTokenData.balanceOf * exchangeRate,
-      underlyingTokenData.decimals,
+      underlyingTokenData.decimals[0].value,
     );
 
     const collateralEnabled = comptrollerData.getAssetsIn.includes(
@@ -60,7 +58,12 @@ export const getSupplyData = ({
       2,
     );
 
-    const allowance = underlyingTokenData.allowance > 0;
+    const allowances = underlyingTokenData.allowance;
+
+    const allowanceObject = _.find(allowances, allowance =>
+      _.includes(allowance.args, creamCTokenAddress),
+    );
+    const allowance = _.get(allowanceObject, 'value') > 0;
 
     return {
       apy: supplyAPY,

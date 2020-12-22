@@ -48,14 +48,15 @@ const tokenTransform = asset => {
   return (
     <IconAndName>
       <StyledTokenIcon address={asset.address} />
-      <IconName>{symbol || address}</IconName>
+      <IconName>{symbol[0].value || address}</IconName>
     </IconAndName>
   );
 };
 
 const percentTransform = val => `${val}%`;
 
-const tokenSymbolTransform = (val, row) => `${val} ${row.asset.symbol}`;
+const tokenSymbolTransform = (val, row) =>
+  `${val} ${row.asset.symbol[0].value}`;
 
 // const dollarTransform = val => `$${val}`;
 

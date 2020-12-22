@@ -28,13 +28,6 @@ class DrizzleContract {
     for (var i = 0; i < this.abi.length; i++) {
       const item = this.abi[i];
 
-      if (item.type == 'function' && item.constant === true) {
-        this.methods[item.name].cacheCall = this.cacheCallFunction(
-          item.name,
-          i,
-        );
-      }
-
       if (item.type == 'function' && !item.constant) {
         this.methods[item.name].cacheSend = this.cacheSendFunction(
           item.name,
@@ -66,106 +59,64 @@ class DrizzleContract {
     }
   }
 
-  cacheCallFunction(fnName, fnIndex, fn) {
+  cacheSendFunction(fnName, fnIndex) {
     const contract = this;
 
-    return function() {
-      // Collect args and hash to use as key, 0x0 if no args
-      let argsHash = '0x0';
-      const args = arguments;
-
-      if (args.length > 0) {
-        argsHash = contract.generateArgsHash(args);
-      }
-      const { contractName } = contract;
-      const functionState = contract.store.getState().contracts[contractName][
-        fnName
-      ];
-
-      // If call result is in state and fresh, return value instead of calling
-      if (argsHash in functionState) {
-        if (contract.store.getState().contracts[contractName].synced === true) {
-          return argsHash;
-        }
-      }
-
-      // Otherwise, call function and update store
-      contract.store.dispatch({
-        type: 'CALL_CONTRACT_FN',
-        contract,
-        fnName,
-        fnIndex,
-        args,
-        argsHash,
-      });
-
-      // Return nothing because state is currently empty.
-      return argsHash;
-    };
-  }
-
-  cacheSendFunction(fnName, fnIndex, fn) {
-    // NOTE: May not need fn index
-    const contract = this;
-
-    return function() {
-      const args = arguments;
-
-      // Generate temporary ID
-      const { transactionStack } = contract.store.getState();
-      const stackId = transactionStack.length;
-      const stackTempKey = `TEMP_${new Date().getTime()}`;
-
-      // Add ID to "transactionStack" with temp value, will be overwritten on TX_BROADCASTED
-      contract.store.dispatch({ type: 'PUSH_TO_TXSTACK', stackTempKey });
-
-      // Dispatch tx to saga
-      // When txhash received, will be value of stack ID
+    return function test(...args) {
+      const newArgs = args;
       contract.store.dispatch({
         type: 'SEND_CONTRACT_TX',
         contract,
         fnName,
         fnIndex,
         args,
-        stackId,
-        stackTempKey,
       });
 
-      // return stack ID
-      return stackId;
-    };
-  }
-
-  generateArgsHash(args) {
-    const { web3 } = this;
-    let hashString = '';
-
-    for (let i = 0; i < args.length; i++) {
-      if (typeof args[i] !== 'function') {
-        let argToHash = args[i];
-
-        // Stringify objects to allow hashing
-        if (typeof argToHash === 'object') {
-          argToHash = JSON.stringify(argToHash);
-        }
-
-        // Convert number to strong to allow hashing
-        if (typeof argToHash === 'number') {
-          argToHash = argToHash.toString();
-        }
-
-        // This check is in place for web3 v0.x
-        if ('utils' in web3) {
-          var hashPiece = web3.utils.sha3(argToHash);
+      let sendArgs;
+      if (newArgs.length) {
+        sendArgs = _.last(newArgs);
+        if (newArgs.length > 1) {
+          delete newArgs[args.length - 1];
         } else {
-          var hashPiece = web3.sha3(argToHash);
+          delete newArgs[0];
         }
-
-        hashString += hashPiece;
+        newArgs.length -= 1;
       }
-    }
+      const call = contract.methods[fnName](...newArgs);
+      let persistTxHash;
+      return call
+        .send(sendArgs)
+        .on('transactionHash', txHash => {
+          persistTxHash = txHash;
 
-    return web3.utils.sha3(hashString);
+          contract.store.dispatch({
+            type: 'TX_BROADCASTED',
+            txHash,
+          });
+        })
+        .on('confirmation', (confirmationNumber, receipt) => {
+          contract.store.dispatch({
+            type: 'TX_CONFIRMAITON',
+            confirmationReceipt: receipt,
+            txHash: persistTxHash,
+          });
+          return Promise.resolve();
+        })
+        .on('receipt', receipt => {
+          contract.store.dispatch({
+            type: 'TX_SUCCESSFUL',
+            receipt,
+            txHash: persistTxHash,
+          });
+        })
+        .on('error', (error, receipt) => {
+          console.error(error);
+          console.error(receipt);
+
+          contract.store.dispatch({ type: 'TX_ERROR', error });
+          return Promise.reject(error);
+        });
+    };
   }
 }
 

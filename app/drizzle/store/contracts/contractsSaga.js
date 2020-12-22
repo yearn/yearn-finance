@@ -103,55 +103,6 @@ function createTxChannel({
   });
 }
 
-function* callSendContractTx({
-  contract,
-  fnName,
-  fnIndex,
-  args,
-  stackId,
-  stackTempKey,
-}) {
-  // Check for type of object and properties indicative of call/send options.
-  if (args.length) {
-    const finalArg = args.length > 1 ? args[args.length - 1] : args[0];
-    var sendArgs = {};
-    var finalArgTest = false;
-
-    if (typeof finalArg === 'object') {
-      var finalArgTest = yield call(isSendOrCallOptions, finalArg);
-    }
-
-    if (finalArgTest) {
-      sendArgs = finalArg;
-
-      args.length > 1 ? delete args[args.length - 1] : delete args[0];
-      args.length -= 1;
-    }
-  }
-
-  // Get name to mark as desynchronized on tx creation
-  const { contractName } = contract;
-
-  // Create the transaction object and execute the tx.
-  const txObject = yield call(contract.methods[fnName], ...args);
-  const txChannel = yield call(createTxChannel, {
-    txObject,
-    stackId,
-    sendArgs,
-    contractName,
-    stackTempKey,
-  });
-
-  try {
-    while (true) {
-      const event = yield take(txChannel);
-      yield put(event);
-    }
-  } finally {
-    txChannel.close();
-  }
-}
-
 function isSendOrCallOptions(options) {
   if ('from' in options) return true;
   if ('gas' in options) return true;
@@ -217,7 +168,6 @@ function* processResponse(action) {
 function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
-  yield takeEvery('SEND_CONTRACT_TX', callSendContractTx);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
 }
 

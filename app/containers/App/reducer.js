@@ -9,6 +9,7 @@ import {
   CONTRACT_INITIALIZED,
 } from 'containers/DrizzleProvider/constants';
 import { VAULTS_LOADED } from './constants';
+import { USER_VAULT_STATISTICS_LOADED } from '../Vaults/constants';
 
 // The initial state of the App
 export const initialState = {
@@ -50,6 +51,11 @@ const appReducer = (state = initialState, action) =>
     };
 
     switch (action.type) {
+      case USER_VAULT_STATISTICS_LOADED:
+        draft.loading.vaults = false;
+        draft.vaults = action.vaults;
+        checkReadyState();
+        break;
       case VAULTS_LOADED:
         draft.loading.vaults = false;
         draft.vaults = action.vaults;

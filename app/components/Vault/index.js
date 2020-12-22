@@ -294,31 +294,33 @@ const Vault = props => {
           };
         });
 
-    vaultBottom = statistics ? (
+    const formattedUserVaultStatisticsEarnings =
+      statistics &&
+      formattedUserVaultStatistics.map(earning => (
+        <div key={earning.name}>
+          <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
+          <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
+        </div>
+      ));
+
+    const defaultZeroUserVaultStatisticsEarnings = statisticsToShow.map(
+      statistic => (
+        <div key={statistic}>
+          <p tw="font-sans font-bold text-lg text-white">0</p>
+          <p tw="font-sans font-medium text-sm opacity-50">
+            {formatVaultStatistic(statistic)}
+          </p>
+        </div>
+      ),
+    );
+    vaultBottom = (
       <ColumnList css={[tw`py-6`]}>
         <div>
           <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
         </div>
-        {formattedUserVaultStatistics.map(earning => (
-          <div>
-            <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
-            <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
-          </div>
-        ))}
-      </ColumnList>
-    ) : (
-      <ColumnList css={[tw`py-6`]}>
-        <div>
-          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
-        </div>
-        {statisticsToShow.map(statistic => (
-          <div>
-            <p tw="font-sans font-bold text-lg text-white">0</p>
-            <p tw="font-sans font-medium text-sm opacity-50">
-              {formatVaultStatistic(statistic)}
-            </p>
-          </div>
-        ))}
+        {statistics
+          ? formattedUserVaultStatisticsEarnings
+          : defaultZeroUserVaultStatisticsEarnings}
       </ColumnList>
     );
     vaultTop = (

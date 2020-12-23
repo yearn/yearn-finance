@@ -31,7 +31,7 @@ export default function Account(props) {
           return setAddress(addressEnsName);
         }
       } catch (err) {
-        console.error('no ens reverse address found');
+        console.error(err);
       }
     };
     setAddressEnsName();

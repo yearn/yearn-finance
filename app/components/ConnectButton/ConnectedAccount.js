@@ -18,8 +18,8 @@ const ConnectedAccount = styled.button`
 export default function Account(props) {
   const { account, onClick, className } = props;
   const web3 = useWeb3();
-  const [address, setAddress] = React.useState(undefined);
-  // TODO: Provider.resolveName(account) + useState + useEffect hook
+  const [address, setAddress] = React.useState(getShortenedAddress(account));
+
   React.useEffect(() => {
     const setAddressEnsName = async () => {
       const provider = web3.currentProvider;
@@ -31,8 +31,7 @@ export default function Account(props) {
           return setAddress(addressEnsName);
         }
       } catch (err) {
-        const shortenedAddress = getShortenedAddress(account);
-        return setAddress(shortenedAddress);
+        console.error('no ens reverse address found');
       }
     };
     setAddressEnsName();

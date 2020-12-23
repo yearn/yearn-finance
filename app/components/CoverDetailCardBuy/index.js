@@ -1,3 +1,6 @@
+import { buyCover as buyCoverAction } from 'containers/Cover/actions';
+import { useContract } from 'containers/DrizzleProvider/hooks';
+
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
@@ -5,7 +8,7 @@ import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
 import ButtonFilled from 'components/ButtonFilled';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   selectContractDataComplex,
   selectTokenAllowance,
@@ -224,15 +227,16 @@ const ButtonWrapper = styled.div`
   align-self: end;
 `;
 
-// const MAX_UINT256 = new BigNumber(2).pow(256).minus(1);
-
 function CoverDetailCardBuy(props) {
+  const dispatch = useDispatch();
+
   const {
     className,
     protocol,
     claimPool,
     amount,
     setAmount,
+    equivalentTo,
     setEquivalentTo,
   } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
@@ -261,10 +265,13 @@ function CoverDetailCardBuy(props) {
   const daiData = useSelector(selectContractDataComplex(daiAddress));
 
   const claimPoolAddress = Web3.utils.toChecksumAddress(claimPool.address);
+  const claimPoolContract = useContract(claimPoolAddress);
+  const daiContract = useContract(daiAddress);
 
   const claimPoolAllowance = useSelector(
     selectTokenAllowance(daiAddress, claimPoolAddress),
   );
+
   const poolAllowedToSpendDai = claimPoolAllowance > 0;
 
   const daiBalanceOf = _.get(daiData, 'balanceOf[0].value');
@@ -281,9 +288,9 @@ function CoverDetailCardBuy(props) {
     const tokensNeeded = calculateAmountNeeded(newAmount, claimPool);
     let equivalentToVal = '0';
     if (claimPool.price && tokensNeeded) {
-      equivalentToVal = tokensNeeded.toFixed(2);
+      equivalentToVal = tokensNeeded;
     }
-    equivalentToRef.current.value = equivalentToVal;
+    equivalentToRef.current.value = equivalentToVal.toFixed(2);
     setEquivalentTo(equivalentToVal);
   };
 
@@ -296,9 +303,9 @@ function CoverDetailCardBuy(props) {
       covTokenWeight,
       swapFee,
       price,
-    ).toFixed(2);
+    );
 
-    amountRef.current.value = newAmount;
+    amountRef.current.value = newAmount.toFixed(2);
     setAmount(newAmount);
   };
 
@@ -322,14 +329,16 @@ function CoverDetailCardBuy(props) {
   };
 
   const buyCover = async () => {
-    /**
-     * TODO: Placeholder for Graham
-     */
-    if (!poolAllowedToSpendDai) {
-      // Send approval TX
-      // dai.approve(claimPoolAddress, MAX_UINT256);
-    }
-    // Send purchase TX
+    dispatch(
+      buyCoverAction({
+        poolAllowedToSpendDai,
+        protocol,
+        claimPoolContract,
+        daiContract,
+        amount,
+        equivalentTo,
+      }),
+    );
   };
 
   const daiSpendText =

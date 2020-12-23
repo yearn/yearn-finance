@@ -143,10 +143,12 @@ export default function CoverTallCard(props) {
     tokenPrice = claimPool.price.toFixed(2);
   }
 
-  const amountText = amount ? `+${addCommasToNumber(amount)}` : '';
+  const amountText = amount
+    ? `+${addCommasToNumber(Number(amount).toFixed(2))}`
+    : '';
   const equivalentToText =
     equivalentTo && equivalentTo !== '0'
-      ? `+${addCommasToNumber(equivalentTo)}`
+      ? `+${addCommasToNumber(Number(equivalentTo).toFixed(2))}`
       : '';
 
   const accountCoverage = new BigNumber(claimTokenBalanceOf)

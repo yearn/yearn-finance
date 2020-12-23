@@ -8,7 +8,7 @@ const ConnectedAccount = styled.button`
   ${tw`
   border-2 border-yearn-blue rounded-xl
   py-1
-  px-4 items-center justify-center align-middle 
+  px-4 items-center justify-center align-middle
   text-xs flex hover:text-yearn-blue
   bg-gradient-to-r from-gray-900 to-yearn-blue
   text-white
@@ -28,10 +28,13 @@ export default function Account(props) {
       try {
         const addressEnsName = await ens.reverse(account);
         if (addressEnsName) {
-          return setAddress(addressEnsName);
+          setAddress(addressEnsName);
         }
       } catch (err) {
-        console.error(err);
+        // Although an error is thrown if no ens name is found during lookup,
+        // failure to find an ENS name for an address is not an error, and is
+        // currently the most likely outcome during a lookup, so no need to log
+        // nor handle the "error".
       }
     };
     setAddressEnsName();

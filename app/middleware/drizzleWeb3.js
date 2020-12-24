@@ -18,7 +18,7 @@ export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
       etherscan: {
         apiKey: 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4',
       },
-      logging: true,
+      logging: false,
       simplifyResponse: false,
       store: localStorage,
     });

@@ -31,13 +31,13 @@ export const addAbiToCache = async (address, providedAbi) => {
     abiHashByAddress[address] = abiHash;
     setLocalStorageItem('abiByHash', abiByHash);
     setLocalStorageItem('abiHashByAddress', abiHashByAddress);
+    console.log(`Cached abi for address ${address}`);
     return newAbi;
   };
   const cachedAbi = getAbiFromCache(address);
   if (providedAbi) {
     abi = cacheAbi(providedAbi);
   } else if (!cachedAbi) {
-    console.log('No cached abi found');
     abi = await fetchAbi(address);
     cacheAbi(abi);
     await delay(etherscanDelayTime);
@@ -57,8 +57,6 @@ export const getCachedAbi = async address => {
   let abi = getAbiFromCache(address);
   if (!abi) {
     abi = await addAbiToCache(address);
-  } else {
-    console.log(`Loaded cached ABI: ${address}`);
   }
   return abi;
 };

@@ -1,44 +1,63 @@
 import React from 'react';
 import { css } from 'twin.macro';
 import { Link } from 'react-router-dom';
-import { MuhShapes } from './MuhShapes';
+// import { MuhShapes } from './MuhShapes';
 import { MarqueStats } from './MarqueeStats';
+import HeroBg from '../../../images/Splash/hero-bg-svg.svg';
 
 export const Hero = () => (
   <div
     tw="bg-black w-screen relative flex flex-col justify-center items-center overflow-hidden"
     css={[
       css`
-        height: calc(100vh - 108px);
+        height: calc(100vh - 64px);
+        background-image: url(${HeroBg});
+        background-size: 100% 100%;
+        @media (max-width: 1024px) {
+          background: url(${HeroBg}) no-repeat center;
+          background-size: 110%;
+        }
+        @media (max-width: 768px) {
+          background: url(${HeroBg}) no-repeat center;
+          background-size: 110%;
+        }
+        @media (max-width: 570px) {
+          background: url(${HeroBg}) no-repeat center;
+          background-size: 150%;
+          margin-top: -78px;
+          height: calc(100vh);
+        }
+        @media (max-width: 450px) {
+          background: url(${HeroBg}) no-repeat center center;
+          background-size: 60%;
+        }
       `,
     ]}
   >
-    {/* <img tw="absolute w-full z-0" src={HeroBg} alt="hero background" /> */}
-    <MuhShapes />
+    {/* <img tw="absolute w-full h-full" src={HeroBg} alt="hero background" /> */}
+    {/* <MuhShapes /> */}
     <div tw="flex flex-col justify-center items-center z-10 absolute">
-      <div tw="inline-block text-4xl md:text-6xl mb-3 font-black">
+      <div tw="inline-block text-5xl md:text-7xl mb-2 font-black">
         <h2 tw="inline-block text-white float-left mr-2 md:mr-4">DeFi made</h2>
         <h2 tw="inline-block text-yearn-blue float-left">simple.</h2>
       </div>
-      <div tw="text-white font-bold md:text-3xl justify-center flex flex-col items-center mb-5 text-xl">
-        <div tw="inline-block flex justify-center flex-col items-center ">
-          <h4 tw="inline-block float-left">
-            Yearn puts your crypto assets to work for you,
+      <div tw="text-white font-bold md:text-4xl justify-center flex flex-col items-center mb-6 text-2xl">
+        <h4 tw="">Yearn finance is a gateway to DeFi products.</h4>
+        <div tw="inline-block text-center">
+          <h4 tw="inline-block float-left">Simple</h4>
+          <h4 tw="inline-block text-yearn-blue float-left mx-2">
+            intuitive and decentralized
           </h4>
-          <div tw="flex space-x-2">
-            <h4 tw="">responsibly earning</h4>
-            <h4 tw="inline-block float-left text-yearn-blue">
-              sustainable yields.
-            </h4>
-          </div>
+          <h4 tw="inline-block float-left">solutions</h4>
         </div>
+        <h4 tw="text-center">accessible to anyone.</h4>
       </div>
       <Link
         type="button"
-        tw="bg-yearn-blue px-6 rounded-lg py-2 flex justify-center items-center align-middle no-underline"
+        tw="bg-yearn-blue px-6 rounded-lg py-1.5 flex justify-center items-center align-middle no-underline"
         to="/vaults"
       >
-        <p tw="text-white uppercase text-lg font-sans no-underline">
+        <p tw="text-white uppercase text-base font-sans font-black no-underline">
           Go to Vaults
         </p>
       </Link>

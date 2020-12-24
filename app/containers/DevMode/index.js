@@ -11,6 +11,9 @@ import reducer from './reducer';
 
 const Wrapper = styled.div`
   display: ${props => (props.devModeUnlocked ? 'inherit' : 'none')};
+  position: absolute;
+  z-index: 5;
+  top: 60px;
 `;
 
 export default function DevModeToggle() {

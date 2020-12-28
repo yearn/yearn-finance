@@ -7,24 +7,18 @@ import { selectBorrowStats } from 'containers/Cream/selectors';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
-import CreamTable from 'components/CreamTable';
+import Table from 'components/Table';
 import { getSupplyData, getBorrowData } from 'utils/cream';
 import { useModal } from 'containers/ModalProvider/hooks';
+import IconButton from 'components/IconButton';
 import { useSelector, useDispatch } from 'react-redux';
+import InfoCard from 'components/InfoCard';
 import { initializeCream } from './actions';
 import saga from './saga';
 
 const Wrapper = styled.div`
   margin: 0 auto;
-  max-width: 1200px;
-  padding: 50px 40px;
-`;
-
-const TableTitle = styled.h1`
-  margin-bottom: 10px;
-  padding-top: 20px;
-  font-size: 24px;
-  text-transform: uppercase;
+  max-width: 1088px;
 `;
 
 const IconAndName = styled.div`
@@ -33,7 +27,7 @@ const IconAndName = styled.div`
 `;
 
 const StyledTokenIcon = styled(TokenIcon)`
-  width: 40px;
+  width: 30px;
   margin-right: 20px;
 `;
 
@@ -41,6 +35,20 @@ const IconName = styled.div`
   overflow: hidden;
   padding-right: 10px;
   text-overflow: ellipsis;
+`;
+
+const Cards = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-column-gap: 16px;
+  margin-bottom: 32px;
+}
+`;
+
+const Buttons = styled.div`
+  display: inline-flex;
+  grid-gap: 12px;
 `;
 
 const tokenTransform = asset => {
@@ -55,22 +63,22 @@ const tokenTransform = asset => {
 
 const percentTransform = val => `${val}%`;
 
-const tokenSymbolTransform = (val, row) =>
-  `${val} ${row.asset.symbol[0].value}`;
+// const tokenSymbolTransform = (val, row) =>
+//   `${val} ${row.asset.symbol[0].value}`;
 
 // const dollarTransform = val => `$${val}`;
 
-const CollateralToggle = props => {
-  const { enabled } = props;
-  if (enabled) {
-    return 'yes';
-  }
-  return 'no';
-};
+// const CollateralToggle = props => {
+//   const { enabled } = props;
+//   if (enabled) {
+//     return 'yes';
+//   }
+//   return 'no';
+// };
 
-const collateralTransform = (enabled, rowData) => (
-  <CollateralToggle enabled={enabled} rowData={rowData} />
-);
+// const collateralTransform = (enabled, rowData) => (
+//   <CollateralToggle enabled={enabled} rowData={rowData} />
+// );
 
 export default function Cream() {
   useInjectSaga({ key: 'cream', saga });
@@ -90,119 +98,173 @@ export default function Cream() {
   const borrowLimitStats = useSelector(selectBorrowStats);
   const { openModal } = useModal();
 
-  const allSupplyData = getSupplyData({
+  const supplyData = getSupplyData({
     creamCTokenAddresses,
     allContracts,
     borrowLimitStats,
   });
 
-  const assetsSupplied = _.filter(allSupplyData, data => data.supplied > 0);
-  const assetsSuppliable = _.filter(
-    allSupplyData,
-    data => parseInt(data.supplied, 10) === 0,
-  );
+  const supplyDataSorted = _.orderBy(supplyData, 'supplied', 'desc');
 
-  const allBorrowData = getBorrowData({
+  const borrowData = getBorrowData({
     creamCTokenAddresses,
     allContracts,
     borrowLimitStats,
   });
 
-  const assetsBorrowed = _.filter(allBorrowData, data => data.borrowed > 0);
-  const assetsBorrowable = _.filter(
-    allBorrowData,
-    data => parseInt(data.borrowed, 10) === 0,
-  );
+  const borrowDataSorted = _.orderBy(borrowData, 'borrowed', 'desc');
+  const borrowedData = _.filter(borrowDataSorted, data => data.borrowed > 0);
+
+  const suppliedData = _.filter(supplyDataSorted, data => data.supplied > 0);
 
   const supplyRowClickHandler = row => {
     openModal('cream', row);
   };
 
-  const boolTransform = val => (val ? 'yes' : 'no');
+  // const boolTransform = val => (val ? 'yes' : 'no');
 
-  const assetsSuppliedTable = {
+  const borrowActionsTransform = (val, row) => {
+    let withdrawButton;
+    if (row.borrowed > 0) {
+      withdrawButton = <IconButton iconType="arrowUpAlt">Repay</IconButton>;
+    }
+    return (
+      <Buttons>
+        {withdrawButton}
+        <IconButton iconType="arrowDownAlt">Borrow</IconButton>
+      </Buttons>
+    );
+  };
+
+  const allActionsTransform = () => (
+    <Buttons>
+      <IconButton iconType="arrowUpAlt">Supply</IconButton>
+      <IconButton iconType="arrowDownAlt">Borrow</IconButton>
+    </Buttons>
+  );
+
+  const supplyActionsTransform = (val, row) => {
+    let withdrawButton;
+    if (row.supplied > 0) {
+      withdrawButton = (
+        <IconButton iconType="arrowDownAlt">Withdraw</IconButton>
+      );
+    }
+    return (
+      <Buttons>
+        {withdrawButton}
+        <IconButton iconType="arrowUpAlt">Supply</IconButton>
+      </Buttons>
+    );
+  };
+
+  const supplyTable = {
+    title: 'Assets Supplied - $8.00',
     rowClickHandler: supplyRowClickHandler,
     columns: [
       { key: 'asset', transform: tokenTransform },
-      {
-        key: 'apy',
-        transform: percentTransform,
-      },
-      {
-        key: 'allowance',
-        alias: 'Allowed',
-        transform: boolTransform,
-      },
       {
         key: 'supplied',
-        alias: 'Supply',
-        transform: tokenSymbolTransform,
-      },
-      { key: 'collateral', transform: collateralTransform },
-    ],
-    rows: assetsSupplied,
-  };
-
-  const assetsSuppliableTable = {
-    rowClickHandler: supplyRowClickHandler,
-    columns: [
-      { key: 'asset', transform: tokenTransform },
-      {
-        key: 'apy',
-        transform: percentTransform,
-      },
-      {
-        key: 'allowance',
-        transform: boolTransform,
       },
       {
         key: 'wallet',
-        transform: tokenSymbolTransform,
+        alias: 'balance',
       },
-      { key: 'collateral', transform: collateralTransform },
-    ],
-    rows: assetsSuppliable,
-  };
-
-  const assetsBorrowableTableData = {
-    columns: [
-      { key: 'asset', transform: tokenTransform },
       {
         key: 'apy',
         transform: percentTransform,
+      },
+      {
+        key: 'actions',
+        alias: '',
+        transform: supplyActionsTransform,
+      },
+    ],
+    rows: suppliedData,
+  };
+
+  const borrowTable = {
+    title: 'Assets Borrowed - $2.00',
+    columns: [
+      { key: 'asset', transform: tokenTransform },
+      {
+        key: 'borrowed',
       },
       {
         key: 'wallet',
-        transform: tokenSymbolTransform,
+        alias: 'Balance',
       },
-      { key: 'liquidity', transform: tokenSymbolTransform },
-    ],
-    rows: assetsBorrowable,
-  };
-
-  const assetsBorrowedTableData = {
-    columns: [
-      { key: 'asset', transform: tokenTransform },
       {
         key: 'apy',
         transform: percentTransform,
       },
-      { key: 'borrowed', transform: tokenSymbolTransform },
-      { key: 'liquidity', transform: tokenSymbolTransform },
+      {
+        key: 'actions',
+        alias: '',
+        transform: borrowActionsTransform,
+      },
     ],
-    rows: assetsBorrowed,
+    rows: borrowedData,
   };
+
+  const allAssetsTable = {
+    title: 'All Assets',
+    columns: [
+      { key: 'asset', transform: tokenTransform },
+      {
+        key: 'wallet',
+        alias: 'Balance',
+      },
+      {
+        key: 'supplyApy',
+        transform: percentTransform,
+      },
+      {
+        key: 'borrowApy',
+        transform: percentTransform,
+      },
+      {
+        key: 'actions',
+        alias: '',
+        transform: allActionsTransform,
+      },
+    ],
+    rows: borrowDataSorted,
+  };
+
+  console.log('borw', borrowDataSorted);
+
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  });
+
+  const dollarFormatter = val => formatter.format(val);
+  const percentageFormatter = val => `${parseInt(val, 10).toFixed(0)}%`;
 
   return (
     <Wrapper>
-      <TableTitle>Supplied</TableTitle>
-      <CreamTable data={assetsSuppliedTable} />
-      <TableTitle>Suppliable</TableTitle>
-      <CreamTable data={assetsSuppliableTable} />
-      <TableTitle>Borrowed</TableTitle>
-      <CreamTable data={assetsBorrowedTableData} />
-      <TableTitle>Borrowable</TableTitle>
-      <CreamTable data={assetsBorrowableTableData} />
+      <Cards>
+        <InfoCard
+          label="Supply Balance"
+          value="3"
+          formatter={dollarFormatter}
+        />
+        <InfoCard
+          label="Borrow Balance"
+          value="3"
+          formatter={dollarFormatter}
+        />
+        <InfoCard
+          label="BorrowUtilzation Ratio"
+          value="3"
+          formatter={percentageFormatter}
+        />
+      </Cards>
+      <Table data={supplyTable} />
+      <Table data={borrowTable} />
+      <Table data={allAssetsTable} />
     </Wrapper>
   );
 }

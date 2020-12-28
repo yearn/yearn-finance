@@ -24,8 +24,9 @@ import {
 function* subscribeToCreamData(action) {
   const initialized = yield getContext('initialized');
   const appReady = yield select(selectReady());
-  const { web3, batchCall } = action;
-  if (initialized || !appReady) {
+  const web3 = _.get(action, 'web3');
+  const batchCall = _.get(action, 'batchCall');
+  if (initialized || !appReady || !web3) {
     return;
   }
   yield setContext({ initialized: true });

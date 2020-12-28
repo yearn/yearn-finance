@@ -26,21 +26,27 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
-  background: common.black,
+  background: '#141a1e',
   text: common.offWhite,
   toggleBorder: '#6B8096',
   vaultBackground: '#021A4B',
   vaultBackgroundActive: '#011130',
   vaultBackgroundMiddle: '#010919',
+  infoCardBackground: '#21262b',
+  infoCardValue: '#fff',
+  infoCardLabel: '#9cabbb',
   blocksGreen: '#23D198',
   blocksRed: '#EF1E02',
   blocksMidnight: '#02153C',
   vaultText: common.offWhite,
+  buttonBackground: '#21262b',
+  buttonColor: '#9cabbb',
   vaultBorderActive: '#0657F9',
   modalBackground: '#333',
   inputBorder: common.white,
   inputText: common.white,
   inputOutline: common.yearnBlue,
+  tableBorder: '#2d3237',
   link: 'antiquewhite',
   ...common,
 };

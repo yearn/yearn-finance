@@ -20,6 +20,12 @@ const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: underline;
   }
+  input {
+    color: initial;
+  }
+  img {
+    max-width: initial;
+  }
   @font-face {
     font-family: 'Calibre Bold';
     src: url(${CalibreBold}) format('opentype');
@@ -80,8 +86,12 @@ const GlobalStyle = createGlobalStyle`
 
   #app {
     background-color: ${props => props.theme.background};
-    min-height: 100%;
-    min-width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
   }
 
   p,

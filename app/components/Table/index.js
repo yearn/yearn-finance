@@ -3,36 +3,68 @@ import styled from 'styled-components';
 import TableContext from './context';
 
 const Td = styled.td`
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 16px 0px;
+  &:last-of-type {
+    text-align: right;
+    padding-right: 16px;
+    width: 0.1%;
+  }
+  border-top: 1px solid ${props => props.theme.tableBorder};
+  &:first-of-type {
+    padding-left: 16px;
+  }
 `;
 
-const Table = styled.table`
+const TableTitle = styled.h1`
+  margin-bottom: 16px;
+  font-weight: 400;
+  padding-top: 20px;
+  font-size: 20px;
+`;
+
+const StyledTable = styled.table`
   font-size: 18px;
-  padding-bottom: 20px;
-  border-collapse: initial;
+  border-collapse: collapse;
+  border-spacing: 0px;
   font-family: monospace;
   width: 100%;
   margin-bottom: 2rem;
+  border: 1px solid ${props => props.theme.tableBorder};
+  border-radius: 4px;
 `;
 
 const Th = styled.th`
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  font-size: 18px;
-  text-transform: uppercase;
+  padding-top: 16px;
+  padding-bottom: 16px;
   text-align: left;
+  font-weight: 500;
+  text-transform: capitalize;
+  font-size: 16px;
+  &:first-of-type {
+    padding-left: 16px;
+  }
+  &:last-of-type {
+    text-align: right;
+    padding-right: 16px;
+  }
 `;
 
-export default function CreamTable(props) {
+const Tr = styled.tr``;
+
+const Thead = styled.thead`
+  th {
+  }
+`;
+
+export default function Table(props) {
   const { data, className, tableData } = props;
-  const { columns, rows, rowClickHandler } = data;
+  const { columns, rows, rowClickHandler, title } = data;
 
   const renderHeader = (column, idx) => {
     const { alias, key } = column;
     const spacedKey = key.replace(/([A-Z])/g, ' $1');
     const spacedAndCapitalizedKey = _.upperFirst(spacedKey);
-    const columnName = alias || spacedAndCapitalizedKey;
+    const columnName = alias === '' ? '' : alias || spacedAndCapitalizedKey;
     const columnKey = `${columnName}${idx}`;
     return <Th key={columnKey}>{columnName}</Th>;
   };
@@ -50,7 +82,7 @@ export default function CreamTable(props) {
 
     const key = `${idx}`;
     return (
-      <tr
+      <Tr
         onClick={evt => {
           evt.preventDefault();
           evt.stopPropagation();
@@ -63,7 +95,7 @@ export default function CreamTable(props) {
         key={key}
       >
         {columnEls}
-      </tr>
+      </Tr>
     );
   };
 
@@ -83,17 +115,18 @@ export default function CreamTable(props) {
     }
     return (
       <Td key={idx}>
-        <div>{rowValue}</div>
+        <React.Fragment>{rowValue}</React.Fragment>
       </Td>
     );
   };
 
   return (
     <TableContext.Provider value={{ tableData }}>
-      <Table className={className}>
-        <thead>{renderHeaders()}</thead>
+      <TableTitle>{title}</TableTitle>
+      <StyledTable className={className}>
+        <Thead>{renderHeaders()}</Thead>
         <tbody>{renderRows()}</tbody>
-      </Table>
+      </StyledTable>
     </TableContext.Provider>
   );
 }

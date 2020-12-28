@@ -5,7 +5,7 @@ export const currencyTransform = val => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 4,
+    minimumFractionDigits: 2,
   });
   const newVal = formatter.format(val);
   return newVal;

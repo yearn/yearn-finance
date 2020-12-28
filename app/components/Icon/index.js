@@ -12,6 +12,8 @@ import ChevronLeft from './chevronLeft.svg';
 import Stats from './stats.svg';
 import ExternalLink from './externalLink.svg';
 import ArrowDown from './arrowDown.svg';
+import ArrowDownAlt from './arrowDownAlt.svg';
+import ArrowUpAlt from './arrowUpAlt.svg';
 import Info from './info.svg';
 
 export default function Icon(props) {
@@ -23,6 +25,8 @@ export default function Icon(props) {
     chevronLeft: ChevronLeft,
     externalLink: ExternalLink,
     info: Info,
+    arrowDownAlt: ArrowDownAlt,
+    arrowUpAlt: ArrowUpAlt,
     arrowDown: ArrowDown,
   };
   const src = icons[type];

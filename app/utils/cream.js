@@ -39,9 +39,12 @@ export const getSupplyData = ({
       underlyingTokenData.balanceOf[0].value,
       underlyingTokenData.decimals[0].value,
     );
+
+    const cTokenBalanceOf = creamTokenData.balanceOf;
+
     const exchangeRate = creamTokenData.exchangeRateStored / 10 ** 18;
     const supplied = getFieldValue(
-      creamTokenData.balanceOf * exchangeRate,
+      cTokenBalanceOf * exchangeRate,
       underlyingTokenData.decimals[0].value,
     );
 
@@ -63,16 +66,18 @@ export const getSupplyData = ({
     const allowanceObject = _.find(allowances, allowance =>
       _.includes(allowance.args, creamCTokenAddress),
     );
-    const allowance = _.get(allowanceObject, 'value') > 0;
+    const allowed = _.get(allowanceObject, 'value') > 0;
 
     return {
       apy: supplyAPY,
       asset: underlyingTokenData,
       wallet: walletBalance,
       supplied,
+      cTokenBalanceOf,
+      exchangeRate,
       collateral,
       borrowLimit,
-      allowance,
+      allowed,
       borrowLimitUsed: borrowLimitUsedPercent,
     };
   };
@@ -88,25 +93,23 @@ export const getBorrowData = ({
 }) => {
   const getBorrowRows = creamCTokenAddress => {
     const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
-    const underlyingTokenData = flattenData(
-      allContracts[creamTokenData.underlying],
-    );
+    const underlyingTokenData = allContracts[creamTokenData.underlying];
 
     const borrowAPY = getFieldValue(
       creamTokenData.borrowRatePerBlock * BLOCKS_PER_YEAR,
       16,
     );
     const walletBalance = getFieldValue(
-      underlyingTokenData.balanceOf,
-      underlyingTokenData.decimals,
+      underlyingTokenData.balanceOf[0].value,
+      underlyingTokenData.decimals[0].value,
     );
     const borrowed = getFieldValue(
       creamTokenData.borrowBalanceStored,
-      underlyingTokenData.decimals,
+      underlyingTokenData.decimals[0].value,
     );
     const liquidity = getFieldValue(
       creamTokenData.getCash,
-      underlyingTokenData.decimals,
+      underlyingTokenData.decimals[0].value,
       2,
       BigNumber.ROUND_DOWN,
     );

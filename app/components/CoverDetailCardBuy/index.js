@@ -319,7 +319,7 @@ function CoverDetailCardBuy(props) {
      * TODO: Placeholder for Graham
      * Set max claim token amount
      */
-    const maxAmount = 0;
+    const maxAmount = 500;
     setAmount(maxAmount);
     amountRef.current.value = maxAmount;
 

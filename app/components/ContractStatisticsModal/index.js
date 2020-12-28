@@ -131,7 +131,7 @@ export default function TransactionModal(props) {
     etherscan: {
       apiKey: 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4',
     },
-    logging: true,
+    logging: false,
     simplifyResponse: true,
     store: localStorage,
   });

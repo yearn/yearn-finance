@@ -11,8 +11,10 @@ import Clock from './clock.svg';
 import ChevronLeft from './chevronLeft.svg';
 import Stats from './stats.svg';
 import ExternalLink from './externalLink.svg';
+import ExternalLinkBlack from './externalLinkBlack.svg';
 import ArrowDown from './arrowDown.svg';
 import Info from './info.svg';
+import Close from './close.svg';
 
 export default function Icon(props) {
   const { onClick, disabled, className, type } = props;
@@ -22,8 +24,10 @@ export default function Icon(props) {
     stats: Stats,
     chevronLeft: ChevronLeft,
     externalLink: ExternalLink,
+    externalLinkBlack: ExternalLinkBlack,
     info: Info,
     arrowDown: ArrowDown,
+    close: Close,
   };
   const src = icons[type];
 

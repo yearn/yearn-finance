@@ -10,6 +10,9 @@ export default {
 
 const Template = args => (
   <div tw="p-5 bg-black">
+    <p tw="text-white mb-10">
+      Clear local storage key and refresh if you close it :)
+    </p>
     <InfoCard {...args} />
   </div>
 );

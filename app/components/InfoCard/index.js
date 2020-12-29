@@ -29,7 +29,7 @@ const InfoCard = ({
   return (
     <div tw="flex relative bg-white  rounded-md">
       <div
-        tw="h-6 w-6 top-2 right-2 md:top-2 md:right-2 absolute cursor-pointer focus:border-yearn-blue"
+        tw="h-6 w-6 md:h-8 md:w-8 top-2 right-2 md:top-4 md:right-4 absolute cursor-pointer focus:border-yearn-blue"
         onClick={() => hideForever(infoTitle, setShow)}
         onKeyPress={() => hideForever(infoTitle, setShow)}
         role="button"

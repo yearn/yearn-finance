@@ -1,3 +1,4 @@
+import VaultControls from 'components/VaultControls';
 import React, { memo } from 'react';
 import { compose } from 'redux';
 import { useSelector } from 'react-redux';
@@ -13,7 +14,6 @@ import { abbreviateNumber } from 'utils/string';
 import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
-import VaultButtons from 'components/VaultButtons';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
@@ -382,7 +382,7 @@ const Vault = props => {
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
               <Footer>
-                <VaultButtons
+                <VaultControls
                   vault={vault}
                   token={tokenContractData}
                   showDevVaults={showDevVaults}

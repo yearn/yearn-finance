@@ -1,11 +1,11 @@
 import React from 'react';
 import 'twin.macro';
 
-import { InfoCard } from '.';
+import { LearnMoreCard } from '.';
 
 export default {
-  title: 'V2/InfoCard',
-  component: InfoCard,
+  title: 'V2/LearnMoreCard',
+  component: LearnMoreCard,
 };
 
 const Template = args => (
@@ -13,7 +13,7 @@ const Template = args => (
     <p tw="text-white mb-10">
       Clear local storage key and refresh if you close it :)
     </p>
-    <InfoCard {...args} />
+    <LearnMoreCard {...args} />
   </div>
 );
 

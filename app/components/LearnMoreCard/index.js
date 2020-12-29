@@ -1,5 +1,5 @@
-import Icon from 'components/Icon';
 import React from 'react';
+import Icon from 'components/Icon';
 import { css } from 'twin.macro';
 
 const hideForever = (infoTitle, setShow) => {
@@ -9,7 +9,7 @@ const hideForever = (infoTitle, setShow) => {
   setShow(false);
 };
 
-const InfoCard = ({
+const LearnMoreCard = ({
   infoTitle,
   infoDescription,
   learnMoreHref,
@@ -71,4 +71,4 @@ const InfoCard = ({
   );
 };
 
-export { InfoCard };
+export { LearnMoreCard };

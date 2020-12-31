@@ -1,10 +1,22 @@
+import BigNumber from 'bignumber.js';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { approveTxSpend } from 'utils/contracts';
 import request from 'utils/request';
 import { APP_INITIALIZED } from 'containers/App/constants';
 import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { call, put, takeLatest, select, all, take } from 'redux-saga/effects';
-import { selectSelectedAccount, selectVaults } from 'containers/App/selectors';
+import {
+  selectSelectedAccount,
+  selectVaults,
+  selectTokenAllowance,
+  selectContractData,
+} from 'containers/App/selectors';
 import { vaultsLoaded, userVaultStatisticsLoaded } from './actions';
-import { VAULTS_LOADED } from './constants';
+import {
+  VAULTS_LOADED,
+  WITHDRAW_FROM_VAULT,
+  DEPOSIT_TO_VAULT,
+} from './constants';
 
 function* fetchVaults() {
   try {
@@ -39,9 +51,66 @@ function* fetchUserVaultStatistics() {
   }
 }
 
+function* withdrawFromVault(action) {
+  const { vaultContract, withdrawalAmount, decimals } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  const vaultContractData = yield select(
+    selectContractData(vaultContract.address),
+  );
+
+  const pricePerShare = _.get(vaultContractData, 'getPricePerFullShare');
+
+  const sharesForWithdrawal = new BigNumber(withdrawalAmount)
+    .times(10 ** decimals)
+    .dividedBy(pricePerShare / 10 ** 18)
+    .decimalPlaces(0);
+
+  try {
+    yield call(vaultContract.methods.withdraw.cacheSend, sharesForWithdrawal, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function* depositToVault(action) {
+  const {
+    vaultContract,
+    tokenContract,
+    depositAmount,
+    decimals,
+  } = action.payload;
+
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContract.address, vaultContract.address),
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!vaultAllowedToSpendToken) {
+      yield call(approveTxSpend, tokenContract, account, vaultContract.address);
+    }
+
+    const depositAmountRaw = new BigNumber(depositAmount).times(10 ** decimals);
+
+    yield call(vaultContract.methods.deposit.cacheSend, depositAmountRaw, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
   yield all([take(ACCOUNT_UPDATED), take(VAULTS_LOADED)]);
   yield fetchUserVaultStatistics();
+  yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
+  yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
 }

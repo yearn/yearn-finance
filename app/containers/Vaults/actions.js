@@ -13,3 +13,17 @@ export function vaultsLoaded(vaults) {
     vaults,
   };
 }
+
+export function withdrawFromVault(payload) {
+  return {
+    type: c.WITHDRAW_FROM_VAULT,
+    payload,
+  };
+}
+
+export function depositToVault(payload) {
+  return {
+    type: c.DEPOSIT_TO_VAULT,
+    payload,
+  };
+}

@@ -41,6 +41,7 @@ function* loadVaultContracts() {
           name: 'balanceOf',
           args: [account],
         },
+        { name: 'getPricePerFullShare' },
       ],
       writeMethods: [
         {

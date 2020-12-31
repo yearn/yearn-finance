@@ -1,3 +1,5 @@
+import { MAX_UINT256 } from 'containers/LiteCover/constants';
+
 export function getContractType(data) {
   const types = [
     {
@@ -110,4 +112,10 @@ export function getWriteMethods(abi) {
 export function getReadMethods(abi) {
   const methods = getMethods(abi);
   return methods.read;
+}
+
+export function approveTxSpend(contract, ownerAddress, spenderAddress) {
+  return contract.methods.approve.cacheSend(spenderAddress, MAX_UINT256, {
+    from: ownerAddress,
+  });
 }

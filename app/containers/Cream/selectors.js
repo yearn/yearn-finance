@@ -3,18 +3,17 @@ import {
   selectContracts,
   selectContractsByTag,
 } from 'containers/App/selectors';
-// import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import BigNumber from 'bignumber.js';
 import { COMPTROLLER_ADDRESS, PRICE_ORACLE_ADDRESS } from './constants';
 
-export const selectCollateralEnabled = (contractAddress) =>
+export const selectCollateralEnabled = () =>
   createSelector(selectContractData(COMPTROLLER_ADDRESS), (comptrollerData) => {
     if (_.isEmpty(comptrollerData)) {
       return false;
     }
 
-    return comptrollerData.getAssetsIn.includes(contractAddress);
+    return comptrollerData.getAssetsIn;
   });
 
 function getUnderlyingTokenPrice(oracleData, cTokenAddress) {

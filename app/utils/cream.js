@@ -40,6 +40,7 @@ export const getSupplyData = ({
       underlyingTokenData.decimals[0].value,
     );
 
+    const cTokenDecimals = creamTokenData.decimals;
     const cTokenBalanceOf = creamTokenData.balanceOf;
 
     const exchangeRate = creamTokenData.exchangeRateStored / 10 ** 18;
@@ -69,10 +70,12 @@ export const getSupplyData = ({
     const allowed = _.get(allowanceObject, 'value') > 0;
 
     return {
+      creamCTokenAddress,
       apy: supplyAPY,
       asset: underlyingTokenData,
       wallet: walletBalance,
       supplied,
+      cTokenDecimals,
       cTokenBalanceOf,
       exchangeRate,
       collateral,
@@ -113,6 +116,8 @@ export const getBorrowData = ({
       2,
       BigNumber.ROUND_DOWN,
     );
+    const cTokenBalanceOf = creamTokenData.balanceOf;
+    const cTokenDecimals = creamTokenData.decimals;
 
     const borrowLimit = getFieldValue(borrowLimitStats.borrowLimitInUSD, 0, 2);
     const borrowLimitUsedPercent = getFieldValue(
@@ -123,6 +128,9 @@ export const getBorrowData = ({
 
     const underlying = underlyingTokenData;
     return {
+      creamCTokenAddress,
+      cTokenBalanceOf,
+      cTokenDecimals,
       apy: borrowAPY,
       asset: underlyingTokenData,
       wallet: walletBalance,

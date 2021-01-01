@@ -3,12 +3,17 @@ import priceOracleAbi from 'abi/creamPriceOracle.json';
 import CErc20DelegatorAbi from 'abi/CErc20Delegator.json';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
-import { selectReady } from 'containers/App/selectors';
+import { selectReady, selectTokenAllowance } from 'containers/App/selectors';
 import { APP_READY } from 'containers/App/constants';
 import {
   COMPTROLLER_ADDRESS,
   PRICE_ORACLE_ADDRESS,
   INITIALIZE_CREAM,
+  CREAM_ENTER_MARKETS,
+  CREAM_SUPPLY,
+  CREAM_BORROW,
+  CREAM_REPAY,
+  CREAM_WITHDRAW,
 } from 'containers/Cream/constants';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
@@ -20,6 +25,10 @@ import {
   setContext,
   getContext,
 } from 'redux-saga/effects';
+import { approveTxSpend } from 'utils/contracts';
+import { selectCollateralEnabled } from './selectors';
+
+// const MAX_UINT256 = new BigNumber(2).pow(256).minus(1).toFixed(0);
 
 function* subscribeToCreamData(action) {
   const initialized = yield getContext('initialized');
@@ -96,6 +105,23 @@ function* subscribeToCreamData(action) {
       namespace: 'creamComptroller',
       abi: comptrollerAbi,
       addresses: [COMPTROLLER_ADDRESS],
+      writeMethods: [
+        {
+          name: 'enterMarkets',
+        },
+        {
+          name: 'mint',
+        },
+        {
+          name: 'borrow',
+        },
+        {
+          name: 'repayBorrow',
+        },
+        {
+          name: 'redeem',
+        },
+      ],
       readMethods: _.concat(
         [
           {
@@ -113,6 +139,11 @@ function* subscribeToCreamData(action) {
       tags: ['creamCTokens'],
       abi: CErc20DelegatorAbi,
       addresses: cTokenAddresses,
+      writeMethods: [
+        {
+          name: 'approve',
+        },
+      ],
       readMethods: [
         { name: 'name' },
         { name: 'symbol' },
@@ -125,6 +156,10 @@ function* subscribeToCreamData(action) {
           name: 'balanceOf',
           args: [account],
         },
+        // {
+        //   name: 'allowance',
+        //   args: [account, cTokenAddresses],
+        // },
         {
           name: 'borrowBalanceStored',
           args: [account],
@@ -147,7 +182,89 @@ function* subscribeToCreamData(action) {
   yield put(addContracts(subscriptions));
 }
 
+function* supply({ crTokenContract, amount }) {
+  const account = yield select(selectAccount());
+  try {
+    yield call(crTokenContract.methods.mint.cacheSend, amount, {
+      from: account,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* borrow({ crTokenContract, amount }) {
+  const account = yield select(selectAccount());
+  try {
+    yield call(crTokenContract.methods.borrow.cacheSend, amount, {
+      from: account,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* repay({ crTokenContract, amount }) {
+  const account = yield select(selectAccount());
+  try {
+    yield call(crTokenContract.methods.repayBorrow.cacheSend, amount, {
+      from: account,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* withdraw({ crTokenContract, amount }) {
+  const account = yield select(selectAccount());
+  try {
+    yield call(crTokenContract.methods.redeem.cacheSend, amount, {
+      from: account,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* executeEnterMarkets({
+  tokenContract,
+  tokenContractAddress,
+  creamCTokenAddress,
+  creamComptrollerContract,
+}) {
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContractAddress, creamCTokenAddress),
+  );
+  const selectCollateralEnabledData = yield select(selectCollateralEnabled());
+  const marketEntered = selectCollateralEnabledData.includes(
+    creamCTokenAddress,
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!marketEntered) {
+      yield call(
+        creamComptrollerContract.methods.enterMarkets([creamCTokenAddress])
+          .send,
+        { from: account },
+      );
+    }
+    if (!vaultAllowedToSpendToken) {
+      yield call(approveTxSpend, tokenContract, account, creamCTokenAddress);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* watchers() {
   yield takeLatest(APP_READY, subscribeToCreamData);
   yield takeLatest(INITIALIZE_CREAM, subscribeToCreamData);
+  yield takeLatest(CREAM_ENTER_MARKETS, executeEnterMarkets);
+  yield takeLatest(CREAM_SUPPLY, supply);
+  yield takeLatest(CREAM_BORROW, borrow);
+  yield takeLatest(CREAM_REPAY, repay);
+  yield takeLatest(CREAM_WITHDRAW, withdraw);
 }

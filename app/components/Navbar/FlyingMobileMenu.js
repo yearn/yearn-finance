@@ -226,6 +226,7 @@ export const FlyingMobileMenu = ({
             <nav tw="flex flex-col space-y-2 items-center justify-center z-10 h-full w-full absolute">
               {Object.keys(menuLinks).map((menuItemText) => (
                 <FlyingMobileMenuItem
+                  key={menuItemText}
                   setIsMobileOpen={setIsMobileOpen}
                   setIsActive={setMobileIsActive}
                   menuItemText={menuItemText}

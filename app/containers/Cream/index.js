@@ -3,7 +3,10 @@ import {
   selectContractsByTag,
   selectAllContracts,
 } from 'containers/App/selectors';
-import { selectBorrowStats } from 'containers/Cream/selectors';
+import {
+  selectBorrowStats,
+  selectCollateralEnabled,
+} from 'containers/Cream/selectors';
 import styled from 'styled-components';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
@@ -13,8 +16,15 @@ import { useModal } from 'containers/ModalProvider/hooks';
 import IconButton from 'components/IconButton';
 import { useSelector, useDispatch } from 'react-redux';
 import InfoCard from 'components/InfoCard';
-import { initializeCream } from './actions';
+import ButtonFilled from 'components/ButtonFilled';
+import { useContract } from 'containers/DrizzleProvider/hooks';
+import { COMPTROLLER_ADDRESS } from 'containers/Cream/constants';
 import saga from './saga';
+import { initializeCream, creamEnterMarkets } from './actions';
+// import { useAccount, useWeb3 } from 'containers/ConnectionProvider/hooks';
+// import { BigNumber } from 'bignumber.js';
+
+// const MAX_UINT256 = new BigNumber(2).pow(256).minus(1).toFixed(0);
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -68,28 +78,20 @@ const percentTransform = (val) => `${val}%`;
 
 // const dollarTransform = val => `$${val}`;
 
-// const CollateralToggle = props => {
-//   const { enabled } = props;
-//   if (enabled) {
-//     return 'yes';
-//   }
-//   return 'no';
-// };
-
-// const collateralTransform = (enabled, rowData) => (
-//   <CollateralToggle enabled={enabled} rowData={rowData} />
-// );
-
 export default function Cream() {
   useInjectSaga({ key: 'cream', saga });
   const dispatch = useDispatch();
+  // const web3 = useWeb3();
+  // const account = useAccount();
 
   const initialize = () => {
     dispatch(initializeCream());
   };
   useEffect(initialize, []);
 
+  const selectCollateralEnabledData = useSelector(selectCollateralEnabled());
   const creamCTokens = useSelector(selectContractsByTag('creamCTokens'));
+  const creamComptrollerContract = useContract(COMPTROLLER_ADDRESS);
 
   const creamCTokenAddresses = _.map(creamCTokens, (token) =>
     _.get(token, 'address'),
@@ -117,43 +119,168 @@ export default function Cream() {
 
   const suppliedData = _.filter(supplyDataSorted, (data) => data.supplied > 0);
 
+  if (!borrowedData || !suppliedData) {
+    return null;
+  }
+
   const supplyRowClickHandler = (row) => {
     openModal('cream', row);
   };
 
-  // const boolTransform = val => (val ? 'yes' : 'no');
+  const borrowRowClickHandler = (row) => {
+    console.log({ row });
+    openModal('cream', row);
+  };
 
   const borrowActionsTransform = (val, row) => {
     let withdrawButton;
     if (row.borrowed > 0) {
-      withdrawButton = <IconButton iconType="arrowUpAlt">Repay</IconButton>;
-    }
-    return (
-      <Buttons>
-        {withdrawButton}
-        <IconButton iconType="arrowDownAlt">Borrow</IconButton>
-      </Buttons>
-    );
-  };
-
-  const allActionsTransform = () => (
-    <Buttons>
-      <IconButton iconType="arrowUpAlt">Supply</IconButton>
-      <IconButton iconType="arrowDownAlt">Borrow</IconButton>
-    </Buttons>
-  );
-
-  const supplyActionsTransform = (val, row) => {
-    let withdrawButton;
-    if (row.supplied > 0) {
       withdrawButton = (
-        <IconButton iconType="arrowDownAlt">Withdraw</IconButton>
+        <IconButton
+          iconType="arrowUpAlt"
+          onClick={() => borrowRowClickHandler(row)}
+        >
+          Repay
+        </IconButton>
       );
     }
     return (
       <Buttons>
         {withdrawButton}
-        <IconButton iconType="arrowUpAlt">Supply</IconButton>
+        <IconButton
+          iconType="arrowDownAlt"
+          onClick={() => borrowRowClickHandler(row)}
+        >
+          Borrow
+        </IconButton>
+      </Buttons>
+    );
+  };
+
+  const allActionsTransform = (_rowValue, rowData) => {
+    const creamCTokenAddress = _.get(rowData, 'creamCTokenAddress');
+    const token = _.get(rowData, 'asset');
+    const tokenContractAddress = _.get(token, 'address');
+    const allowances = _.get(token, 'allowance');
+    const tokenAllowanceObject = _.find(allowances, (allowance) =>
+      _.includes(allowance.args, creamCTokenAddress),
+    );
+    const tokenAllowance = _.get(tokenAllowanceObject, 'value');
+    const crTokenAllowedToSpendToken = tokenAllowance > 0;
+    const marketEntered = selectCollateralEnabledData.includes(
+      creamCTokenAddress,
+    );
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const tokenContract = useContract(tokenContractAddress);
+
+    let enableCollateral;
+
+    if (marketEntered) {
+      if (crTokenAllowedToSpendToken) {
+        enableCollateral = null;
+        // <div>Approved and Ready!</div>;
+      } else {
+        enableCollateral = (
+          <ButtonFilled
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              dispatch(
+                creamEnterMarkets({
+                  tokenContract,
+                  tokenContractAddress,
+                  creamCTokenAddress,
+                  creamComptrollerContract,
+                }),
+              )
+            }
+          >
+            Approve Token
+          </ButtonFilled>
+        );
+      }
+    } else {
+      enableCollateral = (
+        <ButtonFilled
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            if (marketEntered) {
+              // TODO: Exit Market, meh
+              return;
+            }
+            dispatch(
+              creamEnterMarkets({
+                tokenContract,
+                tokenContractAddress,
+                creamCTokenAddress,
+                creamComptrollerContract,
+              }),
+            );
+          }}
+        >
+          Enter Market/Enable
+        </ButtonFilled>
+      );
+    }
+
+    return (
+      <Buttons>
+        {crTokenAllowedToSpendToken ? (
+          <>
+            <IconButton
+              iconType="arrowUpAlt"
+              onClick={() => supplyRowClickHandler(rowData)}
+            >
+              Supply
+            </IconButton>
+            <IconButton
+              iconType="arrowDownAlt"
+              onClick={() => borrowRowClickHandler(rowData)}
+            >
+              Borrow
+            </IconButton>
+            <IconButton
+              iconType="arrowUpAlt"
+              onClick={() => borrowRowClickHandler(rowData)}
+            >
+              Repay
+            </IconButton>
+            <IconButton
+              iconType="arrowDownAlt"
+              onClick={() => borrowRowClickHandler(rowData)}
+            >
+              Withdraw
+            </IconButton>
+          </>
+        ) : null}
+        {enableCollateral}
+      </Buttons>
+    );
+  };
+
+  const supplyActionsTransform = (val, row) => {
+    let withdrawButton;
+    if (row.supplied > 0) {
+      withdrawButton = (
+        <IconButton
+          iconType="arrowDownAlt"
+          onClick={() => borrowRowClickHandler(row)}
+        >
+          Withdraw
+        </IconButton>
+      );
+    }
+    return (
+      <Buttons>
+        {withdrawButton}
+        <IconButton
+          iconType="arrowUpAlt"
+          onClick={() => borrowRowClickHandler(row)}
+        >
+          Supply
+        </IconButton>
       </Buttons>
     );
   };
@@ -231,8 +358,6 @@ export default function Cream() {
     ],
     rows: borrowDataSorted,
   };
-
-  console.log('borw', borrowDataSorted);
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',

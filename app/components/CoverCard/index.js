@@ -5,7 +5,7 @@ import {
   getShortenedAddress,
   abbreviateRelativeTime,
   daysFromNow,
-  addCommasToNumber,
+  formatNumber,
   removeDecimals,
 } from 'utils/string';
 import Icon from 'components/Icon';
@@ -178,7 +178,7 @@ export default function CoverCard(props) {
     protocol.coverObjects[protocol.claimNonce].collateralStaked;
 
   const { collateralName } = protocol.coverObjects[protocol.claimNonce];
-  const totalCollateralStr = addCommasToNumber(removeDecimals(totalCollateral));
+  const totalCollateralStr = formatNumber(removeDecimals(totalCollateral));
 
   const countDown = abbreviateRelativeTime(currentTime, expirationTimestamp);
   const coverDaysLeft = daysFromNow(currentTime, expirationTimestamp);

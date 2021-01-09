@@ -6,6 +6,7 @@ import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { takeLatest, select, put, call } from 'redux-saga/effects';
+import { approveTxSpend } from 'utils/contracts';
 import { getClaimPool } from 'utils/cover';
 import request from 'utils/request';
 import Web3 from 'web3';
@@ -16,6 +17,7 @@ import {
   BUY_COVER,
   DAI_ADDRESS,
   MAX_UINT256,
+  SELL_COVER,
 } from './constants';
 
 function* fetchCoverData() {
@@ -49,7 +51,6 @@ function* coverDataLoadedSaga(action) {
   };
   _.each(payload.protocols, addTokens);
 
-  const claimTokenAddresses = Object.keys(claimTokens);
   const claimPools = Object.values(claimTokens);
 
   const extractAddress = pool => Web3.utils.toChecksumAddress(pool.address);
@@ -67,22 +68,35 @@ function* coverDataLoadedSaga(action) {
     generateClaimPoolAllowanceReadMethods,
   );
 
-  const contracts = [
-    {
-      namespace: 'coverTokens',
-      abi: erc20Abi,
-      addresses: claimTokenAddresses,
-      metadata: { tokenType: 'CLAIM' },
-      readMethods: [
-        {
-          name: 'decimals',
-        },
-        {
-          name: 'balanceOf',
-          args: [account],
-        },
-      ],
+  // Every cover token subscription needs to track the allowance of its claim
+  // pool too spend users cover tokens. So need to generate dynamically.
+  const coverTokenSubscriptions = _.map(
+    claimTokens,
+    (claimPool, claimTokenAddress) => {
+      const claimPoolAddress = Web3.utils.toChecksumAddress(claimPool.address);
+      return {
+        namespace: 'coverTokens',
+        abi: erc20Abi,
+        addresses: [claimTokenAddress],
+        metadata: { tokenType: 'CLAIM' },
+        readMethods: [
+          {
+            name: 'decimals',
+          },
+          {
+            name: 'balanceOf',
+            args: [account],
+          },
+          {
+            name: 'allowance',
+            args: [account, claimPoolAddress],
+          },
+        ],
+      };
     },
+  );
+
+  const contracts = _.concat(coverTokenSubscriptions, [
     {
       namespace: 'tokens',
       abi: erc20Abi,
@@ -117,16 +131,9 @@ function* coverDataLoadedSaga(action) {
       abi: balancerPoolAbi,
       addresses: claimPoolAddresses,
     },
-  ];
+  ]);
 
   yield put(addContracts(contracts));
-}
-
-function* approveTxSpend(contract, spenderAddress) {
-  const account = yield select(selectAccount());
-  yield call(contract.methods.approve.cacheSend, spenderAddress, MAX_UINT256, {
-    from: account,
-  });
 }
 
 function* executeCoverBuy(
@@ -166,12 +173,19 @@ function* buyCover(action) {
     equivalentTo: daiAmount,
   } = action.payload;
 
+  const account = yield select(selectAccount());
+
   const claimTokenAddress =
     protocol.coverObjects[protocol.claimNonce].tokens.claimAddress;
 
   try {
     if (!poolAllowedToSpendDai) {
-      yield call(approveTxSpend, daiContract, claimPoolContract.address);
+      yield call(
+        approveTxSpend,
+        daiContract,
+        account,
+        claimPoolContract.address,
+      );
     }
 
     yield call(
@@ -186,9 +200,60 @@ function* buyCover(action) {
   }
 }
 
+function* executeCoverSell(claimPoolContract, claimTokenContract, amount) {
+  const account = yield select(selectAccount());
+
+  const claimTokenData = yield select(
+    selectContractData(claimTokenContract.address),
+  );
+
+  const claimTokenAmountRaw = new BigNumber(amount).times(
+    10 ** claimTokenData.decimals,
+  );
+
+  yield call(
+    claimPoolContract.methods.swapExactAmountIn.cacheSend,
+    claimTokenContract.address,
+    claimTokenAmountRaw,
+    DAI_ADDRESS,
+    0,
+    MAX_UINT256,
+    {
+      from: account,
+    },
+  );
+}
+
+function* sellCover(action) {
+  const {
+    poolAllowedToSpendCoverToken,
+    claimPoolContract,
+    claimTokenContract,
+    amount,
+  } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  try {
+    if (!poolAllowedToSpendCoverToken) {
+      yield call(
+        approveTxSpend,
+        claimTokenContract,
+        account,
+        claimPoolContract.address,
+      );
+    }
+
+    yield call(executeCoverSell, claimPoolContract, claimTokenContract, amount);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* watchers() {
   yield takeLatest(ACCOUNT_UPDATED, fetchCoverData);
   yield takeLatest(INITIALIZE_COVER, fetchCoverData);
   yield takeLatest(COVER_DATA_LOADED, coverDataLoadedSaga);
   yield takeLatest(BUY_COVER, buyCover);
+  yield takeLatest(SELL_COVER, sellCover);
 }

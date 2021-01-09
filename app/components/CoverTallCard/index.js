@@ -85,17 +85,49 @@ const PlusText = styled.div`
   margin-left: 5px;
 `;
 
+const MinusText = styled.div`
+  font-family: 'Roboto';
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.529412px;
+  color: #ef1e02;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+`;
+
+// This component shows the pending changes according to cover amount and cost
+// according to currently entered data by the user.
+const ChangeText = ({ amount, operation }) => {
+  let operator;
+  let PlusOrMinusComponent;
+  if (operation === 'buy') {
+    operator = '+';
+    PlusOrMinusComponent = PlusText;
+  } else {
+    operator = '-';
+    PlusOrMinusComponent = MinusText;
+  }
+
+  const amountText = amount
+    ? `${operator}${addCommasToNumber(Number(amount).toFixed(2))}`
+    : '';
+
+  return <PlusOrMinusComponent>{amountText}</PlusOrMinusComponent>;
+};
+
 export default function CoverTallCard(props) {
   const {
     protocol,
     claimPool,
-    amount,
-    equivalentTo,
+    buyAmount,
+    buyEquivalentTo,
+    sellAmount,
+    sellEquivalentTo,
     claimTokenBalanceOfNormalized,
     claimTokenBalanceOf,
   } = props;
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
-  // const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
 
   const claimNonce = _.get(protocol, 'claimNonce');
@@ -134,21 +166,46 @@ export default function CoverTallCard(props) {
     })
     .replace(',', '');
 
-  const tokensNeeded = calculateAmountNeeded(amount, claimPool);
+  let tokenAmount;
+  let equivalentToAmount;
+  let operation;
+
+  const buyDataPopulated =
+    !_.isNaN(Number(buyAmount)) && Number(buyAmount) !== 0;
+
+  const sellDataPopulated =
+    !_.isNaN(Number(sellAmount)) && Number(sellAmount) !== 0;
+
+  // The user can populate both buy and sell amounts at the same time, if they
+  // have done this then we will show show updates values as per sell data and
+  // notify them of this.
+  if (buyDataPopulated && sellDataPopulated) {
+    // User has populated both buy and sell data, use sell data.
+    tokenAmount = sellAmount;
+    equivalentToAmount = sellEquivalentTo;
+    operation = 'sell';
+  } else if (buyDataPopulated) {
+    tokenAmount = buyAmount;
+    equivalentToAmount = buyEquivalentTo;
+    operation = 'buy';
+  } else if (sellDataPopulated) {
+    tokenAmount = sellAmount;
+    equivalentToAmount = sellEquivalentTo;
+    operation = 'sell';
+  }
+
+  const tokensNeeded = calculateAmountNeeded(buyAmount, claimPool);
 
   let tokenPrice = 'Unknown';
-  if (claimPool.price && amount && amount !== '0') {
-    tokenPrice = (tokensNeeded / parseFloat(amount)).toFixed(2);
+  if (claimPool.price && tokenAmount && tokenAmount !== '0') {
+    tokenPrice = (tokensNeeded / parseFloat(tokenAmount)).toFixed(2);
   } else if (claimPool.price) {
     tokenPrice = claimPool.price.toFixed(2);
   }
 
-  const amountText = amount
-    ? `+${addCommasToNumber(Number(amount).toFixed(2))}`
-    : '';
   const equivalentToText =
-    equivalentTo && equivalentTo !== '0'
-      ? `+${addCommasToNumber(Number(equivalentTo).toFixed(2))}`
+    equivalentToAmount && equivalentToAmount !== '0'
+      ? `+${addCommasToNumber(Number(equivalentToAmount).toFixed(2))}`
       : '';
 
   const accountCoverage = new BigNumber(claimTokenBalanceOf)
@@ -177,14 +234,18 @@ export default function CoverTallCard(props) {
             <Time>
               {claimTokenBalanceOfNormalized} {collateralName}
             </Time>
-            <PlusText>{amountText}</PlusText>
+            <ChangeText operation={operation} amount={tokenAmount} />
           </PriceWrapper>
           <Label>Cover amount</Label>
           <PriceWrapper>
             <Time>${accountCoverage}</Time>
-            <PlusText>{equivalentToText}</PlusText>
+            <ChangeText operation={operation} amount={equivalentToText} />
           </PriceWrapper>
           <Label>Value of cover</Label>
+
+          {buyDataPopulated &&
+            sellDataPopulated &&
+            'Amounts have been entered for both buying and selling cover, currently showing changes for operation.'}
         </MiddleWrapper>
       </Wrapper>
     </div>

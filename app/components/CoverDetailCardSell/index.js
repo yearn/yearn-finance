@@ -1,14 +1,19 @@
-import React, { useRef } from 'react';
-import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
-import TokenIcon from 'components/TokenIcon';
+import ButtonFilled from 'components/ButtonFilled';
 import Icon from 'components/Icon';
 import RoundedInput from 'components/RoundedInput';
-import ButtonFilled from 'components/ButtonFilled';
+import TokenIcon from 'components/TokenIcon';
+import { selectTokenAllowance } from 'containers/App/selectors';
+import { sellCover as sellCoverAction } from 'containers/Cover/actions';
+import { useContract } from 'containers/DrizzleProvider/hooks';
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
 import {
   calculateAmountOutFromSell,
   calculateAmountInFromSell,
 } from 'utils/cover';
+import Web3 from 'web3';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -206,23 +211,26 @@ function CoverDetailCardSell(props) {
   const {
     className,
     protocol,
-    setAmount,
     amount,
+    setAmount,
     claimPool,
+    setEquivalentTo,
     claimTokenBalanceOfNormalized,
   } = props;
+
+  const dispatch = useDispatch();
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
   const protocolName = _.get(protocol, 'protocolName');
   const protocolTokenAddress = _.get(protocol, 'protocolTokenAddress');
-  // const claimNonce = _.get(protocol, 'claimNonce');
-  // const collateralName = _.get(
-  //   protocol,
-  //   `coverObjects.${claimNonce}.collateralName`,
-  // );
-  // const collateralAddress = _.get(
-  //   protocol,
-  //   `coverObjects.${claimNonce}.collateralAddress`,
-  // );
+  const claimNonce = _.get(protocol, 'claimNonce');
+  const claimTokenAddress = _.get(protocol, [
+    'coverObjects',
+    claimNonce,
+    'tokens',
+    'claimAddress',
+  ]);
+
+  const claimTokenContract = useContract(claimTokenAddress);
 
   const equivalentToRef = useRef(null);
   const amountRef = useRef(null);
@@ -241,31 +249,34 @@ function CoverDetailCardSell(props) {
       daiWeight,
       swapFee,
       price,
-    ).toFixed(2);
+    );
 
-    equivalentToRef.current.value = sellEquivalent;
+    equivalentToRef.current.value = sellEquivalent.toFixed(2);
+    setEquivalentTo(sellEquivalent);
   };
 
   const equivalentDai = _.get(equivalentToRef, 'current.value', '0');
 
-  const updateEquivalentTo = evt => {
-    const newPurchaseAmount = evt.target.value;
-
+  const updateEquivalentToVal = val => {
     const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
     const daiWeight = 1 - covTokenWeight;
 
-    const sellEquivalent = calculateAmountInFromSell(
-      newPurchaseAmount,
+    const newAmount = calculateAmountInFromSell(
+      val,
       covTokenBalance,
       daiWeight,
       swapFee,
       price,
-    ).toFixed(2);
+    );
 
-    const newAmount = sellEquivalent;
-
-    amountRef.current.value = newAmount;
+    amountRef.current.value = newAmount.toFixed(2);
     setAmount(newAmount);
+    setEquivalentTo(val);
+  };
+
+  const updateEquivalentTo = evt => {
+    const newSellAmount = evt.target.value;
+    updateEquivalentToVal(newSellAmount);
   };
 
   const setMaxClaimAmount = () => {
@@ -279,6 +290,26 @@ function CoverDetailCardSell(props) {
 
     const purchaseCost = 0;
     equivalentToRef.current.value = purchaseCost;
+  };
+
+  const claimPoolAddress = Web3.utils.toChecksumAddress(claimPool.address);
+  const claimPoolContract = useContract(claimPoolAddress);
+
+  const claimPoolAllowance = useSelector(
+    selectTokenAllowance(claimTokenAddress, claimPoolAddress),
+  );
+
+  const poolAllowedToSpendCoverToken = claimPoolAllowance > 0;
+
+  const sellCover = async () => {
+    dispatch(
+      sellCoverAction({
+        poolAllowedToSpendCoverToken,
+        claimPoolContract,
+        claimTokenContract,
+        amount,
+      }),
+    );
   };
 
   const claimInputTop = (
@@ -362,7 +393,7 @@ function CoverDetailCardSell(props) {
           {equivalentDai} DAI.
         </SummaryText>
         <ButtonWrapper>
-          <ButtonFilled variant="contained" color="primary">
+          <ButtonFilled variant="contained" color="primary" onClick={sellCover}>
             Sell Cover
           </ButtonFilled>
         </ButtonWrapper>

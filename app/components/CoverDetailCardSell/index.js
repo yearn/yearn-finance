@@ -14,6 +14,7 @@ import {
   calculateAmountInFromSell,
 } from 'utils/cover';
 import { formatNumber } from 'utils/string';
+
 import Web3 from 'web3';
 
 const StyledTokenIcon = styled(TokenIcon)`

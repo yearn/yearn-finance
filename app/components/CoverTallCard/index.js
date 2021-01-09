@@ -4,7 +4,7 @@ import { selectContractData } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import TokenIcon from 'components/TokenIcon';
-import { addCommasToNumber } from 'utils/string';
+import { formatNumber } from 'utils/string';
 import { calculateAmountNeeded } from 'utils/cover';
 
 const Wrapper = styled.div`
@@ -109,10 +109,7 @@ const ChangeText = ({ amount, operation }) => {
     PlusOrMinusComponent = MinusText;
   }
 
-  const amountText = amount
-    ? `${operator}${addCommasToNumber(Number(amount).toFixed(2))}`
-    : '';
-
+  const amountText = amount ? `${operator}${formatNumber(Number(amount))}` : '';
   return <PlusOrMinusComponent>{amountText}</PlusOrMinusComponent>;
 };
 
@@ -148,7 +145,7 @@ export default function CoverTallCard(props) {
     protocol,
     `coverObjects.${claimNonce}.tokens.claimTotalSupply.hex`,
   );
-  const totalSupply = addCommasToNumber(
+  const totalSupply = formatNumber(
     new BigNumber(totalSupplyHex)
       .dividedBy(10 ** collateralDecimals)
       .toFixed(0),
@@ -205,7 +202,7 @@ export default function CoverTallCard(props) {
 
   const equivalentToText =
     equivalentToAmount && equivalentToAmount !== '0'
-      ? `+${addCommasToNumber(Number(equivalentToAmount).toFixed(2))}`
+      ? `+${formatNumber(Number(equivalentToAmount))}`
       : '';
 
   const accountCoverage = new BigNumber(claimTokenBalanceOf)

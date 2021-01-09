@@ -35,12 +35,12 @@ export const abbreviateNumber = value => {
   return newValue;
 };
 
-export const addCommasToNumber = val => {
-  if (!val) return '';
-  while (/(\d+)(\d{3})/.test(val.toString())) {
-    val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
-  }
-  return val;
+export const formatNumber = val => {
+  if (!val || _.isNaN(val)) return '';
+  return Number(val).toLocaleString(undefined, {
+    maximumFractionDigits: 2,
+    useGrouping: true,
+  });
 };
 
 export const removeDecimals = val => {

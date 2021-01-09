@@ -25,6 +25,7 @@ function CoverProtocolDetail(props) {
   const [buyAmount, setBuyAmount] = useState();
   const [sellAmount, setSellAmount] = useState();
   const [buyEquivalentTo, setBuyEquivalentTo] = useState();
+  const [sellEquivalentTo, setSellEquivalentTo] = useState();
   const poolData = useSelector(selectPoolData());
   const claimNonce = _.get(protocol, 'claimNonce');
   const claimAddress = _.get(
@@ -58,14 +59,17 @@ function CoverProtocolDetail(props) {
           protocol={protocol}
           amount={sellAmount}
           setAmount={setSellAmount}
+          setEquivalentTo={setSellEquivalentTo}
           claimPool={claimPool}
           claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
         />
       </BuySellWrapper>
       <CoverTallCard
         protocol={protocol}
-        amount={buyAmount}
-        equivalentTo={buyEquivalentTo}
+        buyAmount={buyAmount}
+        buyEquivalentTo={buyEquivalentTo}
+        sellAmount={sellAmount}
+        sellEquivalentTo={sellEquivalentTo}
         claimPool={claimPool}
         claimTokenBalanceOf={claimTokenBalanceOf}
         claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}

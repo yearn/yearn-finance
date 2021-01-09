@@ -286,7 +286,7 @@ function CoverDetailCardBuy(props) {
     const newAmount = evt.target.value;
     setAmount(newAmount);
     const tokensNeeded = calculateAmountNeeded(newAmount, claimPool);
-    let equivalentToVal = '0';
+    let equivalentToVal = 0;
     if (claimPool.price && tokensNeeded) {
       equivalentToVal = tokensNeeded;
     }
@@ -307,6 +307,7 @@ function CoverDetailCardBuy(props) {
 
     amountRef.current.value = newAmount.toFixed(2);
     setAmount(newAmount);
+    setEquivalentTo(val);
   };
 
   const updateEquivalentTo = evt => {

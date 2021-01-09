@@ -13,6 +13,7 @@ import {
   calculateAmountOutFromSell,
   calculateAmountInFromSell,
 } from 'utils/cover';
+import { formatNumber } from 'utils/string';
 import Web3 from 'web3';
 
 const StyledTokenIcon = styled(TokenIcon)`
@@ -389,8 +390,8 @@ function CoverDetailCardSell(props) {
       <BottomRight>
         <AmountText>Summary</AmountText>
         <SummaryText>
-          You will sell {amount || '0'} claim tokens and will get back{' '}
-          {equivalentDai} DAI.
+          You will sell {formatNumber(amount) || '0'} claim tokens and will get
+          back {formatNumber(equivalentDai)} DAI.
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary" onClick={sellCover}>

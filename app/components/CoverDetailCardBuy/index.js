@@ -14,7 +14,7 @@ import {
   selectTokenAllowance,
 } from 'containers/App/selectors';
 import { calculateAmountNeeded, calculateAmountOutFromBuy } from 'utils/cover';
-import { addCommasToNumber } from 'utils/string';
+import { formatNumber } from 'utils/string';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
@@ -439,8 +439,8 @@ function CoverDetailCardBuy(props) {
       <BottomRight>
         <AmountText>Summary</AmountText>
         <SummaryText>
-          You will spend {addCommasToNumber(daiSpendText)} DAI to acquire{' '}
-          {addCommasToNumber(amount)} {protocolDisplayName} claim tokens. Each
+          You will spend {formatNumber(daiSpendText)} DAI to acquire{' '}
+          {formatNumber(amount)} {protocolDisplayName} claim tokens. Each
           {protocolDisplayName} claim token will be redeemable for 1{' '}
           {collateralName} in the event of a hack.
         </SummaryText>

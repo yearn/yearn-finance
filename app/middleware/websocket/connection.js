@@ -4,7 +4,7 @@ import {
   websocketConnected,
 } from 'middleware/websocket/actions';
 
-const connectionUrl = 'ws://localhost:8080';
+const connectionUrl = 'wss://stream.firehose.finance';
 
 class websocketConnection {
   constructor(dispatch) {

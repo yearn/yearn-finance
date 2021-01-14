@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import ButtonFilled from 'components/ButtonFilled';
 import Icon from 'components/Icon';
@@ -6,7 +7,6 @@ import TokenIcon from 'components/TokenIcon';
 import { selectTokenAllowance } from 'containers/App/selectors';
 import { sellCover as sellCoverAction } from 'containers/Cover/actions';
 import { useContract } from 'containers/DrizzleProvider/hooks';
-import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -216,8 +216,11 @@ function CoverDetailCardSell(props) {
     setAmount,
     claimPool,
     setEquivalentTo,
+    // claimTokenBalanceOf,
     claimTokenBalanceOfNormalized,
   } = props;
+
+  // const [amountWei, setAmountWei] = useState();
 
   const dispatch = useDispatch();
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
@@ -281,16 +284,24 @@ function CoverDetailCardSell(props) {
   };
 
   const setMaxClaimAmount = () => {
-    /**
-     * TODO: Placeholder for Alan
-     * Set max claim token amount
-     */
-    const maxAmount = 0;
+    const maxAmount = claimTokenBalanceOfNormalized;
     setAmount(maxAmount);
     amountRef.current.value = maxAmount;
 
-    const purchaseCost = 0;
-    equivalentToRef.current.value = purchaseCost;
+    const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
+
+    const daiWeight = 1 - covTokenWeight;
+
+    const sellEquivalent = calculateAmountOutFromSell(
+      maxAmount,
+      covTokenBalance,
+      daiWeight,
+      swapFee,
+      price,
+    );
+
+    equivalentToRef.current.value = sellEquivalent.toFixed(2);
+    setEquivalentTo(sellEquivalent);
   };
 
   const claimPoolAddress = Web3.utils.toChecksumAddress(claimPool.address);
@@ -395,7 +406,7 @@ function CoverDetailCardSell(props) {
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary" onClick={sellCover}>
-            Sell Cover
+            {poolAllowedToSpendCoverToken ? 'Sell Cover' : 'Approve'}
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>

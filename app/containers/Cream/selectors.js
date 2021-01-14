@@ -3,7 +3,7 @@ import {
   selectContracts,
   selectContractsByTag,
 } from 'containers/App/selectors';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import BigNumber from 'bignumber.js';
 import { COMPTROLLER_ADDRESS, PRICE_ORACLE_ADDRESS } from './constants';

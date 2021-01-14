@@ -166,9 +166,9 @@ function* processResponse(action) {
 }
 
 function* contractsSaga() {
-  yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
-  yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
-  yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
+  // yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
+  // yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
+  // yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
 }
 
 export default contractsSaga;

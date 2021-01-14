@@ -61,6 +61,7 @@ function CoverProtocolDetail(props) {
           setAmount={setSellAmount}
           setEquivalentTo={setSellEquivalentTo}
           claimPool={claimPool}
+          claimTokenBalanceOf={claimTokenBalanceOf}
           claimTokenBalanceOfNormalized={claimTokenBalanceOfNormalized}
         />
       </BuySellWrapper>
@@ -78,5 +79,5 @@ function CoverProtocolDetail(props) {
   );
 }
 
-CoverProtocolDetail.whyDidYouRender = true;
+CoverProtocolDetail.whyDidYouRender = false;
 export default CoverProtocolDetail;

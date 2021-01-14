@@ -90,7 +90,7 @@ export function* initializeDrizzle(action) {
 }
 
 function* drizzleStatusSaga() {
-  yield takeLatest('DRIZZLE_INITIALIZING', initializeDrizzle);
+  // yield takeLatest('DRIZZLE_INITIALIZING', initializeDrizzle);
 }
 
 export default drizzleStatusSaga;

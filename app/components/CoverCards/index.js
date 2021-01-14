@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CoverCard from 'components/CoverCard';
-import { selectContracts } from 'containers/App/selectors';
+import { selectAllContracts } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import { selectProtocols } from 'containers/Cover/selectors';
 
@@ -14,14 +14,15 @@ const Wrapper = styled.div`
 
 function CoverCards() {
   const protocols = useSelector(selectProtocols());
-  const claimTokens = useSelector(selectContracts('coverTokens'));
+  const claimTokens = useSelector(selectAllContracts());
   const [protocolsWithClaim, setProtocolsWithClaim] = useState({});
 
   const renderCoverCard = (protocol, key) => {
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
-    const claimTokenContractData = _.find(claimTokens, {
-      address: claimAddress,
-    });
+    const claimTokenContractData = _.find(
+      claimTokens,
+      (val, claimKey) => claimKey === claimAddress,
+    );
 
     const tokenClaimState = {
       protocolsWithClaim,
@@ -31,6 +32,7 @@ function CoverCards() {
       claimTokenContractData,
       'balanceOf[0].value',
     );
+
     return (
       <CoverCard
         tokenClaimState={tokenClaimState}

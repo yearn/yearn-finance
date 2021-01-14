@@ -132,7 +132,6 @@ function* coverDataLoadedSaga(action) {
       addresses: claimPoolAddresses,
     },
   ]);
-
   yield put(addContracts(contracts));
 }
 

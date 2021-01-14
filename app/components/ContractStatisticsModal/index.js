@@ -145,7 +145,6 @@ export default function TransactionModal(props) {
   const filterReadMethods = readMethod =>
     !_.includes(methodExclusions, readMethod.name);
   const filteredReadMethods = _.filter(readMethods, filterReadMethods);
-
   const fetchData = async () => {
     const contracts = [
       {

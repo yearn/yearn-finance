@@ -3,11 +3,13 @@ import {
   CONNECTION_CONNECTED,
   ACCOUNT_UPDATED,
 } from 'containers/ConnectionProvider/constants';
-import {
-  DRIZZLE_INITIALIZED,
-  GOT_CONTRACT_VAR,
-  CONTRACT_INITIALIZED,
-} from 'containers/DrizzleProvider/constants';
+// import {
+//   DRIZZLE_INITIALIZED,
+//   GOT_CONTRACT_VAR,
+//   CONTRACT_INITIALIZED,
+// } from 'containers/DrizzleProvider/constants';
+
+import { WEBSOCKET_CONNECTED } from 'middleware/websocket/constants';
 import { VAULTS_LOADED } from './constants';
 import { USER_VAULT_STATISTICS_LOADED } from '../Vaults/constants';
 
@@ -18,7 +20,7 @@ export const initialState = {
   loading: {
     vaults: true,
     web3: true,
-    drizzle: true,
+    websocket: true,
     account: true,
   },
   vaults: [],
@@ -26,25 +28,15 @@ export const initialState = {
   localContracts: [],
 };
 
-const loadContractData = (state, draft, action) => {
-  const newDraft = draft;
-  switch (action.type) {
-    default:
-      break;
-  }
-};
-
 /* eslint-disable default-case, no-param-reassign */
 const appReducer = (state = initialState, action) =>
   produce(state, draft => {
-    loadContractData(state, draft, action);
-
     // Utility functions
     const checkReadyState = () => {
       const { loading } = draft;
       const ready =
         !loading.vaults &&
-        !loading.drizzle &&
+        !loading.websocket &&
         !loading.account &&
         !loading.web3;
       draft.ready = ready;
@@ -69,8 +61,8 @@ const appReducer = (state = initialState, action) =>
         draft.loading.account = false;
         checkReadyState();
         break;
-      case DRIZZLE_INITIALIZED:
-        draft.loading.drizzle = false;
+      case WEBSOCKET_CONNECTED:
+        draft.loading.websocket = false;
         checkReadyState();
         break;
     }

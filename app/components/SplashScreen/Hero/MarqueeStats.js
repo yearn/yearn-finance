@@ -58,7 +58,6 @@ export const MarqueStats = () => {
       const {
         market_data: {
           total_volume: { usd: totalVolumeUSD },
-          current_price: { usd: currentPriceUSD },
           market_cap: { usd: marketCapUSD },
         },
       } = cgvalue;

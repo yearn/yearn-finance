@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { useClickAway } from 'react-use';
 import tw, { css } from 'twin.macro';
 import ConnectButton from 'components/ConnectButton';
 import { Link } from 'react-router-dom';
@@ -24,6 +23,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
             <a
               key={link.href}
               href={link.href}
+              target="_blank"
               tw="flex items-start no-underline"
             >
               <div
@@ -117,13 +117,10 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
 
 const MenuItem = ({ text, isActive, setIsActive, links }) => {
   const ref = useRef(null);
-  useClickAway(ref, () => {
-    setIsActive(false);
-  });
 
   if (Array.isArray(links)) {
     return (
-      <div tw="relative">
+      <div tw="relative" onMouseLeave={() => setIsActive(false)}>
         <button
           type="button"
           onClick={() => {
@@ -155,7 +152,13 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
 
   return links.href.includes('http') ? (
     <div tw="relative">
-      <a href={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
+      <a
+        href={`${links.href}`}
+        role="button"
+        tabIndex="0"
+        target="_blank"
+        tw="no-underline"
+      >
         <p
           css={[isActive === text && tw`text-yearn-blue`]}
           tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

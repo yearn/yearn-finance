@@ -15,7 +15,7 @@ export default function VaultsHeader() {
       <ColumnHeader>Asset</ColumnHeader>
       <ColumnHeader>Deposited</ColumnHeader>
       <ColumnHeader>Growth</ColumnHeader>
-      <ColumnHeader>Vault TVL</ColumnHeader>
+      <ColumnHeader>Vault Balance</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
     </ColumnList>
   );

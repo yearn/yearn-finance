@@ -12,10 +12,11 @@ export default function ButtonFilled(props) {
     root: {
       fontFamily: 'Roboto',
       fontSize: '16px',
-      padding: '8px 20px 5px 20px',
+      padding: '8px 20px 8px 20px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
       direction: 'ltr',
+      height: '46px',
       textTransform: showDevVaults ? 'inherit' : 'capitalize',
       backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       color: color === 'secondary' ? '#333' : '#fff',

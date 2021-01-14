@@ -5,8 +5,6 @@ import {
   getShortenedAddress,
   abbreviateRelativeTime,
   daysFromNow,
-  formatNumber,
-  removeDecimals,
 } from 'utils/string';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
@@ -127,22 +125,22 @@ const CountdownText = styled.div`
   display: flex;
 `;
 
-const Copy = styled(Icon)`
-  top: 2px;
-  left: 6px;
-  position: relative;
-`;
+// const Copy = styled(Icon)`
+//   top: 2px;
+//   left: 6px;
+//   position: relative;
+// `;
 
 const Clock = styled(Icon)`
   left: -5px;
   position: relative;
 `;
 
-const Stats = styled(Icon)`
-  top: 0px;
-  left: 0px;
-  position: relative;
-`;
+// const Stats = styled(Icon)`
+//   top: 0px;
+//   left: 0px;
+//   position: relative;
+// `;
 
 const PercentLeft = styled.div`
   font-family: 'Roboto Mono Light';
@@ -174,11 +172,11 @@ export default function CoverCard(props) {
 
   const expirationTimestamp =
     protocol.expirationTimestamps[protocol.claimNonce];
-  const totalCollateral =
-    protocol.coverObjects[protocol.claimNonce].collateralStaked;
+  // const totalCollateral =
+  //   protocol.coverObjects[protocol.claimNonce].collateralStaked;
 
-  const { collateralName } = protocol.coverObjects[protocol.claimNonce];
-  const totalCollateralStr = formatNumber(removeDecimals(totalCollateral));
+  // const { collateralName } = protocol.coverObjects[protocol.claimNonce];
+  // const totalCollateralStr = formatNumber(removeDecimals(totalCollateral));
 
   const countDown = abbreviateRelativeTime(currentTime, expirationTimestamp);
   const coverDaysLeft = daysFromNow(currentTime, expirationTimestamp);
@@ -209,22 +207,16 @@ export default function CoverCard(props) {
       <React.Fragment>
         <Top>
           <div>
-            <PercentLeft>5% left</PercentLeft>
-            <TotalCollateral>
-              {totalCollateralStr} {collateralName}
-            </TotalCollateral>
+            <PercentLeft />
+            <TotalCollateral />
           </div>
-          <div>
-            <Stats type="stats" />
-          </div>
+          <div />
         </Top>
         <Middle>
           <StyledTokenIcon address={protocolTokenAddress} />
           <ProtocolName>{protocolDisplayName}</ProtocolName>
           <ProtocolUrlPlaceholder />
-          <Address>
-            {shortenedAddress} <Copy type="copy" />
-          </Address>
+          <Address>{shortenedAddress}</Address>
         </Middle>
         <Bottom
           userHasClaimForProtocol={userHasClaimForProtocol}

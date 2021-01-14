@@ -320,11 +320,12 @@ function CoverDetailCardBuy(props) {
      * TODO: Placeholder for Graham
      * Set max claim token amount
      */
-    const maxAmount = 500;
-    setAmount(maxAmount);
-    amountRef.current.value = maxAmount;
+    updateEquivalentToVal(daiBalanceOfNormalized);
+    // const maxAmount = 500;
+    // setAmount(maxAmount);
+    // amountRef.current.value = maxAmount;
 
-    const purchaseCost = 0;
+    const purchaseCost = daiBalanceOfNormalized;
     setEquivalentTo(purchaseCost);
     equivalentToRef.current.value = purchaseCost;
   };
@@ -446,7 +447,7 @@ function CoverDetailCardBuy(props) {
         </SummaryText>
         <ButtonWrapper>
           <ButtonFilled variant="contained" color="primary" onClick={buyCover}>
-            Buy Cover
+            {poolAllowedToSpendDai ? 'Buy Cover' : 'Approve'}
           </ButtonFilled>
         </ButtonWrapper>
       </BottomRight>

@@ -1,6 +1,5 @@
 import VaultControls from 'components/VaultControls';
-import React, { memo } from 'react';
-import { compose } from 'redux';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
@@ -17,7 +16,7 @@ import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
-import tw, { theme } from 'twin.macro';
+import tw from 'twin.macro';
 
 const formatVaultStatistic = stat => {
   switch (stat) {
@@ -77,9 +76,6 @@ const IconName = styled.div`
   overflow: hidden;
   padding-right: 10px;
   text-overflow: ellipsis;
-  &:hover {
-    color: ${theme('colors.yearn.blue')};
-  }
 `;
 
 const StyledArrow = styled.img`
@@ -111,6 +107,7 @@ const Footer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
+  width: 100%;
 `;
 
 const StatsIcon = styled(Icon)`
@@ -147,7 +144,6 @@ const LinkWrap = props => {
 };
 
 const Vault = props => {
-  const [isHovered, setIsHovered] = React.useState(false);
   const { vault, showDevVaults, active } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
@@ -176,7 +172,7 @@ const Vault = props => {
 
   const tokenBalance = _.get(tokenContractData, 'balanceOf');
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
-  const tokenName = name || _.get(tokenContractData, 'name');
+  // const tokenName = name || _.get(tokenContractData, 'name');
 
   const vaultName = vaultAlias || name;
 
@@ -240,32 +236,14 @@ const Vault = props => {
     vaultTop = (
       <ColumnListDev>
         <IconAndName>
-          {isHovered ? (
-            <LinkWrap devMode={devMode} address={address}>
-              <IconName
-                onMouseLeave={() => setIsHovered(false)}
-                devMode={devMode}
-              >
-                {tokenName}
-              </IconName>
-            </LinkWrap>
-          ) : (
-            <>
-              <LinkWrap devMode={devMode} address={address}>
-                <StyledTokenIcon address={tokenContractAddress} />
-              </LinkWrap>
-              <LinkWrap devMode={devMode} address={address}>
-                <div
-                  tw="flex"
-                  onMouseLeave={() => setIsHovered(false)}
-                  onMouseEnter={() => setIsHovered(true)}
-                >
-                  <IconName devMode={devMode}>{vaultName}</IconName>
-                  <Icon type="info" />
-                </div>
-              </LinkWrap>
-            </>
-          )}
+          <LinkWrap devMode={devMode} address={address}>
+            <StyledTokenIcon address={tokenContractAddress} />
+          </LinkWrap>
+          <LinkWrap devMode={devMode} address={address}>
+            <div tw="flex">
+              <IconName devMode={devMode}>{vaultName}</IconName>
+            </div>
+          </LinkWrap>
         </IconAndName>
         <div>{contractType}</div>
         <div>
@@ -328,34 +306,14 @@ const Vault = props => {
     vaultTop = (
       <ColumnList>
         <IconAndName>
-          {isHovered ? (
-            <LinkWrap devMode={devMode} address={address}>
-              <IconName
-                onMouseLeave={() => setIsHovered(false)}
-                devMode={devMode}
-              >
-                {tokenName}
-              </IconName>
-            </LinkWrap>
-          ) : (
-            <>
-              <LinkWrap devMode={devMode} address={address}>
-                <StyledTokenIcon address={tokenContractAddress} />
-              </LinkWrap>
-              <LinkWrap devMode={devMode} address={address}>
-                <div
-                  tw="flex items-center"
-                  onMouseLeave={() => setIsHovered(false)}
-                  onMouseEnter={() => setIsHovered(true)}
-                >
-                  <IconName devMode={devMode}>{vaultName}</IconName>
-                  <div tw="h-4 w-4">
-                    <Icon type="info" />
-                  </div>
-                </div>
-              </LinkWrap>
-            </>
-          )}
+          <LinkWrap devMode={devMode} address={address}>
+            <StyledTokenIcon address={tokenContractAddress} />
+          </LinkWrap>
+          <LinkWrap devMode={devMode} address={address}>
+            <div tw="flex items-center">
+              <IconName devMode={devMode}>{vaultName}</IconName>
+            </div>
+          </LinkWrap>
         </IconAndName>
         <div>
           <AnimatedNumber value={vaultBalanceOf} />
@@ -400,4 +358,4 @@ const Vault = props => {
   );
 };
 Vault.whyDidYouRender = false;
-export default compose(memo)(Vault);
+export default Vault;

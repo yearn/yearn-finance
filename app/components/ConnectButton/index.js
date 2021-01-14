@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import tw, { styled } from 'twin.macro';
 import {
   useWallet,

@@ -11,6 +11,7 @@ import { unlockDevMode } from 'containers/DevMode/actions';
 import { setThemeMode } from 'containers/ThemeProvider/actions';
 import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
+import { websocketConnect } from 'middleware/websocket/actions';
 import { APP_READY, APP_INITIALIZED } from './constants';
 
 function* loadVaultContracts() {
@@ -127,8 +128,13 @@ function* watchTransactions(action) {
   notify.hash(txHash);
 }
 
+function* connectWebsocket() {
+  yield put(websocketConnect());
+}
+
 export default function* initialize() {
   yield takeLatest(APP_READY, loadVaultContracts);
   yield takeLatest(TX_BROADCASTED, watchTransactions);
+  yield takeLatest(APP_INITIALIZED, connectWebsocket);
   yield takeLatest(APP_INITIALIZED, startKonamiWatcher);
 }

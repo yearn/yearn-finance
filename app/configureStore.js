@@ -9,6 +9,7 @@ import { all, fork } from 'redux-saga/effects';
 import createSagaMiddleware from 'redux-saga';
 import drizzleMiddleware from 'drizzle/store/drizzle-middleware';
 import drizzleWeb3Middleware from 'middleware/drizzleWeb3';
+import websocketMiddleware from 'middleware/websocket';
 import createReducer from './reducers';
 
 export default function configureStore(initialState = {}, history) {
@@ -32,6 +33,7 @@ export default function configureStore(initialState = {}, history) {
   }
 
   const composeSagas = sagas =>
+    // eslint-disable-next-line
     function*() {
       yield all(sagas.map(fork));
     };
@@ -47,6 +49,7 @@ export default function configureStore(initialState = {}, history) {
   const middlewares = [
     drizzleMiddleware,
     drizzleWeb3Middleware,
+    websocketMiddleware,
     sagaMiddleware,
     routerMiddleware(history),
   ];

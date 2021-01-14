@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const Input = styled.input`
   background: #ffffff;
   border-radius: 5px;
-  width: 330px;
   height: 47px;
   outline: none;
   border: 0px;
@@ -18,6 +17,7 @@ const Input = styled.input`
   letter-spacing: 0.529412px;
   color: #111111;
   padding: 0px 13px;
+  width: 100%;
   padding-right: 40%;
   box-sizing: border-box;
   &:disabled {
@@ -27,6 +27,7 @@ const Input = styled.input`
 
 const Wrapper = styled.div`
   position: relative;
+  width: 330px;
 `;
 
 const Right = styled.div`

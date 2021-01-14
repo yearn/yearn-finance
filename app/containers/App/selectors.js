@@ -73,7 +73,6 @@ export const selectContractData = contractAddress =>
     selectContractsData,
     substate => {
       const contractData = substate[contractAddress] || {};
-
       const flattenedData = flattenData(contractData);
       return flattenedData;
     },

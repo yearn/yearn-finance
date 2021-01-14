@@ -61,6 +61,7 @@ const VaultsWrapper = props => {
   const { showDevVaults } = props;
   const vaults = useSelector(selectVaults('vaults'));
   const localContracts = useSelector(selectContracts('localContracts'));
+
   const currentEventKey = useContext(AccordionContext);
   const renderVault = vault => (
     <Vault

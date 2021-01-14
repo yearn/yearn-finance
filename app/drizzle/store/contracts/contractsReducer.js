@@ -12,42 +12,47 @@ const contractsReducer = (state = initialState, action) =>
   // eslint-disable-next-line no-unused-vars
   produce(state, draft => {
     switch (action.type) {
-      case 'BATCH_CALL_RESPONSE': {
-        const { payload: contracts } = action;
+      case 'WEBSOCKET_MESSAGE_RECEIVED': {
+        const { data } = action;
 
         const mergeContractState = contractState => {
-          const { address } = contractState;
-          const addressState = state[address];
+          const {
+            address,
+            method,
+            topic,
+            args,
+            value,
+            updated,
+          } = contractState;
+          const addressState = state[address] || draft[address];
           const addressInitialized = !!addressState;
           if (!addressInitialized) {
             draft[address] = {};
           }
-          const mergeState = (val, key) => {
-            const existingState = _.get(state, `${address}.${key}`, []);
-            const valIsNotArray = !_.isArray(val);
-            if (valIsNotArray) {
-              draft[address][key] = val;
-            } else {
-              const newState = existingState;
+          const existingState = _.get(addressState, method, []);
 
-              const addIfInputUnique = item => {
-                const { input } = item;
-                const matchingInput = _.find(existingState, { input });
-                if (!input || !matchingInput) {
-                  newState.push(item);
-                } else if (matchingInput) {
-                  matchingInput.value = item.value;
-                } else {
-                  console.log('Error in contracts reducer'); // Should not be able to get here
-                }
-              };
-              _.each(val, addIfInputUnique);
-              draft[address][key] = newState;
-            }
+          const newState = existingState;
+
+          const methodState = {
+            topic,
+            args,
+            updated,
+            method,
+            value,
           };
-          _.each(contractState, mergeState);
+          const matchingInput = _.find(existingState, { topic });
+          if (!topic || !matchingInput) {
+            newState.push(methodState);
+          } else if (matchingInput) {
+            matchingInput.value = contractState.value;
+          } else {
+            console.log('Error in contracts reducer'); // Should not be able to get here
+          }
+
+          draft[address][method] = _.clone(newState);
         };
-        _.each(contracts, mergeContractState);
+
+        _.each(data.payload, mergeContractState);
         break;
       }
       case 'DELETE_CONTRACT': {

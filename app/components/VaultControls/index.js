@@ -161,6 +161,8 @@ function AmountField({
           );
 
           gweiAmountSetter(gweiAmount);
+        } else {
+          gweiAmountSetter(0);
         }
       }}
     />
@@ -188,7 +190,7 @@ function Balance({ amount, prefix }) {
   return (
     <div>
       {prefix}
-      {Number(amount).toFixed(2)}
+      {new BigNumber(amount).toFixed(2)}
     </div>
   );
 }

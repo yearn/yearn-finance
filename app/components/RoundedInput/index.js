@@ -45,6 +45,7 @@ export const RoundedInput = React.forwardRef((props, ref) => {
     <Wrapper className={className}>
       <Input
         type="text"
+        inputmode="decimal"
         value={value}
         disabled={disabled}
         onChange={onChange}

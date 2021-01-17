@@ -277,9 +277,9 @@ function CoverDetailCardBuy(props) {
   const daiBalanceOf = _.get(daiData, 'balanceOf[0].value');
   let daiBalanceOfNormalized = new BigNumber(daiBalanceOf)
     .dividedBy(10 ** 18)
-    .toFixed(2);
+    .toFixed(5);
   if (Number.isNaN(daiBalanceOfNormalized)) {
-    daiBalanceOfNormalized = '...';
+    daiBalanceOfNormalized = '0';
   }
 
   const updateAmount = evt => {
@@ -290,7 +290,7 @@ function CoverDetailCardBuy(props) {
     if (claimPool.price && tokensNeeded) {
       equivalentToVal = tokensNeeded;
     }
-    equivalentToRef.current.value = equivalentToVal.toFixed(2);
+    equivalentToRef.current.value = equivalentToVal.toFixed(5);
     setEquivalentTo(equivalentToVal);
   };
 
@@ -305,14 +305,10 @@ function CoverDetailCardBuy(props) {
       price,
     );
 
-    amountRef.current.value = newAmount.toFixed(2);
     setAmount(newAmount);
     setEquivalentTo(val);
-  };
-
-  const updateEquivalentTo = evt => {
-    const newPurchaseAmount = evt.target.value;
-    updateEquivalentToVal(newPurchaseAmount);
+    amountRef.current.value = newAmount.toFixed(5);
+    equivalentToRef.current.value = val;
   };
 
   const setMaxClaimAmount = () => {
@@ -320,14 +316,12 @@ function CoverDetailCardBuy(props) {
      * TODO: Placeholder for Graham
      * Set max claim token amount
      */
-    updateEquivalentToVal(daiBalanceOfNormalized);
-    // const maxAmount = 500;
-    // setAmount(maxAmount);
-    // amountRef.current.value = maxAmount;
 
-    const purchaseCost = daiBalanceOfNormalized;
-    setEquivalentTo(purchaseCost);
-    equivalentToRef.current.value = purchaseCost;
+    const maxAmountNormalized = new BigNumber(daiBalanceOf)
+      .dividedBy(10 ** 18)
+      .toFixed(5);
+
+    updateEquivalentToVal(maxAmountNormalized);
   };
 
   const buyCover = async () => {
@@ -431,7 +425,7 @@ function CoverDetailCardBuy(props) {
           <BottomInputWrapper>
             <RoundedInput
               right={claimInputBottom}
-              onChange={updateEquivalentTo}
+              onChange={evt => updateEquivalentToVal(evt.target.value)}
               ref={equivalentToRef}
             />
           </BottomInputWrapper>
@@ -441,7 +435,7 @@ function CoverDetailCardBuy(props) {
         <AmountText>Summary</AmountText>
         <SummaryText>
           You will spend {formatNumber(daiSpendText)} DAI to acquire{' '}
-          {formatNumber(amount)} {protocolDisplayName} claim tokens. Each
+          {formatNumber(amount)} {protocolDisplayName} claim tokens. Each{' '}
           {protocolDisplayName} claim token will be redeemable for 1{' '}
           {collateralName} in the event of a hack.
         </SummaryText>

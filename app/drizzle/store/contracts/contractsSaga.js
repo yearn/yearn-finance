@@ -54,63 +54,63 @@ function* callListenForContractEvent({ contract, eventName, eventOptions }) {
  * Send and Cache
  */
 
-function createTxChannel({
-  txObject,
-  stackId,
-  sendArgs = {},
-  contractName,
-  stackTempKey,
-}) {
-  let persistTxHash;
+// function createTxChannel({
+//   txObject,
+//   stackId,
+//   sendArgs = {},
+//   contractName,
+//   stackTempKey,
+// }) {
+//   let persistTxHash;
 
-  return eventChannel(emit => {
-    const txPromiEvent = txObject
-      .send(sendArgs)
-      .on('transactionHash', txHash => {
-        persistTxHash = txHash;
+//   return eventChannel(emit => {
+//     const txPromiEvent = txObject
+//       .send(sendArgs)
+//       .on('transactionHash', txHash => {
+//         persistTxHash = txHash;
 
-        emit({ type: 'TX_BROADCASTED', txHash, stackId });
-        emit({ type: 'CONTRACT_SYNC_IND', contractName });
-      })
-      .on('confirmation', (confirmationNumber, receipt) => {
-        emit({
-          type: 'TX_CONFIRMAITON',
-          confirmationReceipt: receipt,
-          txHash: persistTxHash,
-        });
-      })
-      .on('receipt', receipt => {
-        emit({
-          type: 'TX_SUCCESSFUL',
-          receipt,
-          txHash: persistTxHash,
-        });
-        emit(END);
-      })
-      .on('error', (error, receipt) => {
-        console.error(error);
-        console.error(receipt);
+//         emit({ type: 'TX_BROADCASTED', txHash, stackId });
+//         emit({ type: 'CONTRACT_SYNC_IND', contractName });
+//       })
+//       .on('confirmation', (confirmationNumber, receipt) => {
+//         emit({
+//           type: 'TX_CONFIRMAITON',
+//           confirmationReceipt: receipt,
+//           txHash: persistTxHash,
+//         });
+//       })
+//       .on('receipt', receipt => {
+//         emit({
+//           type: 'TX_SUCCESSFUL',
+//           receipt,
+//           txHash: persistTxHash,
+//         });
+//         emit(END);
+//       })
+//       .on('error', (error, receipt) => {
+//         console.error(error);
+//         console.error(receipt);
 
-        emit({ type: 'TX_ERROR', error, stackTempKey });
-        emit(END);
-      });
+//         emit({ type: 'TX_ERROR', error, stackTempKey });
+//         emit(END);
+//       });
 
-    const unsubscribe = () => {
-      txPromiEvent.off();
-    };
+//     const unsubscribe = () => {
+//       txPromiEvent.off();
+//     };
 
-    return unsubscribe;
-  });
-}
+//     return unsubscribe;
+//   });
+// }
 
-function isSendOrCallOptions(options) {
-  if ('from' in options) return true;
-  if ('gas' in options) return true;
-  if ('gasPrice' in options) return true;
-  if ('value' in options) return true;
+// function isSendOrCallOptions(options) {
+//   if ('from' in options) return true;
+//   if ('gas' in options) return true;
+//   if ('gasPrice' in options) return true;
+//   if ('value' in options) return true;
 
-  return false;
-}
+//   return false;
+// }
 
 function* executeBatchCall(action) {
   const { request, batchCall } = action;
@@ -166,9 +166,9 @@ function* processResponse(action) {
 }
 
 function* contractsSaga() {
-  // yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
-  // yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
-  // yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
+  yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
+  yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
+  yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
 }
 
 export default contractsSaga;

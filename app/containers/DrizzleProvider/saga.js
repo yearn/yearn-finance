@@ -180,7 +180,8 @@ function* addContractsBatch(contractBatch) {
 }
 
 export function* addContracts(action) {
-  const { contracts: contractsBatch, websocket } = action;
+  // const { contracts: contractsBatch, websocket } = action;
+  const { contracts: contractsBatch } = action;
   yield setContext(action);
 
   yield all(
@@ -189,41 +190,41 @@ export function* addContracts(action) {
     ),
   );
 
-  const subscriptions = [];
-  const buildSubscriptions = subscriptionData => {
-    const { addresses, readMethods } = subscriptionData;
-    const buildCurrentSubscription = address => {
-      const buildReadMethods = method => {
-        const subscription = {
-          args: method.args,
-          method: method.name,
-          address,
-        };
-        if (!method.args) {
-          delete subscription.args;
-        }
-        return subscription;
-      };
-      const subscription = _.map(readMethods, buildReadMethods);
-      subscriptions.push(...subscription);
-    };
-    _.each(addresses, buildCurrentSubscription);
-  };
-  _.each(contractsBatch, buildSubscriptions);
+  // const subscriptions = [];
+  // const buildSubscriptions = subscriptionData => {
+  //   const { addresses, readMethods } = subscriptionData;
+  //   const buildCurrentSubscription = address => {
+  //     const buildReadMethods = method => {
+  //       const subscription = {
+  //         args: method.args,
+  //         method: method.name,
+  //         address,
+  //       };
+  //       if (!method.args) {
+  //         delete subscription.args;
+  //       }
+  //       return subscription;
+  //     };
+  //     const subscription = _.map(readMethods, buildReadMethods);
+  //     subscriptions.push(...subscription);
+  //   };
+  //   _.each(addresses, buildCurrentSubscription);
+  // };
+  // _.each(contractsBatch, buildSubscriptions);
 
-  const subscriptionMessage = {
-    action: 'subscribe',
-    topic: 'contractState',
-    data: subscriptions,
-  };
+  // const subscriptionMessage = {
+  //   action: 'subscribe',
+  //   topic: 'contractState',
+  //   data: subscriptions,
+  // };
 
-  websocket.connection.send(JSON.stringify(subscriptionMessage));
+  // websocket.connection.send(JSON.stringify(subscriptionMessage));
   // // Split up contract calls into batches (1 contract type per batch... vaults/tokens/localContracts) rather than call them all in the same RPC message
   // // eslint-disable-next-line no-restricted-syntax
   // for (const contractBatch of contractsBatch) {
   //   yield put({ type: 'BATCH_CALL_REQUEST', request: [contractBatch] });
   // }
-  // yield put({ type: 'BATCH_CALL_REQUEST', request: contractsBatch });
+  yield put({ type: 'BATCH_CALL_REQUEST', request: contractsBatch });
 }
 
 export default function* initialize() {

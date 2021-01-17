@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 
 // Initialization Functions
-import { initializeWeb3, getNetworkId } from '../web3/web3Saga';
+import { initializeWeb3 } from '../web3/web3Saga';
 // import { getAccounts } from '../accounts/accountsSaga';
 // import { getAccountBalances } from '../accountBalances/accountBalancesSaga';
 
@@ -90,7 +90,7 @@ export function* initializeDrizzle(action) {
 }
 
 function* drizzleStatusSaga() {
-  // yield takeLatest('DRIZZLE_INITIALIZING', initializeDrizzle);
+  yield takeLatest('DRIZZLE_INITIALIZING', initializeDrizzle);
 }
 
 export default drizzleStatusSaga;

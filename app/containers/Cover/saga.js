@@ -13,7 +13,7 @@ import Web3 from 'web3';
 import { coverDataLoaded } from './actions';
 import {
   COVER_DATA_LOADED,
-  INITIALIZE_COVER,
+  // INITIALIZE_COVER,
   BUY_COVER,
   DAI_ADDRESS,
   MAX_UINT256,
@@ -251,7 +251,7 @@ function* sellCover(action) {
 
 export default function* watchers() {
   yield takeLatest(ACCOUNT_UPDATED, fetchCoverData);
-  yield takeLatest(INITIALIZE_COVER, fetchCoverData);
+  // yield takeLatest(INITIALIZE_COVER, fetchCoverData);
   yield takeLatest(COVER_DATA_LOADED, coverDataLoadedSaga);
   yield takeLatest(BUY_COVER, buyCover);
   yield takeLatest(SELL_COVER, sellCover);

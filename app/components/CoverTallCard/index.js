@@ -195,9 +195,9 @@ export default function CoverTallCard(props) {
 
   let tokenPrice = 'Unknown';
   if (claimPool.price && tokenAmount && tokenAmount !== '0') {
-    tokenPrice = (tokensNeeded / parseFloat(tokenAmount)).toFixed(2);
+    tokenPrice = (tokensNeeded / parseFloat(tokenAmount)).toFixed(5);
   } else if (claimPool.price) {
-    tokenPrice = claimPool.price.toFixed(2);
+    tokenPrice = claimPool.price.toFixed(5);
   }
 
   const equivalentToText =
@@ -208,7 +208,7 @@ export default function CoverTallCard(props) {
   const accountCoverage = new BigNumber(claimTokenBalanceOf)
     .times(claimPool.price)
     .dividedBy(10 ** 18)
-    .toFixed(2);
+    .toFixed(5);
 
   return (
     <div>

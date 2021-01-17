@@ -255,7 +255,7 @@ function CoverDetailCardSell(props) {
       price,
     );
 
-    equivalentToRef.current.value = sellEquivalent.toFixed(2);
+    equivalentToRef.current.value = sellEquivalent.toFixed(5);
     setEquivalentTo(sellEquivalent);
   };
 
@@ -273,7 +273,7 @@ function CoverDetailCardSell(props) {
       price,
     );
 
-    amountRef.current.value = newAmount.toFixed(2);
+    amountRef.current.value = newAmount.toFixed(5);
     setAmount(newAmount);
     setEquivalentTo(val);
   };
@@ -300,7 +300,7 @@ function CoverDetailCardSell(props) {
       price,
     );
 
-    equivalentToRef.current.value = sellEquivalent.toFixed(2);
+    equivalentToRef.current.value = sellEquivalent.toFixed(5);
     setEquivalentTo(sellEquivalent);
   };
 

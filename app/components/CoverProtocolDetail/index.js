@@ -37,7 +37,7 @@ function CoverProtocolDetail(props) {
   const claimTokenBalanceOf = _.get(claimTokenContractData, 'balanceOf');
   const claimTokenBalanceOfNormalized = new BigNumber(claimTokenBalanceOf)
     .dividedBy(10 ** 18)
-    .toFixed(2);
+    .toFixed(5);
 
   if (!(poolData && claimAddress)) {
     return <div />;

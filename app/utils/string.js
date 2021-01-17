@@ -38,7 +38,7 @@ export const abbreviateNumber = value => {
 export const formatNumber = val => {
   if (!val || _.isNaN(val)) return '';
   return Number(val).toLocaleString(undefined, {
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 5,
     useGrouping: true,
   });
 };

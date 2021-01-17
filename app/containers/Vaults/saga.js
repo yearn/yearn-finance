@@ -20,7 +20,7 @@ import {
 
 function* fetchVaults() {
   try {
-    const url = `https://api.yearn.tools/vaults?apy=true`;
+    const url = `https://api.yearn.tools/vaults/all`;
     const vaults = yield call(request, url);
     yield put(vaultsLoaded(vaults));
   } catch (err) {

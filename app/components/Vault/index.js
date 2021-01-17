@@ -74,6 +74,7 @@ const StyledTokenIcon = styled(TokenIcon)`
 
 const IconName = styled.div`
   overflow: hidden;
+  max-width: 188px;
   padding-right: 10px;
   text-overflow: ellipsis;
 `;
@@ -130,7 +131,7 @@ const truncateApy = apy => {
 const LinkWrap = props => {
   const { devMode, children, address } = props;
   if (!devMode) {
-    return children;
+    return children || null;
   }
   return (
     <A
@@ -151,7 +152,6 @@ const Vault = props => {
     tokenAddress,
     tokenSymbolAlias,
     decimals,
-    token,
     name,
     totalAssets,
     balance,
@@ -160,12 +160,13 @@ const Vault = props => {
     vaultAlias,
     statistics,
     getPricePerFullShare,
+    pricePerShare,
   } = vault;
 
   const { openModal } = useModal();
 
   const devMode = useSelector(selectDevMode());
-  const tokenContractAddress = tokenAddress || token;
+  const tokenContractAddress = tokenAddress;
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
@@ -176,14 +177,14 @@ const Vault = props => {
 
   const vaultName = vaultAlias || name || address;
 
-  const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
+  const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
   const tokenBalanceOf = new BigNumber(tokenBalance)
     .dividedBy(10 ** decimals)
     .toFixed();
   const vaultBalanceOf = new BigNumber(balanceOf)
     .dividedBy(10 ** decimals)
-    .multipliedBy(getPricePerFullShare / 10 ** 18)
+    .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** 18)
     .toFixed();
   let vaultAssets = balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);

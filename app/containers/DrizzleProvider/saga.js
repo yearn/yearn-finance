@@ -29,6 +29,7 @@ function* addContract(
   allReadMethods,
   allWriteMethods,
 ) {
+  // console.log('add contract', contractAddress, readMethods);
   const web3 = yield getContext('web3');
   const drizzle = yield getContext('drizzle');
   let newAbi = abi;

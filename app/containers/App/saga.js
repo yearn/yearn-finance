@@ -1,6 +1,7 @@
 import { put, call, takeLatest, take, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import vaultAbi from 'abi/yVault.json';
+import vaultV2Abi from 'abi/v2Vault.json';
 import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -16,7 +17,10 @@ import { APP_READY, APP_INITIALIZED } from './constants';
 
 function* loadVaultContracts() {
   const vaults = yield select(selectVaults());
-  const vaultAddresses = _.map(vaults, vault => vault.address);
+  const v1Vaults = _.filter(vaults, vault => vault.type === 'v1');
+  const v2Vaults = _.filter(vaults, vault => vault.type === 'v2');
+  const v1VaultAddresses = _.map(v1Vaults, vault => vault.address);
+  const v2VaultAddresses = _.map(v2Vaults, vault => vault.address);
   const account = yield select(selectAccount());
   const localContracts = JSON.parse(
     localStorage.getItem('watchedContracts') || '[]',
@@ -31,7 +35,7 @@ function* loadVaultContracts() {
       },
       abi: vaultAbi,
       allReadMethods: false,
-      addresses: vaultAddresses,
+      addresses: v1VaultAddresses,
       readMethods: [
         {
           name: 'name',
@@ -43,6 +47,35 @@ function* loadVaultContracts() {
           args: [account],
         },
         { name: 'getPricePerFullShare' },
+      ],
+      writeMethods: [
+        {
+          name: 'withdraw',
+        },
+        {
+          name: 'deposit',
+        },
+      ],
+    },
+    {
+      namespace: 'vaults',
+      metadata: {
+        version: '2',
+      },
+      abi: vaultV2Abi,
+      allReadMethods: false,
+      addresses: v2VaultAddresses,
+      readMethods: [
+        {
+          name: 'name',
+          constant: true,
+        },
+        { name: 'totalAssets' },
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+        { name: 'pricePerShare' },
       ],
       writeMethods: [
         {
@@ -83,6 +116,9 @@ function* loadVaultContracts() {
   const generateVaultTokenAllowanceSubscriptions = vault => {
     const vaultAddress = vault.address;
     const { tokenAddress } = vault;
+    if (!tokenAddress) {
+      console.log('vault', vault);
+    }
     return {
       namespace: 'tokens',
       abi: erc20Abi,

@@ -174,7 +174,7 @@ const Vault = props => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const vaultName = vaultAlias || name;
+  const vaultName = vaultAlias || name || address;
 
   const apyOneMonthSample = _.get(vault, 'apy.apyOneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
@@ -346,8 +346,6 @@ const Vault = props => {
                   vault={vault}
                   token={tokenContractData}
                   showDevVaults={showDevVaults}
-                  balanceOf={balanceOf}
-                  tokenBalance={tokenBalance}
                   vaultBalance={vaultBalanceOf}
                   walletBalance={tokenBalanceOf}
                 />

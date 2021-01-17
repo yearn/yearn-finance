@@ -5,6 +5,7 @@ import { withdrawFromVault, depositToVault } from 'containers/Vaults/actions';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 
 import { selectTokenAllowance } from 'containers/App/selectors';
 
@@ -42,7 +43,7 @@ const Wrapper = styled.div`
 `;
 
 export default function VaultControls(props) {
-  const { vault, vaultBalance, walletBalance } = props;
+  const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
   const { address: vaultAddress, tokenAddress, decimals } = vault;
 
   const dispatch = useDispatch();
@@ -50,6 +51,8 @@ export default function VaultControls(props) {
   const tokenContract = useContract(tokenAddress);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
+  const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
+  const [depositGweiAmount, setDepositGweiAmount] = useState(0);
 
   const tokenContractAddress =
     (tokenContract && tokenContract.address) || '0x0';
@@ -62,6 +65,8 @@ export default function VaultControls(props) {
   useEffect(() => {
     setDepositAmount(0);
     setWithdrawalAmount(0);
+    setDepositGweiAmount(0);
+    setWithdrawalGweiAmount(0);
   }, [walletBalance, vaultBalance]);
 
   if (!vaultContract || !tokenContract) {
@@ -72,7 +77,7 @@ export default function VaultControls(props) {
     dispatch(
       withdrawFromVault({
         vaultContract,
-        withdrawalAmount,
+        withdrawalAmount: withdrawalGweiAmount,
         decimals,
       }),
     );
@@ -83,7 +88,7 @@ export default function VaultControls(props) {
       depositToVault({
         vaultContract,
         tokenContract,
-        depositAmount,
+        depositAmount: depositGweiAmount,
         decimals,
       }),
     );
@@ -97,7 +102,9 @@ export default function VaultControls(props) {
           <AmountField
             amount={withdrawalAmount}
             amountSetter={setWithdrawalAmount}
-            maxAmount={vaultBalance}
+            gweiAmountSetter={setWithdrawalGweiAmount}
+            maxAmount={balanceOf}
+            decimals={decimals}
           />
           <ActionButton
             handler={withdraw}
@@ -112,7 +119,9 @@ export default function VaultControls(props) {
           <AmountField
             amount={depositAmount}
             amountSetter={setDepositAmount}
-            maxAmount={walletBalance}
+            gweiAmountSetter={setDepositGweiAmount}
+            maxAmount={tokenBalance}
+            decimals={decimals}
           />
           <ActionButton
             handler={deposit}
@@ -125,34 +134,64 @@ export default function VaultControls(props) {
   );
 }
 
-function Balance({ amount, prefix }) {
-  return (
-    <div>
-      {prefix}
-      {Number(amount).toFixed(2)}
-    </div>
-  );
-}
-
-function AmountField({ amount, amountSetter, maxAmount }) {
+function AmountField({
+  amount,
+  amountSetter,
+  gweiAmountSetter,
+  maxAmount,
+  decimals,
+}) {
   return (
     <StyledRoundedInput
       value={amount}
-      right={<MaxButton maxAmount={maxAmount} amountSetter={amountSetter} />}
-      onChange={evt => amountSetter(evt.target.value)}
+      right={
+        <MaxButton
+          maxAmount={maxAmount}
+          amountSetter={amountSetter}
+          gweiAmountSetter={gweiAmountSetter}
+          decimals={decimals}
+        />
+      }
+      onChange={evt => {
+        amountSetter(evt.target.value);
+
+        if (evt.target.value) {
+          const gweiAmount = new BigNumber(evt.target.value).multipliedBy(
+            10 ** decimals,
+          );
+
+          gweiAmountSetter(gweiAmount);
+        } else {
+          gweiAmountSetter(0);
+        }
+      }}
     />
   );
 }
 
-function MaxButton({ maxAmount, amountSetter }) {
+function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
   return (
     <MaxWrapper
       onClick={() => {
-        amountSetter(maxAmount);
+        const normalizedAmount = new BigNumber(maxAmount)
+          .dividedBy(10 ** decimals)
+          .toFixed(2);
+
+        amountSetter(normalizedAmount);
+        gweiAmountSetter(maxAmount);
       }}
     >
       Max
     </MaxWrapper>
+  );
+}
+
+function Balance({ amount, prefix }) {
+  return (
+    <div>
+      {prefix}
+      {new BigNumber(amount).toFixed(2)}
+    </div>
   );
 }
 

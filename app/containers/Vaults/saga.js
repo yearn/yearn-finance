@@ -52,7 +52,7 @@ function* fetchUserVaultStatistics() {
 }
 
 function* withdrawFromVault(action) {
-  const { vaultContract, withdrawalAmount, decimals } = action.payload;
+  const { vaultContract, withdrawalAmount } = action.payload;
 
   const account = yield select(selectAccount());
 
@@ -63,7 +63,6 @@ function* withdrawFromVault(action) {
   const pricePerShare = _.get(vaultContractData, 'getPricePerFullShare');
 
   const sharesForWithdrawal = new BigNumber(withdrawalAmount)
-    .times(10 ** decimals)
     .dividedBy(pricePerShare / 10 ** 18)
     .decimalPlaces(0);
 
@@ -77,12 +76,7 @@ function* withdrawFromVault(action) {
 }
 
 function* depositToVault(action) {
-  const {
-    vaultContract,
-    tokenContract,
-    depositAmount,
-    decimals,
-  } = action.payload;
+  const { vaultContract, tokenContract, depositAmount } = action.payload;
 
   const account = yield select(selectAccount());
   const tokenAllowance = yield select(
@@ -96,9 +90,7 @@ function* depositToVault(action) {
       yield call(approveTxSpend, tokenContract, account, vaultContract.address);
     }
 
-    const depositAmountRaw = new BigNumber(depositAmount).times(10 ** decimals);
-
-    yield call(vaultContract.methods.deposit.cacheSend, depositAmountRaw, {
+    yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
       from: account,
     });
   } catch (error) {

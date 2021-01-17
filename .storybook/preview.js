@@ -1,5 +1,6 @@
 import React from 'react';
 import { addDecorator } from '@storybook/react';
+import { ConnectedRouter } from 'connected-react-router';
 import Layout from './Layout';
 import { Provider } from 'react-redux';
 import ConnectionProvider from 'containers/ConnectionProvider';
@@ -18,10 +19,12 @@ addDecorator(storyFn => (
     <LanguageProvider messages={translationMessages}>
       <ConnectionProvider>
         <DrizzleProvider store={store}>
-          <Layout>
-            <GlobalStyles />
-            {storyFn()}
-          </Layout>
+          <ConnectedRouter history={history}>
+            <Layout>
+              <GlobalStyles />
+              {storyFn()}
+            </Layout>
+          </ConnectedRouter>
         </DrizzleProvider>
       </ConnectionProvider>
     </LanguageProvider>

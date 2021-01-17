@@ -9,16 +9,16 @@
 
 import './wdyr';
 
-import { GlobalStyles } from 'twin.macro';
 import '@babel/polyfill';
-// Tailwind stuff
-// import 'assets/styles.css';
-// Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'utils/history';
+
+// Tailwind stuff
+import { GlobalStyles } from 'twin.macro';
+import { GlobalNotifyStyles } from 'components/Notify/GlobalNotifyStyles';
 
 // Import root app
 import App from 'containers/App';
@@ -63,6 +63,7 @@ const render = messages => {
                 <ConnectionProvider>
                   <ConnectedRouter history={history}>
                     <GlobalStyles />
+                    <GlobalNotifyStyles />
                     <App />
                   </ConnectedRouter>
                 </ConnectionProvider>

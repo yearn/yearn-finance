@@ -15,7 +15,7 @@ import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
 // import { websocketConnect } from 'middleware/websocket/actions';
 import { APP_READY, APP_INITIALIZED } from './constants';
 
-function* loadVaultContracts() {
+function* loadVaultContracts(clear) {
   const vaults = yield select(selectVaults());
   const v1Vaults = _.filter(vaults, vault => vault.type === 'v1');
   const v2Vaults = _.filter(vaults, vault => vault.type === 'v2');
@@ -139,7 +139,7 @@ function* loadVaultContracts() {
   );
 
   contracts.push(...vaultTokenAllowanceSubscriptions);
-  yield put(addContracts(contracts));
+  yield put(addContracts(contracts, clear));
 }
 
 function konamiWatcher() {
@@ -168,9 +168,19 @@ function* watchTransactions(action) {
 //   yield put(websocketConnect());
 // }
 
+function* accountUpdated() {
+  const account = yield select(selectAccount());
+  const oldAccount = localStorage.getItem('account');
+  if (oldAccount && oldAccount !== account) {
+    yield loadVaultContracts(true);
+  }
+  localStorage.setItem('account', account);
+}
+
 export default function* initialize() {
   yield takeLatest(APP_READY, loadVaultContracts);
   yield takeLatest(TX_BROADCASTED, watchTransactions);
   // yield takeLatest(APP_INITIALIZED, connectWebsocket);
+  yield takeLatest('ACCOUNT_UPDATED', accountUpdated);
   yield takeLatest(APP_INITIALIZED, startKonamiWatcher);
 }

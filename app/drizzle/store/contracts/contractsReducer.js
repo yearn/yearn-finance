@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: 0 */
 
 import produce from 'immer';
-// import { DRIZZLE_ADD_CONTRACTS } from 'containers/DrizzleProvider/constants';
+import { DRIZZLE_ADD_CONTRACTS } from 'containers/DrizzleProvider/constants';
 
 // import { generateContractInitialState } from '../contractStateUtils';
 // import * as EventActions from './constants';
@@ -12,6 +12,14 @@ const contractsReducer = (state = initialState, action) =>
   // eslint-disable-next-line no-unused-vars
   produce(state, draft => {
     switch (action.type) {
+      case DRIZZLE_ADD_CONTRACTS:
+        if (action.clear) {
+          const clearState = (val, address) => {
+            delete draft[address];
+          };
+          _.each(draft, clearState);
+        }
+        break;
       case 'WEBSOCKET_MESSAGE_RECEIVED': {
         const { data } = action;
 
@@ -57,7 +65,6 @@ const contractsReducer = (state = initialState, action) =>
       }
       case 'BATCH_CALL_RESPONSE': {
         const { payload: contracts } = action;
-
         const mergeContractState = contractState => {
           const { address } = contractState;
           const addressState = state[address];

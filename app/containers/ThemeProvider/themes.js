@@ -31,7 +31,7 @@ export const darkTheme = {
   toggleBorder: '#6B8096',
   vaultBackground: '#102C61',
   vaultBackgroundActive: '#011130',
-  vaultBackgroundMiddle: '#010919',
+  vaultBackgroundMiddle: '#0b1a35',
   infoCardBackground: '#21262b',
   infoCardValue: '#fff',
   infoCardLabel: '#9cabbb',

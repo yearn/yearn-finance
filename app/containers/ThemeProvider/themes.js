@@ -26,10 +26,10 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
-  background: '#141a1e',
+  background: '#141920',
   text: common.offWhite,
   toggleBorder: '#6B8096',
-  vaultBackground: '#021A4B',
+  vaultBackground: '#102C61',
   vaultBackgroundActive: '#011130',
   vaultBackgroundMiddle: '#010919',
   infoCardBackground: '#21262b',
@@ -37,7 +37,7 @@ export const darkTheme = {
   infoCardLabel: '#9cabbb',
   blocksGreen: '#23D198',
   blocksRed: '#EF1E02',
-  blocksMidnight: '#02153C',
+  blocksMidnight: '#0d234e',
   vaultText: common.offWhite,
   buttonBackground: '#21262b',
   buttonColor: '#9cabbb',

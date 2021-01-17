@@ -57,6 +57,7 @@ export const MarqueStats = () => {
     ) {
       const {
         market_data: {
+          // current_price: { usd: currentPriceUSD },
           total_volume: { usd: totalVolumeUSD },
           market_cap: { usd: marketCapUSD },
         },

@@ -349,6 +349,8 @@ const Vault = props => {
                   showDevVaults={showDevVaults}
                   vaultBalance={vaultBalanceOf}
                   walletBalance={tokenBalanceOf}
+                  balanceOf={balanceOf}
+                  tokenBalance={tokenBalance}
                 />
               </Footer>
             </Card.Footer>

@@ -16,51 +16,51 @@ import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
-import tw from 'twin.macro';
+// import tw from 'twin.macro';
 
-const formatVaultStatistic = stat => {
-  switch (stat) {
-    // depositedAmount: "0"
-    //         depositedShares: "0"
-    //         earnings: "1534851627416"
-    //         totalDeposits: "285159143497674298"
-    //         totalTransferredIn: "0"
-    //         totalTransferredOut: "0"
-    //         totalWithdrawals: "285160678349301714"
+// const formatVaultStatistic = stat => {
+//   switch (stat) {
+//     // depositedAmount: "0"
+//     //         depositedShares: "0"
+//     //         earnings: "1534851627416"
+//     //         totalDeposits: "285159143497674298"
+//     //         totalTransferredIn: "0"
+//     //         totalTransferredOut: "0"
+//     //         totalWithdrawals: "285160678349301714"
 
-    case 'depositedAmount': {
-      return 'Available to withdraw';
-    }
-    case 'depositedShares': {
-      return 'Deposited Shares';
-    }
-    case 'totalDeposits': {
-      return 'Total Deposits';
-    }
-    case 'totalTransferredIn': {
-      return 'Total Transferred In';
-    }
-    case 'totalTransferredOut': {
-      return 'Total Transferred Out';
-    }
-    case 'totalWithdrawals': {
-      return 'Total Withdrawals';
-    }
-    case 'earnings': {
-      return 'Historical Earnings';
-    }
-    default: {
-      return '';
-    }
-  }
-};
+//     case 'depositedAmount': {
+//       return 'Available to withdraw';
+//     }
+//     case 'depositedShares': {
+//       return 'Deposited Shares';
+//     }
+//     case 'totalDeposits': {
+//       return 'Total Deposits';
+//     }
+//     case 'totalTransferredIn': {
+//       return 'Total Transferred In';
+//     }
+//     case 'totalTransferredOut': {
+//       return 'Total Transferred Out';
+//     }
+//     case 'totalWithdrawals': {
+//       return 'Total Withdrawals';
+//     }
+//     case 'earnings': {
+//       return 'Historical Earnings';
+//     }
+//     default: {
+//       return '';
+//     }
+//   }
+// };
 
-const statisticsToShow = [
-  'earnings',
-  'totalDeposits',
-  'totalWithdrawals',
-  'depositedAmount',
-];
+// const statisticsToShow = [
+//   'earnings',
+//   'totalDeposits',
+//   'totalWithdrawals',
+//   'depositedAmount',
+// ];
 
 const IconAndName = styled.div`
   display: flex;
@@ -158,7 +158,7 @@ const Vault = props => {
     balanceOf,
     address,
     vaultAlias,
-    statistics,
+    // statistics,
     getPricePerFullShare,
     pricePerShare,
   } = vault;
@@ -260,50 +260,50 @@ const Vault = props => {
       </ColumnListDev>
     );
   } else {
-    const formattedUserVaultStatistics =
-      statistics &&
-      Object.keys(statistics)
-        .filter(statistic => statisticsToShow.find(show => show === statistic))
-        .map(statistic => {
-          const formattedValue = new BigNumber(statistics[statistic])
-            .dividedBy(10 ** decimals)
-            .toFixed(8);
+    // const formattedUserVaultStatistics =
+    //   statistics &&
+    //   Object.keys(statistics)
+    //     .filter(statistic => statisticsToShow.find(show => show === statistic))
+    //     .map(statistic => {
+    //       const formattedValue = new BigNumber(statistics[statistic])
+    //         .dividedBy(10 ** decimals)
+    //         .toFixed(8);
 
-          return {
-            name: formatVaultStatistic(statistic),
-            value: formattedValue > 0 ? formattedValue : 0,
-          };
-        });
+    //       return {
+    //         name: formatVaultStatistic(statistic),
+    //         value: formattedValue > 0 ? formattedValue : 0,
+    //       };
+    //     });
 
-    const formattedUserVaultStatisticsEarnings =
-      statistics &&
-      formattedUserVaultStatistics.map(earning => (
-        <div key={earning.name}>
-          <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
-          <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
-        </div>
-      ));
+    // const formattedUserVaultStatisticsEarnings =
+    //   statistics &&
+    //   formattedUserVaultStatistics.map(earning => (
+    //     <div key={earning.name}>
+    //       <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
+    //       <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
+    //     </div>
+    //   ));
 
-    const defaultZeroUserVaultStatisticsEarnings = statisticsToShow.map(
-      statistic => (
-        <div key={statistic}>
-          <p tw="font-sans font-bold text-lg text-white">0</p>
-          <p tw="font-sans font-medium text-sm opacity-50">
-            {formatVaultStatistic(statistic)}
-          </p>
-        </div>
-      ),
-    );
-    vaultBottom = (
-      <ColumnList css={[tw`py-6`]}>
-        <div>
-          <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
-        </div>
-        {statistics
-          ? formattedUserVaultStatisticsEarnings
-          : defaultZeroUserVaultStatisticsEarnings}
-      </ColumnList>
-    );
+    // const defaultZeroUserVaultStatisticsEarnings = statisticsToShow.map(
+    //   statistic => (
+    //     <div key={statistic}>
+    //       <p tw="font-sans font-bold text-lg text-white">0</p>
+    //       <p tw="font-sans font-medium text-sm opacity-50">
+    //         {formatVaultStatistic(statistic)}
+    //       </p>
+    //     </div>
+    //   ),
+    // );
+    // vaultBottom = (
+    //   <ColumnList css={[tw`py-6`]}>
+    //     <div>
+    //       <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
+    //     </div>
+    //     {statistics
+    //       ? formattedUserVaultStatisticsEarnings
+    //       : defaultZeroUserVaultStatisticsEarnings}
+    //   </ColumnList>
+    // );
     vaultTop = (
       <ColumnList>
         <IconAndName>

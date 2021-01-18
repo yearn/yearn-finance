@@ -20,6 +20,13 @@ const Wrapper = styled.div`
   margin: 0 auto;
 `;
 
+const Warning = styled.div`
+  display: table;
+  font-size: 29px;
+  margin: 0 auto;
+  margin-top: 50px;
+`;
+
 const DevHeader = styled.div`
   opacity: ${props => (props.devMode ? 1 : 0)};
   transition: opacity 100ms ease-in, margin-top 100ms ease-out;
@@ -46,12 +53,17 @@ const Vaults = () => {
     columnHeader = <VaultsHeader />;
   }
 
+  let warning;
+  if (showDevVaults) {
+    warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
+  }
   return (
     <Wrapper>
       <DevHeader devMode={devMode}>
         <VaultsNavLinks />
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
+      {warning}
       {columnHeader}
       <Accordion>
         <VaultsWrapper showDevVaults={showDevVaults} />

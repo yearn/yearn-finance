@@ -190,7 +190,6 @@ const Vault = props => {
       .dividedBy(10 ** decimals)
       .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** decimals)
       .toFixed();
-    console.log('vbbb', vaultBalanceOf, balanceOf);
   } else {
     vaultBalanceOf = new BigNumber(balanceOf)
       .dividedBy(10 ** decimals)
@@ -327,6 +326,7 @@ const Vault = props => {
             </div>
           </LinkWrap>
         </IconAndName>
+        <div>{vault.type}</div>
         <div>
           <AnimatedNumber value={vaultBalanceOf} />
         </div>

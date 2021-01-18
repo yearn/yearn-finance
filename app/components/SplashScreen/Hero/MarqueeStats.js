@@ -74,10 +74,10 @@ export const MarqueStats = () => {
                 left: 25%;
               `,
             ]}
-            tw="flex bg-transparent overflow-hidden absolute bottom-0.5 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl"
+            tw="w-full flex bg-transparent absolute bottom-0.5 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl xl:text-6xl whitespace-nowrap"
           >
             <div tw="flex space-x-3">
-              <span>TVL:</span>
+              <span>Value Locked:</span>
               <span tw="text-yearn-green not-italic font-black">
                 ${nFormat(totalPoolBalanceUSD)}
               </span>
@@ -93,7 +93,7 @@ export const MarqueStats = () => {
               </span>
             </div> */}
             <div tw="flex space-x-3">
-              <span>MC:</span>
+              <span>Market Cap:</span>
               <span tw="text-yearn-blue not-italic font-black">
                 ${nFormat(marketCapUSD)}
               </span>

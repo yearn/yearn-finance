@@ -4,9 +4,8 @@ import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import {
-  selectVaults,
-  // selectContracts,
   selectContractsByTag,
+  selectOrderedVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
@@ -74,7 +73,7 @@ const Vaults = () => {
 
 const VaultsWrapper = props => {
   const { showDevVaults } = props;
-  const vaults = useSelector(selectVaults('vaults'));
+  const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
   const renderVault = vault => (
@@ -85,8 +84,6 @@ const VaultsWrapper = props => {
       showDevVaults={showDevVaults}
     />
   );
-
-  const orderedVaults = _.orderBy(vaults, ['type'], ['desc']);
 
   let vaultRows = _.map(orderedVaults, renderVault);
   if (showDevVaults) {

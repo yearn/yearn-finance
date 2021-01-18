@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { createSelector } from 'reselect';
 import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -105,3 +106,46 @@ export const selectSelectedAccount = () =>
     selectConnection,
     substate => substate && substate.account,
   );
+
+export const selectOrderedVaults = createSelector(
+  selectVaults(),
+  selectContracts('vaults'),
+  (vaults, vaultsContractData) => {
+    if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
+      return null;
+    }
+
+    const vaultsWithSortingData = _.map(vaults, vault => {
+      const contractData = _.find(vaultsContractData, {
+        address: vault.address,
+      });
+
+      const rawHoldings = _.get(contractData, 'balanceOf[0].value', 0);
+
+      let rawSharePrice;
+      if (vault.type === 'v1') {
+        rawSharePrice = _.get(contractData, 'getPricePerFullShare[0].value', 0);
+      } else if (vault.type === 'v2') {
+        rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
+      }
+
+      const holdings = new BigNumber(rawHoldings)
+        .multipliedBy(rawSharePrice)
+        .dividedBy(10 ** vault.decimals);
+
+      const vaultWithSortingData = vault;
+      vaultWithSortingData.holdings = holdings.toNumber();
+      return vaultWithSortingData;
+    });
+
+    let orderedVaults = _.orderBy(
+      vaultsWithSortingData,
+      ['type', 'holdings'],
+      ['desc', 'desc'],
+    );
+
+    orderedVaults = _.omit(orderedVaults, ['holdings']);
+
+    return orderedVaults;
+  },
+);

@@ -1,7 +1,7 @@
+import React, { useRef, useState } from 'react';
+import BigNumber from 'bignumber.js';
 import { buyCover as buyCoverAction } from 'containers/Cover/actions';
 import { useContract } from 'containers/DrizzleProvider/hooks';
-
-import React, { useRef } from 'react';
 import styled from 'styled-components';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import TokenIcon from 'components/TokenIcon';
@@ -16,7 +16,6 @@ import {
 import { calculateAmountNeeded, calculateAmountOutFromBuy } from 'utils/cover';
 import { formatNumber } from 'utils/string';
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
 
 const StyledTokenIcon = styled(TokenIcon)`
   width: 32px;
@@ -229,6 +228,7 @@ const ButtonWrapper = styled.div`
 
 function CoverDetailCardBuy(props) {
   const dispatch = useDispatch();
+  const [amountWei, setAmountWei] = useState();
 
   const {
     className,
@@ -285,6 +285,7 @@ function CoverDetailCardBuy(props) {
   const updateAmount = evt => {
     const newAmount = evt.target.value;
     setAmount(newAmount);
+    setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0)); // TODO: Update for token decimals
     const tokensNeeded = calculateAmountNeeded(newAmount, claimPool);
     let equivalentToVal = 0;
     if (claimPool.price && tokensNeeded) {
@@ -305,6 +306,7 @@ function CoverDetailCardBuy(props) {
       price,
     );
 
+    setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
     setAmount(newAmount);
     setEquivalentTo(val);
     amountRef.current.value = newAmount.toFixed(5);
@@ -312,26 +314,37 @@ function CoverDetailCardBuy(props) {
   };
 
   const setMaxClaimAmount = () => {
-    /**
-     * TODO: Placeholder for Graham
-     * Set max claim token amount
-     */
+    const { daiInPool, covTokenWeight, price, swapFee } = claimPool;
+    // TODO: Update calculations to use WEI...
+    const newAmount = calculateAmountOutFromBuy(
+      new BigNumber(daiBalanceOf).dividedBy(10 ** 18).toFixed(),
+      daiInPool,
+      covTokenWeight,
+      swapFee,
+      price,
+    );
 
-    const maxAmountNormalized = new BigNumber(daiBalanceOf)
+    // TODO: Fix this.. we can only approximate until calculations use WEI values
+    const daiBalanceNormalized = new BigNumber(daiBalanceOf)
       .dividedBy(10 ** 18)
       .toFixed(5);
-
-    updateEquivalentToVal(maxAmountNormalized);
+    setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
+    setAmount(newAmount);
+    setEquivalentTo(newAmount);
+    amountRef.current.value = newAmount.toFixed(5);
+    equivalentToRef.current.value = daiBalanceNormalized;
   };
 
   const buyCover = async () => {
+    console.log(`Buying cover: ${amountWei}`);
+
     dispatch(
       buyCoverAction({
         poolAllowedToSpendDai,
         protocol,
         claimPoolContract,
         daiContract,
-        amount,
+        amount: amountWei,
         equivalentTo,
       }),
     );

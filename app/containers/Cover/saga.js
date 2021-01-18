@@ -2,7 +2,6 @@ import balancerPoolAbi from 'abi/balancerPool.json';
 import erc20Abi from 'abi/erc20.json';
 import BigNumber from 'bignumber.js';
 import { selectContractData } from 'containers/App/selectors';
-import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { takeLatest, select, put, call } from 'redux-saga/effects';
@@ -20,7 +19,12 @@ import {
   SELL_COVER,
 } from './constants';
 
-function* fetchCoverData() {
+function* fetchCoverData(action) {
+  const web3 = _.get(action, 'web3');
+  if (!web3) {
+    console.log('web3 not ready');
+    return;
+  }
   try {
     const url = `https://api.coverprotocol.com/protocol_data/production`;
     const response = yield call(request, url);
@@ -139,22 +143,18 @@ function* executeCoverBuy(
   claimPoolContract,
   daiAmount,
   claimTokenAddress,
-  claimTokenTokenAmount,
+  amount,
 ) {
   const account = yield select(selectAccount());
   const daiData = yield select(selectContractData(DAI_ADDRESS));
-  const claimTokenData = yield select(selectContractData(claimTokenAddress));
   const daiAmountRaw = new BigNumber(daiAmount).times(10 ** daiData.decimals);
-  const claimTokenAmountRaw = new BigNumber(claimTokenTokenAmount)
-    .times(10 ** claimTokenData.decimals)
-    .toFixed(0);
 
   yield call(
     claimPoolContract.methods.swapExactAmountOut.cacheSend,
     DAI_ADDRESS,
     daiAmountRaw,
     claimTokenAddress,
-    claimTokenAmountRaw,
+    amount,
     MAX_UINT256,
     {
       from: account,
@@ -202,18 +202,10 @@ function* buyCover(action) {
 function* executeCoverSell(claimPoolContract, claimTokenContract, amount) {
   const account = yield select(selectAccount());
 
-  const claimTokenData = yield select(
-    selectContractData(claimTokenContract.address),
-  );
-
-  const claimTokenAmountRaw = new BigNumber(amount)
-    .times(10 ** claimTokenData.decimals)
-    .toFixed(0);
-
   yield call(
     claimPoolContract.methods.swapExactAmountIn.cacheSend,
     claimTokenContract.address,
-    claimTokenAmountRaw,
+    amount,
     DAI_ADDRESS,
     0,
     MAX_UINT256,
@@ -250,7 +242,7 @@ function* sellCover(action) {
 }
 
 export default function* watchers() {
-  yield takeLatest(ACCOUNT_UPDATED, fetchCoverData);
+  yield takeLatest('APP_READY', fetchCoverData);
   yield takeLatest(INITIALIZE_COVER, fetchCoverData);
   yield takeLatest(COVER_DATA_LOADED, coverDataLoadedSaga);
   yield takeLatest(BUY_COVER, buyCover);

@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import BigNumber from 'bignumber.js';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import ButtonFilled from 'components/ButtonFilled';
 import Icon from 'components/Icon';
@@ -216,11 +217,11 @@ function CoverDetailCardSell(props) {
     setAmount,
     claimPool,
     setEquivalentTo,
-    // claimTokenBalanceOf,
+    claimTokenBalanceOf,
     claimTokenBalanceOfNormalized,
   } = props;
 
-  // const [amountWei, setAmountWei] = useState();
+  const [amountWei, setAmountWei] = useState();
 
   const dispatch = useDispatch();
   const protocolDisplayName = _.get(protocol, 'protocolDisplayName');
@@ -242,7 +243,7 @@ function CoverDetailCardSell(props) {
   const updateAmount = evt => {
     const newAmount = evt.target.value;
     setAmount(newAmount);
-
+    setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
     const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
 
     const daiWeight = 1 - covTokenWeight;
@@ -275,6 +276,7 @@ function CoverDetailCardSell(props) {
 
     amountRef.current.value = newAmount.toFixed(5);
     setAmount(newAmount);
+    setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
     setEquivalentTo(val);
   };
 
@@ -285,6 +287,7 @@ function CoverDetailCardSell(props) {
 
   const setMaxClaimAmount = () => {
     const maxAmount = claimTokenBalanceOfNormalized;
+    setAmountWei(claimTokenBalanceOf);
     setAmount(maxAmount);
     amountRef.current.value = maxAmount;
 
@@ -314,12 +317,13 @@ function CoverDetailCardSell(props) {
   const poolAllowedToSpendCoverToken = claimPoolAllowance > 0;
 
   const sellCover = async () => {
+    console.log(`Selling cover: ${amountWei}`);
     dispatch(
       sellCoverAction({
         poolAllowedToSpendCoverToken,
         claimPoolContract,
         claimTokenContract,
-        amount,
+        amount: amountWei,
       }),
     );
   };

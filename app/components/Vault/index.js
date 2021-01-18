@@ -184,7 +184,7 @@ const Vault = props => {
     .dividedBy(10 ** decimals)
     .toFixed();
 
-  const v2Vault = vault.apiVersion;
+  const v2Vault = vault.type === 'v2' || vault.apiVersion;
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)

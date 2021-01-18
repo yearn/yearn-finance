@@ -46,7 +46,7 @@ export default function VaultControls(props) {
   const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
   const { address: vaultAddress, tokenAddress, decimals } = vault;
 
-  const v2Vault = vault.apiVersion;
+  const v2Vault = vault.type === 'v2' || vault.apiVersion;
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)

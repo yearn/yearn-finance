@@ -86,6 +86,7 @@ export default function VaultControls(props) {
   }
 
   const withdraw = () => {
+    console.log(`Withdrawing:`, withdrawalGweiAmount);
     dispatch(
       withdrawFromVault({
         vaultContract,
@@ -96,6 +97,7 @@ export default function VaultControls(props) {
   };
 
   const deposit = () => {
+    console.log(`Depositing:`, depositGweiAmount);
     dispatch(
       depositToVault({
         vaultContract,
@@ -168,9 +170,9 @@ function AmountField({
         amountSetter(evt.target.value);
 
         if (evt.target.value) {
-          const gweiAmount = new BigNumber(evt.target.value).multipliedBy(
-            10 ** decimals,
-          );
+          const gweiAmount = new BigNumber(evt.target.value)
+            .multipliedBy(10 ** decimals)
+            .toFixed(0);
 
           gweiAmountSetter(gweiAmount);
         } else {

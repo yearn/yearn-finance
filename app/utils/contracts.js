@@ -69,6 +69,20 @@ export function getMethods(abi) {
 
   const findWriteMethods = (acc, field) => {
     const { name, inputs, type, stateMutability } = field;
+    const v2Vault = _.find(abi, { name: 'apiVersion' });
+    if (v2Vault) {
+      if (name === 'deposit') {
+        if (_.size(inputs) !== 1) {
+          return acc;
+        }
+      }
+      if (name === 'withdraw') {
+        if (_.size(inputs) !== 1) {
+          return acc;
+        }
+      }
+    }
+
     const isViewable = stateMutability === 'view';
     const isPure = stateMutability === 'pure';
     const isMethod = type === 'function';

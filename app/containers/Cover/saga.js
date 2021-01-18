@@ -22,7 +22,6 @@ import {
 function* fetchCoverData(action) {
   const web3 = _.get(action, 'web3');
   if (!web3) {
-    console.log('web3 not ready');
     return;
   }
   try {

@@ -1,6 +1,6 @@
-import VaultControls from 'components/VaultControls';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import VaultButtons from 'components/VaultButtons';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
 import Accordion from 'react-bootstrap/Accordion';
@@ -10,7 +10,6 @@ import Arrow from 'images/arrow.svg';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
-import { selectDevMode } from 'containers/DevMode/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
@@ -161,12 +160,13 @@ const Vault = props => {
     // statistics,
     getPricePerFullShare,
     pricePerShare,
+    token,
   } = vault;
 
   const { openModal } = useModal();
 
-  const devMode = useSelector(selectDevMode());
-  const tokenContractAddress = tokenAddress;
+  const devMode = true;
+  const tokenContractAddress = tokenAddress || token;
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
@@ -343,14 +343,12 @@ const Vault = props => {
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
               <Footer>
-                <VaultControls
+                <VaultButtons
                   vault={vault}
                   token={tokenContractData}
                   showDevVaults={showDevVaults}
                   vaultBalance={vaultBalanceOf}
                   walletBalance={tokenBalanceOf}
-                  balanceOf={balanceOf}
-                  tokenBalance={tokenBalance}
                 />
               </Footer>
             </Card.Footer>

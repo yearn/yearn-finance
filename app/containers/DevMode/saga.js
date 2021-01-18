@@ -1,9 +1,9 @@
-import { takeLatest, select } from 'redux-saga/effects';
+import { takeLatest } from 'redux-saga/effects';
 import { TOGGLE_DEV_MODE, UNLOCK_DEV_MODE } from './constants';
-import { selectDevMode } from './selectors';
+// import { selectDevMode } from './selectors';
 
 function* toggleDevMode() {
-  const mode = JSON.parse(yield select(selectDevMode()));
+  const mode = JSON.parse(true);
   localStorage.setItem('devMode', mode);
 }
 

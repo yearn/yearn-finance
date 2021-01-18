@@ -23,8 +23,16 @@ function* loadVaultContracts(clear) {
   const v2VaultAddresses = _.map(v2Vaults, vault => vault.address);
   const account = yield select(selectAccount());
   const localContracts = JSON.parse(
-    localStorage.getItem('watchedContracts') || '[]',
-  );
+    localStorage.getItem('watchedContracts'),
+  ) || [
+    '0x07dbC20B84fF63F3cc542F6A22E5a71cbA5670A4', // DAI iron bank
+    '0x33Bd0F9618Cf38FeA8f7f01E1514AB63b9bDe64b', // Idle
+    '0xFeD651936Af7e98F7F2A93c03B1E28a2DA7dfaD4', // DEV
+    '0xdCD90C7f6324cfa40d7169ef80b12031770B4325', // steCRV
+    '0x15a2B3CfaFd696e1C783FE99eed168b78a3A371e', // Lido st. eth
+    '0xBFa4D8AA6d8a379aBFe7793399D3DdaCC5bBECBB', // DAI hard
+    '0x6392e8fa0588CB2DCb7aF557FdC9D10FDe48A325', // Weth maker
+  ];
 
   const vaultTokenAddresses = _.map(vaults, vault => vault.tokenAddress);
   const contracts = [
@@ -101,6 +109,7 @@ function* loadVaultContracts(clear) {
     },
     {
       namespace: 'localContracts',
+      tags: ['localContracts'],
       addresses: localContracts,
       allWriteMethods: true,
       allReadMethods: true,

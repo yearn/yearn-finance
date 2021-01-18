@@ -103,6 +103,7 @@ function* addWatchedContracts(action) {
   const contracts = [
     {
       namespace: 'localContracts',
+      tags: ['localContracts'],
       addresses: addressesToAdd,
       allReadMethods: true,
       allWriteMethods: true,

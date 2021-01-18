@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { selectDevMode } from 'containers/DevMode/selectors';
-import { useSelector } from 'react-redux';
 import TransactionModal from 'components/TransactionModal';
 import ContractStatisticsModal from 'components/ContractStatisticsModal';
 import CreamModal from 'components/CreamModal';
@@ -13,7 +11,7 @@ const modals = {
 };
 
 const ModalProvider = props => {
-  const devMode = useSelector(selectDevMode());
+  const devMode = true;
   const makeInitialModalState = (acc, Modal, key) => {
     acc[key] = {
       show: false,

@@ -3,8 +3,11 @@ import styled, { css } from 'styled-components';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import { selectVaults, selectContracts } from 'containers/App/selectors';
-import { selectDevMode } from 'containers/DevMode/selectors';
+import {
+  selectVaults,
+  // selectContracts,
+  selectContractsByTag,
+} from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import VaultsNavLinks from 'components/VaultsNavLinks';
@@ -33,7 +36,7 @@ const DevHeader = styled.div`
 `;
 
 const Vaults = () => {
-  const devMode = useSelector(selectDevMode());
+  const devMode = true;
   const showDevVaults = useShowDevVaults();
 
   let columnHeader;
@@ -60,8 +63,7 @@ const Vaults = () => {
 const VaultsWrapper = props => {
   const { showDevVaults } = props;
   const vaults = useSelector(selectVaults('vaults'));
-  const localContracts = useSelector(selectContracts('localContracts'));
-
+  const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
   const renderVault = vault => (
     <Vault

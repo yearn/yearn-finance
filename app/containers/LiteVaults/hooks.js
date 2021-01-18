@@ -1,10 +1,10 @@
 import { matchPath } from 'react-router';
-import { selectDevMode } from 'containers/DevMode/selectors';
+// import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import { selectLocation } from 'containers/App/selectors';
 
 export function useShowDevVaults() {
-  const devMode = useSelector(selectDevMode());
+  const devMode = true;
   const location = useSelector(selectLocation());
   const { pathname } = location;
   const routeIsDevelop = matchPath(pathname, {

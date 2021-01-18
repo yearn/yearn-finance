@@ -102,15 +102,15 @@ export default function VaultButtons(props) {
     drizzle.deleteContract(address);
   };
 
-  const findDepositWithPermit = method => {
-    const { name: methodName, inputs } = method;
-    if (methodName === 'deposit') {
-      const findPermitInput = input => input.name === 'permit';
-      const foundPermitInput = !!_.find(inputs, findPermitInput);
-      return foundPermitInput;
-    }
-    return false;
-  };
+  // const findDepositWithPermit = method => {
+  //   const { name: methodName, inputs } = method;
+  //   if (methodName === 'deposit') {
+  //     const findPermitInput = input => input.name === 'permit';
+  //     const foundPermitInput = !!_.find(inputs, findPermitInput);
+  //     return foundPermitInput;
+  //   }
+  //   return false;
+  // };
 
   const openTokenTransactionModal = method => {
     const { inputs, name: methodName } = method;
@@ -145,70 +145,68 @@ export default function VaultButtons(props) {
 
   const permitContractAddress = address;
 
-  const permitApproveDeposit = amount => {
-    const deadline = MAX_UINT256;
-    const domainName = 'USD Coin';
-    const nonce = getNonceForAccount(account, tokenAddress);
-    const msgParams = createPermitMessageData(
-      account,
-      address,
-      amount,
-      nonce,
-      deadline,
-      domainName,
-      verifyingContract,
-    );
+  // const permitApproveDeposit = amount => {
+  //   const deadline = MAX_UINT256;
+  //   const domainName = 'USD Coin';
+  //   const nonce = getNonceForAccount(account, tokenAddress);
+  //   const msgParams = createPermitMessageData(
+  //     account,
+  //     address,
+  //     amount,
+  //     nonce,
+  //     deadline,
+  //     domainName,
+  //     verifyingContract,
+  //   );
 
-    const params = [account, msgParams];
-    const method = 'eth_signTypedData_v4';
-    web3.currentProvider.sendAsync(
-      {
-        method,
-        params,
-        from: account,
-      },
-      async (error, result) => {
-        if (error) {
-          console.log('Web3 send error:', error);
-          return;
-        }
-        if (result.error) {
-          console.log('Web3 result error:', result.error);
-          return;
-        }
+  //   const params = [account, msgParams];
+  //   const method = 'eth_signTypedData_v4';
+  //   web3.currentProvider.sendAsync(
+  //     {
+  //       method,
+  //       params,
+  //       from: account,
+  //     },
+  //     async (error, result) => {
+  //       if (error) {
+  //         console.log('Web3 send error:', error);
+  //         return;
+  //       }
+  //       if (result.error) {
+  //         console.log('Web3 result error:', result.error);
+  //         return;
+  //       }
 
-        const signature = result.result.substring(2);
-        const r = `0x${signature.substring(0, 64)}`;
-        const s = `0x${signature.substring(64, 128)}`;
-        const v = parseInt(signature.substring(128, 130), 16);
-        const owner = account;
-        await contract.methods
-          .deposit(amount, [
-            owner,
-            permitContractAddress,
-            amount,
-            deadline,
-            v,
-            r,
-            s,
-          ])
-          .send({ from: account });
-      },
-    );
-  };
+  //       const signature = result.result.substring(2);
+  //       const r = `0x${signature.substring(0, 64)}`;
+  //       const s = `0x${signature.substring(64, 128)}`;
+  //       const v = parseInt(signature.substring(128, 130), 16);
+  //       const owner = account;
+  //       await contract.methods
+  //         .deposit(amount, [
+  //           owner,
+  //           permitContractAddress,
+  //           amount,
+  //           deadline,
+  //           v,
+  //           r,
+  //           s,
+  //         ])
+  //         .send({ from: account });
+  //     },
+  //   );
+  // };
 
   let approveTokenButton;
 
-  const supportsPermit = _.find(writeMethods, findDepositWithPermit);
-  if (supportsPermit || token) {
+  // const supportsPermit = _.find(writeMethods, findDepositWithPermit);
+  if (token) {
     approveTokenButton = (
       <ApproveButton>
         <ButtonFilled
           variant="contained"
           color="primary"
-          onClick={
-            supportsPermit ? () => permitApproveDeposit(5000000) : approveToken
-          }
+          onClick={approveToken}
         >
           Approve Token
         </ButtonFilled>

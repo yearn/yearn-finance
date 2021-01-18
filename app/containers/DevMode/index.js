@@ -3,10 +3,9 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toggleDevMode } from './actions';
 import saga from './saga';
-import { selectDevMode, selectDevModeUnlocked } from './selectors';
 import reducer from './reducer';
 
 const Wrapper = styled.div`
@@ -20,8 +19,8 @@ export default function DevModeToggle() {
   useInjectSaga({ key: 'devMode', saga });
   useInjectReducer({ key: 'devMode', reducer });
 
-  const devMode = useSelector(selectDevMode());
-  const devModeUnlocked = useSelector(selectDevModeUnlocked());
+  const devMode = true;
+  const devModeUnlocked = true;
   const dispatch = useDispatch();
   const toggleMode = () => {
     dispatch(toggleDevMode());

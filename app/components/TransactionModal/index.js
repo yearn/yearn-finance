@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import request from 'utils/request';
 import styled from 'styled-components';
-import { selectDevMode } from 'containers/DevMode/selectors';
 import { useSelector } from 'react-redux';
 import ButtonFilled from 'components/ButtonFilled';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -131,7 +130,7 @@ export default function TransactionModal(props) {
   const [inputFields, setInputFields] = useState({});
   const [normalizeAmounts, setNormalizeAmounts] = useState(true);
   const account = useSelector(selectAccount());
-  const devMode = useSelector(selectDevMode());
+  const devMode = true;
   const methodName = _.get(modalMetadata, 'methodName');
   const inputs = _.get(modalMetadata, 'inputs');
   const inputArgs = _.get(modalMetadata, 'inputArgs');

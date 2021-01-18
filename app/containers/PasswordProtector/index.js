@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import md5 from 'md5';
 
 const PasswordWall = styled.div`
-  background-image: url(https://pbs.twimg.com/media/Emh_6n2U4AAbJ1m?format=jpg&name=4096x4096);
+  background-image: url(https://i.giphy.com/media/1APhDggUPlkRdK5w1n/giphy.webp);
   background-size: cover;
   position: absolute;
   top: 0;
@@ -11,6 +11,8 @@ const PasswordWall = styled.div`
   left: 0;
   right: 0;
   opacity: 0.8;
+  background-position-x: center;
+  background-position-y: center;
 `;
 
 const BlackBackground = styled.div`
@@ -31,6 +33,7 @@ const EnterPasswordText = styled.div`
   left: 0;
   right: 0;
   display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   filter: drop-shadow(6px 5px 4px #44d);

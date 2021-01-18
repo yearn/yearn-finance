@@ -189,14 +189,15 @@ const Vault = props => {
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
       .dividedBy(10 ** decimals)
-      .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** decimals)
+      .multipliedBy(pricePerShare / 10 ** decimals)
       .toFixed();
   } else {
     vaultBalanceOf = new BigNumber(balanceOf)
       .dividedBy(10 ** decimals)
-      .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** 18)
+      .multipliedBy(getPricePerFullShare / 10 ** 18)
       .toFixed();
   }
+
   let vaultAssets = balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);

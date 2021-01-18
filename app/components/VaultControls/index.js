@@ -46,6 +46,18 @@ export default function VaultControls(props) {
   const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
   const { address: vaultAddress, tokenAddress, decimals } = vault;
 
+  const v2Vault = vault.apiVersion;
+  let vaultBalanceOf;
+  if (v2Vault) {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .times(vault.pricePerShare / 10 ** decimals)
+      .toFixed();
+  } else {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .times(vault.getPricePerFullShare / 10 ** 18)
+      .toFixed();
+  }
+
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
   const tokenContract = useContract(tokenAddress);
@@ -103,7 +115,7 @@ export default function VaultControls(props) {
             amount={withdrawalAmount}
             amountSetter={setWithdrawalAmount}
             gweiAmountSetter={setWithdrawalGweiAmount}
-            maxAmount={balanceOf}
+            maxAmount={vaultBalanceOf}
             decimals={decimals}
           />
           <ActionButton

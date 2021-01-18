@@ -151,12 +151,12 @@ const Vault = props => {
     tokenAddress,
     tokenSymbolAlias,
     decimals,
-    name,
+    displayName,
     totalAssets,
     balance,
     balanceOf,
     address,
-    vaultAlias,
+    name,
     // statistics,
     getPricePerFullShare,
     pricePerShare,
@@ -175,17 +175,28 @@ const Vault = props => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const vaultName = vaultAlias || name || address;
+  const vaultName = displayName || name || address;
 
   const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
   const apy = truncateApy(apyOneMonthSample);
   const tokenBalanceOf = new BigNumber(tokenBalance)
     .dividedBy(10 ** decimals)
     .toFixed();
-  const vaultBalanceOf = new BigNumber(balanceOf)
-    .dividedBy(10 ** decimals)
-    .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** 18)
-    .toFixed();
+
+  const v2Vault = vault.apiVersion;
+  let vaultBalanceOf;
+  if (v2Vault) {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .dividedBy(10 ** decimals)
+      .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** decimals)
+      .toFixed();
+    console.log('vbbb', vaultBalanceOf, balanceOf);
+  } else {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .dividedBy(10 ** decimals)
+      .multipliedBy((getPricePerFullShare || pricePerShare) / 10 ** 18)
+      .toFixed();
+  }
   let vaultAssets = balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);

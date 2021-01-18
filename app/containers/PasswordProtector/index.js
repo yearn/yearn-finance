@@ -39,7 +39,6 @@ const EnterPasswordText = styled.div`
 const passwordValid = password => {
   const requiredHash = '4490cbe5c8c0e9cbba2f6dcd0e557560';
   const passwordHash = md5(md5(md5(md5(password))));
-  console.log('pwh', passwordHash);
 
   const valid = passwordHash === requiredHash;
   return valid;

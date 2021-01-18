@@ -246,6 +246,8 @@ const Vault = props => {
         showDevVaults={showDevVaults}
         vaultBalance={vaultBalanceOf}
         walletBalance={tokenBalanceOf}
+        balanceOf={balanceOf}
+        tokenBalance={tokenBalance}
       />
     );
 
@@ -333,6 +335,8 @@ const Vault = props => {
         showDevVaults={showDevVaults}
         vaultBalance={vaultBalanceOf}
         walletBalance={tokenBalanceOf}
+        balanceOf={balanceOf}
+        tokenBalance={tokenBalance}
       />
     );
     vaultTop = (

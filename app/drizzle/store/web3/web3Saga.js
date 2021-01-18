@@ -18,7 +18,9 @@ export function* initializeWeb3(options) {
 
     if (window.ethereum) {
       const { ethereum } = window;
-      web3 = new Web3(ethereum);
+      web3 = new Web3(
+        'wss://eth-mainnet.ws.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ',
+      );
       try {
         // ethereum.enable() will return the selected account
         // unless user opts out and then it will return undefined

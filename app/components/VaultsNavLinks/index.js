@@ -34,7 +34,7 @@ export default function VaultsNavLinks() {
           Production
         </StyledNavLink>
         <StyledNavLink to="/vaults/develop" exact>
-          Develop
+          Experimental
         </StyledNavLink>
       </NavLinks>
     </Wrapper>

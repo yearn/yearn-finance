@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import VaultButtons from 'components/VaultButtons';
+import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
 import Accordion from 'react-bootstrap/Accordion';
@@ -203,6 +204,7 @@ const Vault = props => {
 
   let vaultBottom;
   let vaultTop;
+  let vaultControls;
 
   const openContractStatisticsModal = evt => {
     evt.preventDefault();
@@ -236,6 +238,16 @@ const Vault = props => {
         </tr>
       );
     };
+
+    vaultControls = (
+      <VaultButtons
+        vault={vault}
+        token={tokenContractData}
+        showDevVaults={showDevVaults}
+        vaultBalance={vaultBalanceOf}
+        walletBalance={tokenBalanceOf}
+      />
+    );
 
     const strippedVault = _.omit(vault, ['group']);
     const fields = _.map(strippedVault, renderField);
@@ -314,6 +326,15 @@ const Vault = props => {
     //       : defaultZeroUserVaultStatisticsEarnings}
     //   </ColumnList>
     // );
+    vaultControls = (
+      <VaultControls
+        vault={vault}
+        token={tokenContractData}
+        showDevVaults={showDevVaults}
+        vaultBalance={vaultBalanceOf}
+        walletBalance={tokenBalanceOf}
+      />
+    );
     vaultTop = (
       <ColumnList>
         <IconAndName>
@@ -353,15 +374,7 @@ const Vault = props => {
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>
-              <Footer>
-                <VaultButtons
-                  vault={vault}
-                  token={tokenContractData}
-                  showDevVaults={showDevVaults}
-                  vaultBalance={vaultBalanceOf}
-                  walletBalance={tokenBalanceOf}
-                />
-              </Footer>
+              <Footer>{vaultControls}</Footer>
             </Card.Footer>
           </Card.Body>
         </Accordion.Collapse>

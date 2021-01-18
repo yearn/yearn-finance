@@ -86,7 +86,9 @@ const VaultsWrapper = props => {
     />
   );
 
-  let vaultRows = _.map(vaults, renderVault);
+  const orderedVaults = _.orderBy(vaults, ['type'], ['desc']);
+
+  let vaultRows = _.map(orderedVaults, renderVault);
   if (showDevVaults) {
     vaultRows = _.map(localContracts, renderVault);
   }

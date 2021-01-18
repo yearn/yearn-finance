@@ -1,4 +1,5 @@
-// const plugin = require('tailwindcss/plugin');
+// eslint-disable-next-line
+const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   purge: [],

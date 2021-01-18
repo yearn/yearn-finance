@@ -19,6 +19,8 @@ function CoverCards() {
 
   const renderCoverCard = (protocol, key) => {
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
+    const currentTime = Date.now() / 1000;
+    const expirationTimestamp = protocol.expirationTimestamps[protocol.claimNonce];
     const claimTokenContractData = _.find(
       claimTokens,
       (val, claimKey) => claimKey === claimAddress,
@@ -33,7 +35,7 @@ function CoverCards() {
       'balanceOf[0].value',
     );
 
-    return (
+    return expirationTimestamp > currentTime && (
       <CoverCard
         tokenClaimState={tokenClaimState}
         protocol={protocol}

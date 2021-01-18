@@ -92,7 +92,7 @@ const contractsReducer = (state = initialState, action) =>
                 }
               };
               _.each(val, addIfInputUnique);
-              draft[address][key] = newState;
+              draft[address][key] = _.clone(newState);
             }
           };
           _.each(contractState, mergeState);

@@ -26,9 +26,7 @@ export default function ConnectionProvider(props) {
   const initializeWallet = () => {
     const selectWallet = newWallet => {
       if (newWallet.provider) {
-        const newWeb3 = new Web3(
-          'wss://eth-mainnet.ws.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ',
-        );
+        const newWeb3 = new Web3(newWallet.provider);
         newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);
         setWeb3(newWeb3);

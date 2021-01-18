@@ -147,7 +147,9 @@ function* executeCoverBuy(
 ) {
   const account = yield select(selectAccount());
   const daiData = yield select(selectContractData(DAI_ADDRESS));
-  const daiAmountRaw = new BigNumber(daiAmount).times(10 ** daiData.decimals);
+  const daiAmountRaw = new BigNumber(daiAmount)
+    .times(10 ** daiData.decimals)
+    .toFixed(0);
 
   yield call(
     claimPoolContract.methods.swapExactAmountOut.cacheSend,

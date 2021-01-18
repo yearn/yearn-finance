@@ -330,8 +330,8 @@ function CoverDetailCardBuy(props) {
       .toFixed(5);
     setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
     setAmount(newAmount);
-    setEquivalentTo(newAmount);
     amountRef.current.value = newAmount.toFixed(5);
+    setEquivalentTo(daiBalanceNormalized);
     equivalentToRef.current.value = daiBalanceNormalized;
   };
 

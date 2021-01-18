@@ -31,7 +31,7 @@ import DrizzleProvider from 'containers/DrizzleProvider';
 import ModalProvider from 'containers/ModalProvider';
 
 // Import password protection
-import PasswordProtector from 'containers/PasswordProtector';
+// import PasswordProtector from 'containers/PasswordProtector';
 
 // Load the favicon and the .htaccess file
 /* eslint-disable import/no-unresolved, import/extensions */
@@ -55,23 +55,21 @@ const MOUNT_NODE = document.getElementById('app');
 const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
-      <PasswordProtector>
-        <ThemeProvider>
-          <LanguageProvider messages={messages}>
-            <DrizzleProvider store={store}>
-              <ModalProvider>
-                <ConnectionProvider>
-                  <ConnectedRouter history={history}>
-                    <GlobalStyles />
-                    <GlobalNotifyStyles />
-                    <App />
-                  </ConnectedRouter>
-                </ConnectionProvider>
-              </ModalProvider>
-            </DrizzleProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </PasswordProtector>
+      <ThemeProvider>
+        <LanguageProvider messages={messages}>
+          <DrizzleProvider store={store}>
+            <ModalProvider>
+              <ConnectionProvider>
+                <ConnectedRouter history={history}>
+                  <GlobalStyles />
+                  <GlobalNotifyStyles />
+                  <App />
+                </ConnectedRouter>
+              </ConnectionProvider>
+            </ModalProvider>
+          </DrizzleProvider>
+        </LanguageProvider>
+      </ThemeProvider>
     </Provider>,
     MOUNT_NODE,
   );

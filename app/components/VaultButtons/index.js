@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: 0 */
 import React from 'react';
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
@@ -8,7 +9,7 @@ import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import { useSelector } from 'react-redux';
 import ButtonFilledRed from 'components/ButtonFilledRed';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
-import { createPermitMessageData } from 'utils/permit';
+// import { createPermitMessageData } from 'utils/permit';
 
 const Wrapper = styled.div`
   display: grid;
@@ -41,11 +42,11 @@ export default function VaultButtons(props) {
     usdc,
   } = vault;
 
-  const web3 = useWeb3();
+  // const web3 = useWeb3();
   const contract = useContract(address);
   const tokenBalanceOf = token.balanceOf;
   const drizzle = useDrizzle();
-  const account = useSelector(selectAccount());
+  // const account = useSelector(selectAccount());
 
   const writeMethods = _.get(drizzle, `contracts.${address}.writeMethods`, []);
   const MAX_UINT256 = new BigNumber(2)
@@ -134,16 +135,16 @@ export default function VaultButtons(props) {
     openModal('transaction', modalArgs);
   };
 
-  const getNonceForAccount = () => 0;
+  // const getNonceForAccount = () => 0;
 
   const approveToken = () => {
     const approveMethod = _.find(tokenContract.abi, { name: 'approve' });
     openTokenTransactionModal(approveMethod);
   };
 
-  const verifyingContract = tokenContractAddress || usdc;
+  // const verifyingContract = tokenContractAddress || usdc;
 
-  const permitContractAddress = address;
+  // const permitContractAddress = address;
 
   // const permitApproveDeposit = amount => {
   //   const deadline = MAX_UINT256;

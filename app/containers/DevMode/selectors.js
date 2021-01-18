@@ -1,4 +1,4 @@
-// eslint-disable-file
+/* eslint no-unused-vars: 0 */
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 

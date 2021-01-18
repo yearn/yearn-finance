@@ -29,7 +29,7 @@ export default function App() {
     }
   };
   const init = () => {
-    console.log('v2.0.0:2');
+    console.log('v2.0.0:3');
     dispatch(appInitialized());
   };
   useEffect(appReadyChanged, [ready]);

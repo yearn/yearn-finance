@@ -58,7 +58,7 @@ export const menuLinks = {
   //   title: 'Labs',
   //   description: 'Home for experimental vaults',
   // },
-  community: [
+  social: [
     {
       href: 'https://twitter.com/iearnfinance',
       title: 'Twitter',

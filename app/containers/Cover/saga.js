@@ -145,9 +145,9 @@ function* executeCoverBuy(
   const daiData = yield select(selectContractData(DAI_ADDRESS));
   const claimTokenData = yield select(selectContractData(claimTokenAddress));
   const daiAmountRaw = new BigNumber(daiAmount).times(10 ** daiData.decimals);
-  const claimTokenAmountRaw = new BigNumber(claimTokenTokenAmount).times(
-    10 ** claimTokenData.decimals,
-  );
+  const claimTokenAmountRaw = new BigNumber(claimTokenTokenAmount)
+    .times(10 ** claimTokenData.decimals)
+    .toFixed(0);
 
   yield call(
     claimPoolContract.methods.swapExactAmountOut.cacheSend,
@@ -206,9 +206,9 @@ function* executeCoverSell(claimPoolContract, claimTokenContract, amount) {
     selectContractData(claimTokenContract.address),
   );
 
-  const claimTokenAmountRaw = new BigNumber(amount).times(
-    10 ** claimTokenData.decimals,
-  );
+  const claimTokenAmountRaw = new BigNumber(amount)
+    .times(10 ** claimTokenData.decimals)
+    .toFixed(0);
 
   yield call(
     claimPoolContract.methods.swapExactAmountIn.cacheSend,

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import TokenIcon from 'components/TokenIcon';
 import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import BatchCall from 'web3-batch-call';
@@ -41,6 +42,11 @@ const VaultIconWrapper = styled.div`
   height: 30px;
   width: 30px;
   margin: 5px 15px 15px 0px;
+`;
+
+const StyledTokenIcon = styled(TokenIcon)`
+  width: 30px;
+  height: 30px;
 `;
 
 const ChartsWrapper = styled.div`
@@ -326,14 +332,9 @@ export default function TransactionModal(props) {
             <VaultInfo>
               <VaultTitle>
                 <VaultIconWrapper>
-                  <img
-                    src={vault.vaultIcon}
-                    alt="token"
-                    width={30}
-                    height={30}
-                  />
+                  <StyledTokenIcon address={vault.address} />
                 </VaultIconWrapper>
-                {`${vault.tokenSymbolAlias} - ${vault.name}`}
+                {`${vault.displayName} - ${vault.name}`}
               </VaultTitle>
               <ModalData>
                 {vault.strategyName}: {linkTo(vault.strategyAddress)}

@@ -41,11 +41,18 @@ export const menuLinks = {
   //   title: 'Stats',
   //   description: "Get a quick glance at how yearn's vaults are performing",
   // },
-  gov: {
-    href: 'https://ygov.finance/',
-    title: 'Gov',
-    description: 'Stake and Vote tokens to participate in governance',
-  },
+  gov: [
+    {
+      href: 'https://gov.yearn.finance/',
+      title: 'Forum',
+      description: '',
+    },
+    {
+      href: 'https://snapshot.page/#/yearn',
+      title: 'Voting',
+      description: '',
+    },
+  ],
   // labs: {
   //   href: 'https://yearn.finance/experimental',
   //   title: 'Labs',

@@ -95,4 +95,8 @@ export const menuLinks = {
       'https://github.com/iearn-finance/yearn-protocol/blob/develop/SECURITY.md',
     title: 'Security',
   },
+  v1: {
+    href: 'https://v1.yearn.finance',
+    title: 'Back to the old v1 UI',
+  },
 };

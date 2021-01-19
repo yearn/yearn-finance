@@ -26,7 +26,6 @@ export function initOnboard(subscriptions, darkMode) {
           walletName: 'ledger',
           rpcUrl,
         },
-        { walletName: 'dapper' },
         { walletName: 'coinbase' },
         { walletName: 'status' },
         { walletName: 'walletLink', rpcUrl },
@@ -35,9 +34,7 @@ export function initOnboard(subscriptions, darkMode) {
           apiKey: 'b2b7586f-2b1e-4c30-a7fb-c2d1533b153b',
         },
         { walletName: 'fortmatic', apiKey: 'pk_test_886ADCAB855632AA' },
-        { walletName: 'unilogin' },
         { walletName: 'torus' },
-        { walletName: 'squarelink', apiKey: '87288b677f8cfb09a986' },
         { walletName: 'authereum', disableNotifications: true },
         { walletName: 'trust', rpcUrl },
         {

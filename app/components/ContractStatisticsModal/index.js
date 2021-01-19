@@ -97,7 +97,9 @@ const RangeSelector = styled.div`
 const ChartWrapper = styled.div`
   display: flex;
   flex-basis: 50%;
+  margin: 0 auto;
   flex-direction: column;
+  max-width: 500px;
   @media (max-width: 768px) {
     flex-basis: 100%;
   }
@@ -131,7 +133,7 @@ export default function TransactionModal(props) {
   const [days, setDays] = useState(defaultDays);
 
   const provider =
-    'https://eth-mainnet.alchemyapi.io/v2/k2--UT_xVVXMOvAyoxJYqtKhlmyBbqnX';
+    'https://eth-mainnet.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ';
   const batchCall = new BatchCall({
     provider,
     etherscan: {

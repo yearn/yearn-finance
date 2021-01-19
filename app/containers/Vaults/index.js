@@ -13,6 +13,8 @@ import VaultsNavLinks from 'components/VaultsNavLinks';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AddVault from 'components/AddVault';
 import AccordionContext from 'react-bootstrap/AccordionContext';
+import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Wrapper = styled.div`
   width: 1088px;
@@ -44,7 +46,9 @@ const DevHeader = styled.div`
 const Vaults = () => {
   const devMode = true;
   const showDevVaults = useShowDevVaults();
-
+  const wallet = useWallet();
+  const account = useAccount();
+  const walletConnected = wallet.provider && account;
   let columnHeader;
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
@@ -65,14 +69,17 @@ const Vaults = () => {
       {warning}
       {columnHeader}
       <Accordion>
-        <VaultsWrapper showDevVaults={showDevVaults} />
+        <VaultsWrapper
+          showDevVaults={showDevVaults}
+          walletConnected={walletConnected}
+        />
       </Accordion>
     </Wrapper>
   );
 };
 
 const VaultsWrapper = props => {
-  const { showDevVaults } = props;
+  const { showDevVaults, walletConnected } = props;
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
@@ -84,6 +91,9 @@ const VaultsWrapper = props => {
       showDevVaults={showDevVaults}
     />
   );
+
+  // Show Linear progress when orderedvaults is empty
+  if (walletConnected && orderedVaults == null) return <LinearProgress />;
 
   let vaultRows = _.map(orderedVaults, renderVault);
   if (showDevVaults) {

@@ -6,8 +6,8 @@ import drizzleSagas from './rootSaga';
 import { generateContractsInitialState } from './contractStateUtils';
 import drizzleMW from './drizzle-middleware';
 
-const composeSagas = sagas =>
-  function*() {
+const composeSagas = (sagas) =>
+  function* () {
     yield all(sagas.map(fork));
   };
 

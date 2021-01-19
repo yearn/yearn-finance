@@ -38,7 +38,7 @@ const ColumnWrapper = styled.div`
 
 const MaxButton = styled.button``;
 
-const Button = props => {
+const Button = (props) => {
   const { children, onClick } = props;
   return (
     <StyledButton type="button" onClick={onClick}>
@@ -75,12 +75,12 @@ export default function CreamModal(props) {
     updateAmount(balanceOf);
   };
 
-  const updateNormalizedAmount = val => {
+  const updateNormalizedAmount = (val) => {
     const amount = new BigNumber(val).times(10 ** decimals).toFixed();
     amountRef.current.value = amount;
   };
 
-  const updateAmount = val => {
+  const updateAmount = (val) => {
     amountRef.current.value = val;
     const normalizedAmount = new BigNumber(val)
       .dividedBy(10 ** decimals)
@@ -97,7 +97,7 @@ export default function CreamModal(props) {
           ref={amountRefNormalized}
           max={balanceOfNormalized}
           type="number"
-          onChange={evt => updateNormalizedAmount(evt.target.value)}
+          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
         />
         <MaxButton onClick={setMax}>max</MaxButton>
       </InputArea>
@@ -116,7 +116,7 @@ export default function CreamModal(props) {
       <InputArea>
         <input
           ref={amountRefNormalized}
-          onChange={evt => updateNormalizedAmount(evt.target.value)}
+          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
         />
       </InputArea>
       <Button onClick={withdraw}>Withdraw</Button>

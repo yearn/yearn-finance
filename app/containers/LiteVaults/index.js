@@ -78,7 +78,7 @@ const tokenTransform = (val, asset) => {
   );
 };
 
-const apyTransform = apyObj => {
+const apyTransform = (apyObj) => {
   const apyTruncated = parseFloat(apyObj.apyOneMonthSample).toFixed(2);
   let displayApy = 'N/A';
   if (apyTruncated !== 'NaN') {
@@ -119,7 +119,7 @@ const tokenBalanceTransform = (tokenBalanceOf, vault) => {
   return displayBalance;
 };
 
-const depositedTransform = depositedNormalized => {
+const depositedTransform = (depositedNormalized) => {
   const displayDeposited =
     depositedNormalized === 'NaN' ? '-' : depositedNormalized;
   return displayDeposited;
@@ -130,12 +130,12 @@ const VaultsWrapper = () => {
   const vaultsContractData = useSelector(selectContracts('vaults'));
   const tokensContractData = useSelector(selectContracts('tokens'));
 
-  const mergeVaultsData = vault => {
+  const mergeVaultsData = (vault) => {
     const apiVaultAddress = vault.address;
     const vaultContractData =
       _.find(
         vaultsContractData,
-        vaultContract => vaultContract.address === apiVaultAddress,
+        (vaultContract) => vaultContract.address === apiVaultAddress,
       ) || {};
 
     const mergedVault = _.merge(vault, vaultContractData);
@@ -143,7 +143,7 @@ const VaultsWrapper = () => {
     const tokenContractData =
       _.find(
         tokensContractData,
-        tokenContract => tokenContract.address === vault.tokenAddress,
+        (tokenContract) => tokenContract.address === vault.tokenAddress,
       ) || {};
 
     const tokenBalanceOf = _.get(tokenContractData, 'balanceOf[0].value');
@@ -162,8 +162,8 @@ const VaultsWrapper = () => {
     'desc',
   );
 
-  const filterYourVaults = vault => _.get(vault, 'balanceOf[0].value') > 0;
-  const filterNotYourVaults = vault =>
+  const filterYourVaults = (vault) => _.get(vault, 'balanceOf[0].value') > 0;
+  const filterNotYourVaults = (vault) =>
     _.get(vault, 'balanceOf[0].value') === '0';
 
   const yourVaults = _.filter(mergedVaultsData, filterYourVaults);

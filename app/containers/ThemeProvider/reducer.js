@@ -25,7 +25,7 @@ export const initialState = {
 
 /* eslint-disable default-case, no-param-reassign */
 const languageProviderReducer = (state = initialState, action) =>
-  produce(state, draft => {
+  produce(state, (draft) => {
     switch (action.type) {
       case TOGGLE_DARK_MODE:
         draft.darkMode = !draft.darkMode;

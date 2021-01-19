@@ -65,7 +65,7 @@ const makeSelectLocationState = () => {
   let prevRoutingState;
   let prevRoutingStateJS;
 
-  return state => {
+  return (state) => {
     const routingState = state.get('router'); // or state.route
 
     if (!routingState.equals(prevRoutingState)) {

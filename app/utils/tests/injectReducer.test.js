@@ -15,7 +15,7 @@ import * as reducerInjectors from '../reducerInjectors';
 // Fixtures
 const Component = () => null;
 
-const reducer = s => s;
+const reducer = (s) => s;
 
 describe('injectReducer decorator', () => {
   let store;

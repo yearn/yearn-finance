@@ -135,7 +135,7 @@ const FlyingMobileSecondMenu = ({
           ]}
         >
           <nav tw="z-10 flex flex-col space-y-4 justify-center h-full">
-            {menuLinks[mobileIsActive].map(link => (
+            {menuLinks[mobileIsActive].map((link) => (
               <a href={link.href} tw="flex">
                 <div
                   css={[
@@ -208,7 +208,7 @@ export const FlyingMobileMenu = ({
             tw="object-center h-full relative -mt-4"
           >
             <nav tw="flex flex-col space-y-2 items-center justify-center z-10 h-full w-full absolute">
-              {Object.keys(menuLinks).map(menuItemText => (
+              {Object.keys(menuLinks).map((menuItemText) => (
                 <FlyingMobileMenuItem
                   setIsActive={setMobileIsActive}
                   menuItemText={menuItemText}

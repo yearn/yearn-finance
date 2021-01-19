@@ -5,7 +5,7 @@ import WebsocketConnection from './connection';
 const socketMiddleware = (() => {
   let websocketConnection = null;
 
-  return store => next => action => {
+  return (store) => (next) => (action) => {
     switch (action.type) {
       case constants.WEBSOCKET_CONNECT:
         if (websocketConnection != null) {

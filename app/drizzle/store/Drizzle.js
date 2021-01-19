@@ -104,7 +104,7 @@ class Drizzle {
     }
 
     this.contractList = this.contractList.filter(
-      contract => contract.contractName !== contractName,
+      (contract) => contract.contractName !== contractName,
     );
 
     const {
@@ -128,7 +128,7 @@ class Drizzle {
 
   findContractByAddress(address) {
     return this.contractList.find(
-      contract => contract.address.toLowerCase() === address.toLowerCase(),
+      (contract) => contract.address.toLowerCase() === address.toLowerCase(),
     );
   }
 

@@ -18,7 +18,7 @@ Simple selectors are just that: they take the application state and select a
 part of it.
 
 ```javascript
-const mySelector = state => state.get('someState');
+const mySelector = (state) => state.get('someState');
 
 export { mySelector };
 ```
@@ -33,7 +33,7 @@ selectors and pass them to the `createSelector` call:
 import { createSelector } from 'reselect';
 import mySelector from 'mySelector';
 
-const myComplexSelector = createSelector(mySelector, myState =>
+const myComplexSelector = createSelector(mySelector, (myState) =>
   myState.get('someNestedState'),
 );
 
@@ -45,7 +45,9 @@ These selectors can then either be used directly in our containers as
 
 ```javascript
 export default connect(
-  createSelector(myComplexSelector, myNestedState => ({ data: myNestedState })),
+  createSelector(myComplexSelector, (myNestedState) => ({
+    data: myNestedState,
+  })),
 )(SomeComponent);
 ```
 

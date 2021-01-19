@@ -16,7 +16,7 @@ const initialState = { reduced: 'soon' };
 
 /* eslint-disable default-case, no-param-reassign */
 const reducer = (state = initialState, action) =>
-  produce(state, draft => {
+  produce(state, (draft) => {
     switch (action.type) {
       case 'TEST':
         draft.reduced = action.payload;

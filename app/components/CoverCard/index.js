@@ -12,17 +12,17 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Wrapper = styled(Link)`
   height: 312px;
-  background-color: ${props => props.theme.vaultBackground};
+  background-color: ${(props) => props.theme.vaultBackground};
   border-radius: 15px;
   position: relative;
   text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${props => props.theme.white};
+  color: ${(props) => props.theme.white};
 `;
 
-const claimBackgroundColor = props => {
+const claimBackgroundColor = (props) => {
   const {
     userHasClaimForProtocol,
     expiringSoon,

@@ -10,7 +10,7 @@ const initialState = [];
 
 const contractsReducer = (state = initialState, action) =>
   // eslint-disable-next-line no-unused-vars
-  produce(state, draft => {
+  produce(state, (draft) => {
     switch (action.type) {
       case DRIZZLE_ADD_CONTRACTS: {
         const { contracts } = action;
@@ -20,7 +20,7 @@ const contractsReducer = (state = initialState, action) =>
       }
       case DELETE_CONTRACT: {
         const { contractName: address } = action;
-        const removeAddress = subscription => {
+        const removeAddress = (subscription) => {
           const { addresses } = subscription;
           const newAddresses = _.pull(addresses, address);
           subscription.addresses = newAddresses;

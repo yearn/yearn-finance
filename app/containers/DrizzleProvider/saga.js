@@ -59,18 +59,18 @@ function* addContract(
     return newMethod;
   };
 
-  newReadMethods = _.map(newReadMethods, method =>
+  newReadMethods = _.map(newReadMethods, (method) =>
     mergeAbiFieldData(method, allAbiReadMethods),
   );
-  newWriteMethods = _.map(newWriteMethods, method =>
+  newWriteMethods = _.map(newWriteMethods, (method) =>
     mergeAbiFieldData(method, allAbiWriteMethods),
   );
 
   if (allReadMethods) {
-    _.each(allAbiReadMethods, field => addField(field, newReadMethods));
+    _.each(allAbiReadMethods, (field) => addField(field, newReadMethods));
   }
   if (allWriteMethods) {
-    _.each(allAbiWriteMethods, field => addField(field, newWriteMethods));
+    _.each(allAbiWriteMethods, (field) => addField(field, newWriteMethods));
   }
 
   const contract = new web3.eth.Contract(newAbi, contractAddress);
@@ -146,7 +146,7 @@ function* addContractsBatch(contractBatch) {
   if (abi) {
     // Async
     yield all(
-      _.map(addresses, address =>
+      _.map(addresses, (address) =>
         addContract(
           address,
           abi,
@@ -187,7 +187,7 @@ export function* addContracts(action) {
   yield setContext(action);
 
   yield all(
-    _.map(contractsBatch, contractBatch =>
+    _.map(contractsBatch, (contractBatch) =>
       call(addContractsBatch, contractBatch),
     ),
   );

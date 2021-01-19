@@ -32,9 +32,9 @@ export default function configureStore(initialState = {}, history) {
     /* eslint-enable */
   }
 
-  const composeSagas = sagas =>
+  const composeSagas = (sagas) =>
     // eslint-disable-next-line
-    function*() {
+    function* () {
       yield all(sagas.map(fork));
     };
 

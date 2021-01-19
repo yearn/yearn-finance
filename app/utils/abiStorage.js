@@ -10,7 +10,7 @@ const getAbiByHash = () => JSON.parse(localStorage.getItem('abiByHash')) || {};
 const getAbiHashByAddress = () =>
   JSON.parse(localStorage.getItem('abiHashByAddress')) || {};
 
-const fetchAbi = async address => {
+const fetchAbi = async (address) => {
   const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${apiKey}`;
   const resp = await request(url);
   const abi = JSON.parse(resp.result);
@@ -23,7 +23,7 @@ const setLocalStorageItem = (key, item) => {
 
 export const addAbiToCache = async (address, providedAbi) => {
   let abi;
-  const cacheAbi = newAbi => {
+  const cacheAbi = (newAbi) => {
     const abiHashByAddress = getAbiHashByAddress();
     const abiByHash = getAbiByHash();
     const abiHash = md5(newAbi);
@@ -45,7 +45,7 @@ export const addAbiToCache = async (address, providedAbi) => {
   return abi;
 };
 
-export const getAbiFromCache = address => {
+export const getAbiFromCache = (address) => {
   const abiHashByAddress = getAbiHashByAddress();
   const abiByHash = getAbiByHash();
   const abiHash = abiHashByAddress[address];
@@ -53,7 +53,7 @@ export const getAbiFromCache = address => {
   return abi;
 };
 
-export const getCachedAbi = async address => {
+export const getCachedAbi = async (address) => {
   let abi = getAbiFromCache(address);
   if (!abi) {
     abi = await addAbiToCache(address);

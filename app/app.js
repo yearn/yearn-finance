@@ -52,7 +52,7 @@ const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-const render = messages => {
+const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>
       <ThemeProvider>
@@ -87,12 +87,12 @@ if (module.hot) {
 
 // Chunked polyfill for browsers without Intl support
 if (!window.Intl) {
-  new Promise(resolve => {
+  new Promise((resolve) => {
     resolve(import('intl'));
   })
     .then(() => Promise.all([import('intl/locale-data/jsonp/en.js')]))
     .then(() => render(translationMessages))
-    .catch(err => {
+    .catch((err) => {
       throw err;
     });
 } else {

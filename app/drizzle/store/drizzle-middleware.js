@@ -1,4 +1,6 @@
-export const drizzleMiddleware = drizzleInstance => store => next => action => {
+export const drizzleMiddleware = (drizzleInstance) => (store) => (next) => (
+  action,
+) => {
   const { type } = action;
 
   if (type === 'DRIZZLE_INITIALIZING') {
@@ -16,7 +18,7 @@ export const drizzleMiddleware = drizzleInstance => store => next => action => {
 
     // Update `from` fields with newAccount
     if (oldAccount !== newAccount) {
-      drizzleInstance.contractList.forEach(contract => {
+      drizzleInstance.contractList.forEach((contract) => {
         contract.options.from = newAccount;
       });
     }

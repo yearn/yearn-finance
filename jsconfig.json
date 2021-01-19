@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-  "jsx": "react",
-  "moduleResolution": "node",
-  "target": "es6",
-  "baseUrl": "./",
-  "paths": {
-    "containers/*": ["app/containers/*"],
-    "components/*": ["app/components/*"],
-    "abi/*": ["app/abi/*"],
-    "utils/*": ["app/utils/*"],
-    "fonts/*": ["app/fonts/*"],
-    "middleware/*": ["app/middleware/*"],
-    "translations/*": ["app/translations/*"],
-  }
+    "jsx": "react",
+    "moduleResolution": "node",
+    "target": "es6",
+    "baseUrl": "./",
+    "paths": {
+      "containers/*": ["app/containers/*"],
+      "components/*": ["app/components/*"],
+      "abi/*": ["app/abi/*"],
+      "utils/*": ["app/utils/*"],
+      "fonts/*": ["app/fonts/*"],
+      "middleware/*": ["app/middleware/*"],
+      "translations/*": ["app/translations/*"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

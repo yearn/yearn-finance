@@ -29,11 +29,11 @@ const Warning = styled.div`
 `;
 
 const DevHeader = styled.div`
-  opacity: ${props => (props.devMode ? 1 : 0)};
+  opacity: ${(props) => (props.devMode ? 1 : 0)};
   transition: opacity 100ms ease-in, margin-top 100ms ease-out;
   margin-top: -50px;
   pointer-events: none;
-  ${props =>
+  ${(props) =>
     props.devMode &&
     css`
       margin-top: 30px;
@@ -78,12 +78,12 @@ const Vaults = () => {
   );
 };
 
-const VaultsWrapper = props => {
+const VaultsWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
-  const renderVault = vault => (
+  const renderVault = (vault) => (
     <Vault
       vault={vault}
       key={vault.address}

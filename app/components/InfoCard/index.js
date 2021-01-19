@@ -4,15 +4,15 @@ import AnimatedNumber from 'animated-number-react';
 // import BigNumber from 'bignumber.js';
 
 const Card = styled.div`
-  background-color: ${props => props.theme.infoCardBackground};
+  background-color: ${(props) => props.theme.infoCardBackground};
   padding: 32px;
   border-radius: 4px;
-  color: ${props => props.theme.infoCardText};
+  color: ${(props) => props.theme.infoCardText};
   text-align: center;
 `;
 
 const Label = styled.div`
-  color: ${props => props.theme.infoCardLabel};
+  color: ${(props) => props.theme.infoCardLabel};
   font-size: 16px;
   margin-bottom: 8px;
 `;

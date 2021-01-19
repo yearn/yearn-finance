@@ -35,7 +35,7 @@ export function getContractType(data) {
   ];
 
   const keys = _.keys(data);
-  const checkType = type => _.difference(type.fields, keys).length === 0;
+  const checkType = (type) => _.difference(type.fields, keys).length === 0;
   const contractType = _.find(types, checkType);
 
   return contractType ? contractType.name : 'Unknown';
@@ -108,7 +108,7 @@ export function getReadMethodsWithNoInputs(abi) {
 export function getNumericReadMethodsWithNoInputs(abi) {
   const methods = getMethods(abi);
   const readMethods = methods.read;
-  const filterNumericInputs = method => {
+  const filterNumericInputs = (method) => {
     const { outputs } = method;
     const outputType = _.get(outputs, '[0].type');
     const typeIsReadable = outputType === 'uint256' || outputType === 'uint';

@@ -1,7 +1,7 @@
 import React from 'react';
 import AnimatedNumber from 'animated-number-react';
 
-const defaultFormatter = v =>
+const defaultFormatter = (v) =>
   v.toLocaleString('en', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

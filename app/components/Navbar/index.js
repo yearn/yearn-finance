@@ -18,7 +18,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
   >
     <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
       <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-2 py-6">
-        {links.map(link =>
+        {links.map((link) =>
           link.href.includes('http') ? (
             <a
               key={link.href}
@@ -233,7 +233,7 @@ const Navbar = () => {
           )}
 
           <nav tw="space-x-10 hidden md:flex items-center">
-            {Object.keys(menuLinks).map(menuLink => {
+            {Object.keys(menuLinks).map((menuLink) => {
               const links = menuLinks[menuLink];
               return (
                 <MenuItem

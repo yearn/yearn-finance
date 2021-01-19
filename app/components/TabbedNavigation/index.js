@@ -10,7 +10,7 @@ const PageName = styled.div`
   font-family: gotham;
   font-weight: 500;
   font-size: 14px;
-  color: ${props => (props.pageSelected ? '#ff5f00' : '#9b9b9b')};
+  color: ${(props) => (props.pageSelected ? '#ff5f00' : '#9b9b9b')};
   display: inline-block;
   padding-left: 7px;
   padding-right: 7px;

@@ -10,7 +10,7 @@ const modals = {
   cream: CreamModal,
 };
 
-const ModalProvider = props => {
+const ModalProvider = (props) => {
   const devMode = true;
   const makeInitialModalState = (acc, Modal, key) => {
     acc[key] = {
@@ -21,7 +21,7 @@ const ModalProvider = props => {
   const initialModalState = _.reduce(modals, makeInitialModalState, {});
   const [modalState, setModalState] = useState(initialModalState);
 
-  const closeModal = key => {
+  const closeModal = (key) => {
     const currentState = _.clone(modalState);
     currentState[key].show = false;
     setModalState(currentState);

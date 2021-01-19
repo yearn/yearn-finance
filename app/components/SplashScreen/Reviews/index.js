@@ -4,7 +4,7 @@ import { ForbesLogo } from './Logos/Forbes';
 import { CoindeskLogo } from './Logos/Coindesk';
 import { CoinTelegraphLogo } from './Logos/CoinTelegraph';
 
-const getLogo = logoName => {
+const getLogo = (logoName) => {
   if (logoName === 'Forbes') {
     return <ForbesLogo />;
   }

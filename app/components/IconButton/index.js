@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Icon from 'components/Icon';
 
 const Wrapper = styled.button`
-  background-color: ${props => props.theme.buttonBackground};
-  color: ${props => props.theme.buttonColor};
+  background-color: ${(props) => props.theme.buttonBackground};
+  color: ${(props) => props.theme.buttonColor};
   align-items: center;
   border-radius: 4px;
   height: 40px;

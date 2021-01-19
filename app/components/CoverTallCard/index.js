@@ -9,7 +9,7 @@ import { calculateAmountNeeded } from 'utils/cover';
 
 const Wrapper = styled.div`
   margin-left: 50px;
-  background-color: ${props => props.theme.vaultBackground};
+  background-color: ${(props) => props.theme.vaultBackground};
   width: 330px;
   border-radius: 15px;
   display: flex;

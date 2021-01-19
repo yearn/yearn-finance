@@ -15,7 +15,7 @@ const Input = styled.input`
   height: 40px;
   width: 100%;
   box-shadow: none;
-  border: ${props => (props.invalid ? '4px solid red' : '1px solid black')};
+  border: ${(props) => (props.invalid ? '4px solid red' : '1px solid black')};
   outline: none;
 `;
 
@@ -60,7 +60,7 @@ const lineHeight = 16;
 
 const Editor = styled.div`
   font-size: 16px;
-  display: ${props => (props.devMode ? 'inherit' : 'none')};
+  display: ${(props) => (props.devMode ? 'inherit' : 'none')};
   line-height: ${lineHeight}px;
   width: 100%;
   height: 100%;
@@ -86,7 +86,7 @@ const ButtonWrapper = styled.div`
 const BodyWrapper = styled.div`
   display: grid;
   height: 100%;
-  grid-template-columns: ${props => (props.devMode ? '50% 50%' : '1fr')};
+  grid-template-columns: ${(props) => (props.devMode ? '50% 50%' : '1fr')};
 `;
 
 const NormalizeInput = styled.div`
@@ -121,7 +121,7 @@ const DisplayFields = styled.table`
 `;
 
 const InputArgsWrapper = styled.div`
-  display: ${props => (props.show ? 'inherit' : 'none')};
+  display: ${(props) => (props.show ? 'inherit' : 'none')};
 `;
 
 export default function TransactionModal(props) {
@@ -148,7 +148,7 @@ export default function TransactionModal(props) {
     if (show) {
       const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4'; // TODO: move to config constants files
       const url = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-      request(url).then(response => {
+      request(url).then((response) => {
         const contractMetadata = _.first(response.result);
         const sourceCode = _.get(contractMetadata, 'SourceCode', '');
         setContractSource(sourceCode);
@@ -238,7 +238,7 @@ export default function TransactionModal(props) {
     updateField(name, value, decimals, false);
   };
 
-  const renderInput = input => {
+  const renderInput = (input) => {
     const { type, name: inputName } = input;
     const inputArg = _.get(inputArgs, inputName);
     const max = _.get(inputArg, 'max');
@@ -291,7 +291,7 @@ export default function TransactionModal(props) {
       updateField(inputName, maxInputStr, decimals, false);
     };
 
-    const handleInputChangeWithDecimals = evt => {
+    const handleInputChangeWithDecimals = (evt) => {
       handleInputChange(evt, decimals);
     };
 
@@ -328,7 +328,7 @@ export default function TransactionModal(props) {
   const searchTextSolidity = `function ${methodName}(`;
   const searchTextVyper = `def ${methodName}(`;
   const startIdx =
-    _.findIndex(sourceLines, line => {
+    _.findIndex(sourceLines, (line) => {
       const solidityMatch =
         _.includes(line, searchTextSolidity) && _.endsWith(line, '{');
       const vyperMatch = _.startsWith(line, searchTextVyper);
@@ -340,7 +340,7 @@ export default function TransactionModal(props) {
   const endIdx = (() => {
     let solidityMatch;
     let vyperMatch;
-    const foundIdx = _.findIndex(nextLines, line => {
+    const foundIdx = _.findIndex(nextLines, (line) => {
       solidityMatch = _.startsWith(line, '  }') || _.startsWith(line, '    }');
       vyperMatch = _.startsWith(line, '@');
       return solidityMatch || vyperMatch;
@@ -379,15 +379,18 @@ export default function TransactionModal(props) {
   };
   useEffect(loadEditor, [textAreaRef, show, contractSource]);
 
-  const sendTransaction = evt => {
+  const sendTransaction = (evt) => {
     evt.preventDefault();
-    const contractArgs = _.map(inputs, input => inputFields[input.name].value);
+    const contractArgs = _.map(
+      inputs,
+      (input) => inputFields[input.name].value,
+    );
     contract.methods[methodName].cacheSend(...contractArgs, { from: account });
     onHide();
   };
 
   let normalizeInput;
-  const argDecimalsArr = _.filter(inputArgs, arg => arg.decimals) || [];
+  const argDecimalsArr = _.filter(inputArgs, (arg) => arg.decimals) || [];
   const canNormalizeAmounts = argDecimalsArr.length;
   const showInputArgText = inputs && inputs.length;
 
@@ -399,7 +402,7 @@ export default function TransactionModal(props) {
           type="checkbox"
           id="normalizeAmounts"
           checked={normalizeAmounts}
-          onChange={evt => setNormalizeAmounts(evt.target.checked)}
+          onChange={(evt) => setNormalizeAmounts(evt.target.checked)}
         />
       </NormalizeInput>
     );

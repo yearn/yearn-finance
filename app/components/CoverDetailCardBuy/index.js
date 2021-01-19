@@ -282,7 +282,7 @@ function CoverDetailCardBuy(props) {
     daiBalanceOfNormalized = '0';
   }
 
-  const updateAmount = evt => {
+  const updateAmount = (evt) => {
     const newAmount = evt.target.value;
     setAmount(newAmount);
     setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0)); // TODO: Update for token decimals
@@ -295,7 +295,7 @@ function CoverDetailCardBuy(props) {
     setEquivalentTo(equivalentToVal);
   };
 
-  const updateEquivalentToVal = val => {
+  const updateEquivalentToVal = (val) => {
     const { daiInPool, covTokenWeight, price, swapFee } = claimPool;
 
     const newAmount = calculateAmountOutFromBuy(
@@ -438,7 +438,7 @@ function CoverDetailCardBuy(props) {
           <BottomInputWrapper>
             <RoundedInput
               right={claimInputBottom}
-              onChange={evt => updateEquivalentToVal(evt.target.value)}
+              onChange={(evt) => updateEquivalentToVal(evt.target.value)}
               ref={equivalentToRef}
             />
           </BottomInputWrapper>

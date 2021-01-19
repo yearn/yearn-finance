@@ -16,15 +16,15 @@ export function createContractEventChannel({
 }) {
   const name = contract.contractName;
 
-  return eventChannel(emit => {
+  return eventChannel((emit) => {
     const eventListener = contract.events[eventName](eventOptions)
-      .on('data', event => {
+      .on('data', (event) => {
         emit({ type: EventActions.EVENT_FIRED, name, event });
       })
-      .on('changed', event => {
+      .on('changed', (event) => {
         emit({ type: EventActions.EVENT_CHANGED, name, event });
       })
-      .on('error', error => {
+      .on('error', (error) => {
         emit({ type: EventActions.EVENT_ERROR, name, error });
         emit(END);
       });
@@ -124,7 +124,7 @@ function* executeBatchCall(action) {
 function* processResponse(action) {
   const { payload, drizzle } = action;
   const account = yield select(selectAccount());
-  const responseItemsWithTokens = _.filter(payload, item => item.token);
+  const responseItemsWithTokens = _.filter(payload, (item) => item.token);
   const findNewTokens = (acc, responseItem) => {
     const { address } = responseItem;
     const token = _.get(responseItem, 'token[0].value');
@@ -140,7 +140,7 @@ function* processResponse(action) {
     [],
   );
 
-  const generateSubscription = contract => {
+  const generateSubscription = (contract) => {
     const { address: vaultAddress, token } = contract;
     return {
       namespace: 'tokens',

@@ -49,7 +49,7 @@ export const Hero = () => (
         to="/vaults"
       >
         <p tw="text-white uppercase text-base font-sans font-black no-underline">
-          {`LET'S GO`}
+          {`LFG`}
         </p>
       </Link>
     </div>

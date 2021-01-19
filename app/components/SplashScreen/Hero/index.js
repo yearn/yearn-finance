@@ -41,7 +41,7 @@ export const Hero = () => (
         <h2 tw="inline-block text-white float-left mr-2 md:mr-4">yearn</h2>
       </div>
       <div tw="text-white font-bold md:text-4xl justify-center flex flex-col items-center mb-6 text-2xl">
-        <h4 tw="">numba goes up</h4>
+        <h4 tw="">numba go up</h4>
       </div>
       <Link
         type="button"

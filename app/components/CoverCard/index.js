@@ -8,6 +8,7 @@ import {
 } from 'utils/string';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Wrapper = styled(Link)`
   height: 312px;
@@ -185,7 +186,11 @@ export default function CoverCard(props) {
   let cardContent;
   let protocolUrlEl;
   if (!claimTokenBalanceOf) {
-    cardContent = <Middle>Loading...</Middle>;
+    cardContent = (
+      <Middle>
+        <CircularProgress color="white" />
+      </Middle>
+    );
   } else {
     protocolUrlEl = (
       <ProtocolUrl href={`https://${protocolUrl}`} target="_blank">

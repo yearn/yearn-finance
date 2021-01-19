@@ -8,23 +8,20 @@ import { createSelector } from 'reselect';
 import BigNumber from 'bignumber.js';
 import { COMPTROLLER_ADDRESS, PRICE_ORACLE_ADDRESS } from './constants';
 
-export const selectCollateralEnabled = contractAddress =>
-  createSelector(
-    selectContractData(COMPTROLLER_ADDRESS),
-    comptrollerData => {
-      if (_.isEmpty(comptrollerData)) {
-        return false;
-      }
+export const selectCollateralEnabled = (contractAddress) =>
+  createSelector(selectContractData(COMPTROLLER_ADDRESS), (comptrollerData) => {
+    if (_.isEmpty(comptrollerData)) {
+      return false;
+    }
 
-      return comptrollerData.getAssetsIn.includes(contractAddress);
-    },
-  );
+    return comptrollerData.getAssetsIn.includes(contractAddress);
+  });
 
 function getUnderlyingTokenPrice(oracleData, cTokenAddress) {
   const underlyingTokenPrices = oracleData.getUnderlyingPrice;
   const underlyingTokenPrice = _.find(
     underlyingTokenPrices,
-    responseData => responseData.args[0] === cTokenAddress,
+    (responseData) => responseData.args[0] === cTokenAddress,
   );
   return !_.isUndefined(underlyingTokenPrice) ? underlyingTokenPrice.value : 0;
 }
@@ -36,7 +33,7 @@ function getCollateralFactor(comptrollerData, cTokenAddress) {
   const marketsData = comptrollerData.markets;
   const marketData = _.find(
     marketsData,
-    responseData => responseData.args[0] === cTokenAddress,
+    (responseData) => responseData.args[0] === cTokenAddress,
   );
 
   const collateralFactorMantissa = new BigNumber(

@@ -240,7 +240,7 @@ function CoverDetailCardSell(props) {
   const equivalentToRef = useRef(null);
   const amountRef = useRef(null);
 
-  const updateAmount = evt => {
+  const updateAmount = (evt) => {
     const newAmount = evt.target.value;
     setAmount(newAmount);
     setAmountWei(new BigNumber(newAmount).times(10 ** 18).toFixed(0));
@@ -262,7 +262,7 @@ function CoverDetailCardSell(props) {
 
   const equivalentDai = _.get(equivalentToRef, 'current.value', '0');
 
-  const updateEquivalentToVal = val => {
+  const updateEquivalentToVal = (val) => {
     const { covTokenBalance, covTokenWeight, price, swapFee } = claimPool;
     const daiWeight = 1 - covTokenWeight;
 
@@ -280,7 +280,7 @@ function CoverDetailCardSell(props) {
     setEquivalentTo(val);
   };
 
-  const updateEquivalentTo = evt => {
+  const updateEquivalentTo = (evt) => {
     const newSellAmount = evt.target.value;
     updateEquivalentToVal(newSellAmount);
   };

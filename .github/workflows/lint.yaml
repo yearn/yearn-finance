@@ -3,17 +3,16 @@ name: Lint
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
+  commits:
+    runs-on: ubuntu-latest
 
-    commits:
-      runs-on: ubuntu-latest
-
-      steps:
+    steps:
       - name: Check out github repository
         uses: actions/checkout@v2
         with:

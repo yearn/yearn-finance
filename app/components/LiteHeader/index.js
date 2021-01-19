@@ -22,10 +22,10 @@ const StyledNavLink = styled(NavLink)`
   text-transform: uppercase;
   color: #777;
   &:hover {
-    color: ${props => props.theme.text};
+    color: ${(props) => props.theme.text};
   }
   &.active {
-    color: ${props => props.theme.text};
+    color: ${(props) => props.theme.text};
   }
 `;
 

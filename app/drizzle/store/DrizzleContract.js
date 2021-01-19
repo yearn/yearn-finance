@@ -86,7 +86,7 @@ class DrizzleContract {
       let persistTxHash;
       return call
         .send(sendArgs)
-        .on('transactionHash', txHash => {
+        .on('transactionHash', (txHash) => {
           persistTxHash = txHash;
 
           contract.store.dispatch({
@@ -102,7 +102,7 @@ class DrizzleContract {
           });
           return Promise.resolve();
         })
-        .on('receipt', receipt => {
+        .on('receipt', (receipt) => {
           contract.store.dispatch({
             type: 'TX_SUCCESSFUL',
             receipt,

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import BigNumber from 'bignumber.js';
 
-export const currencyTransform = val => {
+export const currencyTransform = (val) => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -11,7 +11,7 @@ export const currencyTransform = val => {
   return newVal;
 };
 
-export const abbreviateNumber = value => {
+export const abbreviateNumber = (value) => {
   var newValue = value;
   if (value >= 1000) {
     var suffixes = ['', 'k', 'm', 'b', 't'];
@@ -35,7 +35,7 @@ export const abbreviateNumber = value => {
   return newValue;
 };
 
-export const formatNumber = val => {
+export const formatNumber = (val) => {
   if (!val || _.isNaN(val)) return '';
   return Number(val).toLocaleString(undefined, {
     maximumFractionDigits: 5,
@@ -43,7 +43,7 @@ export const formatNumber = val => {
   });
 };
 
-export const removeDecimals = val => {
+export const removeDecimals = (val) => {
   return new BigNumber(val).toFixed(0);
 };
 
@@ -66,7 +66,7 @@ export const daysFromNow = (now, timestamp) => {
   return days;
 };
 
-export const getShortenedAddress = address => {
+export const getShortenedAddress = (address) => {
   if (!address) {
     return '';
   }
@@ -75,14 +75,14 @@ export const getShortenedAddress = address => {
   return `${beginning}...${end}`;
 };
 
-export const capitalize = val => {
+export const capitalize = (val) => {
   if (!val) {
     return '';
   }
   return val.charAt(0).toUpperCase() + val.slice(1);
 };
 
-export const camelCaseToSentenceCase = val => {
+export const camelCaseToSentenceCase = (val) => {
   const capitalizedVal = capitalize(val);
   const sentenceCase = capitalizedVal.replace(/([A-Z])/g, ' $1');
   return sentenceCase;

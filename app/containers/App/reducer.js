@@ -27,7 +27,7 @@ export const initialState = {
 
 /* eslint-disable default-case, no-param-reassign */
 const appReducer = (state = initialState, action) =>
-  produce(state, draft => {
+  produce(state, (draft) => {
     // Utility functions
     const checkReadyState = () => {
       const { loading } = draft;

@@ -25,7 +25,7 @@ export const initialState = {
 
 /* eslint-disable default-case, no-param-reassign */
 export default function reducer(state = initialState, action) {
-  return produce(state, draft => {
+  return produce(state, (draft) => {
     switch (action.type) {
       case TOGGLE_DEV_MODE:
         draft.enabled = draft.unlocked && !draft.enabled;

@@ -53,7 +53,7 @@ function* subscribeToCreamData(action) {
 
   const underlyingTokenAddresses = _.map(
     underlyingTokensResponse,
-    item => item.underlying[0].value,
+    (item) => item.underlying[0].value,
   );
 
   const underlyingTokenMap = {};
@@ -103,7 +103,7 @@ function* subscribeToCreamData(action) {
             args: [account],
           },
         ],
-        _.map(cTokenAddresses, cTokenAddress => ({
+        _.map(cTokenAddresses, (cTokenAddress) => ({
           name: 'markets',
           args: [cTokenAddress],
         })),
@@ -136,7 +136,7 @@ function* subscribeToCreamData(action) {
       namespace: 'creamOracle',
       addresses: [PRICE_ORACLE_ADDRESS],
       abi: priceOracleAbi,
-      readMethods: _.map(cTokenAddresses, cTokenAddress => ({
+      readMethods: _.map(cTokenAddresses, (cTokenAddress) => ({
         name: 'getUnderlyingPrice',
         args: [cTokenAddress],
       })),

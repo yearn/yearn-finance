@@ -10,7 +10,7 @@ const initialState = {};
 
 const contractsReducer = (state = initialState, action) =>
   // eslint-disable-next-line no-unused-vars
-  produce(state, draft => {
+  produce(state, (draft) => {
     switch (action.type) {
       case DRIZZLE_ADD_CONTRACTS:
         if (action.clear) {
@@ -23,7 +23,7 @@ const contractsReducer = (state = initialState, action) =>
       case 'WEBSOCKET_MESSAGE_RECEIVED': {
         const { data } = action;
 
-        const mergeContractState = contractState => {
+        const mergeContractState = (contractState) => {
           const {
             address,
             method,
@@ -65,7 +65,7 @@ const contractsReducer = (state = initialState, action) =>
       }
       case 'BATCH_CALL_RESPONSE': {
         const { payload: contracts } = action;
-        const mergeContractState = contractState => {
+        const mergeContractState = (contractState) => {
           const { address } = contractState;
           const addressState = state[address];
           const addressInitialized = !!addressState;
@@ -80,7 +80,7 @@ const contractsReducer = (state = initialState, action) =>
             } else {
               const newState = existingState;
 
-              const addIfInputUnique = item => {
+              const addIfInputUnique = (item) => {
                 const { input } = item;
                 const matchingInput = _.find(existingState, { input });
                 if (!input || !matchingInput) {

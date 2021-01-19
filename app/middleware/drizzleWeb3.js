@@ -7,7 +7,9 @@
 import BatchCall from 'web3-batch-call';
 
 // eslint-disable-next-line no-unused-vars
-export const drizzleWeb3Middleware = drizzleWeb3 => store => next => action => {
+export const drizzleWeb3Middleware = (drizzleWeb3) => (store) => (next) => (
+  action,
+) => {
   const { type } = action;
   if (type === 'APP_READY') {
     // eslint-disable-next-line no-param-reassign

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { SplashScreen } from 'components/SplashScreen';
 
 const Wrapper = styled.div`
-  background-color: ${props => props.theme.yearnBlue};
+  background-color: ${(props) => props.theme.yearnBlue};
   top: 0;
   bottom: 0;
   left: 0;

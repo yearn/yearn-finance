@@ -65,7 +65,7 @@ function CoverCards() {
   //   );
   // };
 
-  const injectClaimData = protocol => {
+  const injectClaimData = (protocol) => {
     const newProtocol = protocol;
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
     const claimTokenContractData = _.find(claimTokens, {
@@ -83,7 +83,7 @@ function CoverCards() {
 
   const sortedProtocols = _.orderBy(
     protocolsWithClaimData,
-    protocol => protocol.claimTokenBalanceOf,
+    (protocol) => protocol.claimTokenBalanceOf,
     'desc',
   );
 

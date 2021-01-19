@@ -11,10 +11,10 @@ const Wrapper = styled.form`
   justify-content: center;
   align-items: center;
   margin-top: 50px;
-  opacity: ${props => (props.devVaults ? 1 : 0)};
+  opacity: ${(props) => (props.devVaults ? 1 : 0)};
   transition: opacity 100ms ease-in, margin-top 100ms ease-out;
   margin-top: 10px;
-  ${props =>
+  ${(props) =>
     props.devVaults &&
     css`
       margin-top: 30px;
@@ -27,7 +27,7 @@ export default function AddContract(props) {
   const { devVaults } = props;
   const [addresses, setAddresses] = useState('');
   const dispatch = useDispatch();
-  const addContract = evt => {
+  const addContract = (evt) => {
     evt.preventDefault();
     dispatch(addWatchedContracts(addresses));
     setAddresses('');
@@ -42,7 +42,7 @@ export default function AddContract(props) {
         pattern="(0[xX][0-9a-fA-F]{40}[,]?\s?)+"
         minLength="42"
         required
-        onChange={evt => setAddresses(evt.target.value)}
+        onChange={(evt) => setAddresses(evt.target.value)}
       />
     </Wrapper>
   );

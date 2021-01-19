@@ -166,7 +166,7 @@ function AmountField({
           decimals={decimals}
         />
       }
-      onChange={evt => {
+      onChange={(evt) => {
         amountSetter(evt.target.value);
 
         if (evt.target.value) {

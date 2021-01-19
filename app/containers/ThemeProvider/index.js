@@ -8,7 +8,7 @@ import reducer from './reducer';
 import { lightTheme, darkTheme } from './themes';
 import { selectDarkMode } from './selectors';
 
-const Theme = props => {
+const Theme = (props) => {
   useInjectSaga({ key: 'theme', saga });
   useInjectReducer({ key: 'theme', reducer });
   const darkMode = useSelector(selectDarkMode());

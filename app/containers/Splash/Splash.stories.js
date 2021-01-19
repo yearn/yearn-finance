@@ -7,6 +7,6 @@ export default {
   component: Splash,
 };
 
-const Template = args => <Splash {...args} />;
+const Template = (args) => <Splash {...args} />;
 
 export const Default = Template.bind({});

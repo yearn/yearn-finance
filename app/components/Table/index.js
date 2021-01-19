@@ -9,7 +9,7 @@ const Td = styled.td`
     padding-right: 16px;
     width: 0.1%;
   }
-  border-top: 1px solid ${props => props.theme.tableBorder};
+  border-top: 1px solid ${(props) => props.theme.tableBorder};
   &:first-of-type {
     padding-left: 16px;
   }
@@ -29,7 +29,7 @@ const StyledTable = styled.table`
   font-family: monospace;
   width: 100%;
   margin-bottom: 2rem;
-  border: 1px solid ${props => props.theme.tableBorder};
+  border: 1px solid ${(props) => props.theme.tableBorder};
   border-radius: 4px;
 `;
 
@@ -83,7 +83,7 @@ export default function Table(props) {
     const key = `${idx}`;
     return (
       <Tr
-        onClick={evt => {
+        onClick={(evt) => {
           evt.preventDefault();
           evt.stopPropagation();
           if (rowClickHandler) {
@@ -99,7 +99,7 @@ export default function Table(props) {
     );
   };
 
-  const renderColumns = row => {
+  const renderColumns = (row) => {
     const renderColumnWithRowData = _.bind(renderColumn, null, row);
     const columnEls = _.map(columns, renderColumnWithRowData);
     return columnEls;

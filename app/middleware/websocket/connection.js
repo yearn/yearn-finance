@@ -17,11 +17,11 @@ class websocketConnection {
     this.ready = false;
   }
 
-  onError = err => {
+  onError = (err) => {
     console.log('Websocket error', err);
   };
 
-  onClose = evt => {
+  onClose = (evt) => {
     console.log('Websocket closed', evt);
   };
 
@@ -41,7 +41,7 @@ class websocketConnection {
     }, 30000);
   };
 
-  onMessage = message => {
+  onMessage = (message) => {
     const { data } = message;
     const parsedData = JSON.parse(data);
     this.dispatch(websocketMessageReceived(parsedData));

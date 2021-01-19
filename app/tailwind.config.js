@@ -20,7 +20,7 @@ module.exports = {
       },
     },
 
-    borderColor: theme => ({
+    borderColor: (theme) => ({
       ...theme('colors'),
       yearn: {
         blue: '#0D3A95',

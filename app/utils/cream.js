@@ -27,7 +27,7 @@ export const getSupplyData = ({
   if (!comptrollerData) {
     return {};
   }
-  const getSupplyRows = creamCTokenAddress => {
+  const getSupplyRows = (creamCTokenAddress) => {
     const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
     const underlyingTokenData = allContracts[creamTokenData.underlying];
 
@@ -63,7 +63,7 @@ export const getSupplyData = ({
 
     const allowances = underlyingTokenData.allowance;
 
-    const allowanceObject = _.find(allowances, allowance =>
+    const allowanceObject = _.find(allowances, (allowance) =>
       _.includes(allowance.args, creamCTokenAddress),
     );
     const allowed = _.get(allowanceObject, 'value') > 0;
@@ -91,7 +91,7 @@ export const getBorrowData = ({
   allContracts,
   borrowLimitStats,
 }) => {
-  const getBorrowRows = creamCTokenAddress => {
+  const getBorrowRows = (creamCTokenAddress) => {
     const creamTokenData = flattenData(allContracts[creamCTokenAddress]);
     const underlyingTokenData = allContracts[creamTokenData.underlying];
 

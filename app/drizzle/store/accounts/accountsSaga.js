@@ -29,7 +29,7 @@ export function* getAccounts(action) {
  */
 
 function* createAccountsPollChannel({ interval, web3 }) {
-  return eventChannel(emit => {
+  return eventChannel((emit) => {
     const persistedWeb3 = web3;
 
     const accountsPoller = setInterval(() => {

@@ -1,9 +1,6 @@
 import { createSelector } from 'reselect';
 
-const selectContracts = state => state.subscriptions;
+const selectContracts = (state) => state.subscriptions;
 
 export const selectContractsSubscriptions = () =>
-  createSelector(
-    selectContracts,
-    substate => substate,
-  );
+  createSelector(selectContracts, (substate) => substate);

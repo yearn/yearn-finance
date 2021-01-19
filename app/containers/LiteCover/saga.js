@@ -33,10 +33,10 @@ function* coverDataLoadedSaga(action) {
   const claimTokens = {};
   const collateralTokens = {};
   const account = yield select(selectAccount());
-  const addTokens = protocol => {
+  const addTokens = (protocol) => {
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
     const { collaterals } = protocol;
-    const setCollateral = collateralArr => {
+    const setCollateral = (collateralArr) => {
       const collateralAddress = collateralArr[0];
       const collateralActive = collateralArr[1];
       if (collateralActive) {
@@ -52,12 +52,12 @@ function* coverDataLoadedSaga(action) {
   const claimTokenAddresses = Object.keys(claimTokens);
   const claimPools = Object.values(claimTokens);
 
-  const extractAddress = pool => Web3.utils.toChecksumAddress(pool.address);
+  const extractAddress = (pool) => Web3.utils.toChecksumAddress(pool.address);
   const claimPoolAddresses = _.map(claimPools, extractAddress);
 
   const collateralTokenAddresses = Object.keys(collateralTokens);
 
-  const generateClaimPoolAllowanceReadMethods = address => ({
+  const generateClaimPoolAllowanceReadMethods = (address) => ({
     name: 'allowance',
     args: [account, address],
   });

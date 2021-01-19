@@ -1,4 +1,4 @@
-export const calculateEquivalentPrice = val => {
+export const calculateEquivalentPrice = (val) => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -19,7 +19,7 @@ export const getClaimPool = (poolData, claimAddress) => {
   }
   const poolDataArr = Object.entries(poolData);
   let claimPoolData = poolDataArr
-    .filter(data => {
+    .filter((data) => {
       const token0Address = data[1].poolId.tokens[0].address.toLowerCase();
       const token1Address = data[1].poolId.tokens[1].address.toLowerCase();
       if (
@@ -37,7 +37,7 @@ export const getClaimPool = (poolData, claimAddress) => {
 
       return false;
     })
-    .map(data => ({
+    .map((data) => ({
       address: data[1].poolId.id,
       price: data[1].price,
       symbol: data[1].symbol,
@@ -45,18 +45,19 @@ export const getClaimPool = (poolData, claimAddress) => {
       liquidity: data[1].poolId.liquidity,
       daiInPool: parseFloat(
         data[1].poolId.tokens.find(
-          token => token.address.toLowerCase() === daiAddress.toLowerCase(),
+          (token) => token.address.toLowerCase() === daiAddress.toLowerCase(),
         ).balance,
       ),
       covTokenBalance: parseFloat(
         data[1].poolId.tokens.find(
-          token => token.address.toLowerCase() === claimAddress.toLowerCase(),
+          (token) => token.address.toLowerCase() === claimAddress.toLowerCase(),
         ).balance,
       ),
       covTokenWeight:
         parseFloat(
           data[1].poolId.tokens.find(
-            token => token.address.toLowerCase() === claimAddress.toLowerCase(),
+            (token) =>
+              token.address.toLowerCase() === claimAddress.toLowerCase(),
           ).denormWeight,
         ) / parseFloat(data[1].poolId.totalWeight),
     }));

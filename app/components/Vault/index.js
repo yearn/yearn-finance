@@ -81,7 +81,7 @@ const IconName = styled.div`
 
 const StyledArrow = styled.img`
   margin-right: 30px;
-  transform: ${props => (props.expanded ? 'rotate(0)' : 'rotate(-180deg)')};
+  transform: ${(props) => (props.expanded ? 'rotate(0)' : 'rotate(-180deg)')};
   transition: transform 0.1s linear;
 `;
 
@@ -119,7 +119,7 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
-const truncateApy = apy => {
+const truncateApy = (apy) => {
   if (!apy) {
     return 'N/A';
   }
@@ -128,7 +128,7 @@ const truncateApy = apy => {
   return apyStr;
 };
 
-const LinkWrap = props => {
+const LinkWrap = (props) => {
   const { devMode, children, address } = props;
   if (!devMode) {
     return children || null;
@@ -137,14 +137,14 @@ const LinkWrap = props => {
     <A
       href={`https://etherscan.io/address/${address}`}
       target="_blank"
-      onClick={evt => evt.stopPropagation()}
+      onClick={(evt) => evt.stopPropagation()}
     >
       {children}
     </A>
   );
 };
 
-const Vault = props => {
+const Vault = (props) => {
   const { vault, showDevVaults, active } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
@@ -207,7 +207,7 @@ const Vault = props => {
   let vaultTop;
   let vaultControls;
 
-  const openContractStatisticsModal = evt => {
+  const openContractStatisticsModal = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
     openModal('contractStatistics', { vault });
@@ -228,7 +228,7 @@ const Vault = props => {
         newVal = (
           <AnimatedNumber
             value={newVal}
-            formatter={v => new BigNumber(v).toFixed(0)}
+            formatter={(v) => new BigNumber(v).toFixed(0)}
           />
         );
       }

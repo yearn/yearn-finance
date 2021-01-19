@@ -14,7 +14,7 @@ import { GlobalStyles } from 'twin.macro';
 const initialState = {};
 const store = configureStore(initialState, history);
 
-addDecorator(storyFn => (
+addDecorator((storyFn) => (
   <Provider store={store}>
     <LanguageProvider messages={translationMessages}>
       <ConnectionProvider>

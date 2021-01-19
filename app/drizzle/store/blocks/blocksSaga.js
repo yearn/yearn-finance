@@ -18,9 +18,9 @@ import BlockTracker from 'eth-block-tracker-es5';
  */
 
 export function createBlockChannel({ drizzle, web3, syncAlways }) {
-  return eventChannel(emit => {
+  return eventChannel((emit) => {
     const blockEvents = web3.eth
-      .subscribe('newBlockHeaders', error => {
+      .subscribe('newBlockHeaders', (error) => {
         if (error) {
           emit({ type: 'BLOCKS_FAILED', error });
 
@@ -30,7 +30,7 @@ export function createBlockChannel({ drizzle, web3, syncAlways }) {
           emit(END);
         }
       })
-      .on('data', blockHeader => {
+      .on('data', (blockHeader) => {
         emit({
           type: 'BLOCK_RECEIVED',
           blockHeader,
@@ -39,7 +39,7 @@ export function createBlockChannel({ drizzle, web3, syncAlways }) {
           syncAlways,
         });
       })
-      .on('error', error => {
+      .on('error', (error) => {
         emit({ type: 'BLOCKS_FAILED', error });
         emit(END);
       });
@@ -79,23 +79,23 @@ export function createBlockPollChannel({
   web3,
   syncAlways,
 }) {
-  return eventChannel(emit => {
+  return eventChannel((emit) => {
     const blockTracker = new BlockTracker({
       provider: web3.currentProvider,
       pollingInterval: interval,
     });
 
-    blockTracker.on('block', block => {
+    blockTracker.on('block', (block) => {
       emit({ type: 'BLOCK_FOUND', block, drizzle, web3, syncAlways });
     });
 
-    blockTracker.start().catch(error => {
+    blockTracker.start().catch((error) => {
       emit({ type: 'BLOCKS_FAILED', error });
       emit(END);
     });
 
     const unsubscribe = () => {
-      blockTracker.stop().catch(_ => {
+      blockTracker.stop().catch((_) => {
         // BlockTracker assumes there is an outstanding event subscription.
         // However for our tests we start and stop a BlockTracker in succession
         // that triggers an error.
@@ -156,7 +156,7 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
 
     if (syncAlways) {
       yield all(
-        Object.keys(drizzle.contracts).map(key =>
+        Object.keys(drizzle.contracts).map((key) =>
           put({
             type: 'CONTRACT_SYNCING',
             contract: drizzle.contracts[key],
@@ -179,7 +179,7 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
       topics: watchedTopics,
     });
 
-    const checkForTransactions = log => {
+    const checkForTransactions = (log) => {
       const { topics, address } = log;
 
       const from = topics[1];
@@ -223,7 +223,7 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
     const contractAddressesPendingSync = Object.keys(contractsPendingSync);
 
     const request = [];
-    const buildBatchCallRequest = subscription => {
+    const buildBatchCallRequest = (subscription) => {
       const newSubscription = _.clone(subscription);
       const subscriptionAddresses = subscription.addresses;
 

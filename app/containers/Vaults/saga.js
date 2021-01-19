@@ -37,7 +37,8 @@ function* fetchUserVaultStatistics() {
     const userVaultStatistics = yield call(request, userVaultStatisticsUrl);
     const vaultsWithUserStatistics = vaults.reduce((current, next) => {
       const userDepositedInNextVault = userVaultStatistics.find(
-        userVaultStatistic => next.vaultAlias === userVaultStatistic.vaultAlias,
+        (userVaultStatistic) =>
+          next.vaultAlias === userVaultStatistic.vaultAlias,
       );
       if (userDepositedInNextVault) {
         return current.concat({ ...next, ...userDepositedInNextVault });

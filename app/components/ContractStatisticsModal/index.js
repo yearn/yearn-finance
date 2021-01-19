@@ -150,7 +150,7 @@ export default function TransactionModal(props) {
   });
 
   const methodExclusions = ['decimals'];
-  const filterReadMethods = readMethod =>
+  const filterReadMethods = (readMethod) =>
     !_.includes(methodExclusions, readMethod.name);
   const filteredReadMethods = _.filter(readMethods, filterReadMethods);
   const fetchData = async () => {
@@ -200,7 +200,7 @@ export default function TransactionModal(props) {
     const chartData = _.get(data, method.name);
     const scaleAllowList = ['balance', 'balanceOf', 'totalSupply'];
     const dataShouldBeScaled = _.includes(scaleAllowList, method.name);
-    const scaleData = point => {
+    const scaleData = (point) => {
       const { value } = point;
       const newPoint = point;
       if (dataShouldBeScaled) {
@@ -249,9 +249,9 @@ export default function TransactionModal(props) {
               fillOpacity={1}
               fill="url(#chartGreen)"
             />
-            <YAxis domain={[min => min * 0.8, max => max * 1.2]} hide />
+            <YAxis domain={[(min) => min * 0.8, (max) => max * 1.2]} hide />
             <XAxis
-              tickFormatter={tick => (tick / 1000000).toFixed(2)}
+              tickFormatter={(tick) => (tick / 1000000).toFixed(2)}
               dataKey="blockNumber"
               domain={['dataMin', 'dataMax']}
               tickLine={false}
@@ -259,10 +259,10 @@ export default function TransactionModal(props) {
               minTickGap={50}
             />
             <Tooltip
-              formatter={value =>
+              formatter={(value) =>
                 dataShouldBeScaled ? [value * 10 ** vault.decimals] : [value]
               }
-              labelFormatter={label => `Block ${label.toLocaleString()}`}
+              labelFormatter={(label) => `Block ${label.toLocaleString()}`}
               contentStyle={tooltipStyle}
               cursor={{ stroke: 'rgb(237, 30, 255)', strokeWidth: 1.25 }}
             />
@@ -311,7 +311,7 @@ export default function TransactionModal(props) {
     }
   }, [data]);
 
-  const linkTo = contractAddress => (
+  const linkTo = (contractAddress) => (
     <a
       href={`https://etherscan.io/address/${contractAddress}`}
       target="_blank"

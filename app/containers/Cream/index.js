@@ -51,7 +51,7 @@ const Buttons = styled.div`
   grid-gap: 12px;
 `;
 
-const tokenTransform = asset => {
+const tokenTransform = (asset) => {
   const { address, symbol } = asset;
   return (
     <IconAndName>
@@ -61,7 +61,7 @@ const tokenTransform = asset => {
   );
 };
 
-const percentTransform = val => `${val}%`;
+const percentTransform = (val) => `${val}%`;
 
 // const tokenSymbolTransform = (val, row) =>
 //   `${val} ${row.asset.symbol[0].value}`;
@@ -91,7 +91,7 @@ export default function Cream() {
 
   const creamCTokens = useSelector(selectContractsByTag('creamCTokens'));
 
-  const creamCTokenAddresses = _.map(creamCTokens, token =>
+  const creamCTokenAddresses = _.map(creamCTokens, (token) =>
     _.get(token, 'address'),
   );
   const allContracts = useSelector(selectAllContracts());
@@ -113,11 +113,11 @@ export default function Cream() {
   });
 
   const borrowDataSorted = _.orderBy(borrowData, 'borrowed', 'desc');
-  const borrowedData = _.filter(borrowDataSorted, data => data.borrowed > 0);
+  const borrowedData = _.filter(borrowDataSorted, (data) => data.borrowed > 0);
 
-  const suppliedData = _.filter(supplyDataSorted, data => data.supplied > 0);
+  const suppliedData = _.filter(supplyDataSorted, (data) => data.supplied > 0);
 
-  const supplyRowClickHandler = row => {
+  const supplyRowClickHandler = (row) => {
     openModal('cream', row);
   };
 
@@ -240,8 +240,8 @@ export default function Cream() {
     minimumFractionDigits: 2,
   });
 
-  const dollarFormatter = val => formatter.format(val);
-  const percentageFormatter = val => `${parseInt(val, 10).toFixed(0)}%`;
+  const dollarFormatter = (val) => formatter.format(val);
+  const percentageFormatter = (val) => `${parseInt(val, 10).toFixed(0)}%`;
 
   return (
     <Wrapper>

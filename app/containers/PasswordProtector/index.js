@@ -39,7 +39,7 @@ const EnterPasswordText = styled.div`
   filter: drop-shadow(6px 5px 4px #44d);
 `;
 
-const passwordValid = password => {
+const passwordValid = (password) => {
   const requiredHash = '4490cbe5c8c0e9cbba2f6dcd0e557560';
   const passwordHash = md5(md5(md5(md5(password))));
 
@@ -47,7 +47,7 @@ const passwordValid = password => {
   return valid;
 };
 
-const PasswordProtector = props => {
+const PasswordProtector = (props) => {
   const { children } = props;
   const password = localStorage.getItem('password') || '';
   const authenticated = passwordValid(password);

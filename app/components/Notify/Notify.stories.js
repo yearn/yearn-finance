@@ -7,7 +7,7 @@ export default {
   component: Notify,
 };
 
-const Template = args => <Notify {...args} />;
+const Template = (args) => <Notify {...args} />;
 
 export const Default = Template.bind({});
 

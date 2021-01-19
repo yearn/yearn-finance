@@ -1,11 +1,11 @@
-export const getAbi = contractEntry =>
+export const getAbi = (contractEntry) =>
   contractEntry.web3Contract
     ? contractEntry.web3Contract.options.jsonInterface
     : contractEntry.abi;
 
-export const isConstant = x => x.type === 'function' && x.constant === true;
+export const isConstant = (x) => x.type === 'function' && x.constant === true;
 
-export const generateContractInitialState = contractConfig => {
+export const generateContractInitialState = (contractConfig) => {
   const constants = getAbi(contractConfig).filter(isConstant);
   const objectOfConstants = constants.reduce(
     (acc, x) => ({ ...acc, [x.name]: {} }),
@@ -18,7 +18,7 @@ export const generateContractInitialState = contractConfig => {
   };
 };
 
-export const generateContractsInitialState = options =>
+export const generateContractsInitialState = (options) =>
   (options.contracts || []).reduce((state, contract) => {
     state[contract.contractName] = generateContractInitialState(contract);
     return state;

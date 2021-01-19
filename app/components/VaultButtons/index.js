@@ -24,7 +24,7 @@ const RemoveWrapper = styled.div`
   width: 100%;
   display: flex;
   margin-top: 30px;
-  display: ${props => (props.showDevVaults ? 'inherit' : 'none')};
+  display: ${(props) => (props.showDevVaults ? 'inherit' : 'none')};
   justify-content: end;
 `;
 
@@ -49,10 +49,7 @@ export default function VaultButtons(props) {
   // const account = useSelector(selectAccount());
 
   const writeMethods = _.get(drizzle, `contracts.${address}.writeMethods`, []);
-  const MAX_UINT256 = new BigNumber(2)
-    .pow(256)
-    .minus(1)
-    .toFixed(0);
+  const MAX_UINT256 = new BigNumber(2).pow(256).minus(1).toFixed(0);
 
   const tokenMetadata = {
     displayFields: [{ name: 'Token balance', value: tokenBalanceOf, decimals }],
@@ -113,7 +110,7 @@ export default function VaultButtons(props) {
   //   return false;
   // };
 
-  const openTokenTransactionModal = method => {
+  const openTokenTransactionModal = (method) => {
     const { inputs, name: methodName } = method;
     const inputArgs = {
       _value: {
@@ -216,7 +213,7 @@ export default function VaultButtons(props) {
   }
 
   const { openModal } = useModal();
-  const openTransactionModal = method => {
+  const openTransactionModal = (method) => {
     const { inputs, name: methodName } = method;
     const inputArgs = _.get(argConfig, methodName);
     const modalArgs = {

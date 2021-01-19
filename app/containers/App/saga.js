@@ -17,10 +17,10 @@ import { APP_READY, APP_INITIALIZED } from './constants';
 
 function* loadVaultContracts(clear) {
   const vaults = yield select(selectVaults());
-  const v1Vaults = _.filter(vaults, vault => vault.type === 'v1');
-  const v2Vaults = _.filter(vaults, vault => vault.type === 'v2');
-  const v1VaultAddresses = _.map(v1Vaults, vault => vault.address);
-  const v2VaultAddresses = _.map(v2Vaults, vault => vault.address);
+  const v1Vaults = _.filter(vaults, (vault) => vault.type === 'v1');
+  const v2Vaults = _.filter(vaults, (vault) => vault.type === 'v2');
+  const v1VaultAddresses = _.map(v1Vaults, (vault) => vault.address);
+  const v2VaultAddresses = _.map(v2Vaults, (vault) => vault.address);
   const account = yield select(selectAccount());
   const localContracts = JSON.parse(
     localStorage.getItem('watchedContracts'),
@@ -34,7 +34,7 @@ function* loadVaultContracts(clear) {
     '0x6392e8fa0588CB2DCb7aF557FdC9D10FDe48A325', // Weth maker
   ];
 
-  const vaultTokenAddresses = _.map(vaults, vault => vault.tokenAddress);
+  const vaultTokenAddresses = _.map(vaults, (vault) => vault.tokenAddress);
   const contracts = [
     {
       namespace: 'vaults',
@@ -122,7 +122,7 @@ function* loadVaultContracts(clear) {
     },
   ];
 
-  const generateVaultTokenAllowanceSubscriptions = vault => {
+  const generateVaultTokenAllowanceSubscriptions = (vault) => {
     const vaultAddress = vault.address;
     const { tokenAddress } = vault;
     if (!tokenAddress) {
@@ -152,7 +152,7 @@ function* loadVaultContracts(clear) {
 }
 
 function konamiWatcher() {
-  return eventChannel(emitter => {
+  return eventChannel((emitter) => {
     KonamiCode(() => emitter(0));
     return () => {};
   });

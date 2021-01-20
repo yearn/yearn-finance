@@ -16,13 +16,14 @@
 ## Development
 
 ```
-$ yarn start
+$ yarn dev
 ```
 
 ## Production
 
 ```
 $ yarn build
+$ yarn start
 ```
 
 ## Contributing

@@ -17,6 +17,11 @@ export function initOnboard(subscriptions, darkMode) {
       wallets: [
         { walletName: 'metamask' },
         {
+          walletName: 'lattice',
+          appName: 'Yearn Finance',
+          rpcUrl,
+        },
+        {
           walletName: 'trezor',
           appUrl: 'https://reactdemo.blocknative.com',
           email: 'aaron@blocknative.com',

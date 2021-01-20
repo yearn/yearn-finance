@@ -90,7 +90,8 @@ export const selectOrderedVaults = createSelector(
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
     if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
-      return null;
+      const vaultsSortedByVersion = _.orderBy(vaults, 'type', 'desc');
+      return vaultsSortedByVersion;
     }
 
     const vaultsWithSortingData = _.map(vaults, (vault) => {

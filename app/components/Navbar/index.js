@@ -123,6 +123,7 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
       <div tw="relative" onMouseLeave={() => setIsActive(false)}>
         <button
           type="button"
+          tw="focus:outline-none"
           onClick={() => {
             if (Array.isArray(links)) setIsActive(text);
           }}
@@ -190,7 +191,7 @@ const Navbar = () => {
     <div tw="relative z-20 bg-black w-full">
       <div tw="px-4 sm:px-6">
         <div tw="flex py-4 justify-between items-center">
-          <div tw="-mr-2 -my-2 md:hidden">
+          <div tw="-mr-2 -my-2 md:hidden w-1/3">
             <button
               type="button"
               onClick={() => setIsMobileOpen(true)}
@@ -215,8 +216,8 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div tw="flex self-center">
-            <Link to="/" tw="no-underline">
+          <div tw="flex w-1/3 md:w-auto self-center">
+            <Link to="/" tw="no-underline mx-auto md:mx-0 ">
               <span tw="sr-only">Logo</span>
               <div tw="h-5 w-auto">
                 <Logo />
@@ -232,7 +233,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav tw="space-x-10 hidden md:flex items-center">
+          <nav tw="w-1/3 space-x-10 hidden md:flex items-center">
             {Object.keys(menuLinks).map((menuLink) => {
               const links = menuLinks[menuLink];
               return (

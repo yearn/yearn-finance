@@ -1,5 +1,6 @@
 import React from 'react';
 import tw, { css } from 'twin.macro';
+import { Link } from 'react-router-dom';
 import { menuLinks } from './menuLinks';
 
 export const FlyingMobileMenuTopDrawer = ({ setIsMobileOpen }) => (
@@ -29,7 +30,12 @@ export const FlyingMobileMenuTopDrawer = ({ setIsMobileOpen }) => (
   </div>
 );
 
-export const FlyingMobileMenuItem = ({ setIsActive, menuItemText, links }) => {
+export const FlyingMobileMenuItem = ({
+  setIsMobileOpen,
+  setIsActive,
+  menuItemText,
+  links,
+}) => {
   if (Array.isArray(links)) {
     return (
       <button onClick={() => setIsActive(menuItemText)} type="button" tw="">
@@ -39,12 +45,22 @@ export const FlyingMobileMenuItem = ({ setIsActive, menuItemText, links }) => {
       </button>
     );
   }
-  return (
+  return links.href.includes('http') ? (
     <a href={`${links.href}`} type="button" tw="">
       <span tw="font-black uppercase text-white text-4xl hover:text-yearn-blue  focus:text-yearn-blue">
         {menuItemText}
       </span>
     </a>
+  ) : (
+    <Link
+      to={`${links.href}`}
+      onClick={() => setIsMobileOpen(false)}
+      type="button"
+    >
+      <span tw="font-black uppercase text-white text-4xl hover:text-yearn-blue  focus:text-yearn-blue">
+        {menuItemText}
+      </span>
+    </Link>
   );
 };
 
@@ -210,6 +226,7 @@ export const FlyingMobileMenu = ({
             <nav tw="flex flex-col space-y-2 items-center justify-center z-10 h-full w-full absolute">
               {Object.keys(menuLinks).map((menuItemText) => (
                 <FlyingMobileMenuItem
+                  setIsMobileOpen={setIsMobileOpen}
                   setIsActive={setMobileIsActive}
                   menuItemText={menuItemText}
                   links={menuLinks[menuItemText]}

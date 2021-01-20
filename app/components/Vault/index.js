@@ -178,13 +178,15 @@ const Vault = (props) => {
 
   const vaultName = displayName || name || address;
 
+  const v2Vault = vault.type === 'v2' || vault.apiVersion;
+
   const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
-  const apy = truncateApy(apyOneMonthSample);
+  // FIXME: temporary fix till apy in the API is calculated correctly
+  const apy = truncateApy(!v2Vault ? apyOneMonthSample : undefined);
   const tokenBalanceOf = new BigNumber(tokenBalance)
     .dividedBy(10 ** decimals)
     .toFixed();
 
-  const v2Vault = vault.type === 'v2' || vault.apiVersion;
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)

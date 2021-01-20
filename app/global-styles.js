@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     height: 100%;
     width: 100%;
-    color: ${(props) => props.theme.text};
+    color: ${props => props.theme.text};
     margin: 0;
     font-size: 16px;
   }
@@ -85,13 +85,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #app {
-    background-color: ${(props) => props.theme.background};
+    background-color: ${props => props.theme.background};
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    overflow-y: visible;
+    overflow-y: auto;
   }
 
   p,
@@ -109,13 +109,13 @@ const GlobalStyle = createGlobalStyle`
   min-width: 0;
   word-wrap: break-word;
   background-clip: border-box;
-  background-color: ${(props) => props.theme.vaultBackground};
+  background-color: ${props => props.theme.vaultBackground};
   margin: 0px 0px;
   margin-bottom: 7px;
   border-radius: 15px;
   border: 4px solid;
-  border-color: ${(props) => props.theme.vaultBackground};
-  color: ${(props) => props.theme.vaultText};
+  border-color: ${props => props.theme.vaultBackground};
+  color: ${props => props.theme.vaultText};
   transition: background-color .1s ease-out, border-color .15s ease-out;
 }
 
@@ -125,8 +125,8 @@ a {
 }
 
 .card.active {
-  border-color: ${(props) => props.theme.vaultBorderActive};
-  background-color: ${(props) => props.theme.vaultBackgroundActive};
+  border-color: ${props => props.theme.vaultBorderActive};
+  background-color: ${props => props.theme.vaultBackgroundActive};
   transition: background-color .1s ease-in;
 }
 
@@ -152,11 +152,11 @@ a {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-height: 1px;
-  background-color: ${(props) => props.theme.vaultBackgroundMiddle};
+  background-color: ${props => props.theme.vaultBackgroundMiddle};
 }
 
 .card-footer {
-  background-color: ${(props) => props.theme.vaultBackgroundActive};
+  background-color: ${props => props.theme.vaultBackgroundActive};
   display: flex;
   justify-content: flex-end;
   opacity: 1;
@@ -569,7 +569,7 @@ canvas {
 }
 
 .modal-content {
-  background-color: ${(props) => props.theme.modalBackground};
+  background-color: ${props => props.theme.modalBackground};
   height: 100%;
 }
 `;

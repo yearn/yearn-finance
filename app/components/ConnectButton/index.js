@@ -35,7 +35,7 @@ export default function ConnectButton(props) {
     content = (
       <StyledButton className={className} onClick={selectWallet}>
         <p tw="font-sans">
-          Connect wallet
+          Connect <span tw="hidden md:inline-block">wallet</span>
           {/* <FormattedMessage id="account.connect" /> */}
         </p>
       </StyledButton>

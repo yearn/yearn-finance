@@ -6,7 +6,7 @@ import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 
 const ConnectedAccount = styled.button`
   ${tw`
-  border-2 border-yearn-blue rounded-xl
+  w-1/3 md:w-auto border-2 border-yearn-blue rounded-xl
   py-1
   px-4 items-center justify-center align-middle
   text-xs flex

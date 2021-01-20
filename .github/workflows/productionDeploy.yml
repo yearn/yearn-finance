@@ -20,7 +20,7 @@ jobs:
           CI=true npm test --watch=all
       - name: Create a production bundle.
         run: |
-          npm run-script build
+          yarn build
 
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master

@@ -27,7 +27,7 @@ module.exports = {
     },
   },
   rules: {
-    'prettier/prettier': ['error', prettierOptions],
+    'prettier/prettier': [2, prettierOptions],
     'arrow-body-style': [2, 'as-needed'],
     'no-console': 0,
     'class-methods-use-this': 0,

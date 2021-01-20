@@ -33,7 +33,7 @@ jobs:
           AWS_REGION: 'us-east-1'
           SOURCE_DIR: 'build'
 
-      - name: Invalidate CloudFront caches
+      - name: Invalidate CloudFront 'v2.yearn.finance'
         uses: awact/cloudfront-action@master
         env:
           SOURCE_PATH: '/*'
@@ -41,3 +41,21 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DISTRIBUTION_ID: 'E2WPPSHG4K14WZ'
+
+      - name: Invalidate CloudFront 'dev.yearn.finance'
+        uses: awact/cloudfront-action@master
+        env:
+          SOURCE_PATH: '/*'
+          AWS_REGION: 'us-east-1'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION_ID: 'E3IKJN7OHZKJTX'
+
+      - name: Invalidate CloudFront 'yearn.finance'
+        uses: awact/cloudfront-action@master
+        env:
+          SOURCE_PATH: '/*'
+          AWS_REGION: 'us-east-1'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION_ID: 'E3TW4P7PMXBZVC'

@@ -7,14 +7,29 @@ import TokenIcon from 'components/TokenIcon';
 import { formatNumber } from 'utils/string';
 import { calculateAmountNeeded } from 'utils/cover';
 
+// const Wrapper = styled.div`
+//   margin-left: 50px;
+//   background-color: ${(props) => props.theme.vaultBackground};
+//   width: 330px;
+//   border-radius: 15px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+// `;
+
 const Wrapper = styled.div`
-  margin-left: 50px;
   background-color: ${(props) => props.theme.vaultBackground};
-  width: 330px;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
+  margin-top: 48px;
+  @media (min-width: 768px) {
+    width: 330px;
+    margin-left: 50px;
+    margin-top: 0px;
+  }
 `;
 
 const IconWrapper = styled.div`

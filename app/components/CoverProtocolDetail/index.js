@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import tw from 'twin.macro';
 import CoverDetailCardBuy from 'components/CoverDetailCardBuy';
 import CoverDetailCardSell from 'components/CoverDetailCardSell';
 import { useSelector } from 'react-redux';
@@ -9,10 +10,7 @@ import { getClaimPool } from 'utils/cover';
 import CoverTallCard from 'components/CoverTallCard';
 import BigNumber from 'bignumber.js';
 
-const Wrapper = styled.div`
-  margin-top: 30px;
-  display: flex;
-`;
+const Wrapper = tw.div`flex flex-col md:flex-row mt-8`;
 
 const BuySellWrapper = styled.div`
   display: flex;

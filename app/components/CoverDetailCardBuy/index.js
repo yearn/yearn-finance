@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { buyCover as buyCoverAction } from 'containers/Cover/actions';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import styled from 'styled-components';
+import tw from 'twin.macro';
 import BlueOutlineCard from 'components/BlueOutlineCard';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -45,9 +46,9 @@ const MiddleHeader = styled.div`
 `;
 
 const MiddleContent = styled.div`
-  width: 553px;
-  margin: 0 auto;
+  ${tw`w-4/5 m-0 m-auto`}
 `;
+
 const MiddleDivider = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.2);
   margin-bottom: 13px;
@@ -62,10 +63,9 @@ const MiddleText = styled.div`
   color: #ffffff;
   margin-bottom: 25px;
 `;
+
 const Bottom = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0px 20px;
+  ${tw`flex items-center md:items-start md:space-x-20 md:justify-between flex-col md:flex-row py-0 px-10`}
 `;
 
 const BuyHeader = styled.div`
@@ -96,7 +96,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const StyledBlueOutlineCard = styled(BlueOutlineCard)`
-  width: 750px;
+  ${tw`w-full`}
 `;
 
 const BottomLeft = styled.div`
@@ -141,10 +141,14 @@ const InputTextRight = styled.div`
   color: #000000;
 `;
 
+// const BottomRight = styled.div`
+//   width: 288px;
+//   display: flex;
+//   flex-direction: column;
+// `;
+
 const BottomRight = styled.div`
-  width: 288px;
-  display: flex;
-  flex-direction: column;
+  ${tw`flex flex-col  w-4/5`}
 `;
 
 const AmountText = styled.div`

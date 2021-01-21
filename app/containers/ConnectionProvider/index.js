@@ -26,9 +26,6 @@ export default function ConnectionProvider(props) {
   const initializeWallet = () => {
     const selectWallet = async (newWallet) => {
       if (newWallet.provider) {
-        if (newWallet.name === 'WalletConnect') {
-          await newWallet.connect();
-        }
         const newWeb3 = new Web3(newWallet.provider);
         newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);
@@ -73,8 +70,23 @@ export default function ConnectionProvider(props) {
   useEffect(accountChanged, [account]);
   useEffect(changeDarkMode, [darkMode]);
 
-  const selectWallet = () => {
-    onboard.walletSelect();
+  const selectWallet = async () => {
+    // Open wallet modal
+    const selectedWallet = await onboard.walletSelect();
+
+    // User quit modal
+    if (!selectedWallet) {
+      return;
+    }
+
+    // Wait for wallet selection initialization
+    const readyToTransact = await onboard.walletCheck();
+    if (readyToTransact) {
+      // Fetch active wallet and connect
+      const currentState = onboard.getState();
+      const activeWallet = currentState.wallet;
+      activeWallet.connect(onboard);
+    }
   };
 
   return (

@@ -23,8 +23,7 @@ export default function Account(props) {
   React.useEffect(() => {
     const setAddressEnsName = async () => {
       const provider = web3.currentProvider;
-      const network = provider.networkVersion;
-      const ens = new ENS({ provider, network });
+      const ens = new ENS({ provider, network: 1 });
       let addressEnsName;
       try {
         addressEnsName = await ens.reverse(account);

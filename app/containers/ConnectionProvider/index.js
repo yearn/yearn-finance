@@ -24,8 +24,11 @@ export default function ConnectionProvider(props) {
   };
 
   const initializeWallet = () => {
-    const selectWallet = (newWallet) => {
+    const selectWallet = async (newWallet) => {
       if (newWallet.provider) {
+        if (newWallet.name === 'WalletConnect') {
+          await newWallet.connect();
+        }
         const newWeb3 = new Web3(newWallet.provider);
         newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);

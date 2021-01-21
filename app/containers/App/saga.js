@@ -107,19 +107,6 @@ function* loadVaultContracts(clear) {
         },
       ],
     },
-    {
-      namespace: 'localContracts',
-      tags: ['localContracts'],
-      addresses: localContracts,
-      allWriteMethods: true,
-      allReadMethods: true,
-      readMethods: [
-        {
-          name: 'balanceOf',
-          args: [account],
-        },
-      ],
-    },
   ];
 
   const generateVaultTokenAllowanceSubscriptions = (vault) => {
@@ -142,6 +129,22 @@ function* loadVaultContracts(clear) {
     };
   };
 
+  const localSubscriptions = [
+    {
+      namespace: 'localContracts',
+      tags: ['localContracts'],
+      addresses: localContracts,
+      allWriteMethods: true,
+      allReadMethods: true,
+      readMethods: [
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+      ],
+    },
+  ];
+
   const vaultTokenAllowanceSubscriptions = _.map(
     vaults,
     generateVaultTokenAllowanceSubscriptions,
@@ -149,6 +152,7 @@ function* loadVaultContracts(clear) {
 
   contracts.push(...vaultTokenAllowanceSubscriptions);
   yield put(addContracts(contracts, clear));
+  yield put(addContracts(localSubscriptions, clear));
 }
 
 function konamiWatcher() {

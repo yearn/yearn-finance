@@ -8,6 +8,10 @@ const DrizzleProvider = (props) => {
   const { children, store } = props;
   const options = {
     disableReduxDevTools: false,
+    web3: {
+      customProvider:
+        'wss://eth-mainnet.ws.alchemyapi.io/v2/k2--UT_xVVXMOvAyoxJYqtKhlmyBbqnX',
+    },
   };
   const drizzle = new Drizzle(options, store);
   return (

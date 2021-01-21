@@ -277,6 +277,7 @@ const Vault = (props) => {
         <div>
           <AnimatedNumber value={vaultBalanceOf} />
         </div>
+        <div>{apy}</div>
         <div>{vaultAssets}</div>
         <div>
           <AnimatedNumber value={tokenBalanceOf} />{' '}

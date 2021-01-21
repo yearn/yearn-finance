@@ -18,7 +18,9 @@ export function initOnboard(subscriptions, darkMode) {
         { walletName: 'metamask' },
         {
           walletName: 'walletConnect',
-          infuraKey: 'd5e29c9b9a9d4116a7348113f57770a8',
+          rpc: {
+            1: 'https://eth-mainnet.alchemyapi.io/v2/k2--UT_xVVXMOvAyoxJYqtKhlmyBbqnX',
+          },
         },
         {
           walletName: 'trezor',

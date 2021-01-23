@@ -1,13 +1,20 @@
 export const menuLinks = {
-  vaults: {
-    href: '/vaults',
-    title: 'yVaults',
-    description: 'Deposit and earn',
-  },
+  yield: [
+    {
+      href: '/vaults',
+      title: 'Vaults',
+      description: '',
+    },
+    {
+      href: 'https://v1.yearn.finance/earn',
+      title: 'Earn',
+      description: '',
+    },
+  ],
   cover: {
     href: '/cover',
     title: 'yCover',
-    description: 'Cover smart contract risk',
+    description: '',
   },
   // earn: {
   //   href: 'https://yearn.finance/earn',

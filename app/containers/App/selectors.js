@@ -89,12 +89,17 @@ export const selectOrderedVaults = createSelector(
   selectVaults(),
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
+    const filteredVaults = _.filter(
+      vaults,
+      (vault) => !(vault.type === 'v2' && vault.endorsed === false),
+    );
+
     if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
-      const vaultsSortedByVersion = _.orderBy(vaults, 'type', 'desc');
+      const vaultsSortedByVersion = _.orderBy(filteredVaults, 'type', 'desc');
       return vaultsSortedByVersion;
     }
 
-    const vaultsWithSortingData = _.map(vaults, (vault) => {
+    const vaultsWithSortingData = _.map(filteredVaults, (vault) => {
       const vaultWithSortingData = vault;
 
       const contractData = _.find(vaultsContractData, {

@@ -160,4 +160,11 @@ export const selectOrderedVaults = createSelector(
 
     return orderedVaults;
   },
+  (vaults) => {
+    const filteredVaults = _.filter(
+      vaults,
+      (vault) => !(vault.type === 'v2' && vault.endorsed === false),
+    );
+    return filteredVaults;
+  },
 );

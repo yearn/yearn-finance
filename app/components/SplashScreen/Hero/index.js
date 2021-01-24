@@ -42,9 +42,8 @@ export const Hero = () => (
         <h2 tw="inline-block text-yearn-blue float-left">simple.</h2>
       </div>
       <div tw="text-white font-bold md:text-3xl justify-center flex flex-col items-center mb-6 text-2xl">
-        <h4 tw="">
-          Yearn puts your crypto assets to work so you don’t have to.
-        </h4>
+        <h4 tw="">Yearn puts your crypto assets to</h4>
+        <h4 tw="">work so you don’t have to.</h4>
       </div>
       <Link
         type="button"

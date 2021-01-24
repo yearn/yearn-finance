@@ -74,7 +74,7 @@ const StyledTokenIcon = styled(TokenIcon)`
 
 const IconName = styled.div`
   overflow: hidden;
-  max-width: 188px;
+  max-width: 145px;
   padding-right: 10px;
   text-overflow: ellipsis;
 `;

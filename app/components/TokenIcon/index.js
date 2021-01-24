@@ -1,6 +1,7 @@
 import React from 'react';
 import web3 from 'web3';
 import ReactImageFallback from 'react-image-fallback';
+import styled from 'styled-components';
 
 export default function TokenIcon(props) {
   const { address, className } = props;
@@ -11,12 +12,18 @@ export default function TokenIcon(props) {
     url = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/tokens/${checksumAddress}/logo-128.png`;
   }
 
+  const Wrapper = styled.div`
+    max-width: initial;
+  `;
+
   return (
-    <ReactImageFallback
-      src={url}
-      fallbackImage={fallbackUrl}
-      className={className}
-      alt=""
-    />
+    <Wrapper className={className}>
+      <ReactImageFallback
+        src={url}
+        fallbackImage={fallbackUrl}
+        className={className}
+        alt=""
+      />
+    </Wrapper>
   );
 }

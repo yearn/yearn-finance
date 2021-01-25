@@ -27,10 +27,6 @@ export const Hero = () => (
           margin-top: -78px;
           height: calc(100vh);
         }
-        @media (max-width: 450px) {
-          background: url(${HeroBg}) no-repeat center center;
-          background-size: 60%;
-        }
       `,
     ]}
   >

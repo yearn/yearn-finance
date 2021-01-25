@@ -5,8 +5,9 @@ import { getShortenedAddress } from 'utils/string';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 
 const ConnectedAccount = styled.button`
+  width: 130px;
   ${tw`
-  w-1/3 md:w-auto border-2 border-yearn-blue rounded-xl
+  md:w-auto border-2 border-yearn-blue rounded-xl
   py-1
   px-4 items-center justify-center align-middle
   text-xs flex

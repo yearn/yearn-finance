@@ -72,6 +72,9 @@ export const MarqueStats = () => {
                 transform: translate3d(calc(-250%), 0, 0);
                 animation-play-state: running;
                 left: 25%;
+                @media (max-width: 570px) {
+                  display: none;
+                }
               `,
             ]}
             tw="w-full flex bg-transparent absolute bottom-0.5 animate-marquee space-x-6 text-white italic uppercase text-4xl lg:text-5xl xl:text-6xl whitespace-nowrap"

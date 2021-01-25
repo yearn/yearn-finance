@@ -9,7 +9,6 @@ export default styled.div`
   font-weight: 900;
   font-size: 20px;
   > div {
-    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     &:not(:first-of-type) {

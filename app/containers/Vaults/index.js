@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
+import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
@@ -17,10 +18,15 @@ import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Wrapper = styled.div`
-  width: 1088px;
   margin: 0 auto;
+  @media (min-width: 768px) {
+    width: 1088px;
+  }
 `;
 
+const WrapTable = styled.div`
+  ${tw`w-5/6 md:w-full m-0 m-auto md:overflow-x-auto overflow-x-scroll whitespace-nowrap`};
+`;
 const Warning = styled.div`
   display: table;
   font-size: 29px;
@@ -41,6 +47,10 @@ const DevHeader = styled.div`
       transition: opacity 100ms ease-in, margin-top 100ms ease-out;
       pointer-events: inherit;
     `}
+`;
+
+const StyledAccordion = styled(Accordion)`
+  width: 1085px;
 `;
 
 const Vaults = () => {
@@ -67,13 +77,15 @@ const Vaults = () => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
       {warning}
-      {columnHeader}
-      <Accordion>
-        <VaultsWrapper
-          showDevVaults={showDevVaults}
-          walletConnected={walletConnected}
-        />
-      </Accordion>
+      <WrapTable>
+        {columnHeader}
+        <StyledAccordion>
+          <VaultsWrapper
+            showDevVaults={showDevVaults}
+            walletConnected={walletConnected}
+          />
+        </StyledAccordion>
+      </WrapTable>
     </Wrapper>
   );
 };

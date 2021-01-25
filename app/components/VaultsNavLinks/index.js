@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import tw from 'twin.macro';
+
 import { NavLink } from 'react-router-dom';
 
 const Wrapper = styled.div``;
@@ -10,14 +12,18 @@ const NavLinks = styled.nav`
 `;
 
 const StyledNavLink = styled(NavLink)`
-  padding: 0px 15px;
   height: 100%;
-  font-size: 24px;
+  @media (min-width: 768px) {
+    font-size: 24px;
+    padding: 0px 15px;
+  }
   display: inline-flex;
   text-decoration: none;
   align-items: center;
   text-transform: uppercase;
   color: #777;
+  ${tw`text-xl px-4`};
+
   &:hover {
     color: ${(props) => props.theme.text};
   }

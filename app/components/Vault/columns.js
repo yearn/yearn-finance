@@ -10,7 +10,6 @@ export default styled.div`
   width: 100%;
   align-items: center;
   > div {
-    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     &:first-of-type {

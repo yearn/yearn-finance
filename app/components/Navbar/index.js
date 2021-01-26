@@ -190,8 +190,8 @@ const Navbar = () => {
   return (
     <div tw="relative z-20 bg-black w-full">
       <div tw="px-4 sm:px-6">
-        <div tw="flex py-4 justify-between items-center">
-          <div tw="-mr-2 -my-2 md:hidden w-1/3">
+        <div tw="flex py-4 justify-center items-center">
+          <div tw="flex flex-1 -mr-2 -my-2 md:hidden">
             <button
               type="button"
               onClick={() => setIsMobileOpen(true)}
@@ -216,7 +216,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div tw="flex w-1/3 md:w-auto self-center">
+          <div tw="flex flex-1 self-center">
             <Link to="/" tw="no-underline mx-auto md:mx-0 ">
               <span tw="sr-only">Logo</span>
               <div tw="h-5 w-auto">
@@ -233,7 +233,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav tw="w-1/3 space-x-10 hidden md:flex items-center">
+          <nav tw="flex flex-none space-x-10 hidden md:flex items-center px-4">
             {Object.keys(menuLinks).map((menuLink) => {
               const links = menuLinks[menuLink];
               return (
@@ -248,7 +248,9 @@ const Navbar = () => {
             })}
           </nav>
 
-          <ConnectButton />
+          <nav tw="flex flex-1 justify-end">
+            <ConnectButton />
+          </nav>
         </div>
       </div>
     </div>

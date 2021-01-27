@@ -42,6 +42,9 @@ const Wrapper = styled.div`
   padding-right: 10px;
 `;
 
+const getNormalizedAmount = (amount, decimals) =>
+  new BigNumber(amount).dividedBy(10 ** decimals).toFixed(2);
+
 export default function VaultControls(props) {
   const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
   const { address: vaultAddress, tokenAddress, decimals } = vault;
@@ -179,6 +182,7 @@ function AmountField({
           gweiAmountSetter(0);
         }
       }}
+      maxValue={getNormalizedAmount(maxAmount, decimals)}
     />
   );
 }

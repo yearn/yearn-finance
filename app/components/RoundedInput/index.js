@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { toNumber } from 'lodash';
 
 const Input = styled.input`
   background: #ffffff;
@@ -39,8 +40,13 @@ const Right = styled.div`
   top: 0px;
 `;
 
+const isDecimal = (value) => /^\d+(\.\d*)?$/.test(value);
+const isValidValue = (value, maxValue = Number.MAX_SAFE_INTEGER) =>
+  toNumber(value) <= toNumber(maxValue);
+
 export const RoundedInput = React.forwardRef((props, ref) => {
-  const { className, onChange, value, disabled, right } = props;
+  const { className, onChange, value, disabled, right, maxValue } = props;
+
   return (
     <Wrapper className={className}>
       <Input
@@ -48,7 +54,12 @@ export const RoundedInput = React.forwardRef((props, ref) => {
         inputmode="decimal"
         value={value}
         disabled={disabled}
-        onChange={onChange}
+        onChange={(event) => {
+          const val = event.target.value;
+          if ((isDecimal(val) && isValidValue(val, maxValue)) || val === '') {
+            onChange(event);
+          }
+        }}
         ref={ref}
       />
       <Right>{right}</Right>

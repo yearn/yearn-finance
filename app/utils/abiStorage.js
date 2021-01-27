@@ -3,7 +3,7 @@ import delay from 'delay';
 import request from 'utils/request';
 
 const etherscanDelayTime = 300;
-const apiKey = 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4';
+const { ETHERSCAN_APIKEY: apiKey } = process.env;
 
 const getAbiByHash = () => JSON.parse(localStorage.getItem('abiByHash')) || {};
 

@@ -3,8 +3,8 @@ import Notify from 'bnc-notify';
 
 const networkId = 1;
 const {
-  INFURA_URL: rpcUrl,
-  INFURA_DAPPID: dappId,
+  WEB3_PROVIDER_HTTPS: rpcUrl,
+  BLOCKNATIVE_DAPP_ID: dappId,
   WEB3_PROVIDER_HTTPS,
   PORTIS_APIKEY,
   FORTMATIC_APIKEY,

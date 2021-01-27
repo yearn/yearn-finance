@@ -132,12 +132,11 @@ export default function TransactionModal(props) {
   const [data, setData] = useState();
   const [days, setDays] = useState(defaultDays);
 
-  const provider =
-    'https://eth-mainnet.alchemyapi.io/v2/XLj2FWLNMB4oOfFjbnrkuOCcaBIhipOJ';
+  const { PROVIDER_URL: provider, ETHERSCAN_APIKEY: apiKey } = process.env;
   const batchCall = new BatchCall({
     provider,
     etherscan: {
-      apiKey: 'GEQXZDY67RZ4QHNU1A57QVPNDV3RP1RYH4',
+      apiKey,
     },
     logging: false,
     simplifyResponse: true,

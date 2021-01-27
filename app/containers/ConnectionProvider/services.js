@@ -5,7 +5,6 @@ const networkId = 1;
 const {
   WEB3_PROVIDER_HTTPS: rpcUrl,
   BLOCKNATIVE_DAPP_ID: dappId,
-  WEB3_PROVIDER_HTTPS,
   PORTIS_APIKEY,
   FORTMATIC_APIKEY,
 } = process.env;
@@ -24,7 +23,7 @@ export function initOnboard(subscriptions, darkMode) {
         {
           walletName: 'walletConnect',
           rpc: {
-            1: WEB3_PROVIDER_HTTPS,
+            1: rpcUrl,
           },
         },
         {

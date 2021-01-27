@@ -5,7 +5,7 @@ const networkId = 1;
 const {
   INFURA_URL: rpcUrl,
   INFURA_DAPPID: dappId,
-  RPC_URL,
+  WEB3_PROVIDER_HTTPS,
   PORTIS_APIKEY,
   FORTMATIC_APIKEY,
 } = process.env;
@@ -24,7 +24,7 @@ export function initOnboard(subscriptions, darkMode) {
         {
           walletName: 'walletConnect',
           rpc: {
-            1: RPC_URL,
+            1: WEB3_PROVIDER_HTTPS,
           },
         },
         {

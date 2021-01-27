@@ -132,7 +132,10 @@ export default function TransactionModal(props) {
   const [data, setData] = useState();
   const [days, setDays] = useState(defaultDays);
 
-  const { PROVIDER_URL: provider, ETHERSCAN_APIKEY: apiKey } = process.env;
+  const {
+    WEB3_PROVIDER_HTTPS: provider,
+    ETHERSCAN_APIKEY: apiKey,
+  } = process.env;
   const batchCall = new BatchCall({
     provider,
     etherscan: {

@@ -13,6 +13,14 @@
 - ⚖️ [Governance forum](https://gov.yearn.finance)
 - 📑 [Documentation](https://docs.yearn.finance)
 
+## Setup
+
+```
+cp .env.sample to .env
+```
+
+And then populate .env with your endpoints
+
 ## Development
 
 ```

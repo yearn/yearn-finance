@@ -42,7 +42,7 @@ const Right = styled.div`
 `;
 
 const isValidValue = (value, maxValue = Number.MAX_SAFE_INTEGER) =>
-  toNumber(value) <= toNumber(maxValue) || value === '.';
+  !value || toNumber(value) <= toNumber(maxValue) || value === '.';
 
 const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);

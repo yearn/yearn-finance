@@ -95,14 +95,21 @@ const VaultsWrapper = (props) => {
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
-  const renderVault = (vault) => (
-    <Vault
-      vault={vault}
-      key={vault.address}
-      active={currentEventKey === vault.address}
-      showDevVaults={showDevVaults}
-    />
-  );
+  const renderVault = (vault) => {
+    let vaultKey = vault.address;
+    if (vault.pureEthereum) {
+      vaultKey = `${vault.address}-eth`;
+    }
+    return (
+      <Vault
+        vault={vault}
+        key={vaultKey}
+        accordionKey={vaultKey}
+        active={currentEventKey === vaultKey}
+        showDevVaults={showDevVaults}
+      />
+    );
+  };
 
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && orderedVaults == null) return <LinearProgress />;

@@ -14,6 +14,9 @@ export const selectReady = () =>
 export const selectVaults = () =>
   createSelector(selectApp, (substate) => substate.vaults);
 
+export const selectEthBalance = () =>
+  createSelector(selectApp, (substate) => substate.ethBalance);
+
 export const selectWatchedContractAddresses = () =>
   createSelector(selectApp, (substate) => substate.watchedContractAddresses);
 
@@ -89,11 +92,13 @@ export const selectOrderedVaults = createSelector(
   selectVaults(),
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
+    // Remove non-endorsed v2 vaults
     const filteredVaults = _.filter(
       vaults,
       (vault) => !(vault.type === 'v2' && vault.endorsed === false),
     );
 
+    // If no contract data is available sort by vault version
     if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
       const vaultsSortedByVersion = _.orderBy(filteredVaults, 'type', 'desc');
       return vaultsSortedByVersion;

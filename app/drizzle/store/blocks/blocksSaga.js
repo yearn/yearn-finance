@@ -12,6 +12,7 @@ import {
 import { selectContractsSubscriptions } from 'drizzle/store/contracts/contractsSelectors';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import BlockTracker from 'eth-block-tracker-es5';
+import { ETH_BALANCE_UPDATED } from 'containers/DrizzleProvider/constants';
 
 /*
  * Listen for Blocks
@@ -248,10 +249,23 @@ function* processBlock({ block, drizzle, web3, syncAlways }) {
   }
 }
 
+function* updateAccountEth(action) {
+  yield put({ type: 'ACCOUNT_BALANCES_FETCHING' });
+  const { web3 } = action;
+  const account = yield select(selectAccount());
+  if (!account || !web3) {
+    return;
+  }
+  const ethBalance = yield web3.eth.getBalance(account);
+  yield put({ type: ETH_BALANCE_UPDATED, ethBalance });
+}
+
 function* blocksSaga() {
   // Block Subscriptions
   yield takeLatest('BLOCKS_LISTENING', callCreateBlockChannel);
+  yield takeEvery('APP_READY', updateAccountEth);
   yield takeEvery('BLOCK_RECEIVED', processBlockHeader);
+  yield takeEvery('BLOCK_RECEIVED', updateAccountEth);
 
   // Block Polling
   yield takeLatest('BLOCKS_POLLING', callCreateBlockPollChannel);

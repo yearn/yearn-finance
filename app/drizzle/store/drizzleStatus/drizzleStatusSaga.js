@@ -2,8 +2,6 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 
 // Initialization Functions
 import { initializeWeb3 } from '../web3/web3Saga';
-// import { getAccounts } from '../accounts/accountsSaga';
-// import { getAccountBalances } from '../accountBalances/accountBalancesSaga';
 
 import { NETWORK_IDS, NETWORK_MISMATCH } from '../web3/constants';
 
@@ -31,10 +29,6 @@ export function* initializeDrizzle(action) {
       ) {
         yield put({ type: NETWORK_MISMATCH, networkId });
       } else {
-        // Get initial accounts list and balances.
-        // yield call(getAccounts, { web3 });
-        // yield call(getAccountBalances, { web3 });
-
         // Instantiate contracts passed through via options.
         for (let i = 0; i < options.contracts.length; i += 1) {
           const contractConfig = options.contracts[i];

@@ -6,7 +6,7 @@ import saga from './saga';
 const DrizzleProvider = (props) => {
   useInjectSaga({ key: 'drizzleSaga', saga });
   const { children, store } = props;
-  const { WEB3_PROVIDER_WSS: customProvider } = process.env;
+  const customProvider = process.env.WEB3_PROVIDER_WSS;
   const options = {
     disableReduxDevTools: false,
     web3: {

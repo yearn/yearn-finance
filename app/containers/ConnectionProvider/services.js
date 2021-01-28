@@ -2,12 +2,10 @@ import Onboard from 'bnc-onboard';
 import Notify from 'bnc-notify';
 
 const networkId = 1;
-const {
-  WEB3_PROVIDER_HTTPS: rpcUrl,
-  BLOCKNATIVE_DAPP_ID: dappId,
-  PORTIS_APIKEY,
-  FORTMATIC_APIKEY,
-} = process.env;
+const rpcUrl = process.env.WEB3_PROVIDER_HTTPS;
+const dappId = process.env.BLOCKNATIVE_DAPP_ID;
+const portisKey = process.env.PORTIS_APIKEY;
+const fortmaticKey = process.env.FORTMATIC_APIKEY;
 // const apiUrl = 'wss://api.blocknative.com/v0';
 
 export function initOnboard(subscriptions, darkMode) {
@@ -46,9 +44,9 @@ export function initOnboard(subscriptions, darkMode) {
         { walletName: 'walletLink', rpcUrl },
         {
           walletName: 'portis',
-          apiKey: PORTIS_APIKEY,
+          apiKey: portisKey,
         },
-        { walletName: 'fortmatic', apiKey: FORTMATIC_APIKEY },
+        { walletName: 'fortmatic', apiKey: fortmaticKey },
         { walletName: 'torus' },
         { walletName: 'authereum', disableNotifications: true },
         { walletName: 'trust', rpcUrl },

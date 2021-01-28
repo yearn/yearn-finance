@@ -159,6 +159,15 @@
   {
     "constant": false,
     "inputs": [],
+    "name": "depositETH",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
     "name": "earn",
     "outputs": [],
     "payable": false,
@@ -315,6 +324,21 @@
       { "internalType": "uint256", "name": "_shares", "type": "uint256" }
     ],
     "name": "withdraw",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_shares",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawETH",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

@@ -18,11 +18,28 @@ import {
   DEPOSIT_TO_VAULT,
 } from './constants';
 
+// TODO: Do better... never hard-code vault addresses
+const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
+const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const injectEthVault = (vaults) => {
+  const ethereumString = 'Ethereum';
+  const wethVault = _.find(vaults, { address: v1WethVaultAddress });
+  const ethVault = _.clone(wethVault);
+  ethVault.displayName = ethereumString;
+  ethVault.pureEthereum = true;
+  ethVault.tokenAddress = ethAddress;
+  ethVault.tokenMetadata.address = ethAddress;
+  ethVault.tokenMetadata.symbol = 'ETH';
+  vaults.push(ethVault);
+  return vaults;
+};
+
 function* fetchVaults() {
   try {
     const url = `https://api.yearn.tools/vaults/all`;
     const vaults = yield call(request, url);
-    yield put(vaultsLoaded(vaults));
+    const vaultsWithEth = injectEthVault(vaults);
+    yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
     console.log('Error reading vaults', err);
   }
@@ -53,7 +70,12 @@ function* fetchUserVaultStatistics() {
 }
 
 function* withdrawFromVault(action) {
-  const { vaultContract, withdrawalAmount, decimals } = action.payload;
+  const {
+    vaultContract,
+    withdrawalAmount,
+    decimals,
+    pureEthereum,
+  } = action.payload;
 
   const account = yield select(selectAccount());
 
@@ -79,16 +101,35 @@ function* withdrawFromVault(action) {
   }
 
   try {
-    yield call(vaultContract.methods.withdraw.cacheSend, sharesForWithdrawal, {
-      from: account,
-    });
+    if (!pureEthereum) {
+      yield call(
+        vaultContract.methods.withdraw.cacheSend,
+        sharesForWithdrawal,
+        {
+          from: account,
+        },
+      );
+    } else {
+      yield call(
+        vaultContract.methods.withdrawETH.cacheSend,
+        sharesForWithdrawal,
+        {
+          from: account,
+        },
+      );
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
 function* depositToVault(action) {
-  const { vaultContract, tokenContract, depositAmount } = action.payload;
+  const {
+    vaultContract,
+    tokenContract,
+    depositAmount,
+    pureEthereum,
+  } = action.payload;
 
   const account = yield select(selectAccount());
   const tokenAllowance = yield select(
@@ -98,12 +139,24 @@ function* depositToVault(action) {
   const vaultAllowedToSpendToken = tokenAllowance > 0;
 
   try {
-    if (!vaultAllowedToSpendToken) {
-      yield call(approveTxSpend, tokenContract, account, vaultContract.address);
+    if (!pureEthereum) {
+      if (!vaultAllowedToSpendToken) {
+        yield call(
+          approveTxSpend,
+          tokenContract,
+          account,
+          vaultContract.address,
+        );
+      }
+      yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
+        from: account,
+      });
+    } else {
+      yield call(vaultContract.methods.depositETH.cacheSend, {
+        from: account,
+        value: depositAmount,
+      });
     }
-    yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
-      from: account,
-    });
   } catch (error) {
     console.error(error);
   }

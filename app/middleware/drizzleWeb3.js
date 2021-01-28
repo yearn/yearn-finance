@@ -40,6 +40,7 @@ export const drizzleWeb3Middleware = (drizzleWeb3) => (store) => (next) => (
     action.type === 'APP_READY' ||
     action.type === 'TX_BROADCASTED' ||
     action.type === 'BATCH_CALL_REQUEST' ||
+    action.type === 'BLOCK_RECEIVED' ||
     action.type === 'INITIALIZE_CREAM' ||
     action.type === 'INITIALIZE_COVER' ||
     action.type === 'BATCH_CALL_RESPONSE';

@@ -3,7 +3,10 @@ import {
   CONNECTION_CONNECTED,
   ACCOUNT_UPDATED,
 } from 'containers/ConnectionProvider/constants';
-import { DRIZZLE_INITIALIZED } from 'containers/DrizzleProvider/constants';
+import {
+  DRIZZLE_INITIALIZED,
+  ETH_BALANCE_UPDATED,
+} from 'containers/DrizzleProvider/constants';
 
 // import { WEBSOCKET_CONNECTED } from 'middleware/websocket/constants';
 import { VAULTS_LOADED } from './constants';
@@ -58,6 +61,9 @@ const appReducer = (state = initialState, action) =>
       case ACCOUNT_UPDATED:
         draft.loading.account = false;
         checkReadyState();
+        break;
+      case ETH_BALANCE_UPDATED:
+        draft.ethBalance = action.ethBalance;
         break;
       case DRIZZLE_INITIALIZED:
         draft.loading.drizzle = false;

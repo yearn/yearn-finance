@@ -47,7 +47,7 @@ const getNormalizedAmount = (amount, decimals) =>
 
 export default function VaultControls(props) {
   const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
-  const { address: vaultAddress, tokenAddress, decimals } = vault;
+  const { address: vaultAddress, tokenAddress, decimals, pureEthereum } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
   let vaultBalanceOf;
@@ -95,6 +95,7 @@ export default function VaultControls(props) {
         vaultContract,
         withdrawalAmount: withdrawalGweiAmount,
         decimals,
+        pureEthereum,
       }),
     );
   };
@@ -107,6 +108,7 @@ export default function VaultControls(props) {
         tokenContract,
         depositAmount: depositGweiAmount,
         decimals,
+        pureEthereum,
       }),
     );
   };
@@ -142,7 +144,7 @@ export default function VaultControls(props) {
           />
           <ActionButton
             handler={deposit}
-            text={tokenAllowance > 0 ? 'Deposit' : 'Approve'}
+            text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
             title="Deposit into vault"
           />
         </ButtonGroup>

@@ -26,7 +26,7 @@ export default function App() {
     }
   };
   const init = () => {
-    console.log('Version: ' + process.env.REACT_APP_VERSION);
+    console.log(`Build: ${process.env.REACT_APP_VERSION}`);
     dispatch(appInitialized());
   };
   useEffect(appReadyChanged, [ready]);

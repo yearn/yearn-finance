@@ -1,12 +1,16 @@
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 import { createSelector } from 'reselect';
 import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import vaultsOrder from 'containers/Vaults/customOrder.json';
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
 const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
+
+// TODO: Add to constants
+const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export const selectReady = () =>
   createSelector(selectApp, (substate) => substate && substate.ready);
@@ -107,59 +111,76 @@ export const selectOrderedVaults = createSelector(
     const vaultsWithSortingData = _.map(filteredVaults, (vault) => {
       const vaultWithSortingData = vault;
 
-      const contractData = _.find(vaultsContractData, {
-        address: vault.address,
-      });
+      // const contractData = _.find(vaultsContractData, {
+      //   address: vault.address,
+      // });
+
+      vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
+        const sortAddress = vault.pureEthereum
+          ? ethereumAddress
+          : vault.address;
+        let vaultOrder = _.indexOf(vaultsOrder, sortAddress);
+        if (vaultOrder === -1) {
+          vaultOrder = 10000000;
+        }
+        return vaultOrder;
+      })();
 
       // Add user holdings data to enable sorting by it.
-      vaultWithSortingData.userHoldings = (function getUserHoldings() {
-        const rawUserHoldings = _.get(contractData, 'balanceOf[0].value', 0);
+      // vaultWithSortingData.userHoldings = (function getUserHoldings() {
+      //   const rawUserHoldings = _.get(contractData, 'balanceOf[0].value', 0);
 
-        let rawSharePrice;
-        if (vault.type === 'v1') {
-          rawSharePrice = _.get(
-            contractData,
-            'getPricePerFullShare[0].value',
-            0,
-          );
-        } else if (vault.type === 'v2') {
-          rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
-        }
+      //   let rawSharePrice;
+      //   if (vault.type === 'v1') {
+      //     rawSharePrice = _.get(
+      //       contractData,
+      //       'getPricePerFullShare[0].value',
+      //       0,
+      //     );
+      //   } else if (vault.type === 'v2') {
+      //     rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
+      //   }
 
-        const userHoldings = new BigNumber(rawUserHoldings)
-          .multipliedBy(rawSharePrice)
-          .dividedBy(10 ** vault.decimals);
+      //   const userHoldings = new BigNumber(rawUserHoldings)
+      //     .multipliedBy(rawSharePrice)
+      //     .dividedBy(10 ** vault.decimals);
 
-        return userHoldings.toNumber();
-      })();
+      //   return userHoldings.toNumber();
+      // })();
 
-      // Add vault token holdings data to enable sorting by it.
-      vaultWithSortingData.vaultTokenHoldings = (function getVaultTokenHoldings() {
-        let rawVaultTokenHoldings;
-        if (vault.type === 'v1') {
-          rawVaultTokenHoldings = _.get(contractData, 'balance[0].value', 0);
-        } else if (vault.type === 'v2') {
-          rawVaultTokenHoldings = _.get(
-            contractData,
-            'totalAssets[0].value',
-            0,
-          );
-        }
+      // // Add vault token holdings data to enable sorting by it.
+      // vaultWithSortingData.vaultTokenHoldings = (function getVaultTokenHoldings() {
+      //   let rawVaultTokenHoldings;
+      //   if (vault.type === 'v1') {
+      //     rawVaultTokenHoldings = _.get(contractData, 'balance[0].value', 0);
+      //   } else if (vault.type === 'v2') {
+      //     rawVaultTokenHoldings = _.get(
+      //       contractData,
+      //       'totalAssets[0].value',
+      //       0,
+      //     );
+      //   }
 
-        const vaultTokenHoldings = new BigNumber(
-          rawVaultTokenHoldings,
-        ).dividedBy(10 ** vault.decimals);
+      //   const vaultTokenHoldings = new BigNumber(
+      //     rawVaultTokenHoldings,
+      //   ).dividedBy(10 ** vault.decimals);
 
-        return vaultTokenHoldings.toNumber();
-      })();
+      //   return vaultTokenHoldings.toNumber();
+      // })();
 
       return vaultWithSortingData;
     });
 
+    // let orderedVaults = _.orderBy(
+    //   vaultsWithSortingData,
+    //   ['userHoldings', 'customOrder', 'type'],
+    //   ['desc', 'asc', 'desc'],
+    // );
+
     let orderedVaults = _.orderBy(
       vaultsWithSortingData,
-      ['type', 'userHoldings', 'vaultTokenHoldings'],
-      ['desc', 'desc', 'desc'],
+      ['customOrder'],
+      ['asc'],
     );
 
     // Remove the added fields, that were only used for ordering.

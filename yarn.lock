@@ -5416,10 +5416,10 @@ bnc-notify@^1.5.1:
     regenerator-runtime "^0.13.3"
     uuid "^3.3.3"
 
-bnc-onboard@^1.18.0:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/bnc-onboard/-/bnc-onboard-1.18.0.tgz#136cd29fe48ced1726078393401c6e28618016d7"
-  integrity sha512-l2ruQT6Tvl0s/qU+IA6W/h+H6rgfuDCleGnxq6ZlR59pV0DR8v1QYkGzX21J6nTZapYaU+TIiqnCYGuNlVLSEA==
+bnc-onboard@^1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/bnc-onboard/-/bnc-onboard-1.19.0.tgz#04089edfb8f40688e6e26c48630581549c27c008"
+  integrity sha512-L/rGGu4AoJBOPdBmegrgH2amx8SSiJVDsAoD9PYvO17y2pU08NWPB1U4dk2nqfC1iNUZSgRdbw+CDwMY/4beQQ==
   dependencies:
     "@ledgerhq/hw-app-eth" "^5.21.0"
     "@ledgerhq/hw-transport-u2f" "^5.21.0"
@@ -5428,7 +5428,7 @@ bnc-onboard@^1.18.0:
     "@walletconnect/web3-provider" "^1.3.1"
     authereum "^0.1.12"
     bignumber.js "^9.0.0"
-    bnc-sdk "^2.1.4"
+    bnc-sdk "^3.1.0"
     bowser "^2.10.0"
     eth-lattice-keyring "^0.2.7"
     ethereumjs-tx "^2.1.2"
@@ -5440,12 +5440,21 @@ bnc-onboard@^1.18.0:
     walletlink "^2.0.2"
     web3-provider-engine "^15.0.4"
 
-bnc-sdk@^2.1.4, bnc-sdk@^2.1.5:
+bnc-sdk@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-2.1.5.tgz#7f40bcf98eb0238882f5436c0e860e60be2867c0"
   integrity sha512-rtwOGKjal1LQyYrdESdOfCK5L2ocS3tjoWtNacm3rkb+xjDusVnUpF/NgudJpCnv3Mwu9YDWjsLKIPKjwbJL7A==
   dependencies:
     crypto-es "^1.2.2"
+    sturdy-websocket "^0.1.12"
+
+bnc-sdk@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-3.1.0.tgz#b568d357a3fe95b627701470c051b72d6c9199a8"
+  integrity sha512-qr299cdBiAxFjTharZNlF+qpxjtB49oexSVwDnsW5fczJjBLG1ibJHoUD/GtJbCiVPS+hqq+qH6HJnpsQknRZA==
+  dependencies:
+    crypto-es "^1.2.2"
+    rxjs "^6.6.3"
     sturdy-websocket "^0.1.12"
 
 body-parser@1.18.3:

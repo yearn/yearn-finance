@@ -99,13 +99,16 @@ export const selectOrderedVaults = createSelector(
     // Remove non-endorsed v2 vaults
     const filteredVaults = _.filter(
       vaults,
-      (vault) => !(vault.type === 'v2' && vault.endorsed === false),
+      ({ type, endorsed }) => !(type === 'v2' && !endorsed),
     );
 
     // If no contract data is available sort by vault version
-    if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
+    if (!vaultsContractData || !vaultsContractData.length) {
       const vaultsSortedByVersion = _.orderBy(filteredVaults, 'type', 'desc');
-      return vaultsSortedByVersion;
+      return {
+        isVaultsContractDataEmpty: true,
+        vaultData: vaultsSortedByVersion,
+      };
     }
 
     const vaultsWithSortingData = _.map(filteredVaults, (vault) => {
@@ -115,10 +118,10 @@ export const selectOrderedVaults = createSelector(
       //   address: vault.address,
       // });
 
+      const { pureEthereum, address } = vault;
+
       vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
-        const sortAddress = vault.pureEthereum
-          ? ethereumAddress
-          : vault.address;
+        const sortAddress = pureEthereum ? ethereumAddress : address;
         let vaultOrder = _.indexOf(vaultsOrder, sortAddress);
         if (vaultOrder === -1) {
           vaultOrder = 10000000;
@@ -189,6 +192,9 @@ export const selectOrderedVaults = createSelector(
       'vaultTokenHoldings',
     ]);
 
-    return orderedVaults;
+    return {
+      isVaultsContractDataEmpty: false,
+      vaultData: orderedVaults,
+    };
   },
 );

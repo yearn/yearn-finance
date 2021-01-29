@@ -90,36 +90,35 @@ const Vaults = () => {
   );
 };
 
-const VaultsWrapper = (props) => {
-  const { showDevVaults, walletConnected } = props;
-  const orderedVaults = useSelector(selectOrderedVaults);
+const VaultsWrapper = ({ showDevVaults, walletConnected }) => {
+  const { isVaultsContractDataEmpty, vaultData } = useSelector(
+    selectOrderedVaults,
+  );
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
-  const renderVault = (vault) => {
-    let vaultKey = vault.address;
-    if (vault.pureEthereum) {
-      vaultKey = `${vault.address}-eth`;
-    }
+  const renderVault = (vault, i) => {
+    const { address } = vault;
     return (
       <Vault
         vault={vault}
-        key={vaultKey}
-        accordionKey={vaultKey}
-        active={currentEventKey === vaultKey}
+        key={i}
+        active={currentEventKey === address}
         showDevVaults={showDevVaults}
       />
     );
   };
+  const getVaultRows = () => {
+    if (showDevVaults) {
+      return _.map(localContracts, renderVault);
+    }
+    return _.map(vaultData, renderVault);
+  };
 
-  // Show Linear progress when orderedvaults is empty
-  if (walletConnected && orderedVaults == null) return <LinearProgress />;
-
-  let vaultRows = _.map(orderedVaults, renderVault);
-  if (showDevVaults) {
-    vaultRows = _.map(localContracts, renderVault);
+  if (walletConnected && isVaultsContractDataEmpty) {
+    return <LinearProgress />;
   }
 
-  return <React.Fragment>{vaultRows}</React.Fragment>;
+  return <React.Fragment>{getVaultRows()}</React.Fragment>;
 };
 
 Vaults.whyDidYouRender = true;

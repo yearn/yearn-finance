@@ -2,12 +2,14 @@ import Onboard from 'bnc-onboard';
 import Notify from 'bnc-notify';
 
 const networkId = 1;
+
 const {
   WEB3_PROVIDER_HTTPS: rpcUrl,
   BLOCKNATIVE_DAPP_ID: dappId,
   PORTIS_APIKEY,
   FORTMATIC_APIKEY,
 } = process.env;
+
 // const apiUrl = 'wss://api.blocknative.com/v0';
 
 export function initOnboard(subscriptions, darkMode) {

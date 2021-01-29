@@ -147,6 +147,7 @@ export default function TransactionModal(props) {
   const modalOpened = () => {
     if (show) {
       const { ETHERSCAN_APIKEY: apiKey } = process.env;
+
       const url = `https://api.etherscan.io/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
       request(url).then((response) => {
         const contractMetadata = _.first(response.result);

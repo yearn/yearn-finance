@@ -136,6 +136,7 @@ export default function TransactionModal(props) {
     WEB3_PROVIDER_HTTPS: provider,
     ETHERSCAN_APIKEY: apiKey,
   } = process.env;
+
   const batchCall = new BatchCall({
     provider,
     etherscan: {

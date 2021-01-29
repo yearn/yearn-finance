@@ -1,18 +1,25 @@
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 import { createSelector } from 'reselect';
 import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import vaultsOrder from 'containers/Vaults/customOrder.json';
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
 const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
 
+// TODO: Add to constants
+const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+
 export const selectReady = () =>
   createSelector(selectApp, (substate) => substate && substate.ready);
 
 export const selectVaults = () =>
   createSelector(selectApp, (substate) => substate.vaults);
+
+export const selectEthBalance = () =>
+  createSelector(selectApp, (substate) => substate.ethBalance);
 
 export const selectWatchedContractAddresses = () =>
   createSelector(selectApp, (substate) => substate.watchedContractAddresses);
@@ -89,6 +96,7 @@ export const selectOrderedVaults = createSelector(
   selectVaults(),
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
+    // Remove non-endorsed v2 vaults
     const filteredVaults = _.filter(
       vaults,
       ({ type, endorsed }) => !(type === 'v2' && !endorsed),
@@ -155,10 +163,16 @@ export const selectOrderedVaults = createSelector(
       return vaultWithSortingData;
     });
 
+    // let orderedVaults = _.orderBy(
+    //   vaultsWithSortingData,
+    //   ['userHoldings', 'customOrder', 'type'],
+    //   ['desc', 'asc', 'desc'],
+    // );
+
     let orderedVaults = _.orderBy(
       vaultsWithSortingData,
-      ['type', 'userHoldings', 'vaultTokenHoldings'],
-      ['desc', 'desc', 'desc'],
+      ['customOrder'],
+      ['asc'],
     );
 
     // Remove the added fields, that were only used for ordering.

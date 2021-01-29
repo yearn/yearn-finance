@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { toNumber } from 'lodash';
 
 const Input = styled.input`
   background: #ffffff;
   border-radius: 5px;
   height: 47px;
   outline: none;
-  border: 0px;
   background: #ffffff;
   border-radius: 5px;
   font-family: 'Roboto';
@@ -20,6 +20,8 @@ const Input = styled.input`
   width: 100%;
   padding-right: 40%;
   box-sizing: border-box;
+  border: ${(props) => (props.invalid ? '2px solid red' : '0px')};
+
   &:disabled {
     cursor: not-allowed;
   }
@@ -39,16 +41,34 @@ const Right = styled.div`
   top: 0px;
 `;
 
+const isValidValue = (value, maxValue = Number.MAX_SAFE_INTEGER) =>
+  !value || toNumber(value) <= toNumber(maxValue) || value === '.';
+
+const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
+
 export const RoundedInput = React.forwardRef((props, ref) => {
-  const { className, onChange, value, disabled, right } = props;
+  const { className, onChange, value, disabled, right, maxValue } = props;
+  const invalid = !isValidValue(value, maxValue);
+
   return (
     <Wrapper className={className}>
       <Input
         type="text"
         inputmode="decimal"
+        pattern="^[0-9]*[.,]?[0-9]*$"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck="false"
         value={value}
         disabled={disabled}
-        onChange={onChange}
+        onChange={(event) => {
+          const input = event.target.value;
+          if (input === '' || inputRegex.test(escapeRegExp(input))) {
+            onChange(event);
+          }
+        }}
+        invalid={invalid}
         ref={ref}
       />
       <Right>{right}</Right>

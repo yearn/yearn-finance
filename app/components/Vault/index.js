@@ -11,7 +11,7 @@ import Arrow from 'images/arrow.svg';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
-import { selectContractData } from 'containers/App/selectors';
+import { selectContractData, selectEthBalance } from 'containers/App/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -145,7 +145,7 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const { vault, showDevVaults, active } = props;
+  const { vault, showDevVaults, active, accordionKey } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -158,21 +158,27 @@ const Vault = (props) => {
     balanceOf,
     address,
     name,
-    // statistics,
     getPricePerFullShare,
     pricePerShare,
     token,
+    pureEthereum,
+    // statistics,
   } = vault;
 
   const { openModal } = useModal();
 
   const devMode = true;
   const tokenContractAddress = tokenAddress || token;
+  const ethBalance = useSelector(selectEthBalance());
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
 
-  const tokenBalance = _.get(tokenContractData, 'balanceOf');
+  let tokenBalance = _.get(tokenContractData, 'balanceOf');
+  if (pureEthereum) {
+    tokenBalance = ethBalance;
+  }
+
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
@@ -371,12 +377,16 @@ const Vault = (props) => {
   return (
     <React.Fragment>
       <Card className={active && 'active'}>
-        <Accordion.Toggle as={Card.Header} variant="link" eventKey={address}>
+        <Accordion.Toggle
+          as={Card.Header}
+          variant="link"
+          eventKey={accordionKey}
+        >
           {vaultTop}
           <StatsIcon type="stats" onClick={openContractStatisticsModal} />
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
-        <Accordion.Collapse eventKey={address}>
+        <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
             <Card.Footer className={active && 'active'}>

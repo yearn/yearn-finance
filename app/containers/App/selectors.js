@@ -91,19 +91,25 @@ export const selectOrderedVaults = createSelector(
   (vaults, vaultsContractData) => {
     const filteredVaults = _.filter(
       vaults,
-      (vault) => !(vault.type === 'v2' && vault.endorsed === false),
+      ({ type, endorsed }) => !(type === 'v2' && !endorsed),
     );
 
-    if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
+    if (!vaultsContractData || !vaultsContractData.length) {
       const vaultsSortedByVersion = _.orderBy(filteredVaults, 'type', 'desc');
-      return vaultsSortedByVersion;
+
+      return {
+        isVaultsContractDataEmpty: true,
+        vaultData: vaultsSortedByVersion,
+      };
     }
 
     const vaultsWithSortingData = _.map(filteredVaults, (vault) => {
       const vaultWithSortingData = vault;
 
+      const { address, type, decimals } = vault;
+
       const contractData = _.find(vaultsContractData, {
-        address: vault.address,
+        address,
       });
 
       // Add user holdings data to enable sorting by it.
@@ -111,19 +117,20 @@ export const selectOrderedVaults = createSelector(
         const rawUserHoldings = _.get(contractData, 'balanceOf[0].value', 0);
 
         let rawSharePrice;
-        if (vault.type === 'v1') {
+
+        if (type === 'v1') {
           rawSharePrice = _.get(
             contractData,
             'getPricePerFullShare[0].value',
             0,
           );
-        } else if (vault.type === 'v2') {
-          rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
         }
+
+        rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
 
         const userHoldings = new BigNumber(rawUserHoldings)
           .multipliedBy(rawSharePrice)
-          .dividedBy(10 ** vault.decimals);
+          .dividedBy(10 ** decimals);
 
         return userHoldings.toNumber();
       })();
@@ -131,19 +138,16 @@ export const selectOrderedVaults = createSelector(
       // Add vault token holdings data to enable sorting by it.
       vaultWithSortingData.vaultTokenHoldings = (function getVaultTokenHoldings() {
         let rawVaultTokenHoldings;
-        if (vault.type === 'v1') {
+
+        if (type === 'v1') {
           rawVaultTokenHoldings = _.get(contractData, 'balance[0].value', 0);
-        } else if (vault.type === 'v2') {
-          rawVaultTokenHoldings = _.get(
-            contractData,
-            'totalAssets[0].value',
-            0,
-          );
         }
+
+        rawVaultTokenHoldings = _.get(contractData, 'totalAssets[0].value', 0);
 
         const vaultTokenHoldings = new BigNumber(
           rawVaultTokenHoldings,
-        ).dividedBy(10 ** vault.decimals);
+        ).dividedBy(10 ** decimals);
 
         return vaultTokenHoldings.toNumber();
       })();
@@ -163,6 +167,9 @@ export const selectOrderedVaults = createSelector(
       'vaultTokenHoldings',
     ]);
 
-    return orderedVaults;
+    return {
+      isVaultsContractDataEmpty: false,
+      vaultData: orderedVaults,
+    };
   },
 );

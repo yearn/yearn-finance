@@ -126,6 +126,7 @@ export default function VaultControls(props) {
             text="Withdraw"
             title="Withdraw from vault"
             disabled={!vaultContract || !tokenContract}
+            showTooltip
           />
         </ButtonGroup>
       </ActionGroup>
@@ -144,6 +145,7 @@ export default function VaultControls(props) {
             text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
             title="Deposit into vault"
             disabled={!vaultContract || !tokenContract}
+            showTooltip
           />
         </ButtonGroup>
       </ActionGroup>
@@ -213,13 +215,15 @@ function Balance({ amount, prefix }) {
   );
 }
 
-function ActionButton({ handler, title, text, disabled }) {
+function ActionButton({ handler, title, text, disabled, showTooltip }) {
   return (
     <ButtonFilled
       onClick={() => handler()}
       color="primary"
       title={title}
       disabled={disabled}
+      tooltipText={`Connect your wallet to ${title}`}
+      showTooltip={showTooltip}
     >
       {text}
     </ButtonFilled>

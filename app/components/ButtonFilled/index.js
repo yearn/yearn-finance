@@ -45,7 +45,6 @@ export default function ButtonFilled(props) {
   }))(Button);
 
   if (disabled && showTooltip) {
-    console.log('tooltip text', tooltipText);
     const adjustedButtonProps = {
       disabled,
       component: disabled ? 'div' : undefined,
@@ -55,7 +54,6 @@ export default function ButtonFilled(props) {
       <Tooltip title={tooltipText}>
         <ColorButton
           variant="contained"
-          title={title}
           color={color}
           onClick={onClick}
           onSubmit={onSubmit}

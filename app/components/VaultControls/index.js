@@ -84,10 +84,6 @@ export default function VaultControls(props) {
     setWithdrawalGweiAmount(0);
   }, [walletBalance, vaultBalance]);
 
-  if (!vaultContract || !tokenContract) {
-    return null;
-  }
-
   const withdraw = () => {
     console.log(`Withdrawing:`, withdrawalGweiAmount);
     dispatch(
@@ -129,6 +125,7 @@ export default function VaultControls(props) {
             handler={withdraw}
             text="Withdraw"
             title="Withdraw from vault"
+            disabled={!vaultContract || !tokenContract}
           />
         </ButtonGroup>
       </ActionGroup>
@@ -146,6 +143,7 @@ export default function VaultControls(props) {
             handler={deposit}
             text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
             title="Deposit into vault"
+            disabled={!vaultContract || !tokenContract}
           />
         </ButtonGroup>
       </ActionGroup>
@@ -215,9 +213,14 @@ function Balance({ amount, prefix }) {
   );
 }
 
-function ActionButton({ handler, title, text }) {
+function ActionButton({ handler, title, text, disabled }) {
   return (
-    <ButtonFilled onClick={() => handler()} color="primary" title={title}>
+    <ButtonFilled
+      onClick={() => handler()}
+      color="primary"
+      title={title}
+      disabled={disabled}
+    >
       {text}
     </ButtonFilled>
   );

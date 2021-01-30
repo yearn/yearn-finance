@@ -24,6 +24,13 @@ export default function ButtonFilled(props) {
         backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       },
       textAlign: 'center',
+      '&.Mui-disabled': {
+        opacity: 0.5,
+        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+        color: color === 'secondary' ? '#333' : '#fff',
+        cursor: 'not-allowed',
+        pointerEvents: 'auto',
+      },
     },
   }))(Button);
 

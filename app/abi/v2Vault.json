@@ -425,8 +425,7 @@
     "outputs": [{ "type": "uint256", "name": "" }],
     "inputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "gas": 9598
+    "type": "function"
   },
   {
     "name": "expectedReturn",
@@ -592,8 +591,7 @@
     "outputs": [{ "type": "uint256", "name": "" }],
     "inputs": [],
     "stateMutability": "view",
-    "type": "function",
-    "gas": 3011
+    "type": "function"
   },
   {
     "name": "debtLimit",

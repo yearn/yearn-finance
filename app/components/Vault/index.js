@@ -162,6 +162,7 @@ const Vault = (props) => {
     pricePerShare,
     token,
     pureEthereum,
+    depositLimit,
     // statistics,
   } = vault;
 
@@ -208,6 +209,14 @@ const Vault = (props) => {
   let vaultAssets = balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
+
+  if (v2Vault && depositLimit && vaultAssets !== 'NaN') {
+    const limit = new BigNumber(depositLimit)
+      .dividedBy(10 ** decimals)
+      .toFixed(0);
+    vaultAssets = `${vaultAssets} / ${abbreviateNumber(limit)}`;
+  }
+
   const contractType = getContractType(vault);
 
   let vaultBottom;

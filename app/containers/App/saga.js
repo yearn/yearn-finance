@@ -84,6 +84,7 @@ function* loadVaultContracts(clear) {
           args: [account],
         },
         { name: 'pricePerShare' },
+        { name: 'depositLimit' },
       ],
       writeMethods: [
         {

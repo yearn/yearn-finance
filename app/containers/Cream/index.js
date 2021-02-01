@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react';
+
 import {
-  selectContractsByTag,
-  selectAllContracts,
-} from 'containers/App/selectors';
-import {
-  selectBorrowStats,
-  selectCollateralEnabled,
+  selectCreamTokensInfo,
+  selectCreamGroupedInfo,
 } from 'containers/Cream/selectors';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import { useInjectSaga } from 'utils/injectSaga';
 import TokenIcon from 'components/TokenIcon';
 import Table from 'components/Table';
-import { getSupplyData, getBorrowData } from 'utils/cream';
 import { useModal } from 'containers/ModalProvider/hooks';
 import IconButton from 'components/IconButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -50,10 +47,9 @@ const IconName = styled.div`
 const Cards = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 16px;
   margin-bottom: 32px;
-}
 `;
 
 const Buttons = styled.div`
@@ -61,17 +57,22 @@ const Buttons = styled.div`
   grid-gap: 12px;
 `;
 
-const tokenTransform = (asset) => {
-  const { address, symbol } = asset;
+const tokenTransform = (_val, row) => {
+  const { address, symbol } = row;
+
   return (
     <IconAndName>
-      <StyledTokenIcon address={asset.address} />
-      <IconName>{symbol[0].value || address}</IconName>
+      <StyledTokenIcon address={address} />
+      <IconName>{symbol || address}</IconName>
     </IconAndName>
   );
 };
 
-const percentTransform = (val) => `${val}%`;
+const formatAmount = (amount, decimals) =>
+  `${Number(amount, 10).toFixed(decimals)}`;
+
+const numberTransform = (val) => `${formatAmount(val, 5)}`;
+const percentTransform = (val) => `${formatAmount(val, 2)}%`;
 
 // const tokenSymbolTransform = (val, row) =>
 //   `${val} ${row.asset.symbol[0].value}`;
@@ -89,47 +90,23 @@ export default function Cream() {
   };
   useEffect(initialize, []);
 
-  const selectCollateralEnabledData = useSelector(selectCollateralEnabled());
-  const creamCTokens = useSelector(selectContractsByTag('creamCTokens'));
+  const creamTokensInfo = useSelector(selectCreamTokensInfo);
+  const creamGroupedInfo = useSelector(selectCreamGroupedInfo);
   const creamComptrollerContract = useContract(COMPTROLLER_ADDRESS);
-
-  const creamCTokenAddresses = _.map(creamCTokens, (token) =>
-    _.get(token, 'address'),
-  );
-  const allContracts = useSelector(selectAllContracts());
-  const borrowLimitStats = useSelector(selectBorrowStats);
   const { openModal } = useModal();
 
-  const supplyData = getSupplyData({
-    creamCTokenAddresses,
-    allContracts,
-    borrowLimitStats,
-  });
+  const supplyDataSorted = _.orderBy(creamTokensInfo, 'supplied', 'desc');
+  const borrowDataSorted = _.orderBy(creamTokensInfo, 'borrowed', 'desc');
 
-  const supplyDataSorted = _.orderBy(supplyData, 'supplied', 'desc');
-
-  const borrowData = getBorrowData({
-    creamCTokenAddresses,
-    allContracts,
-    borrowLimitStats,
-  });
-
-  const borrowDataSorted = _.orderBy(borrowData, 'borrowed', 'desc');
   const borrowedData = _.filter(borrowDataSorted, (data) => data.borrowed > 0);
-
   const suppliedData = _.filter(supplyDataSorted, (data) => data.supplied > 0);
 
   if (!borrowedData || !suppliedData) {
     return null;
   }
 
-  const supplyRowClickHandler = (row) => {
-    openModal('cream', row);
-  };
-
-  const borrowRowClickHandler = (row) => {
-    console.log({ row });
-    openModal('cream', row);
+  const actionHandler = (row) => {
+    openModal('cream', { ...row, ...creamGroupedInfo });
   };
 
   const borrowActionsTransform = (val, row) => {
@@ -138,7 +115,7 @@ export default function Cream() {
       withdrawButton = (
         <IconButton
           iconType="arrowUpAlt"
-          onClick={() => borrowRowClickHandler(row)}
+          onClick={() => actionHandler({ ...row, action: 'repay' })}
         >
           Repay
         </IconButton>
@@ -149,7 +126,7 @@ export default function Cream() {
         {withdrawButton}
         <IconButton
           iconType="arrowDownAlt"
-          onClick={() => borrowRowClickHandler(row)}
+          onClick={() => actionHandler({ ...row, action: 'borrow' })}
         >
           Borrow
         </IconButton>
@@ -157,106 +134,48 @@ export default function Cream() {
     );
   };
 
-  const allActionsTransform = (_rowValue, rowData) => {
-    const creamCTokenAddress = _.get(rowData, 'creamCTokenAddress');
-    const token = _.get(rowData, 'asset');
-    const tokenContractAddress = _.get(token, 'address');
-    const allowances = _.get(token, 'allowance');
-    const tokenAllowanceObject = _.find(allowances, (allowance) =>
-      _.includes(allowance.args, creamCTokenAddress),
-    );
-    const tokenAllowance = _.get(tokenAllowanceObject, 'value');
-    const crTokenAllowedToSpendToken = tokenAllowance > 0;
-    const marketEntered = selectCollateralEnabledData.includes(
-      creamCTokenAddress,
-    );
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const tokenContract = useContract(tokenContractAddress);
-
-    let enableCollateral;
-
-    if (marketEntered) {
-      if (crTokenAllowedToSpendToken) {
-        enableCollateral = null;
-        // <div>Approved and Ready!</div>;
-      } else {
-        enableCollateral = (
-          <ButtonFilled
-            variant="contained"
-            color="primary"
-            onClick={() =>
-              dispatch(
-                creamEnterMarkets({
-                  tokenContract,
-                  tokenContractAddress,
-                  creamCTokenAddress,
-                  creamComptrollerContract,
-                }),
-              )
-            }
-          >
-            Approve Token
-          </ButtonFilled>
-        );
-      }
-    } else {
-      enableCollateral = (
-        <ButtonFilled
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            if (marketEntered) {
-              // TODO: Exit Market, meh
-              return;
-            }
-            dispatch(
-              creamEnterMarkets({
-                tokenContract,
-                tokenContractAddress,
-                creamCTokenAddress,
-                creamComptrollerContract,
-              }),
-            );
-          }}
-        >
-          Enter Market/Enable
-        </ButtonFilled>
-      );
-    }
+  const allActionsTransform = (_val, row) => {
+    const creamCTokenAddress = _.get(row, 'cAddress');
+    const marketEntered = _.get(row, 'collateralEnabled');
 
     return (
-      <Buttons>
-        {crTokenAllowedToSpendToken ? (
-          <>
+      <>
+        {marketEntered ? (
+          <Buttons>
             <IconButton
               iconType="arrowUpAlt"
-              onClick={() => supplyRowClickHandler(rowData)}
+              onClick={() => actionHandler({ ...row, action: 'supply' })}
             >
               Supply
             </IconButton>
             <IconButton
               iconType="arrowDownAlt"
-              onClick={() => borrowRowClickHandler(rowData)}
+              onClick={() => actionHandler({ ...row, action: 'borrow' })}
             >
               Borrow
             </IconButton>
-            <IconButton
-              iconType="arrowUpAlt"
-              onClick={() => borrowRowClickHandler(rowData)}
-            >
-              Repay
-            </IconButton>
-            <IconButton
-              iconType="arrowDownAlt"
-              onClick={() => borrowRowClickHandler(rowData)}
-            >
-              Withdraw
-            </IconButton>
-          </>
-        ) : null}
-        {enableCollateral}
-      </Buttons>
+          </Buttons>
+        ) : (
+          <ButtonFilled
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              if (marketEntered) {
+                // TODO: Exit Market, meh
+                return;
+              }
+              dispatch(
+                creamEnterMarkets({
+                  creamCTokenAddress,
+                  creamComptrollerContract,
+                }),
+              );
+            }}
+          >
+            Enter Market/Enable
+          </ButtonFilled>
+        )}
+      </>
     );
   };
 
@@ -266,7 +185,7 @@ export default function Cream() {
       withdrawButton = (
         <IconButton
           iconType="arrowDownAlt"
-          onClick={() => borrowRowClickHandler(row)}
+          onClick={() => actionHandler({ ...row, action: 'withdraw' })}
         >
           Withdraw
         </IconButton>
@@ -277,7 +196,7 @@ export default function Cream() {
         {withdrawButton}
         <IconButton
           iconType="arrowUpAlt"
-          onClick={() => borrowRowClickHandler(row)}
+          onClick={() => actionHandler({ ...row, action: 'supply' })}
         >
           Supply
         </IconButton>
@@ -286,24 +205,26 @@ export default function Cream() {
   };
 
   const supplyTable = {
-    title: 'Assets Supplied - $8.00',
-    rowClickHandler: supplyRowClickHandler,
+    title: 'Assets Supplied',
     columns: [
       { key: 'asset', transform: tokenTransform },
       {
         key: 'supplied',
+        transform: numberTransform,
       },
       {
-        key: 'wallet',
-        alias: 'balance',
+        key: 'balance',
+        alias: 'Balance',
+        transform: numberTransform,
       },
       {
-        key: 'apy',
+        key: 'supplyAPY',
+        alias: 'Supply APY',
         transform: percentTransform,
       },
       {
         key: 'actions',
-        alias: '',
+        alias: 'Actions',
         transform: supplyActionsTransform,
       },
     ],
@@ -311,23 +232,26 @@ export default function Cream() {
   };
 
   const borrowTable = {
-    title: 'Assets Borrowed - $2.00',
+    title: 'Assets Borrowed',
     columns: [
       { key: 'asset', transform: tokenTransform },
       {
         key: 'borrowed',
+        transform: numberTransform,
       },
       {
-        key: 'wallet',
+        key: 'balance',
         alias: 'Balance',
+        transform: numberTransform,
       },
       {
-        key: 'apy',
+        key: 'borrowAPY',
+        alias: 'Borrow APY',
         transform: percentTransform,
       },
       {
         key: 'actions',
-        alias: '',
+        alias: 'Actions',
         transform: borrowActionsTransform,
       },
     ],
@@ -339,20 +263,23 @@ export default function Cream() {
     columns: [
       { key: 'asset', transform: tokenTransform },
       {
-        key: 'wallet',
+        key: 'balance',
         alias: 'Balance',
+        transform: numberTransform,
       },
       {
-        key: 'supplyApy',
+        key: 'supplyAPY',
+        alias: 'Supply APY',
         transform: percentTransform,
       },
       {
-        key: 'borrowApy',
+        key: 'borrowAPY',
+        alias: 'Borrow APY',
         transform: percentTransform,
       },
       {
         key: 'actions',
-        alias: '',
+        alias: 'Actions',
         transform: allActionsTransform,
       },
     ],
@@ -368,22 +295,28 @@ export default function Cream() {
   const dollarFormatter = (val) => formatter.format(val);
   const percentageFormatter = (val) => `${parseInt(val, 10).toFixed(0)}%`;
 
+  const {
+    totalSupplied,
+    totalBorrowed,
+    borrowUtilizationRatio,
+  } = creamGroupedInfo;
+
   return (
     <Wrapper>
       <Cards>
         <InfoCard
           label="Supply Balance"
-          value="3"
+          value={totalSupplied}
           formatter={dollarFormatter}
         />
         <InfoCard
           label="Borrow Balance"
-          value="3"
+          value={totalBorrowed}
           formatter={dollarFormatter}
         />
         <InfoCard
-          label="BorrowUtilzation Ratio"
-          value="3"
+          label="Borrow Utilzation Ratio"
+          value={new BigNumber(borrowUtilizationRatio).times(100).toFixed(0)}
           formatter={percentageFormatter}
         />
       </Cards>

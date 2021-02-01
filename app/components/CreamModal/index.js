@@ -1,288 +1,252 @@
-import React, { useRef } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import TabbedNavigation from 'components/TabbedNavigation';
+import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
+import Box from '@material-ui/core/Box';
 import { useContract } from 'containers/DrizzleProvider/hooks';
-import { useDispatch } from 'react-redux';
+import { selectTokenAllowance } from 'containers/App/selectors';
 import {
   creamSupply,
+  creamWithdraw,
   creamBorrow,
   creamRepay,
-  creamWithdraw,
+  creamApprove,
 } from 'containers/Cream/actions';
-const StyledButton = styled.button`
-  width: 80px;
-  height: 50px;
-  background-color: blue;
-  color: white !important;
-`;
+import Modal from 'components/Modal';
+import TokenIcon from 'components/TokenIcon';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  background-color: #fff;
+  color: #000;
 `;
 
-const Title = styled.div``;
-
-const InputArea = styled.div``;
-
-// const Input = styled.input``;
-
-// const ButtonArea = styled.div``;
-
-const Bottom = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-`;
-
-const ColumnWrapper = styled.div`
+const StyledSection = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  background-color: ${({ secondary }) => (secondary ? '#e5e5e5' : '#fff')};
+  padding: 25px;
+  width: 100%;
 `;
 
-const MaxButton = styled.button``;
+const StyledTokenIcon = styled(TokenIcon)`
+  width: 30px;
+  margin-right: 20px;
+`;
 
-const Button = (props) => {
-  const { children, onClick } = props;
-  return (
-    <StyledButton type="button" onClick={onClick}>
-      {children}
-    </StyledButton>
-  );
+const StyledInput = styled.input``;
+
+const StyledRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const Button = styled.button`
+  background-color: blue;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+`;
+
+const unitsToWei = (amount, decimals) =>
+  new BigNumber(amount).times(10 ** decimals).toString();
+
+const getActionMeta = ({
+  action,
+  symbol,
+  //   amount,
+  balance,
+  allowance,
+  supplied,
+  borrowed,
+  //   borrowLimit,
+  borrowUtilizationRatio,
+  tokenBorrowAllowance,
+  withdrawProyectedRatio,
+  borrowProyectedRatio,
+  maxWithdrawalAmount,
+}) => {
+  switch (action) {
+    case 'supply':
+      return {
+        cta: allowance > 0 ? creamSupply : creamApprove,
+        maxAmount: balance,
+        buttonLabel: allowance > 0 ? 'Supply' : 'Approve',
+        label1: 'Wallet balance',
+        label2: 'Borrow limit used',
+        field1: `${formatAmount(balance, 5)} ${symbol}`,
+        field2: `${formatAmount(borrowUtilizationRatio, 0)}%`,
+      };
+    case 'withdraw':
+      return {
+        cta: creamWithdraw,
+        maxAmount: maxWithdrawalAmount,
+        buttonLabel: 'Withdraw',
+        label1: 'Currently supplying',
+        label2: 'Borrow limit used',
+        field1: `${formatAmount(supplied, 5)} ${symbol}`,
+        field2: `${formatAmount(borrowUtilizationRatio, 0)}% -> ${formatAmount(
+          withdrawProyectedRatio,
+          0,
+        )}%`,
+      };
+    case 'borrow':
+      return {
+        cta: creamBorrow,
+        maxAmount: tokenBorrowAllowance,
+        buttonLabel: 'Borrow',
+        label1: 'Currently borrowing',
+        label2: 'Borrow limit used',
+        field1: `${formatAmount(borrowed, 5)} ${symbol}`,
+        field2: `${formatAmount(borrowUtilizationRatio, 0)}% -> ${formatAmount(
+          borrowProyectedRatio,
+          0,
+        )}%`,
+      };
+    case 'repay':
+      return {
+        cta: creamRepay,
+        maxAmount: borrowed,
+        buttonLabel: 'Repay',
+        label1: 'Wallet balance',
+        field1: `${formatAmount(balance, 5)} ${symbol}`,
+      };
+    default:
+      return {};
+  }
 };
 
+const formatAmount = (amount, decimals) =>
+  `${Number(amount, 10).toFixed(decimals)}`;
+
 export default function CreamModal(props) {
-  const { show, onHide, className, modalMetadata } = props;
+  const { show, onHide, modalMetadata } = props;
+  const [amount, setAmount] = useState(0);
   const dispatch = useDispatch();
-  const amountRef = useRef({ current: {} });
-  const amountRefNormalized = useRef(null);
-
-  const symbol = _.get(modalMetadata, 'asset.symbol[0].value', false);
-  const decimals = _.get(modalMetadata, 'asset.decimals[0].value', false);
-  const balanceOf = _.get(modalMetadata, 'asset.balanceOf[0].value', false);
-  const supplied = _.get(modalMetadata, 'supplied', false);
-  const borrowed = _.get(modalMetadata, 'cTokenBalanceOf', false);
-  const cTokenDecimals = _.get(modalMetadata, 'cTokenDecimals', false);
-  const borrowLimit = _.get(modalMetadata, 'borrowLimit', false);
-  const creamCTokenAddress = _.get(modalMetadata, 'creamCTokenAddress');
-
+  const tokenAddress = get(modalMetadata, 'address');
+  const tokenContract = useContract(tokenAddress);
+  const creamCTokenAddress = get(modalMetadata, 'cAddress');
   const crTokenContract = useContract(creamCTokenAddress);
-
-  const borrowAllowance = new BigNumber(borrowLimit).minus(
-    new BigNumber(borrowed),
+  const allowance = useSelector(
+    selectTokenAllowance(tokenAddress, creamCTokenAddress),
   );
-  const borrowAllowanceNormalized = borrowAllowance
-    .dividedBy(10 ** cTokenDecimals)
-    .toFixed(5);
-  const borrowedNormalized = new BigNumber(borrowed)
-    .dividedBy(10 ** cTokenDecimals)
-    .toFixed(5);
-  const suppliedNormalized = new BigNumber(supplied)
-    .dividedBy(10 ** decimals)
-    .toFixed(5);
-  const balanceOfNormalized = new BigNumber(balanceOf)
-    .dividedBy(10 ** decimals)
-    .toFixed(4);
+
+  useEffect(() => setAmount(0), [show]);
+
   if (!crTokenContract) {
     return null;
   }
 
-  const supply = async () => {
-    try {
-      dispatch(
-        creamSupply({ crTokenContract, amount: amountRef.current.value }),
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const action = get(modalMetadata, 'action');
+  const address = get(modalMetadata, 'address');
+  const symbol = get(modalMetadata, 'symbol');
+  const decimals = get(modalMetadata, 'decimals');
+  const balance = get(modalMetadata, 'balance');
+  const supplied = get(modalMetadata, 'supplied');
+  const borrowed = get(modalMetadata, 'borrowed');
+  const price = get(modalMetadata, 'price');
+  const collateralFactor = get(modalMetadata, 'collateralFactor');
+  const totalBorrowed = get(modalMetadata, 'totalBorrowed');
+  const borrowLimit = get(modalMetadata, 'borrowLimit');
+  const borrowAllowance = get(modalMetadata, 'borrowAllowance');
+  const collateralAvailable = get(modalMetadata, 'collateralAvailable');
+  const borrowUtilizationRatio = new BigNumber(
+    get(modalMetadata, 'borrowUtilizationRatio'),
+  )
+    .times(100)
+    .toString();
+  const tokenBorrowAllowance = new BigNumber(borrowAllowance)
+    .dividedBy(price)
+    .toString();
+  const collateralAmount = amount
+    ? new BigNumber(amount).times(price).times(collateralFactor).toString()
+    : '0';
+  const withdrawProyectedRatio = new BigNumber(totalBorrowed)
+    .dividedBy(new BigNumber(borrowLimit).minus(collateralAmount))
+    .times(100)
+    .toString();
+  const borrowProyectedRatio = new BigNumber(totalBorrowed)
+    .plus(new BigNumber(amount).times(price))
+    .dividedBy(borrowLimit)
+    .times(100)
+    .toString();
+  const maxWithdrawalAmount = new BigNumber(collateralAvailable)
+    .dividedBy(price)
+    .toString();
 
-  const borrow = async () => {
-    try {
-      dispatch(
-        creamBorrow({ crTokenContract, amount: amountRef.current.value }),
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const repay = async () => {
-    try {
-      dispatch(
-        creamRepay({ crTokenContract, amount: amountRef.current.value }),
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const withdraw = async () => {
-    try {
-      dispatch(
-        creamWithdraw({ crTokenContract, amount: amountRef.current.value }),
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const setMax = () => {
-    updateAmount(balanceOf);
-  };
-
-  const setMaxBorrow = () => {
-    updateAmount(borrowAllowance);
-  };
-
-  const setMaxRepay = () => {
-    updateAmount(borrowed);
-  };
-
-  const setMaxWithdraw = () => {
-    updateAmount(supplied);
-  };
-
-  const updateNormalizedAmount = (val) => {
-    const amount = new BigNumber(val).times(10 ** decimals).toFixed();
-    amountRef.current.value = amount;
-  };
-
-  const updateAmount = (val) => {
-    amountRef.current.value = val;
-    const normalizedAmount = new BigNumber(val)
-      .dividedBy(10 ** decimals)
-      .toFixed(5);
-    amountRefNormalized.current.value = normalizedAmount;
-  };
-
-  // console.log(modalMetadata);
-
-  const SupplyPage = () => (
-    <ColumnWrapper>
-      <InputArea>
-        <input
-          ref={amountRefNormalized}
-          max={balanceOfNormalized}
-          type="number"
-          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
-        />
-        <MaxButton onClick={setMax}>max</MaxButton>
-      </InputArea>
-      <Button onClick={supply}>Supply</Button>
-      <Bottom>
-        <div>Wallet balance</div>
-        <div>
-          {balanceOfNormalized} {symbol}
-        </div>
-      </Bottom>
-    </ColumnWrapper>
-  );
-
-  const BorrowPage = () => (
-    <ColumnWrapper>
-      <InputArea>
-        <input
-          ref={amountRefNormalized}
-          max={borrowAllowance}
-          type="number"
-          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
-        />
-        <MaxButton onClick={setMaxBorrow}>max</MaxButton>
-      </InputArea>
-      <Button onClick={borrow}>Borrow</Button>
-      <Bottom>
-        <div>Borrow allowance</div>
-        <div>
-          {borrowAllowanceNormalized} {symbol}
-        </div>
-      </Bottom>
-    </ColumnWrapper>
-  );
-
-  const RepayPage = () => (
-    <ColumnWrapper>
-      <InputArea>
-        <input
-          ref={amountRefNormalized}
-          max={borrowed}
-          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
-        />
-        <MaxButton onClick={setMaxRepay}>max</MaxButton>
-      </InputArea>
-      <Button onClick={repay}>Repay</Button>
-      <Bottom>
-        <div>Wallet balance</div>
-        <div>
-          {borrowedNormalized} {symbol}
-        </div>
-      </Bottom>
-    </ColumnWrapper>
-  );
-
-  const WithdrawPage = () => (
-    <ColumnWrapper>
-      <InputArea>
-        <input
-          max={supplied}
-          ref={amountRefNormalized}
-          onChange={(evt) => updateNormalizedAmount(evt.target.value)}
-        />
-        <MaxButton onClick={setMaxWithdraw}>max</MaxButton>
-      </InputArea>
-      <Button onClick={withdraw}>Withdraw</Button>
-      <Bottom>
-        <div>Supplied balance</div>
-        <div>
-          {suppliedNormalized} {symbol}
-        </div>
-      </Bottom>
-    </ColumnWrapper>
-  );
-
-  // const modalOpened = () => {
-  //   if (show) {
-  //   }
-  // };
-  // useEffect(modalOpened, [show]);
-
-  const pages = [
-    {
-      name: 'Supply',
-      element: SupplyPage,
-    },
-    {
-      name: 'Borrow',
-      element: BorrowPage,
-    },
-    {
-      name: 'Repay',
-      element: RepayPage,
-    },
-    {
-      name: 'Withdraw',
-      element: WithdrawPage,
-    },
-  ];
+  const actionMeta = getActionMeta({
+    action,
+    symbol,
+    amount,
+    balance,
+    allowance,
+    supplied,
+    borrowed,
+    borrowLimit,
+    borrowUtilizationRatio,
+    tokenBorrowAllowance,
+    withdrawProyectedRatio,
+    borrowProyectedRatio,
+    maxWithdrawalAmount,
+  });
 
   return (
-    <Modal
-      dialogClassName={className}
-      show={show}
-      onHide={onHide}
-      centered
-      animation={false}
-    >
-      <Modal.Body>
-        <Wrapper>
-          <Title>{symbol}</Title>
-          <TabbedNavigation pages={pages} />
-        </Wrapper>
-      </Modal.Body>
+    <Modal show={show} onHide={onHide}>
+      <Wrapper>
+        <StyledSection>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <StyledTokenIcon address={address} />
+            <span>{symbol}</span>
+          </Box>
+        </StyledSection>
+        <StyledSection secondary>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <StyledInput
+              placeholder="amount"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+            />
+            <Button onClick={() => setAmount(actionMeta.maxAmount)}>Max</Button>
+          </Box>
+        </StyledSection>
+        <StyledSection>
+          <StyledRow>
+            <div>{actionMeta.label1}</div>
+            <div>{actionMeta.field1}</div>
+          </StyledRow>
+          <StyledRow>
+            <div>{actionMeta.label2}</div>
+            <div>{actionMeta.field2}</div>
+          </StyledRow>
+          <Button
+            onClick={() => {
+              try {
+                dispatch(
+                  actionMeta.cta({
+                    crTokenContract,
+                    amount: unitsToWei(amount, decimals),
+                    tokenContract,
+                    creamCTokenAddress,
+                  }),
+                );
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+          >
+            {actionMeta.buttonLabel}
+          </Button>
+        </StyledSection>
+      </Wrapper>
     </Modal>
   );
 }

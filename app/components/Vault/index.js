@@ -214,7 +214,9 @@ const Vault = (props) => {
     const limit = new BigNumber(depositLimit)
       .dividedBy(10 ** decimals)
       .toFixed(0);
-    vaultAssets = `${vaultAssets} / ${abbreviateNumber(limit)}`;
+    if (parseInt(limit, 10) < Number.MAX_SAFE_INTEGER) {
+      vaultAssets = `${vaultAssets} / ${abbreviateNumber(limit)}`;
+    }
   }
 
   const contractType = getContractType(vault);
@@ -353,7 +355,6 @@ const Vault = (props) => {
         vaultBalance={vaultBalanceOf}
         walletBalance={tokenBalanceOf}
         balanceOf={balanceOf}
-        tokenBalance={tokenBalance}
       />
     );
     vaultTop = (

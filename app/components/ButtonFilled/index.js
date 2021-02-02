@@ -23,6 +23,11 @@ export default function ButtonFilled(props) {
       '&:hover': {
         backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       },
+      '&:disabled': {
+        color: color === 'secondary' ? '#333' : '#fff',
+        backgroundColor: color === 'secondary' ? '#444' : '#666',
+        cursor: 'not-allowed',
+      },
       textAlign: 'center',
     },
   }))(Button);
@@ -30,12 +35,12 @@ export default function ButtonFilled(props) {
   return (
     <ColorButton
       variant="contained"
+      disabled={disabled}
       title={title}
       color={color}
       onClick={onClick}
       onSubmit={onSubmit}
       type={type}
-      disabled={disabled}
     >
       {children}
     </ColorButton>

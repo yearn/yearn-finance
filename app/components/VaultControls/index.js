@@ -85,12 +85,17 @@ export default function VaultControls(props) {
     selectTokenAllowance(tokenContractAddress, vaultContractAddress),
   );
 
+  const depositLimitBN = useMemo(() => new BigNumber(depositLimit), [
+    depositLimit,
+  ]);
+
+  const totalAssetsBN = useMemo(() => new BigNumber(totalAssets), [
+    totalAssets,
+  ]);
+
   const depositsDisabled = useMemo(() => {
     if (vault.type === 'v2') {
-      const tot = new BigNumber(totalAssets).plus(depositGweiAmount);
-      const limit = new BigNumber(depositLimit);
-      console.log(tot.toString(), limit.toString());
-      return tot.gte(limit);
+      return totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN);
     }
     return false;
   }, [depositAmount, totalAssets, depositLimit]);

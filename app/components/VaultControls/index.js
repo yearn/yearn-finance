@@ -2,12 +2,13 @@ import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import { withdrawFromVault, depositToVault } from 'containers/Vaults/actions';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { selectTokenAllowance } from 'containers/App/selectors';
+import { Tooltip } from '@material-ui/core';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -47,7 +48,14 @@ const getNormalizedAmount = (amount, decimals) =>
 
 export default function VaultControls(props) {
   const { vault, vaultBalance, walletBalance, balanceOf, tokenBalance } = props;
-  const { address: vaultAddress, tokenAddress, decimals, pureEthereum } = vault;
+  const {
+    address: vaultAddress,
+    totalAssets,
+    tokenAddress,
+    decimals,
+    pureEthereum,
+    depositLimit,
+  } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
   let vaultBalanceOf;
@@ -76,6 +84,21 @@ export default function VaultControls(props) {
   const tokenAllowance = useSelector(
     selectTokenAllowance(tokenContractAddress, vaultContractAddress),
   );
+
+  const depositLimitBN = useMemo(() => new BigNumber(depositLimit), [
+    depositLimit,
+  ]);
+
+  const totalAssetsBN = useMemo(() => new BigNumber(totalAssets), [
+    totalAssets,
+  ]);
+
+  const depositsDisabled = useMemo(() => {
+    if (vault.type === 'v2') {
+      return totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN);
+    }
+    return false;
+  }, [depositAmount, totalAssets, depositLimit]);
 
   useEffect(() => {
     setDepositAmount(0);
@@ -142,11 +165,23 @@ export default function VaultControls(props) {
             maxAmount={tokenBalance}
             decimals={decimals}
           />
-          <ActionButton
-            handler={deposit}
-            text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
-            title="Deposit into vault"
-          />
+          <Tooltip
+            title="Vault deposit limit reached."
+            placement="top"
+            arrow
+            disableHoverListener={!depositsDisabled}
+          >
+            <span>
+              <ActionButton
+                disabled={depositsDisabled}
+                handler={deposit}
+                text={
+                  tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'
+                }
+                title="Deposit into vault"
+              />
+            </span>
+          </Tooltip>
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>
@@ -215,9 +250,14 @@ function Balance({ amount, prefix }) {
   );
 }
 
-function ActionButton({ handler, title, text }) {
+function ActionButton({ disabled, handler, title, text }) {
   return (
-    <ButtonFilled onClick={() => handler()} color="primary" title={title}>
+    <ButtonFilled
+      disabled={disabled}
+      onClick={() => handler()}
+      color="primary"
+      title={title}
+    >
       {text}
     </ButtonFilled>
   );

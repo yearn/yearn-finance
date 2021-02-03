@@ -54,6 +54,7 @@ export function createBlockChannel({ drizzle, web3, syncAlways }) {
 }
 
 function* callCreateBlockChannel({ drizzle, web3, syncAlways }) {
+  if (process.env.BLOCK_SUBSCRIPTION === 'false') return;
   const blockChannel = yield call(createBlockChannel, {
     drizzle,
     web3,

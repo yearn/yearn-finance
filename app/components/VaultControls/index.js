@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { selectTokenAllowance } from 'containers/App/selectors';
-import { Tooltip } from '@material-ui/core';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -107,10 +106,6 @@ export default function VaultControls(props) {
     setWithdrawalGweiAmount(0);
   }, [walletBalance, vaultBalance]);
 
-  if (!vaultContract || !tokenContract) {
-    return null;
-  }
-
   const withdraw = () => {
     console.log(`Withdrawing:`, withdrawalGweiAmount);
     dispatch(
@@ -149,9 +144,12 @@ export default function VaultControls(props) {
             decimals={decimals}
           />
           <ActionButton
+            disabled={!vaultContract || !tokenContract}
             handler={withdraw}
             text="Withdraw"
             title="Withdraw from vault"
+            showTooltip
+            tooltipText="Connect your wallet to withdraw from vault"
           />
         </ButtonGroup>
       </ActionGroup>
@@ -165,23 +163,18 @@ export default function VaultControls(props) {
             maxAmount={tokenBalance}
             decimals={decimals}
           />
-          <Tooltip
-            title="Vault deposit limit reached."
-            placement="top"
-            arrow
-            disableHoverListener={!depositsDisabled}
-          >
-            <span>
-              <ActionButton
-                disabled={depositsDisabled}
-                handler={deposit}
-                text={
-                  tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'
-                }
-                title="Deposit into vault"
-              />
-            </span>
-          </Tooltip>
+          <ActionButton
+            disabled={!vaultContract || !tokenContract || depositsDisabled}
+            handler={deposit}
+            text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
+            title="Deposit into vault"
+            showTooltip
+            tooltipText={
+              depositsDisabled
+                ? 'Vault deposit limit reached.'
+                : 'Connect your wallet to deposit into vault'
+            }
+          />
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>
@@ -250,13 +243,22 @@ function Balance({ amount, prefix }) {
   );
 }
 
-function ActionButton({ disabled, handler, title, text }) {
+function ActionButton({
+  disabled,
+  handler,
+  title,
+  text,
+  tooltipText,
+  showTooltip,
+}) {
   return (
     <ButtonFilled
       disabled={disabled}
       onClick={() => handler()}
       color="primary"
       title={title}
+      tooltipText={tooltipText}
+      showTooltip={showTooltip}
     >
       {text}
     </ButtonFilled>

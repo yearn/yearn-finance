@@ -1,11 +1,21 @@
 import React from 'react';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
 
 export default function ButtonFilled(props) {
-  const { onClick, disabled, children, type, title, onSubmit, color } = props;
+  const {
+    onClick,
+    disabled,
+    children,
+    type,
+    title,
+    onSubmit,
+    color,
+    tooltipText,
+    showTooltip,
+  } = props;
   const showDevVaults = useShowDevVaults();
 
   const ColorButton = withStyles(() => ({
@@ -23,24 +33,51 @@ export default function ButtonFilled(props) {
       '&:hover': {
         backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       },
-      '&:disabled': {
-        color: color === 'secondary' ? '#333' : '#fff',
-        backgroundColor: color === 'secondary' ? '#444' : '#666',
-        cursor: 'not-allowed',
+      '&:hover.Mui-disabled': {
+        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
       },
       textAlign: 'center',
+      '&.Mui-disabled': {
+        opacity: 0.5,
+        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+        color: color === 'secondary' ? '#333' : '#fff',
+        cursor: 'not-allowed',
+        pointerEvents: 'auto',
+      },
     },
   }))(Button);
 
+  if (disabled && showTooltip) {
+    const adjustedButtonProps = {
+      disabled,
+      component: disabled ? 'div' : undefined,
+      onClick: disabled ? undefined : onClick,
+    };
+    return (
+      <Tooltip title={tooltipText}>
+        <ColorButton
+          variant="contained"
+          color={color}
+          onClick={onClick}
+          onSubmit={onSubmit}
+          type={type}
+          disabled={disabled}
+          {...adjustedButtonProps}
+        >
+          {children}
+        </ColorButton>
+      </Tooltip>
+    );
+  }
   return (
     <ColorButton
       variant="contained"
-      disabled={disabled}
       title={title}
       color={color}
       onClick={onClick}
       onSubmit={onSubmit}
       type={type}
+      disabled={disabled}
     >
       {children}
     </ColorButton>

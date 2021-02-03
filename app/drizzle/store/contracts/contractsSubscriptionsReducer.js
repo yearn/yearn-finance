@@ -13,7 +13,6 @@ const contractsReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DRIZZLE_ADD_CONTRACTS: {
-        if (process.env.BLOCK_SUBSCRIPTION === 'false') break;
         const { contracts } = action;
         state.push(...contracts);
         draft = state;

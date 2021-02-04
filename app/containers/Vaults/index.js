@@ -62,6 +62,8 @@ const Vaults = () => {
   const account = useAccount();
   const walletConnected = wallet.provider && account;
   let columnHeader;
+  let backscratcherWrapper;
+
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
@@ -71,14 +73,8 @@ const Vaults = () => {
   let warning;
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
-  }
-  return (
-    <Wrapper>
-      <DevHeader devMode={devMode}>
-        <VaultsNavLinks />
-        <AddVault devVaults={showDevVaults} />
-      </DevHeader>
-      {warning}
+  } else {
+    backscratcherWrapper = (
       <WrapTable>
         <BackscratchersHeaders />
         <StyledAccordion>
@@ -88,6 +84,18 @@ const Vaults = () => {
           />
         </StyledAccordion>
       </WrapTable>
+    );
+  }
+
+  return (
+    <Wrapper>
+      <DevHeader devMode={devMode}>
+        <VaultsNavLinks />
+        <AddVault devVaults={showDevVaults} />
+      </DevHeader>
+      {warning}
+
+      {backscratcherWrapper}
 
       <WrapTable>
         {columnHeader}

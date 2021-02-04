@@ -18,4 +18,7 @@ export default styled.div`
     color: #0053fb;
     text-decoration: underline;
   }
+  .main-text {
+    margin: 16px 0;
+  }
 `;

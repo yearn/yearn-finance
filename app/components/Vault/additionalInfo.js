@@ -6,6 +6,16 @@ export default styled.div`
   font-family: 'Roboto';
   font-weight: 900;
   font-size: 20px;
+  line-height: 21px;
   background: #0c1114;
-  padding: 20px 40px;
+  padding: 30px 80px;
+
+  span {
+    white-space: normal;
+    font-size: 17px;
+  }
+  a {
+    color: #0053fb;
+    text-decoration: underline;
+  }
 `;

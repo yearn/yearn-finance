@@ -413,21 +413,17 @@ const Vault = (props) => {
       backscratcherInfo = (
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
-
+          <br />
           <span>
-            This vault accepts $CRV in exchange for perpetual claim on Curve
-            fees across all Yearn products.
+            This vault accepts <a href="htttps://google.com">$CRV</a> in
+            exchange for perpetual claim on Curve fees across all Yearn
+            products. The more volume the Curve protocol has the more claimable{' '}
+            <a href="htttps://google.com">$3Crv</a> you should receive every
+            week. This vault {"doesn't"} have withdrawal functionality since it
+            locks CRV tokens in Curve voting escrow for 4 years and regularly
+            prolongs the lock.
           </span>
-          <span>
-            The more volume the Curve protocol has the more claimable $3Crv you
-            should receive every week.
-          </span>
-          <span>
-            This vault doesnt have withdrawal functionality since it locks CRV
-            tokens in Curve voting escrow for 4 years and regularly prolongs the
-            lock.
-          </span>
-
+          <br />
           <span>
             The current APY is 40% (3Crv rewards extrapolated to a year)
           </span>

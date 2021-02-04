@@ -4,6 +4,7 @@ import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
+import VaultsBackscratcherHeaders from 'components/VaultsBackscratcherHeaders';
 import {
   selectContractsByTag,
   selectOrderedVaults,
@@ -78,6 +79,16 @@ const Vaults = () => {
       </DevHeader>
       {warning}
       <WrapTable>
+        <VaultsBackscratcherHeaders />
+        <StyledAccordion>
+          <VaultsBackscratcherWrapper
+            showDevVaults={showDevVaults}
+            walletConnected={walletConnected}
+          />
+        </StyledAccordion>
+      </WrapTable>
+
+      <WrapTable>
         {columnHeader}
         <StyledAccordion>
           <VaultsWrapper
@@ -88,6 +99,38 @@ const Vaults = () => {
       </WrapTable>
     </Wrapper>
   );
+};
+
+const VaultsBackscratcherWrapper = (props) => {
+  const { showDevVaults, walletConnected } = props;
+  const orderedVaults = useSelector(selectOrderedVaults);
+  const localContracts = useSelector(selectContractsByTag('localContracts'));
+  const currentEventKey = useContext(AccordionContext);
+  const renderVault = (vault) => {
+    let vaultKey = vault.address;
+    if (vault.pureEthereum) {
+      vaultKey = `${vault.address}-eth`;
+    }
+    return (
+      <Vault
+        vault={vault}
+        key={vaultKey}
+        accordionKey={vaultKey}
+        active={currentEventKey === vaultKey}
+        showDevVaults={showDevVaults}
+      />
+    );
+  };
+
+  // Show Linear progress when orderedvaults is empty
+  if (walletConnected && orderedVaults == null) return <LinearProgress />;
+
+  let vaultRows = _.map([orderedVaults[0]], renderVault);
+  if (showDevVaults) {
+    vaultRows = _.map(localContracts, renderVault);
+  }
+
+  return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 
 const VaultsWrapper = (props) => {

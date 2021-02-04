@@ -200,7 +200,10 @@ export default function VaultControls(props) {
           />
           <ActionButton
             handler={() => {
-              window.open('https://google.com', '_blank');
+              window.open(
+                'https://exchange.sushiswapclassic.org/#/add/ETH/0xc5bDdf9843308380375a611c18B50Fb9341f502A',
+                '_blank',
+              );
             }}
             text="Stake"
             title="stake veCrv"

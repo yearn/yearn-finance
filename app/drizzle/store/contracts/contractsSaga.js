@@ -4,6 +4,10 @@ import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import * as EventActions from './constants';
+import {
+  selectRelevantAdressesByContract,
+  selectSubscriptionsByAddresses,
+} from '../../../containers/App/selectors';
 
 /*
  * Events
@@ -165,10 +169,27 @@ function* processResponse(action) {
   }
 }
 
+function* processAdressesToUpdate(action) {
+  const { contractAddress } = action;
+
+  const relevantAddresses = yield select(
+    selectRelevantAdressesByContract(contractAddress),
+  );
+
+  console.log({ relevantAddresses });
+
+  const subscriptions = yield select(
+    selectSubscriptionsByAddresses(relevantAddresses),
+  );
+  console.log({ subscriptions });
+  yield put({ type: 'BATCH_CALL_REQUEST', request: subscriptions });
+}
+
 function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
+  yield takeEvery('TX_ERROR', processAdressesToUpdate); // this should be hooked to TX_SUCCESSFUL. Is on ERROR for testing
 }
 
 export default contractsSaga;

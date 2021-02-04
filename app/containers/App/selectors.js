@@ -8,6 +8,7 @@ const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
 const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
+const selectCover = (state) => state.cover;
 
 // TODO: Add to constants
 const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -20,6 +21,11 @@ export const selectVaults = () =>
 
 export const selectBackscratcherVault = () =>
   createSelector(selectApp, (substate) => substate.backscratcher);
+
+export const selectCoverProtocols = () =>
+  createSelector(selectCover, (substate) =>
+    substate ? substate.protocols : [],
+  );
 
 export const selectEthBalance = () =>
   createSelector(selectApp, (substate) => substate.ethBalance);
@@ -37,6 +43,54 @@ export const selectContracts = (namespace) =>
   createSelector(selectContractsData, (substate) =>
     _.filter(substate, { namespace }),
   );
+
+export const selectRelevantAdressesByContract = (contractAddress) =>
+  createSelector(
+    selectVaults(),
+    selectCoverProtocols(),
+    (vaultsData, coverProtocolsData) => {
+      console.log({ vaultsData });
+      const vault = vaultsData.find(
+        (v) => v.address.toLowerCase() === contractAddress.toLowerCase(),
+      );
+      // const vault = _.find(vaultsData, ['address', contractAddress]);
+      console.log({ vault });
+      if (vault) {
+        console.log('ITS A VAULT');
+        return [vault.address, vault.tokenAddress].filter((val) => !!val);
+      }
+
+      const cover = coverProtocolsData.find(
+        (c) =>
+          c.protocolAddress.toLowerCase() === contractAddress.toLowerCase(),
+      );
+      // const cover = _.find(coverProtocolsData, ['protocolAddress', contractAddress]);
+      console.log({ cover });
+      if (cover) {
+        console.log('ITS A COVER');
+        return [cover.protocolAddress, cover.protocolTokenAddress].filter(
+          (val) => !!val,
+        );
+      }
+
+      console.log('ITS NOT COVER NOR VAULT');
+
+      return [contractAddress];
+    },
+  );
+
+export const selectSubscriptionsByAddresses = (addresses) =>
+  createSelector(selectSubscriptionsData, (subscriptionsData) => {
+    const subscriptionsMatch = _.filter(
+      subscriptionsData,
+      (subscription) =>
+        _.intersection(
+          _.map(subscription.addresses, (address) => address.toLowerCase()),
+          _.map(addresses, (address) => address.toLowerCase()),
+        ).length > 0,
+    );
+    return subscriptionsMatch;
+  });
 
 export const selectContractsByTag = (tag) =>
   createSelector(

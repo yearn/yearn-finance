@@ -187,7 +187,10 @@ export default function VaultControls(props) {
             </span>
           </Tooltip>
         </ButtonGroup>
-        <ButtonGroup hide={!vaultIsBackscratcher}>
+      </ActionGroup>
+      <ActionGroup hide={!vaultIsBackscratcher}>
+        <Balance amount={walletBalance} prefix="Your wallet: " />
+        <ButtonGroup>
           <AmountField
             amount={withdrawalAmount}
             amountSetter={setWithdrawalAmount}

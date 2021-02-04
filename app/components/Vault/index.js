@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import AdditionalInfo from 'components/Vault/additionalInfo';
+import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
@@ -381,33 +382,34 @@ const Vault = (props) => {
       ? backscratcherAddress
       : tokenContractAddress;
 
-    vaultTop = (
-      <ColumnList>
-        <IconAndName>
-          <LinkWrap devMode={devMode} address={address}>
-            <StyledTokenIcon address={tokenIconAddress} />
-          </LinkWrap>
-          <LinkWrap devMode={devMode} address={address}>
-            <div tw="flex items-center">
-              <IconName devMode={devMode}>{vaultName}</IconName>
-            </div>
-          </LinkWrap>
-        </IconAndName>
-        <div>{vault.type}</div>
-        <div>
-          <AnimatedNumber value={vaultBalanceOf} />
-        </div>
-        <div>{apy}</div>
-        <div>{vaultAssets}</div>
-        <div>
-          <AnimatedNumber value={tokenBalanceOf} />{' '}
-          <LinkWrap devMode={devMode} address={tokenAddress}>
-            {tokenSymbol}
-          </LinkWrap>
-        </div>
-      </ColumnList>
-    );
     if (backscratcherVault) {
+      vaultTop = (
+        <ColumnListBackscratcher>
+          <IconAndName>
+            <LinkWrap devMode={devMode} address={address}>
+              <StyledTokenIcon address={tokenIconAddress} />
+            </LinkWrap>
+            <LinkWrap devMode={devMode} address={address}>
+              <div tw="flex items-center">
+                <IconName devMode={devMode}>{vaultName}</IconName>
+              </div>
+            </LinkWrap>
+          </IconAndName>
+          <div>{vault.type}</div>
+          <div>
+            <AnimatedNumber value={vaultBalanceOf} />
+          </div>
+          <div>{apy}</div>
+          <div>{vaultAssets}</div>
+          <div>
+            <AnimatedNumber value={tokenBalanceOf} />{' '}
+            <LinkWrap devMode={devMode} address={tokenAddress}>
+              {tokenSymbol}
+            </LinkWrap>
+          </div>
+        </ColumnListBackscratcher>
+      );
+
       backscratcherInfo = (
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
@@ -434,6 +436,33 @@ const Vault = (props) => {
             rewards!
           </span>
         </AdditionalInfo>
+      );
+    } else {
+      vaultTop = (
+        <ColumnList>
+          <IconAndName>
+            <LinkWrap devMode={devMode} address={address}>
+              <StyledTokenIcon address={tokenIconAddress} />
+            </LinkWrap>
+            <LinkWrap devMode={devMode} address={address}>
+              <div tw="flex items-center">
+                <IconName devMode={devMode}>{vaultName}</IconName>
+              </div>
+            </LinkWrap>
+          </IconAndName>
+          <div>{vault.type}</div>
+          <div>
+            <AnimatedNumber value={vaultBalanceOf} />
+          </div>
+          <div>{apy}</div>
+          <div>{vaultAssets}</div>
+          <div>
+            <AnimatedNumber value={tokenBalanceOf} />{' '}
+            <LinkWrap devMode={devMode} address={tokenAddress}>
+              {tokenSymbol}
+            </LinkWrap>
+          </div>
+        </ColumnList>
       );
     }
   }

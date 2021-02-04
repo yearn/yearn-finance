@@ -31,6 +31,7 @@ const ActionGroup = styled.div`
 const ButtonGroup = styled.div`
   display: grid;
   align-items: center;
+  display: ${(props) => (props.hide ? 'none' : 'inherit')};
   grid-template-columns: 262px 145px;
   grid-gap: 10px;
 `;
@@ -58,6 +59,8 @@ export default function VaultControls(props) {
   } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
+  const vaultIsBackscratcher =
+    vault.address === '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -71,6 +74,7 @@ export default function VaultControls(props) {
 
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
+
   const tokenContract = useContract(tokenAddress);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
@@ -140,7 +144,7 @@ export default function VaultControls(props) {
     <Wrapper>
       <ActionGroup>
         <Balance amount={vaultBalance} prefix="Vault balance: " />
-        <ButtonGroup>
+        <ButtonGroup hide={vaultIsBackscratcher}>
           <AmountField
             amount={withdrawalAmount}
             amountSetter={setWithdrawalAmount}
@@ -182,6 +186,22 @@ export default function VaultControls(props) {
               />
             </span>
           </Tooltip>
+        </ButtonGroup>
+        <ButtonGroup hide={!vaultIsBackscratcher}>
+          <AmountField
+            amount={withdrawalAmount}
+            amountSetter={setWithdrawalAmount}
+            gweiAmountSetter={setWithdrawalGweiAmount}
+            maxAmount={vaultBalanceOf}
+            decimals={decimals}
+          />
+          <ActionButton
+            handler={() => {
+              window.open('https://google.com', '_blank');
+            }}
+            text="Stake"
+            title="stake veCrv"
+          />
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>

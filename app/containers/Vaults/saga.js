@@ -63,8 +63,7 @@ function* fetchVaults() {
       tokenAddress: '0xD533a949740bb3306d119CC777fa900bA034cd52',
       decimals: 18,
       emergencyShutdown: false,
-      type: 'v2',
-      totalAssets: 3223835775809687140608146,
+      type: 'v1',
       tags: ['backscratcher'],
     });
 

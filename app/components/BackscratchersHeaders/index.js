@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ColumnListDev from 'components/Vault/columnsDev';
+import BackscratcherColumns from 'components/Vault/backscratcherColumns';
 
 const ColumnHeader = styled.div`
   margin-bottom: 10px;
@@ -9,14 +9,14 @@ const ColumnHeader = styled.div`
   text-transform: uppercase;
 `;
 
-export default function VaultsHeaderDev() {
+export default function BackscratcherHeaders() {
   return (
-    <ColumnListDev>
+    <BackscratcherColumns>
       <ColumnHeader>Asset</ColumnHeader>
       <ColumnHeader>Deposited</ColumnHeader>
-      <ColumnHeader>Total assets</ColumnHeader>
       <ColumnHeader>APY</ColumnHeader>
+      <ColumnHeader>Total assets</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
-    </ColumnListDev>
+    </BackscratcherColumns>
   );
 }

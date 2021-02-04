@@ -176,7 +176,21 @@ function* loadVaultContracts(clear) {
     generateVaultTokenAllowanceSubscriptions,
   );
 
+  const backscratcherAllowanceSubscription = {
+    namespace: 'tokens',
+    abi: erc20Abi,
+    syncOnce: true,
+    addresses: [crvAddress],
+    readMethods: [
+      {
+        name: 'allowance',
+        args: [account, backscratcherAddress],
+      },
+    ],
+  };
+
   contracts.push(...vaultTokenAllowanceSubscriptions);
+  contracts.push(backscratcherAllowanceSubscription);
   yield put(addContracts(contracts, clear));
   yield put(addContracts(localSubscriptions, clear));
 }

@@ -4,8 +4,10 @@ import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
+import BackscratchersHeaders from 'components/BackscratchersHeaders';
 import {
   selectContractsByTag,
+  selectBackscratcherVault,
   selectOrderedVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
@@ -59,7 +61,10 @@ const Vaults = () => {
   const wallet = useWallet();
   const account = useAccount();
   const walletConnected = wallet.provider && account;
+  const backscratcherVault = useSelector(selectBackscratcherVault());
   let columnHeader;
+  let backscratcherWrapper;
+
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
@@ -69,7 +74,20 @@ const Vaults = () => {
   let warning;
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
+  } else {
+    backscratcherWrapper = (
+      <WrapTable>
+        <BackscratchersHeaders />
+        <StyledAccordion defaultActiveKey={backscratcherVault.address}>
+          <BackscratchersWrapper
+            showDevVaults={showDevVaults}
+            walletConnected={walletConnected}
+          />
+        </StyledAccordion>
+      </WrapTable>
+    );
   }
+
   return (
     <Wrapper>
       <DevHeader devMode={devMode}>
@@ -77,6 +95,9 @@ const Vaults = () => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
       {warning}
+
+      {backscratcherWrapper}
+
       <WrapTable>
         {columnHeader}
         <StyledAccordion>
@@ -90,11 +111,43 @@ const Vaults = () => {
   );
 };
 
+const BackscratchersWrapper = (props) => {
+  const { showDevVaults, walletConnected } = props;
+  const backscratcherVault = useSelector(selectBackscratcherVault());
+  const currentEventKey = useContext(AccordionContext);
+
+  const renderVault = (vault) => {
+    const vaultKey = vault.address;
+    return (
+      <Vault
+        vault={vault}
+        key={vaultKey}
+        accordionKey={vaultKey}
+        active={currentEventKey === vaultKey}
+        showDevVaults={showDevVaults}
+        backscratcherVault
+      />
+    );
+  };
+
+  // Show Linear progress when orderedvaults is empty
+  if (walletConnected && backscratcherVault == null) return <LinearProgress />;
+  let vaultRows;
+  if (!backscratcherVault) {
+    vaultRows = [];
+  } else {
+    vaultRows = _.map([backscratcherVault], renderVault);
+  }
+
+  return <React.Fragment>{vaultRows}</React.Fragment>;
+};
+
 const VaultsWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
+
   const renderVault = (vault) => {
     let vaultKey = vault.address;
     if (vault.pureEthereum) {

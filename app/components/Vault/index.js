@@ -1,5 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import AdditionalInfo from 'components/Vault/additionalInfo';
+import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
@@ -159,7 +162,13 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const { vault, showDevVaults, active, accordionKey } = props;
+  const {
+    vault,
+    showDevVaults,
+    active,
+    accordionKey,
+    backscratcherVault,
+  } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -176,6 +185,8 @@ const Vault = (props) => {
     pricePerShare,
     token,
     pureEthereum,
+    CRV,
+    bal,
     depositLimit,
     // statistics,
   } = vault;
@@ -183,11 +194,14 @@ const Vault = (props) => {
   const { openModal } = useModal();
 
   const devMode = true;
-  const tokenContractAddress = tokenAddress || token;
+  const tokenContractAddress = tokenAddress || token || CRV;
   const ethBalance = useSelector(selectEthBalance());
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
+
+  const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+  const vaultIsBackscratcher = vault.address === backscratcherAddress;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -197,7 +211,8 @@ const Vault = (props) => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const vaultName = displayName || name || address;
+  const backscratcherVaultName = vaultIsBackscratcher && 'Backscratcher';
+  const vaultName = backscratcherVaultName || displayName || name || address;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
@@ -213,6 +228,10 @@ const Vault = (props) => {
       .dividedBy(10 ** decimals)
       .multipliedBy(pricePerShare / 10 ** decimals)
       .toFixed();
+  } else if (vaultIsBackscratcher) {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .dividedBy(10 ** decimals)
+      .toFixed();
   } else {
     vaultBalanceOf = new BigNumber(balanceOf)
       .dividedBy(10 ** decimals)
@@ -220,7 +239,7 @@ const Vault = (props) => {
       .toFixed();
   }
 
-  let vaultAssets = balance || totalAssets;
+  let vaultAssets = bal || balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
@@ -237,7 +256,9 @@ const Vault = (props) => {
 
   let vaultBottom;
   let vaultTop;
+  let vaultStats;
   let vaultControls;
+  let backscratcherInfo;
 
   const openContractStatisticsModal = (evt) => {
     evt.preventDefault();
@@ -291,6 +312,7 @@ const Vault = (props) => {
         <tbody>{fields}</tbody>
       </Table>
     );
+
     vaultTop = (
       <ColumnListDev>
         <IconAndName>
@@ -372,32 +394,89 @@ const Vault = (props) => {
         tokenBalance={tokenBalance}
       />
     );
-    vaultTop = (
-      <ColumnList>
-        <IconAndName>
-          <LinkWrap devMode={devMode} address={address}>
-            <StyledTokenIcon address={tokenContractAddress} />
-          </LinkWrap>
-          <LinkWrap devMode={devMode} address={address}>
-            <div tw="flex items-center">
-              <IconName devMode={devMode}>{vaultName}</IconName>
-            </div>
-          </LinkWrap>
-        </IconAndName>
-        <div>{vault.type}</div>
-        <div>
-          <AnimatedNumber value={vaultBalanceOf} />
-        </div>
-        <div>{apy}</div>
-        <div>{vaultAssets}</div>
-        <div>
-          <AnimatedNumber value={tokenBalanceOf} />{' '}
-          <LinkWrap devMode={devMode} address={tokenAddress}>
-            {tokenSymbol}
-          </LinkWrap>
-        </div>
-      </ColumnList>
-    );
+    const tokenIconAddress = vaultIsBackscratcher
+      ? backscratcherAddress
+      : tokenContractAddress;
+
+    if (backscratcherVault) {
+      vaultTop = (
+        <ColumnListBackscratcher>
+          <IconAndName>
+            <LinkWrap devMode={devMode} address={address}>
+              <StyledTokenIcon address={tokenIconAddress} />
+            </LinkWrap>
+            <LinkWrap devMode={devMode} address={address}>
+              <div tw="flex items-center">
+                <IconName devMode={devMode}>{vaultName}</IconName>
+              </div>
+            </LinkWrap>
+          </IconAndName>
+          <div>
+            <AnimatedNumber value={vaultBalanceOf} />
+          </div>
+          <div>{apy}</div>
+          <div>{vaultAssets}</div>
+          <div>
+            <AnimatedNumber value={tokenBalanceOf} />{' '}
+            <LinkWrap devMode={devMode} address={tokenAddress}>
+              {tokenSymbol}
+            </LinkWrap>
+          </div>
+        </ColumnListBackscratcher>
+      );
+
+      backscratcherInfo = (
+        <AdditionalInfo>
+          <strong>Read carefully before use</strong>
+          <span className="main-text">
+            This vault accepts <a href="htttps://google.com">$CRV</a> in
+            exchange for perpetual claim on Curve fees across all Yearn
+            products. The more volume the Curve protocol has the more claimable{' '}
+            <a href="htttps://google.com">$3Crv</a> you should receive every
+            week. This vault {"doesn't"} have withdrawal functionality since it
+            locks CRV tokens in Curve voting escrow for 4 years and regularly
+            prolongs the lock.
+          </span>
+          <span>
+            The current APY is {apy} (3Crv rewards extrapolated to a year)
+          </span>
+          <span>
+            Once deposited you cannot get your CRV tokens back, only the
+            rewards!
+          </span>
+        </AdditionalInfo>
+      );
+    } else {
+      vaultTop = (
+        <ColumnList>
+          <IconAndName>
+            <LinkWrap devMode={devMode} address={address}>
+              <StyledTokenIcon address={tokenIconAddress} />
+            </LinkWrap>
+            <LinkWrap devMode={devMode} address={address}>
+              <div tw="flex items-center">
+                <IconName devMode={devMode}>{vaultName}</IconName>
+              </div>
+            </LinkWrap>
+          </IconAndName>
+          <div>{vault.type}</div>
+          <div>
+            <AnimatedNumber value={vaultBalanceOf} />
+          </div>
+          <div>{apy}</div>
+          <div>{vaultAssets}</div>
+          <div>
+            <AnimatedNumber value={tokenBalanceOf} />{' '}
+            <LinkWrap devMode={devMode} address={tokenAddress}>
+              {tokenSymbol}
+            </LinkWrap>
+          </div>
+        </ColumnList>
+      );
+      vaultStats = (
+        <StatsIcon type="stats" onClick={openContractStatisticsModal} />
+      );
+    }
   }
   return (
     <React.Fragment>
@@ -408,12 +487,13 @@ const Vault = (props) => {
           eventKey={accordionKey}
         >
           {vaultTop}
-          <StatsIcon type="stats" onClick={openContractStatisticsModal} />
+          {vaultStats}
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
+<<<<<<< HEAD
             {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
@@ -423,6 +503,9 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
+=======
+            {backscratcherInfo}
+>>>>>>> 97834b5 (Feat/backscratcher (#140))
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>
             </Card.Footer>

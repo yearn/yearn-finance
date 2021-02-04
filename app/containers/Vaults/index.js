@@ -61,6 +61,7 @@ const Vaults = () => {
   const wallet = useWallet();
   const account = useAccount();
   const walletConnected = wallet.provider && account;
+  const backscratcherVault = useSelector(selectBackscratcherVault());
   let columnHeader;
   let backscratcherWrapper;
 
@@ -77,7 +78,7 @@ const Vaults = () => {
     backscratcherWrapper = (
       <WrapTable>
         <BackscratchersHeaders />
-        <StyledAccordion>
+        <StyledAccordion defaultActiveKey={backscratcherVault.address}>
           <BackscratchersWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
@@ -114,6 +115,7 @@ const BackscratchersWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const currentEventKey = useContext(AccordionContext);
+
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (
@@ -145,6 +147,7 @@ const VaultsWrapper = (props) => {
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const currentEventKey = useContext(AccordionContext);
+
   const renderVault = (vault) => {
     let vaultKey = vault.address;
     if (vault.pureEthereum) {

@@ -423,7 +423,7 @@ const Vault = (props) => {
             prolongs the lock.
           </span>
           <span>
-            The current APY is 40% (3Crv rewards extrapolated to a year)
+            The current APY is {apy} (3Crv rewards extrapolated to a year)
           </span>
           <span>
             Once deposited you cannot get your CRV tokens back, only the

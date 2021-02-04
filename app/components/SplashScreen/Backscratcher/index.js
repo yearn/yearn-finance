@@ -33,10 +33,6 @@ const buttonLink = {
 
 const backgroundStyle = `
   height: calc(100vh - 64px);
-  @media (max-width: 570px) {
-    height: calc(100vh);
-    font-size: 35px;
-  }
 `;
 
 export const Backscratcher = () => (

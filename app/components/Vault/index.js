@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import AdditionalInfo from 'components/Vault/additionalInfo';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
@@ -145,7 +147,13 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const { vault, showDevVaults, active, accordionKey } = props;
+  const {
+    vault,
+    showDevVaults,
+    active,
+    accordionKey,
+    backscratcherVault,
+  } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -224,6 +232,7 @@ const Vault = (props) => {
   let vaultBottom;
   let vaultTop;
   let vaultControls;
+  let backscratcherInfo;
 
   const openContractStatisticsModal = (evt) => {
     evt.preventDefault();
@@ -383,6 +392,35 @@ const Vault = (props) => {
         </div>
       </ColumnList>
     );
+    if (backscratcherVault) {
+      backscratcherInfo = (
+        <AdditionalInfo>
+          <strong>Read carefully before use</strong>
+
+          <span>
+            This vault accepts $CRV in exchange for perpetual claim on Curve
+            fees across all Yearn products.
+          </span>
+          <span>
+            The more volume the Curve protocol has the more claimable $3Crv you
+            should receive every week.
+          </span>
+          <span>
+            This vault doesnt have withdrawal functionality since it locks CRV
+            tokens in Curve voting escrow for 4 years and regularly prolongs the
+            lock.
+          </span>
+
+          <span>
+            The current APY is 40% (3Crv rewards extrapolated to a year)
+          </span>
+          <span>
+            Once deposited you cannot get your CRV tokens back, only the
+            rewards!
+          </span>
+        </AdditionalInfo>
+      );
+    }
   }
   return (
     <React.Fragment>
@@ -399,6 +437,7 @@ const Vault = (props) => {
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
+            {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>
             </Card.Footer>

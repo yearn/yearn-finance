@@ -117,6 +117,7 @@ const BackscratchersWrapper = (props) => {
         accordionKey={vaultKey}
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
+        backscratcherVault
       />
     );
   };

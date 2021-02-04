@@ -14,7 +14,7 @@ export default function VaultsHeaderDev() {
     <ColumnListDev>
       <ColumnHeader>Asset</ColumnHeader>
       <ColumnHeader>Deposited</ColumnHeader>
-      <ColumnHeader>Vault Tvl</ColumnHeader>
+      <ColumnHeader>Total assets</ColumnHeader>
       <ColumnHeader>APY</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
     </ColumnListDev>

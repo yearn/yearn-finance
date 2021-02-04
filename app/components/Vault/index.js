@@ -396,7 +396,6 @@ const Vault = (props) => {
               </div>
             </LinkWrap>
           </IconAndName>
-          <div>{vault.type}</div>
           <div>
             <AnimatedNumber value={vaultBalanceOf} />
           </div>

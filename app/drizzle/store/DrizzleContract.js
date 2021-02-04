@@ -113,7 +113,11 @@ class DrizzleContract {
           console.error(error);
           console.error(receipt);
 
-          contract.store.dispatch({ type: 'TX_ERROR', error });
+          contract.store.dispatch({
+            type: 'TX_ERROR',
+            error,
+            contractAddress: contract.address, // this should be moved to TX_SUCCESSFUL. Is on error for testing
+          });
           return Promise.reject(error);
         });
     };

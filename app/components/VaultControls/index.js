@@ -186,11 +186,7 @@ export default function VaultControls(props) {
               />
             </span>
           </Tooltip>
-          <ActionGroup
-            hide={
-              !vaultIsBackscratcher || !(tokenAllowance || pureEthereum > 0)
-            }
-          >
+          <ActionGroup hide={!vaultIsBackscratcher || tokenAllowance === '0'}>
             <ActionButton
               handler={() => {
                 window.open(

@@ -170,6 +170,8 @@ const Vault = (props) => {
     pricePerShare,
     token,
     pureEthereum,
+    CRV,
+    bal,
     depositLimit,
     // statistics,
   } = vault;
@@ -177,11 +179,14 @@ const Vault = (props) => {
   const { openModal } = useModal();
 
   const devMode = true;
-  const tokenContractAddress = tokenAddress || token;
+  const tokenContractAddress = tokenAddress || token || CRV;
   const ethBalance = useSelector(selectEthBalance());
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
+
+  const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+  const vaultIsBackscratcher = vault.address === backscratcherAddress;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -191,7 +196,8 @@ const Vault = (props) => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const vaultName = displayName || name || address;
+  const backscratcherVaultName = vaultIsBackscratcher && 'Backscratcher';
+  const vaultName = backscratcherVaultName || displayName || name || address;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
@@ -207,6 +213,10 @@ const Vault = (props) => {
       .dividedBy(10 ** decimals)
       .multipliedBy(pricePerShare / 10 ** decimals)
       .toFixed();
+  } else if (vaultIsBackscratcher) {
+    vaultBalanceOf = new BigNumber(balanceOf)
+      .dividedBy(10 ** decimals)
+      .toFixed();
   } else {
     vaultBalanceOf = new BigNumber(balanceOf)
       .dividedBy(10 ** decimals)
@@ -214,7 +224,7 @@ const Vault = (props) => {
       .toFixed();
   }
 
-  let vaultAssets = balance || totalAssets;
+  let vaultAssets = bal || balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
@@ -286,6 +296,7 @@ const Vault = (props) => {
         <tbody>{fields}</tbody>
       </Table>
     );
+
     vaultTop = (
       <ColumnListDev>
         <IconAndName>
@@ -366,11 +377,15 @@ const Vault = (props) => {
         balanceOf={balanceOf}
       />
     );
+    const tokenIconAddress = vaultIsBackscratcher
+      ? backscratcherAddress
+      : tokenContractAddress;
+
     vaultTop = (
       <ColumnList>
         <IconAndName>
           <LinkWrap devMode={devMode} address={address}>
-            <StyledTokenIcon address={tokenContractAddress} />
+            <StyledTokenIcon address={tokenIconAddress} />
           </LinkWrap>
           <LinkWrap devMode={devMode} address={address}>
             <div tw="flex items-center">

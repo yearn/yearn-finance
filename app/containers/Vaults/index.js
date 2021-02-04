@@ -7,6 +7,7 @@ import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import BackscratchersHeaders from 'components/BackscratchersHeaders';
 import {
   selectContractsByTag,
+  selectBackscratcherVault,
   selectOrderedVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
@@ -103,13 +104,10 @@ const Vaults = () => {
 
 const BackscratchersWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
-  const orderedVaults = useSelector(selectOrderedVaults);
+  const backscratcherVault = useSelector(selectBackscratcherVault());
   const currentEventKey = useContext(AccordionContext);
   const renderVault = (vault) => {
-    let vaultKey = vault.address;
-    if (vault.pureEthereum) {
-      vaultKey = `${vault.address}-eth`;
-    }
+    const vaultKey = vault.address;
     return (
       <Vault
         vault={vault}
@@ -123,9 +121,9 @@ const BackscratchersWrapper = (props) => {
   };
 
   // Show Linear progress when orderedvaults is empty
-  if (walletConnected && orderedVaults == null) return <LinearProgress />;
-
-  const vaultRows = _.map([orderedVaults[0]], renderVault);
+  if (walletConnected && backscratcherVault == null) return <LinearProgress />;
+  console.log(backscratcherVault);
+  const vaultRows = _.map([backscratcherVault], renderVault);
 
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };

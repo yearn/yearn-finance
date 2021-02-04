@@ -18,6 +18,9 @@ export const selectReady = () =>
 export const selectVaults = () =>
   createSelector(selectApp, (substate) => substate.vaults);
 
+export const selectBackscratcherVault = () =>
+  createSelector(selectApp, (substate) => substate.backscratcher);
+
 export const selectEthBalance = () =>
   createSelector(selectApp, (substate) => substate.ethBalance);
 

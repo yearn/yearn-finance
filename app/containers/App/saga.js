@@ -41,8 +41,11 @@ function* loadVaultContracts(clear) {
   vaultTokenAddresses.push(crvAddress);
 
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+<<<<<<< HEAD
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
   const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
+=======
+>>>>>>> Feat/backscratcher (#140)
 
   const contracts = [
     {
@@ -53,6 +56,25 @@ function* loadVaultContracts(clear) {
         {
           name: 'balanceOf',
           args: [gaugeAddress],
+        },
+      ],
+    },
+    {
+      namespace: 'vaults',
+      tags: ['backscratcher'],
+      abi: backscratcherAbi,
+      allReadMethods: false,
+      addresses: [backscratcherAddress],
+      readMethods: [
+        { name: 'bal' },
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+      ],
+      writeMethods: [
+        {
+          name: 'deposit',
         },
       ],
     },

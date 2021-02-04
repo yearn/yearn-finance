@@ -429,20 +429,14 @@ const Vault = (props) => {
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
           <span className="main-text">
-            This vault accepts <a href="htttps://google.com">$CRV</a> in
-            exchange for perpetual claim on Curve fees across all Yearn
-            products. The more volume the Curve protocol has the more claimable{' '}
-            <a href="htttps://google.com">$3Crv</a> you should receive every
-            week. This vault {"doesn't"} have withdrawal functionality since it
-            locks CRV tokens in Curve voting escrow for 4 years and regularly
-            prolongs the lock.
+            This vault transforms your CRV into yveCRV, earning you a continuous
+            share of Curve fees. The more transformed, the greater the rewards.
+            Every week, these can be claimed from the vault as 3crv.
           </span>
           <span>
-            The current APY is {apy} (3Crv rewards extrapolated to a year)
-          </span>
-          <span>
-            Once deposited you cannot get your CRV tokens back, only the
-            rewards!
+            The operation is non-reversible: You can only transform CRV into
+            yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+            escrow.
           </span>
         </AdditionalInfo>
       );

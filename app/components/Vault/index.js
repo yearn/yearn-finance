@@ -376,6 +376,7 @@ const Vault = (props) => {
         vaultBalance={vaultBalanceOf}
         walletBalance={tokenBalanceOf}
         balanceOf={balanceOf}
+        tokenBalance={tokenBalance}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher

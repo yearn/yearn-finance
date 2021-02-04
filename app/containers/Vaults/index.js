@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import BackscratcherHeaders from 'components/BackscratcherHeaders';
+import BackscratchersHeaders from 'components/BackscratchersHeaders';
 import {
   selectContractsByTag,
   selectOrderedVaults,
@@ -79,9 +79,9 @@ const Vaults = () => {
       </DevHeader>
       {warning}
       <WrapTable>
-        <BackscratcherHeaders />
+        <BackscratchersHeaders />
         <StyledAccordion>
-          <BackscratcherWrapper
+          <BackscratchersWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
           />
@@ -101,7 +101,7 @@ const Vaults = () => {
   );
 };
 
-const BackscratcherWrapper = (props) => {
+const BackscratchersWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const orderedVaults = useSelector(selectOrderedVaults);
   const currentEventKey = useContext(AccordionContext);

@@ -130,7 +130,6 @@ const BackscratchersWrapper = (props) => {
 
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && backscratcherVault == null) return <LinearProgress />;
-  console.log(backscratcherVault);
   let vaultRows;
   if (!backscratcherVault) {
     vaultRows = [];

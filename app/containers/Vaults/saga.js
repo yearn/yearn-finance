@@ -67,7 +67,6 @@ function* fetchVaults() {
       tags: ['backscratcher'],
     });
 
-    console.log({ vaults });
     const vaultsWithEth = injectEthVault(vaults);
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {

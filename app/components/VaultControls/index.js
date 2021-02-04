@@ -180,7 +180,10 @@ export default function VaultControls(props) {
                 disabled={depositsDisabled}
                 handler={deposit}
                 text={
-                  tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'
+                  (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+                  pureEthereum > 0
+                    ? 'Deposit'
+                    : 'Approve'
                 }
                 title="Deposit into vault"
               />

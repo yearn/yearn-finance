@@ -24,7 +24,7 @@ const StyledRoundedInput = styled(RoundedInput)`
 `;
 
 const ActionGroup = styled.div`
-  display: flex;
+  display: ${(props) => (props.hide ? 'none' : 'flex')};
   flex-direction: column;
 `;
 
@@ -142,9 +142,9 @@ export default function VaultControls(props) {
 
   return (
     <Wrapper>
-      <ActionGroup>
+      <ActionGroup hide={vaultIsBackscratcher}>
         <Balance amount={vaultBalance} prefix="Vault balance: " />
-        <ButtonGroup hide={vaultIsBackscratcher}>
+        <ButtonGroup>
           <AmountField
             amount={withdrawalAmount}
             amountSetter={setWithdrawalAmount}
@@ -186,28 +186,18 @@ export default function VaultControls(props) {
               />
             </span>
           </Tooltip>
-        </ButtonGroup>
-      </ActionGroup>
-      <ActionGroup hide={!vaultIsBackscratcher}>
-        <Balance amount={walletBalance} prefix="Your wallet: " />
-        <ButtonGroup>
-          <AmountField
-            amount={withdrawalAmount}
-            amountSetter={setWithdrawalAmount}
-            gweiAmountSetter={setWithdrawalGweiAmount}
-            maxAmount={vaultBalanceOf}
-            decimals={decimals}
-          />
-          <ActionButton
-            handler={() => {
-              window.open(
-                'https://exchange.sushiswapclassic.org/#/add/ETH/0xc5bDdf9843308380375a611c18B50Fb9341f502A',
-                '_blank',
-              );
-            }}
-            text="Stake"
-            title="stake veCrv"
-          />
+          <ActionGroup hide={!vaultIsBackscratcher}>
+            <ActionButton
+              handler={() => {
+                window.open(
+                  'https://exchange.sushiswapclassic.org/#/add/ETH/0xc5bDdf9843308380375a611c18B50Fb9341f502A',
+                  '_blank',
+                );
+              }}
+              text="Stake"
+              title="stake veCrv"
+            />
+          </ActionGroup>
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>

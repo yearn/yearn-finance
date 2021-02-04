@@ -242,6 +242,7 @@ const Vault = (props) => {
 
   let vaultBottom;
   let vaultTop;
+  let vaultStats;
   let vaultControls;
   let backscratcherInfo;
 
@@ -458,6 +459,9 @@ const Vault = (props) => {
           </div>
         </ColumnList>
       );
+      vaultStats = (
+        <StatsIcon type="stats" onClick={openContractStatisticsModal} />
+      );
     }
   }
   return (
@@ -469,7 +473,7 @@ const Vault = (props) => {
           eventKey={accordionKey}
         >
           {vaultTop}
-          <StatsIcon type="stats" onClick={openContractStatisticsModal} />
+          {vaultStats}
           <StyledArrow src={Arrow} alt="arrow" expanded={active} />
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={accordionKey}>

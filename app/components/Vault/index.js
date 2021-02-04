@@ -429,12 +429,13 @@ const Vault = (props) => {
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
           <span className="main-text">
-            This vault transforms your CRV into yveCRV, earning you a continuous
-            share of Curve fees. The more transformed, the greater the rewards.
-            Every week, these can be claimed from the vault as 3crv.
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve fees. The more converted, the greater the rewards.
+            Every week, these can be claimed from the vault as 3Crv (Curve’s
+            3pool LP token).
           </span>
           <span>
-            The operation is non-reversible: You can only transform CRV into
+            The operation is non-reversible: You can only convert CRV into
             yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
             escrow.
           </span>
@@ -487,7 +488,6 @@ const Vault = (props) => {
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
-<<<<<<< HEAD
             {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
@@ -497,9 +497,7 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-=======
             {backscratcherInfo}
->>>>>>> 97834b5 (Feat/backscratcher (#140))
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>
             </Card.Footer>

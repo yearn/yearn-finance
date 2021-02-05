@@ -233,7 +233,8 @@ function* executeEnterMarkets({
   const account = yield select(selectAccount());
   try {
     yield call(
-      creamComptrollerContract.methods.enterMarkets([creamCTokenAddress]).send,
+      creamComptrollerContract.methods.enterMarkets.cacheSend,
+      [creamCTokenAddress],
       { from: account },
     );
   } catch (error) {

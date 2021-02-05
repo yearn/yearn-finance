@@ -15,6 +15,8 @@ import {
 } from 'containers/Cream/actions';
 import Modal from 'components/Modal';
 import TokenIcon from 'components/TokenIcon';
+import CreamProgressBar from 'components/CreamProgressBar';
+import Icon from 'components/Icon';
 
 const Wrapper = styled.div`
   display: flex;
@@ -23,6 +25,25 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: #fff;
   color: #000;
+  border-radius: 5px;
+`;
+
+const IconContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const CloseIcon = styled(Icon)`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 25px;
+  cursor: pointer;
+`;
+
+const StyledSymbol = styled.div`
+  font-size: 28px;
+  font-weight: bold;
 `;
 
 const StyledSection = styled.div`
@@ -30,17 +51,55 @@ const StyledSection = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${({ secondary }) => (secondary ? '#e5e5e5' : '#fff')};
-  padding: 25px;
+  background-color: ${({ secondary }) =>
+    secondary ? 'rgba(230, 230, 230, 0.5)' : '#fff'};
+  padding: 24px 36px;
   width: 100%;
+  border-radius: ${({ top, bottom }) =>
+    `${top ? '5px' : '0px'} ${top ? '5px' : '0px'} ${bottom ? '5px' : '0px'} ${
+      bottom ? '5px' : '0px'
+    }`};
 `;
 
 const StyledTokenIcon = styled(TokenIcon)`
-  width: 30px;
-  margin-right: 20px;
+  width: 32px;
+  margin-right: 10px;
 `;
 
-const StyledInput = styled.input``;
+const InputContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const StyledInput = styled.input`
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-width: 0px;
+  :focus {
+    outline: none !important;
+  }
+`;
+
+const MaxButton = styled.button`
+  position: absolute;
+  right: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.4);
+  padding: 5px;
+  border-radius: 5px;
+  :focus {
+    outline: none !important;
+  }
+`;
 
 const StyledRow = styled.div`
   display: flex;
@@ -48,13 +107,21 @@ const StyledRow = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 10px 0;
 `;
 
 const Button = styled.button`
-  background-color: blue;
-  color: white;
+  background-color: #0657f9;
+  color: #fff;
   padding: 5px;
   border-radius: 5px;
+  width: 50%;
+  margin-top: 40px;
+`;
+
+const StyledHr = styled.hr`
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
 `;
 
 const unitsToWei = (amount, decimals) =>
@@ -85,6 +152,7 @@ const getActionMeta = ({
         label2: 'Borrow limit used',
         field1: `${formatAmount(balance, 5)} ${symbol}`,
         field2: `${formatAmount(borrowUtilizationRatio, 0)}%`,
+        progress: borrowUtilizationRatio,
       };
     case 'withdraw':
       return {
@@ -94,10 +162,11 @@ const getActionMeta = ({
         label1: 'Currently supplying',
         label2: 'Borrow limit used',
         field1: `${formatAmount(supplied, 5)} ${symbol}`,
-        field2: `${formatAmount(borrowUtilizationRatio, 0)}% -> ${formatAmount(
+        field2: `${formatAmount(borrowUtilizationRatio, 0)}%  →  ${formatAmount(
           withdrawProyectedRatio,
           0,
         )}%`,
+        progress: withdrawProyectedRatio,
       };
     case 'borrow':
       return {
@@ -107,10 +176,11 @@ const getActionMeta = ({
         label1: 'Currently borrowing',
         label2: 'Borrow limit used',
         field1: `${formatAmount(borrowed, 5)} ${symbol}`,
-        field2: `${formatAmount(borrowUtilizationRatio, 0)}% -> ${formatAmount(
+        field2: `${formatAmount(borrowUtilizationRatio, 0)}%  →  ${formatAmount(
           borrowProyectedRatio,
           0,
         )}%`,
+        progress: borrowProyectedRatio,
       };
     case 'repay':
       return {
@@ -129,7 +199,7 @@ const formatAmount = (amount, decimals) =>
   `${Number(amount, 10).toFixed(decimals)}`;
 
 export default function CreamModal(props) {
-  const { show, onHide, modalMetadata } = props;
+  const { open, onClose, modalMetadata } = props;
   const [amount, setAmount] = useState(0);
   const dispatch = useDispatch();
   const tokenAddress = get(modalMetadata, 'address');
@@ -140,7 +210,7 @@ export default function CreamModal(props) {
     selectTokenAllowance(tokenAddress, creamCTokenAddress),
   );
 
-  useEffect(() => setAmount(0), [show]);
+  useEffect(() => setAmount(0), [open]);
 
   if (!crTokenContract) {
     return null;
@@ -163,25 +233,25 @@ export default function CreamModal(props) {
     get(modalMetadata, 'borrowUtilizationRatio'),
   )
     .times(100)
-    .toString();
+    .toFixed(10);
   const tokenBorrowAllowance = new BigNumber(borrowAllowance)
     .dividedBy(price)
-    .toString();
+    .toFixed(10);
   const collateralAmount = amount
-    ? new BigNumber(amount).times(price).times(collateralFactor).toString()
+    ? new BigNumber(amount).times(price).times(collateralFactor).toFixed(10)
     : '0';
   const withdrawProyectedRatio = new BigNumber(totalBorrowed)
     .dividedBy(new BigNumber(borrowLimit).minus(collateralAmount))
     .times(100)
-    .toString();
+    .toFixed(10);
   const borrowProyectedRatio = new BigNumber(totalBorrowed)
     .plus(new BigNumber(amount).times(price))
     .dividedBy(borrowLimit)
     .times(100)
-    .toString();
+    .toFixed(10);
   const maxWithdrawalAmount = new BigNumber(collateralAvailable)
     .dividedBy(price)
-    .toString();
+    .toFixed(10);
 
   const actionMeta = getActionMeta({
     action,
@@ -200,33 +270,46 @@ export default function CreamModal(props) {
   });
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal open={open} onClose={onClose}>
+      <IconContainer>
+        <CloseIcon type="close" onClick={onClose} />
+      </IconContainer>
       <Wrapper>
-        <StyledSection>
+        <StyledSection top>
           <Box display="flex" justifyContent="center" alignItems="center">
             <StyledTokenIcon address={address} />
-            <span>{symbol}</span>
+            <StyledSymbol>{symbol}</StyledSymbol>
           </Box>
         </StyledSection>
         <StyledSection secondary>
-          <Box display="flex" justifyContent="center" alignItems="center">
+          <InputContainer>
             <StyledInput
-              placeholder="amount"
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />
-            <Button onClick={() => setAmount(actionMeta.maxAmount)}>Max</Button>
-          </Box>
+            <MaxButton onClick={() => setAmount(actionMeta.maxAmount)}>
+              Max
+            </MaxButton>
+          </InputContainer>
         </StyledSection>
-        <StyledSection>
+        <StyledSection bottom>
           <StyledRow>
             <div>{actionMeta.label1}</div>
             <div>{actionMeta.field1}</div>
           </StyledRow>
-          <StyledRow>
-            <div>{actionMeta.label2}</div>
-            <div>{actionMeta.field2}</div>
-          </StyledRow>
+          {actionMeta.field2 && <StyledHr />}
+          {actionMeta.field2 && (
+            <StyledRow>
+              <div>{actionMeta.label2}</div>
+              <div>{actionMeta.field2}</div>
+            </StyledRow>
+          )}
+          {actionMeta.progress && (
+            <CreamProgressBar
+              variant="determinate"
+              value={actionMeta.progress}
+            />
+          )}
           <Button
             onClick={() => {
               try {

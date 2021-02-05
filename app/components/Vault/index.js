@@ -119,6 +119,20 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
+const Notice = styled.div`
+  padding: 1em 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+const NoticeIcon = styled(Icon)`
+  height: 1.2em;
+  position: relative;
+  cursor: pointer;
+  margin: 0 0.8em;
+`;
+
 const truncateApy = (apy) => {
   if (!apy) {
     return 'N/A';
@@ -400,6 +414,15 @@ const Vault = (props) => {
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
+            {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  Due to recent hack, do not withdraw from DAI V1 vault if you
+                  do not want to realize losses.
+                </span>
+              </Notice>
+            )}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>
             </Card.Footer>

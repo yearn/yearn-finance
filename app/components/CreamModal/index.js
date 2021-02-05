@@ -135,6 +135,7 @@ const getActionMeta = ({
   allowance,
   supplied,
   borrowed,
+  borrowBalanceStored,
   //   borrowLimit,
   borrowUtilizationRatio,
   tokenBorrowAllowance,
@@ -186,6 +187,7 @@ const getActionMeta = ({
       return {
         cta: creamRepay,
         maxAmount: borrowed,
+        maxAmountWei: borrowBalanceStored,
         buttonLabel: 'Repay',
         label1: 'Wallet balance',
         field1: `${formatAmount(balance, 5)} ${symbol}`,
@@ -201,6 +203,7 @@ const formatAmount = (amount, decimals) =>
 export default function CreamModal(props) {
   const { open, onClose, modalMetadata } = props;
   const [amount, setAmount] = useState(0);
+  const [amountWei, setAmountWei] = useState(0);
   const dispatch = useDispatch();
   const tokenAddress = get(modalMetadata, 'address');
   const tokenContract = useContract(tokenAddress);
@@ -227,6 +230,7 @@ export default function CreamModal(props) {
   const collateralFactor = get(modalMetadata, 'collateralFactor');
   const totalBorrowed = get(modalMetadata, 'totalBorrowed');
   const borrowLimit = get(modalMetadata, 'borrowLimit');
+  const borrowBalanceStored = get(modalMetadata, 'balanceStored');
   const borrowAllowance = get(modalMetadata, 'borrowAllowance');
   const collateralAvailable = get(modalMetadata, 'collateralAvailable');
   const borrowUtilizationRatio = new BigNumber(
@@ -261,6 +265,7 @@ export default function CreamModal(props) {
     allowance,
     supplied,
     borrowed,
+    borrowBalanceStored,
     borrowLimit,
     borrowUtilizationRatio,
     tokenBorrowAllowance,
@@ -287,7 +292,12 @@ export default function CreamModal(props) {
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />
-            <MaxButton onClick={() => setAmount(actionMeta.maxAmount)}>
+            <MaxButton
+              onClick={() => {
+                setAmount(actionMeta.maxAmount);
+                setAmountWei(actionMeta.maxAmountWei);
+              }}
+            >
               Max
             </MaxButton>
           </InputContainer>
@@ -316,7 +326,7 @@ export default function CreamModal(props) {
                 dispatch(
                   actionMeta.cta({
                     crTokenContract,
-                    amount: unitsToWei(amount, decimals),
+                    amount: amountWei || unitsToWei(amount, decimals),
                     tokenContract,
                     creamCTokenAddress,
                   }),

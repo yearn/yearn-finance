@@ -210,6 +210,10 @@ export const selectCreamTokensInfo = createSelector(
           get(underlyingTokensByAddress[address], 'balanceOf'),
           decimals,
         ),
+        balanceStored: get(
+          creamCTokensByUnderlying[address],
+          'borrowBalanceStored',
+        ),
         // TODO: Fix allowance, switch request to complex data
         allowance: weiToUnits(
           get(underlyingTokensByAddress[address], 'allowance'),

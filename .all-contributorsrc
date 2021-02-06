@@ -1,8 +1,8 @@
 {
-  "projectName": "react-boilerplate",
-  "projectOwner": "react-boilerplate",
+  "projectName": "yearn-finance",
+  "projectOwner": "iearn-finance",
   "repoType": "github",
-  "repoHost": "https://github.com",
+  "repoHost": "https://github.com/iearn-finance/yearn-finance",
   "files": [
     "README.md"
   ],

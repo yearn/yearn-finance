@@ -6,14 +6,13 @@ import { useContract } from 'containers/DrizzleProvider/hooks';
 import { selectContractData } from 'containers/App/selectors';
 import { claimBackscratcherRewards } from 'containers/Vaults/actions';
 import ButtonFilled from 'components/ButtonFilled';
+import { abbreviateNumber } from 'utils/string';
 
 const weiToUnits = (amount, decimals) =>
   new BigNumber(amount).dividedBy(10 ** decimals).toFixed(2);
 
-const formatAmount = (amount, decimals) =>
-  Number.isNaN(amount) || amount === 'NaN'
-    ? '0'
-    : `${Number(amount, 10).toFixed(decimals)}`;
+const formatAmount = (amount) =>
+  Number.isNaN(amount) || amount === 'NaN' ? 0 : Number(amount, 10);
 
 const BackscratcherClaim = ({ vaultAddress }) => {
   const dispatch = useDispatch();
@@ -32,13 +31,13 @@ const BackscratcherClaim = ({ vaultAddress }) => {
 
   return (
     <>
-      {Number(claimable) !== 0 && (
+      {claimable !== 0 && (
         <ButtonFilled
           onClick={() => dispatch(claimBackscratcherRewards({ vaultContract }))}
           color="primary"
           title="Title Here"
         >
-          Claim {claimable} 3crv
+          {`Claim ${abbreviateNumber(claimable)} 3Crv`}
         </ButtonFilled>
       )}
     </>

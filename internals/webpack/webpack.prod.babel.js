@@ -82,6 +82,9 @@ module.exports = require('./webpack.base.babel')({
         minifyURLs: true,
       },
       inject: true,
+      // needs this to bust cache according to this
+      // https://github.com/jantimon/html-webpack-plugin
+      hash: true,
     }),
 
     // Put it in the end to capture all the HtmlWebpackPlugin's
@@ -90,6 +93,9 @@ module.exports = require('./webpack.base.babel')({
       relativePaths: false,
       publicPath: '/',
       appShell: '/',
+      // to force fetching network first and use cache in case it fails
+      // https://github.com/NekR/offline-plugin/blob/master/docs/options.md
+      responseStrategy: 'network-first',
       ServiceWorker: false,
       // No need to cache .htaccess. See http://mxs.is/googmp,
       // this is applied before any match in `caches` section

@@ -189,18 +189,6 @@ export default function VaultControls(props) {
               />
             </span>
           </Tooltip>
-          <ActionGroup hide={!vaultIsBackscratcher || tokenAllowance === '0'}>
-            <ActionButton
-              handler={() => {
-                window.open(
-                  'https://exchange.sushiswapclassic.org/#/add/ETH/0xc5bDdf9843308380375a611c18B50Fb9341f502A',
-                  '_blank',
-                );
-              }}
-              text="Stake"
-              title="stake veCrv"
-            />
-          </ActionGroup>
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>

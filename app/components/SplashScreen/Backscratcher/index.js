@@ -98,7 +98,7 @@ export const Backscratcher = () => (
         to="/vaults"
       >
         <p tw="text-white text-base font-sans font-black no-underline">
-          Go to Backscratcher
+          GO TO VAULTS
         </p>
       </Link>
     </div>

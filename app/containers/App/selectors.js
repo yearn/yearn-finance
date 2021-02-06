@@ -23,6 +23,8 @@ export const selectCoverProtocols = () =>
   createSelector(selectCover, (substate) =>
     substate ? substate.protocols : [],
   );
+export const selectBackscratcherVault = () =>
+  createSelector(selectApp, (substate) => substate.backscratcher);
 
 export const selectEthBalance = () =>
   createSelector(selectApp, (substate) => substate.ethBalance);

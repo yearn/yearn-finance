@@ -24,6 +24,7 @@ export const initialState = {
     account: true,
   },
   vaults: [],
+  backscratcher: null,
   tokens: [],
   localContracts: [],
 };
@@ -51,7 +52,14 @@ const appReducer = (state = initialState, action) =>
         break;
       case VAULTS_LOADED:
         draft.loading.vaults = false;
-        draft.vaults = action.vaults;
+        draft.vaults = action.vaults.filter(
+          (vault) =>
+            !vault.tags || vault.tags.find((tag) => tag !== 'backscratcher'),
+        );
+        draft.backscratcher = action.vaults.find((vault) => {
+          if (!vault.tags) return false;
+          return vault.tags.find((tag) => tag === 'backscratcher');
+        });
         checkReadyState();
         break;
       case CONNECTION_CONNECTED:

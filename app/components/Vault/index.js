@@ -449,7 +449,7 @@ const Vault = (props) => {
             escrow.
           </span>
           <span>
-            Join{' '}
+            After depositing join{' '}
             <A
               href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991"
               target="_blank"

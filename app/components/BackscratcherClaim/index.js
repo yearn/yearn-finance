@@ -35,7 +35,6 @@ const BackscratcherClaim = ({ vaultAddress }) => {
         <ButtonFilled
           onClick={() => dispatch(claimBackscratcherRewards({ vaultContract }))}
           color="primary"
-          title="Title Here"
         >
           {`Claim ${abbreviateNumber(claimable)} 3Crv`}
         </ButtonFilled>

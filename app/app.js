@@ -47,6 +47,11 @@ import { translationMessages } from './i18n';
 // Globally require lodash
 _ = require('lodash');
 
+console.log('Clearing cache', caches);
+caches.keys().then((names) => {
+  for (const name of names) caches.delete(name);
+});
+
 // Create redux store with history
 const initialState = {};
 const store = configureStore(initialState, history);

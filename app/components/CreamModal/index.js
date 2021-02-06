@@ -124,6 +124,8 @@ const StyledHr = styled.hr`
   width: 100%;
 `;
 
+const MAX_UINT256 = new BigNumber(2).pow(256).minus(1).toFixed(0);
+
 const unitsToWei = (amount, decimals) =>
   new BigNumber(amount).times(10 ** decimals).toString();
 
@@ -269,6 +271,17 @@ export default function CreamModal(props) {
     maxWithdrawalAmount,
   });
 
+  let amountInWei = unitsToWei(amount, decimals);
+  if (action === 'repay' && amount && borrowed) {
+    const repayMax = new BigNumber(amount)
+      .dividedBy(borrowed)
+      .times(100)
+      .gte(99);
+    if (repayMax) {
+      amountInWei = MAX_UINT256;
+    }
+  }
+
   return (
     <Modal open={open} onClose={onClose}>
       <IconContainer>
@@ -307,7 +320,7 @@ export default function CreamModal(props) {
           {actionMeta.progress && (
             <CreamProgressBar
               variant="determinate"
-              value={actionMeta.progress}
+              value={Number(actionMeta.progress)}
             />
           )}
           <Button
@@ -316,7 +329,7 @@ export default function CreamModal(props) {
                 dispatch(
                   actionMeta.cta({
                     crTokenContract,
-                    amount: unitsToWei(amount, decimals),
+                    amount: amountInWei,
                     tokenContract,
                     creamCTokenAddress,
                   }),

@@ -96,6 +96,7 @@ module.exports = require('./webpack.base.babel')({
       // to force fetching network first and use cache in case it fails
       // https://github.com/NekR/offline-plugin/blob/master/docs/options.md
       responseStrategy: 'network-first',
+      autoUpdate: 1000 * 30,
 
       ServiceWorker: {
         events: true,

@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 
 import { selectTokenAllowance } from 'containers/App/selectors';
 import { Tooltip } from '@material-ui/core';
+import BackscratcherClaim from 'components/BackscratcherClaim';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -189,6 +190,9 @@ export default function VaultControls(props) {
               />
             </span>
           </Tooltip>
+          {vaultIsBackscratcher && (
+            <BackscratcherClaim vaultAddress={vaultAddress} />
+          )}
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>

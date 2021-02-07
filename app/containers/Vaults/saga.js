@@ -16,6 +16,7 @@ import {
   VAULTS_LOADED,
   WITHDRAW_FROM_VAULT,
   DEPOSIT_TO_VAULT,
+  CLAIM_BACKSCRATCHER_REWARDS,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -192,6 +193,20 @@ function* depositToVault(action) {
   }
 }
 
+function* claimBackscratcherRewards(action) {
+  const { vaultContract } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  try {
+    yield call(vaultContract.methods.claim.cacheSend, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
@@ -199,4 +214,5 @@ export default function* initialize() {
   yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
+  yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
 }

@@ -25,7 +25,13 @@ const BackscratcherClaim = ({ vaultAddress }) => {
   const supplyIndex = get(vaultContractData, 'supplyIndex');
   const balance = get(vaultContractData, 'balanceOf');
   const claimable = formatAmount(
-    weiToUnits(new BigNumber(index).minus(supplyIndex).times(balance), 18),
+    weiToUnits(
+      new BigNumber(index)
+        .minus(supplyIndex)
+        .times(balance)
+        .div(10 ** 18),
+      18,
+    ),
     2,
   );
 

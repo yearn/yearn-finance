@@ -49,33 +49,38 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
     selectVaults(),
     selectCoverProtocols(),
     (vaultsData, coverProtocolsData) => {
-      console.log({ vaultsData });
       const vault = vaultsData.find(
         (v) => v.address.toLowerCase() === contractAddress.toLowerCase(),
       );
-      // const vault = _.find(vaultsData, ['address', contractAddress]);
-      console.log({ vault });
       if (vault) {
-        console.log('ITS A VAULT');
-        return [vault.address, vault.tokenAddress].filter((val) => !!val);
+        return {
+          type: 'vault',
+          relevantAddresses: [vault.address, vault.tokenAddress].filter(
+            (val) => !!val,
+          ),
+        };
       }
 
       const cover = coverProtocolsData.find(
         (c) =>
           c.protocolAddress.toLowerCase() === contractAddress.toLowerCase(),
       );
-      // const cover = _.find(coverProtocolsData, ['protocolAddress', contractAddress]);
-      console.log({ cover });
       if (cover) {
-        console.log('ITS A COVER');
-        return [cover.protocolAddress, cover.protocolTokenAddress].filter(
-          (val) => !!val,
-        );
+        return { type: 'cover' };
       }
 
-      console.log('ITS NOT COVER NOR VAULT');
+      const creamContracts = selectContractsByTag(
+        'creamUnderlyingTokens',
+      ).concat(selectContractsByTag('creamCTokens'));
 
-      return [contractAddress];
+      const cream = creamContracts.find(
+        (c) => c.address.toLowerCase() === contractAddress.toLowerCase(),
+      );
+      if (cream) {
+        return { type: 'cream' };
+      }
+
+      return { type: 'token', relevantAddresses: [contractAddress] };
     },
   );
 

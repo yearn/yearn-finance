@@ -8,6 +8,8 @@ import {
   selectRelevantAdressesByContract,
   selectSubscriptionsByAddresses,
 } from '../../../containers/App/selectors';
+import { INITIALIZE_COVER } from '../../../containers/Cover/constants';
+import { INITIALIZE_CREAM } from '../../../containers/Cream/constants';
 
 /*
  * Events
@@ -172,24 +174,27 @@ function* processResponse(action) {
 function* processAdressesToUpdate(action) {
   const { contractAddress } = action;
 
-  const relevantAddresses = yield select(
+  const { type, relevantAddresses } = yield select(
     selectRelevantAdressesByContract(contractAddress),
   );
 
-  console.log({ relevantAddresses });
-
-  const subscriptions = yield select(
-    selectSubscriptionsByAddresses(relevantAddresses),
-  );
-  console.log({ subscriptions });
-  yield put({ type: 'BATCH_CALL_REQUEST', request: subscriptions });
+  if (type === 'cover') {
+    yield put(INITIALIZE_COVER);
+  } else if (type === 'cream') {
+    yield put(INITIALIZE_CREAM);
+  } else {
+    const subscriptions = yield select(
+      selectSubscriptionsByAddresses(relevantAddresses),
+    );
+    yield put({ type: 'BATCH_CALL_REQUEST', request: subscriptions });
+  }
 }
 
 function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
-  yield takeEvery('TX_ERROR', processAdressesToUpdate); // this should be hooked to TX_SUCCESSFUL. Is on ERROR for testing
+  yield takeEvery('TX_SUCCESSFUL', processAdressesToUpdate);
 }
 
 export default contractsSaga;

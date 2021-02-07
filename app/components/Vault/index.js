@@ -201,15 +201,11 @@ const Vault = (props) => {
   );
 
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
-<<<<<<< HEAD
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
 
   const veCrvContract = useSelector(selectContractData(veCrvAddress));
 
   const backscratcherTotalAssets = veCrvContract.balanceOf;
-
-=======
->>>>>>> Feat/backscratcher (#140)
   const vaultIsBackscratcher = vault.address === backscratcherAddress;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
@@ -220,11 +216,7 @@ const Vault = (props) => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-<<<<<<< HEAD
   const backscratcherVaultName = vaultIsBackscratcher && 'yveCRV';
-=======
-  const backscratcherVaultName = vaultIsBackscratcher && 'Backscratcher';
->>>>>>> Feat/backscratcher (#140)
   const vaultName = backscratcherVaultName || displayName || name || address;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -252,13 +244,9 @@ const Vault = (props) => {
       .toFixed();
   }
 
-<<<<<<< HEAD
   let vaultAssets = vaultIsBackscratcher
     ? backscratcherTotalAssets
     : balance || totalAssets;
-=======
-  let vaultAssets = bal || balance || totalAssets;
->>>>>>> Feat/backscratcher (#140)
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
@@ -433,10 +421,7 @@ const Vault = (props) => {
           <div>
             <AnimatedNumber value={vaultBalanceOf} />
           </div>
-<<<<<<< HEAD
           <div>{multiplier}</div>
-=======
->>>>>>> Feat/backscratcher (#140)
           <div>{apy}</div>
           <div>{vaultAssets}</div>
           <div>
@@ -452,7 +437,6 @@ const Vault = (props) => {
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
           <span className="main-text">
-<<<<<<< HEAD
             This vault converts your CRV into yveCRV, earning you a continuous
             share of Curve fees. The more converted, the greater the rewards.
             Every week, these can be claimed from the vault as 3Crv (Curve’s
@@ -472,22 +456,6 @@ const Vault = (props) => {
               WETH/yveCRV-DAO pool
             </A>{' '}
             for 🍣 rewards.
-=======
-            This vault accepts <a href="htttps://google.com">$CRV</a> in
-            exchange for perpetual claim on Curve fees across all Yearn
-            products. The more volume the Curve protocol has the more claimable{' '}
-            <a href="htttps://google.com">$3Crv</a> you should receive every
-            week. This vault {"doesn't"} have withdrawal functionality since it
-            locks CRV tokens in Curve voting escrow for 4 years and regularly
-            prolongs the lock.
-          </span>
-          <span>
-            The current APY is {apy} (3Crv rewards extrapolated to a year)
-          </span>
-          <span>
-            Once deposited you cannot get your CRV tokens back, only the
-            rewards!
->>>>>>> Feat/backscratcher (#140)
           </span>
         </AdditionalInfo>
       );
@@ -538,7 +506,6 @@ const Vault = (props) => {
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
-<<<<<<< HEAD
             {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
@@ -548,8 +515,6 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-=======
->>>>>>> Feat/backscratcher (#140)
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>

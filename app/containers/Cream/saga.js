@@ -3,7 +3,7 @@ import priceOracleAbi from 'abi/creamPriceOracle.json';
 import CErc20DelegatorAbi from 'abi/CErc20Delegator.json';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
-import { selectReady, selectTokenAllowance } from 'containers/App/selectors';
+import { selectReady } from 'containers/App/selectors';
 import { APP_READY } from 'containers/App/constants';
 import {
   COMPTROLLER_ADDRESS,
@@ -14,6 +14,7 @@ import {
   CREAM_BORROW,
   CREAM_REPAY,
   CREAM_WITHDRAW,
+  CREAM_APPROVE,
 } from 'containers/Cream/constants';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
@@ -26,7 +27,6 @@ import {
   getContext,
 } from 'redux-saga/effects';
 import { approveTxSpend } from 'utils/contracts';
-import { selectCollateralEnabled } from './selectors';
 
 // const MAX_UINT256 = new BigNumber(2).pow(256).minus(1).toFixed(0);
 
@@ -218,7 +218,7 @@ function* repay({ crTokenContract, amount }) {
 function* withdraw({ crTokenContract, amount }) {
   const account = yield select(selectAccount());
   try {
-    yield call(crTokenContract.methods.redeem.cacheSend, amount, {
+    yield call(crTokenContract.methods.redeemUnderlying.cacheSend, amount, {
       from: account,
     });
   } catch (err) {
@@ -227,33 +227,25 @@ function* withdraw({ crTokenContract, amount }) {
 }
 
 function* executeEnterMarkets({
-  tokenContract,
-  tokenContractAddress,
   creamCTokenAddress,
   creamComptrollerContract,
 }) {
   const account = yield select(selectAccount());
-  const tokenAllowance = yield select(
-    selectTokenAllowance(tokenContractAddress, creamCTokenAddress),
-  );
-  const selectCollateralEnabledData = yield select(selectCollateralEnabled());
-  const marketEntered = selectCollateralEnabledData.includes(
-    creamCTokenAddress,
-  );
-
-  const vaultAllowedToSpendToken = tokenAllowance > 0;
-
   try {
-    if (!marketEntered) {
-      yield call(
-        creamComptrollerContract.methods.enterMarkets([creamCTokenAddress])
-          .send,
-        { from: account },
-      );
-    }
-    if (!vaultAllowedToSpendToken) {
-      yield call(approveTxSpend, tokenContract, account, creamCTokenAddress);
-    }
+    yield call(
+      creamComptrollerContract.methods.enterMarkets.cacheSend,
+      [creamCTokenAddress],
+      { from: account },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function* approve({ tokenContract, creamCTokenAddress }) {
+  const account = yield select(selectAccount());
+  try {
+    yield call(approveTxSpend, tokenContract, account, creamCTokenAddress);
   } catch (error) {
     console.error(error);
   }
@@ -267,4 +259,5 @@ export default function* watchers() {
   yield takeLatest(CREAM_BORROW, borrow);
   yield takeLatest(CREAM_REPAY, repay);
   yield takeLatest(CREAM_WITHDRAW, withdraw);
+  yield takeLatest(CREAM_APPROVE, approve);
 }

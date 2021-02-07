@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export default styled.div`
   display: grid;
-  grid-template-columns: 360px 155px 140px 160px 140px 1fr;
+  grid-template-columns: 190px 155px 155px 140px 160px 140px 1fr;
   font-family: 'Roboto';
   font-weight: 900;
   font-size: 20px;

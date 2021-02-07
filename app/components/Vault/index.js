@@ -122,6 +122,20 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
+const Notice = styled.div`
+  padding: 1em 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+
+const NoticeIcon = styled(Icon)`
+  height: 1.2em;
+  position: relative;
+  cursor: pointer;
+  margin: 0 0.8em;
+`;
+
 const truncateApy = (apy) => {
   if (!apy) {
     return 'N/A';
@@ -172,7 +186,7 @@ const Vault = (props) => {
     token,
     pureEthereum,
     CRV,
-    bal,
+    multiplier,
     depositLimit,
     // statistics,
   } = vault;
@@ -187,6 +201,11 @@ const Vault = (props) => {
   );
 
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+  const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
+
+  const veCrvContract = useSelector(selectContractData(veCrvAddress));
+
+  const backscratcherTotalAssets = veCrvContract.balanceOf;
   const vaultIsBackscratcher = vault.address === backscratcherAddress;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
@@ -197,7 +216,7 @@ const Vault = (props) => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const backscratcherVaultName = vaultIsBackscratcher && 'Backscratcher';
+  const backscratcherVaultName = vaultIsBackscratcher && 'yveCRV';
   const vaultName = backscratcherVaultName || displayName || name || address;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -225,7 +244,9 @@ const Vault = (props) => {
       .toFixed();
   }
 
-  let vaultAssets = bal || balance || totalAssets;
+  let vaultAssets = vaultIsBackscratcher
+    ? backscratcherTotalAssets
+    : balance || totalAssets;
   vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
@@ -400,6 +421,7 @@ const Vault = (props) => {
           <div>
             <AnimatedNumber value={vaultBalanceOf} />
           </div>
+          <div>{multiplier}</div>
           <div>{apy}</div>
           <div>{vaultAssets}</div>
           <div>
@@ -415,14 +437,25 @@ const Vault = (props) => {
         <AdditionalInfo>
           <strong>Read carefully before use</strong>
           <span className="main-text">
-            This vault transforms your CRV into yveCRV, earning you a continuous
-            share of Curve fees. The more transformed, the greater the rewards.
-            Every week, these can be claimed from the vault as 3crv.
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve fees. The more converted, the greater the rewards.
+            Every week, these can be claimed from the vault as 3Crv (Curve’s
+            3pool LP token).
+          </span>
+          <span className="main-text">
+            The operation is non-reversible: You can only convert CRV into
+            yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+            escrow.
           </span>
           <span>
-            The operation is non-reversible: You can only transform CRV into
-            yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-            escrow.
+            After depositing join{' '}
+            <A
+              href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991"
+              target="_blank"
+            >
+              WETH/yveCRV-DAO pool
+            </A>{' '}
+            for 🍣 rewards.
           </span>
         </AdditionalInfo>
       );
@@ -473,6 +506,15 @@ const Vault = (props) => {
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
+            {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  Due to recent hack, do not withdraw from DAI V1 vault if you
+                  do not want to realize losses.
+                </span>
+              </Notice>
+            )}
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>

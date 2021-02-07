@@ -14,7 +14,8 @@ export default function BackscratcherHeaders() {
     <BackscratcherColumns>
       <ColumnHeader>Asset</ColumnHeader>
       <ColumnHeader>Deposited</ColumnHeader>
-      <ColumnHeader>APY</ColumnHeader>
+      <ColumnHeader>Multiplier</ColumnHeader>
+      <ColumnHeader>Growth</ColumnHeader>
       <ColumnHeader>Total assets</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
     </BackscratcherColumns>

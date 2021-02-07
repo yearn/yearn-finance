@@ -74,7 +74,7 @@ const Vaults = () => {
   let warning;
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
-  } else {
+  } else if (backscratcherVault) {
     backscratcherWrapper = (
       <WrapTable>
         <BackscratchersHeaders />

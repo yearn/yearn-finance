@@ -17,10 +17,10 @@ const formatAmount = (amount) =>
 const BackscratcherClaim = ({ vaultAddress }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
-  const vaultContractData = useSelector(
-    selectContractData(vaultContract.address),
-  );
-
+  const vaultContractData = useSelector(selectContractData(vaultAddress));
+  if (!vaultContract) {
+    return null;
+  }
   const index = get(vaultContractData, 'index');
   const supplyIndex = get(vaultContractData, 'supplyIndex');
   const balance = get(vaultContractData, 'balanceOf');

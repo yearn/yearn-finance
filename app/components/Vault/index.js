@@ -224,25 +224,29 @@ const Vault = (props) => {
 
   const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
   const apy = truncateApy(apyOneMonthSample * 100);
-  const tokenBalanceOf = new BigNumber(tokenBalance)
-    .dividedBy(10 ** decimals)
-    .toFixed();
+  const tokenBalanceOf = tokenBalance
+    ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed()
+    : '0.00';
 
   let vaultBalanceOf;
   if (v2Vault) {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .multipliedBy(pricePerShare / 10 ** decimals)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf)
+          .dividedBy(10 ** decimals)
+          .multipliedBy(pricePerShare / 10 ** decimals)
+          .toFixed()
+      : '0.00';
   } else if (vaultIsBackscratcher) {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf).dividedBy(10 ** decimals).toFixed()
+      : '0.00';
   } else {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .multipliedBy(getPricePerFullShare / 10 ** 18)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf)
+          .dividedBy(10 ** decimals)
+          .multipliedBy(getPricePerFullShare / 10 ** 18)
+          .toFixed()
+      : '0.00';
   }
 
   let vaultAssets = vaultIsBackscratcher

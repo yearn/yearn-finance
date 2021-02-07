@@ -40,13 +40,7 @@ module.exports = {
     'import/no-webpack-loader-syntax': 0,
     'import/prefer-default-export': 0,
     'no-console': 0,
-    indent: [
-      2,
-      2,
-      {
-        SwitchCase: 1,
-      },
-    ],
+    indent: 0,
     'jsx-a11y/aria-props': 2,
     'jsx-a11y/heading-has-content': 0,
     'jsx-a11y/label-has-associated-control': [

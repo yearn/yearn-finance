@@ -16,6 +16,7 @@ import {
   CREAM_BORROW,
   CREAM_REPAY,
   CREAM_WITHDRAW,
+  CREAM_APPROVE,
 } from './constants';
 
 export function initializeCream() {
@@ -25,15 +26,11 @@ export function initializeCream() {
 }
 
 export function creamEnterMarkets({
-  tokenContract,
-  tokenContractAddress,
   creamCTokenAddress,
   creamComptrollerContract,
 }) {
   return {
     type: CREAM_ENTER_MARKETS,
-    tokenContract,
-    tokenContractAddress,
     creamCTokenAddress,
     creamComptrollerContract,
   };
@@ -68,5 +65,13 @@ export function creamWithdraw({ crTokenContract, amount }) {
     type: CREAM_WITHDRAW,
     crTokenContract,
     amount,
+  };
+}
+
+export function creamApprove({ tokenContract, creamCTokenAddress }) {
+  return {
+    type: CREAM_APPROVE,
+    tokenContract,
+    creamCTokenAddress,
   };
 }

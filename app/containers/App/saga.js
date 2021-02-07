@@ -1,6 +1,8 @@
 import { put, call, takeLatest, take, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import vaultAbi from 'abi/yVault.json';
+import backscratcherAbi from 'abi/backscratcher.json';
+import veCrvAbi from 'abi/veCrv.json';
 import vaultV2Abi from 'abi/v2Vault.json';
 import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
@@ -34,8 +36,55 @@ function* loadVaultContracts(clear) {
     '0x6392e8fa0588CB2DCb7aF557FdC9D10FDe48A325', // Weth maker
   ];
 
+  const crvAddress = '0xD533a949740bb3306d119CC777fa900bA034cd52';
   const vaultTokenAddresses = _.map(vaults, (vault) => vault.tokenAddress);
+  vaultTokenAddresses.push(crvAddress);
+
+  const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+  const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
+  const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
+
   const contracts = [
+    {
+      namespace: 'veCrv',
+      abi: veCrvAbi,
+      addresses: [veCrvAddress],
+      readMethods: [
+        {
+          name: 'balanceOf',
+          args: [gaugeAddress],
+        },
+      ],
+    },
+    {
+      namespace: 'vaults',
+      tags: ['backscratcher'],
+      abi: backscratcherAbi,
+      allReadMethods: false,
+      addresses: [backscratcherAddress],
+      readMethods: [
+        { name: 'bal' },
+        {
+          name: 'balanceOf',
+          args: [account],
+        },
+        {
+          name: 'index',
+        },
+        {
+          name: 'supplyIndex',
+          args: [account],
+        },
+      ],
+      writeMethods: [
+        {
+          name: 'deposit',
+        },
+        {
+          name: 'claim',
+        },
+      ],
+    },
     {
       namespace: 'vaults',
       metadata: {
@@ -151,7 +200,21 @@ function* loadVaultContracts(clear) {
     generateVaultTokenAllowanceSubscriptions,
   );
 
+  const backscratcherAllowanceSubscription = {
+    namespace: 'tokens',
+    abi: erc20Abi,
+    syncOnce: true,
+    addresses: [crvAddress],
+    readMethods: [
+      {
+        name: 'allowance',
+        args: [account, backscratcherAddress],
+      },
+    ],
+  };
+
   contracts.push(...vaultTokenAllowanceSubscriptions);
+  contracts.push(backscratcherAllowanceSubscription);
   yield put(addContracts(contracts, clear));
   yield put(addContracts(localSubscriptions, clear));
 }

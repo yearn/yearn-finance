@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { selectTokenAllowance } from 'containers/App/selectors';
+import BackscratcherClaim from 'components/BackscratcherClaim';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -23,13 +24,14 @@ const StyledRoundedInput = styled(RoundedInput)`
 `;
 
 const ActionGroup = styled.div`
-  display: flex;
+  display: ${(props) => (props.hide ? 'none' : 'flex')};
   flex-direction: column;
 `;
 
 const ButtonGroup = styled.div`
   display: grid;
   align-items: center;
+  display: ${(props) => (props.hide ? 'none' : 'inherit')};
   grid-template-columns: 262px 145px;
   grid-gap: 10px;
 `;
@@ -57,6 +59,8 @@ export default function VaultControls(props) {
   } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
+  const vaultIsBackscratcher =
+    vault.address === '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -70,6 +74,7 @@ export default function VaultControls(props) {
 
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
+
   const tokenContract = useContract(tokenAddress);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
@@ -133,7 +138,7 @@ export default function VaultControls(props) {
 
   return (
     <Wrapper>
-      <ActionGroup>
+      <ActionGroup hide={vaultIsBackscratcher}>
         <Balance amount={vaultBalance} prefix="Vault balance: " />
         <ButtonGroup>
           <AmountField
@@ -175,6 +180,9 @@ export default function VaultControls(props) {
                 : 'Connect your wallet to deposit into vault'
             }
           />
+          {vaultIsBackscratcher && (
+            <BackscratcherClaim vaultAddress={vaultAddress} />
+          )}
         </ButtonGroup>
       </ActionGroup>
     </Wrapper>

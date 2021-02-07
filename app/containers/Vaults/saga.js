@@ -16,6 +16,7 @@ import {
   VAULTS_LOADED,
   WITHDRAW_FROM_VAULT,
   DEPOSIT_TO_VAULT,
+  CLAIM_BACKSCRATCHER_REWARDS,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -38,6 +39,36 @@ function* fetchVaults() {
   try {
     const url = `https://api.yearn.tools/vaults/all`;
     const vaults = yield call(request, url);
+
+    vaults.push({
+      tokenMetadata: {
+        name: 'Curve DAO Token',
+        icon: null,
+        symbol: 'CRV',
+        address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+        displayName: 'CRV',
+        decimals: 18,
+      },
+      icon: null,
+      symbol: 'yveCRV',
+      apy: {
+        oneMonthSample: 0.1010213,
+        inceptionSample: 0.1010213,
+      },
+      multiplier: '1.367x',
+      address: '0xc5bDdf9843308380375a611c18B50Fb9341f502A',
+      strategies: [],
+      endorsed: false,
+      name: 'veCRV-DAO yVault (yveCRV-DAO)',
+      displayName: 'yveCRV',
+      updated: 1612452385,
+      tokenAddress: '0xD533a949740bb3306d119CC777fa900bA034cd52',
+      decimals: 18,
+      emergencyShutdown: false,
+      type: 'v1',
+      tags: ['backscratcher'],
+    });
+
     const vaultsWithEth = injectEthVault(vaults);
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
@@ -162,6 +193,20 @@ function* depositToVault(action) {
   }
 }
 
+function* claimBackscratcherRewards(action) {
+  const { vaultContract } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  try {
+    yield call(vaultContract.methods.claim.cacheSend, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
@@ -169,4 +214,5 @@ export default function* initialize() {
   yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
+  yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
 }

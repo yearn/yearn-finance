@@ -48,7 +48,14 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
   createSelector(
     selectVaults(),
     selectCoverProtocols(),
-    (vaultsData, coverProtocolsData) => {
+    selectContractsByTag('creamUnderlyingTokens'),
+    selectContractsByTag('creamCTokens'),
+    (
+      vaultsData,
+      coverProtocolsData,
+      creamUnderlyingTokensContracts,
+      creamCTokensContracts,
+    ) => {
       const vault = vaultsData.find(
         (v) => v.address.toLowerCase() === contractAddress.toLowerCase(),
       );
@@ -69,9 +76,9 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
         return { type: 'cover' };
       }
 
-      const creamContracts = selectContractsByTag(
-        'creamUnderlyingTokens',
-      ).concat(selectContractsByTag('creamCTokens'));
+      const creamContracts = creamUnderlyingTokensContracts.concat(
+        creamCTokensContracts,
+      );
 
       const cream = creamContracts.find(
         (c) => c.address.toLowerCase() === contractAddress.toLowerCase(),

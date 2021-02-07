@@ -8,8 +8,8 @@ import {
   selectRelevantAdressesByContract,
   selectSubscriptionsByAddresses,
 } from '../../../containers/App/selectors';
-import { INITIALIZE_COVER } from '../../../containers/Cover/constants';
-import { INITIALIZE_CREAM } from '../../../containers/Cream/constants';
+import { initializeCover } from '../../../containers/Cover/actions';
+import { initializeCream } from '../../../containers/Cream/actions';
 
 /*
  * Events
@@ -179,9 +179,9 @@ function* processAdressesToUpdate(action) {
   );
 
   if (type === 'cover') {
-    yield put(INITIALIZE_COVER);
+    yield put(initializeCover());
   } else if (type === 'cream') {
-    yield put(INITIALIZE_CREAM);
+    yield put(initializeCream());
   } else {
     const subscriptions = yield select(
       selectSubscriptionsByAddresses(relevantAddresses),

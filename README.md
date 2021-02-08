@@ -47,7 +47,9 @@ yarn fork:start
 yarn dev
 ```
 
-**[Important]** Remember to change Metamask to Localhost RPC endpoint :)
+**[Important]**:
+- Set USE_LOCAL_RPC variable to TRUE on .env file.
+- Change Metamask to Localhost RPC endpoint :)
 
 
 ## Production

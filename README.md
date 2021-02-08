@@ -27,11 +27,17 @@ And then populate .env with your endpoints
 $ yarn dev
 ```
 
-### Testing on mainnet fork
+## Testing on mainnet fork
+https://eth-brownie.readthedocs.io/en/stable/install.html
+#### Requeriments:
+```
+python3 (to install brownie)
+brownie
+```
 
 ```sh
 # terminal 1:
-export WEB3_INFURA_PROJECT_ID=your-infura-id           
+export WEB3_INFURA_PROJECT_ID=your-infura-id
 npm run fork:start
 
 # terminal 2:

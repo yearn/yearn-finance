@@ -8,7 +8,12 @@ def main():
     testAccounts = [account0, account1, account2]
 
     crvToken = Contract.from_explorer("0xD533a949740bb3306d119CC777fa900bA034cd52")
+    yfiToken = Contract.from_explorer("0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e")
     crvWhale = accounts.at("0x4ce799e6ed8d64536b67dd428565d52a531b3640", force=True)
+    ethWhale = accounts.at("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", force=True)
+    yfiWhale = accounts.at("0xfeb4acf3df3cdea7399794d0869ef76a6efaff52", force=True)
 
     for account in testAccounts:
-        crvToken.transfer(account, 100*(10**18), {'from': crvWhale})
+        ethWhale.transfer(account, "100 ether")
+        crvToken.transfer(account, "1000 ether", {'from': crvWhale})
+        yfiToken.transfer(account, "1000 ether", {'from': yfiWhale})

@@ -31,8 +31,11 @@ $ yarn dev
 https://eth-brownie.readthedocs.io/en/stable/install.html
 #### Requeriments:
 ```
-python3 (to install brownie)
-brownie
+python3 (to install pipx)
+python3-pip (to install pipx)
+python3-venv (to install brownie)
+pipx (to install brownie)
+eth-brownie
 ```
 
 ```sh

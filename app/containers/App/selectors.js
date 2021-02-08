@@ -48,11 +48,13 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
   createSelector(
     selectVaults(),
     selectCoverProtocols(),
+    selectBackscratcherVault(),
     selectContractsByTag('creamUnderlyingTokens'),
     selectContractsByTag('creamCTokens'),
     (
       vaultsData,
       coverProtocolsData,
+      backscratcherVault,
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
     ) => {
@@ -65,6 +67,16 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
           relevantAddresses: [vault.address, vault.tokenAddress].filter(
             (val) => !!val,
           ),
+        };
+      }
+
+      if (contractAddress === backscratcherVault.address) {
+        return {
+          type: 'backscratcher',
+          relevantAddresses: [
+            backscratcherVault.address,
+            backscratcherVault.tokenAddress,
+          ],
         };
       }
 

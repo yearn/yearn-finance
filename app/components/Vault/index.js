@@ -460,7 +460,11 @@ const Vault = (props) => {
             >
               WETH/yveCRV-DAO pool
             </A>{' '}
-            for 🍣 rewards.
+            for 🍣 rewards and then{' '}
+            <A href="https://app.pickle.finance/jars" target="_blank">
+              SLP YVECRV/ETH jar
+            </A>{' '}
+            for 🥒 rewards.
           </span>
         </AdditionalInfo>
       );

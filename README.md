@@ -27,6 +27,20 @@ And then populate .env with your endpoints
 $ yarn dev
 ```
 
+### Testing on mainnet fork
+
+```sh
+# terminal 1:
+export WEB3_INFURA_PROJECT_ID=your-infura-id           
+npm run fork:start
+
+# terminal 2:
+npm run dev
+```
+
+**[Important]** Remember to change Metamask to Localhost RPC endpoint :)
+
+
 ## Production
 
 ```

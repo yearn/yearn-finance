@@ -140,7 +140,7 @@ function* processBlockHeader({ blockHeader, drizzle, web3, syncAlways }) {
 
   try {
     const block = yield call(web3.eth.getBlock, blockNumber, true);
-
+    if (!block) return;
     yield call(processBlock, { block, drizzle, web3, syncAlways });
   } catch (error) {
     console.error('Error in block processing:');

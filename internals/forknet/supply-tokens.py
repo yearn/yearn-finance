@@ -7,7 +7,7 @@ def main():
     account2 = "0x00022b7dd504ef143b48054b8a9cbcb8de200bc4"
     testAccounts = [account0, account1, account2]
 
-    crvToken = Contract("0xd533a949740bb3306d119cc777fa900ba034cd52")
+    crvToken = Contract.from_explorer("0xD533a949740bb3306d119CC777fa900bA034cd52")
     crvWhale = accounts.at("0x4ce799e6ed8d64536b67dd428565d52a531b3640", force=True)
 
     for account in testAccounts:

@@ -38,10 +38,10 @@ brownie
 ```sh
 # terminal 1:
 export WEB3_INFURA_PROJECT_ID=your-infura-id
-npm run fork:start
+yarn fork:start
 
 # terminal 2:
-npm run dev
+yarn dev
 ```
 
 **[Important]** Remember to change Metamask to Localhost RPC endpoint :)

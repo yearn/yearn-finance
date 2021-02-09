@@ -272,6 +272,7 @@ function* blocksSaga() {
   yield takeEvery('APP_READY', updateAccountEth);
   yield takeEvery('BLOCK_RECEIVED', processBlockHeader);
   yield takeEvery('BLOCK_RECEIVED', updateAccountEth);
+  yield takeEvery('UPDATE_ETH_BALANCE', updateAccountEth);
 
   // Block Polling
   yield takeLatest('BLOCKS_POLLING', callCreateBlockPollChannel);

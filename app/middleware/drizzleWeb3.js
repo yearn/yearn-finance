@@ -51,6 +51,7 @@ export const drizzleWeb3Middleware = (drizzleWeb3) => (store) => (next) => (
     action.type === 'BLOCK_RECEIVED' ||
     action.type === 'INITIALIZE_CREAM' ||
     action.type === 'INITIALIZE_COVER' ||
+    action.type === 'UPDATE_ETH_BALANCE' ||
     action.type === 'BATCH_CALL_RESPONSE';
   if (drizzleAction && drizzleWeb3) {
     newAction.drizzle = drizzleWeb3.drizzle;

@@ -1,5 +1,5 @@
 import { END, eventChannel } from 'redux-saga';
-import { call, put, select, take, takeEvery } from 'redux-saga/effects';
+import { call, put, select, take, takeEvery, all } from 'redux-saga/effects';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
@@ -186,7 +186,10 @@ function* processAdressesToUpdate(action) {
     const subscriptions = yield select(
       selectSubscriptionsByAddresses(relevantAddresses),
     );
-    yield put({ type: 'BATCH_CALL_REQUEST', request: subscriptions });
+    yield all([
+      put({ type: 'UPDATE_ETH_BALANCE' }),
+      put({ type: 'BATCH_CALL_REQUEST', request: subscriptions }),
+    ]);
   }
 }
 

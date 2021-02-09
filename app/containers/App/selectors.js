@@ -81,7 +81,7 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
         };
       }
 
-      if (coverPoolDataMap[contractAddress.toLowerCase()]) {
+      if (coverPoolDataMap && coverPoolDataMap[contractAddress.toLowerCase()]) {
         return { type: 'cover' };
       }
 

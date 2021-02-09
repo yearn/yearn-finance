@@ -30,9 +30,6 @@ export default function ConnectionProvider(props) {
         newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);
 
-        console.log({ provider: newWeb3.provider });
-        console.log({ newWalletProvider: newWallet.provider });
-
         setWeb3(newWeb3);
         window.localStorage.setItem('selectedWallet', newWallet.name);
       } else {

@@ -61,7 +61,6 @@ export const drizzleWeb3Middleware = (drizzleWeb3) => (store) => (next) => (
 
     if (drizzleWeb3.localWeb3) {
       newAction.localWeb3 = drizzleWeb3.localWeb3;
-      console.log({ newAction: newAction.localWeb3 });
     }
   }
   return next(newAction);

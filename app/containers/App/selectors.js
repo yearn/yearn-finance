@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
+import { selectPoolData } from '../Cover/selectors';
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
@@ -47,13 +48,13 @@ export const selectContracts = (namespace) =>
 export const selectRelevantAdressesByContract = (contractAddress) =>
   createSelector(
     selectVaults(),
-    selectCoverProtocols(),
+    selectPoolData(),
     selectBackscratcherVault(),
     selectContractsByTag('creamUnderlyingTokens'),
     selectContractsByTag('creamCTokens'),
     (
       vaultsData,
-      coverProtocolsData,
+      coverPoolDataMap,
       backscratcherVault,
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
@@ -80,11 +81,7 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
         };
       }
 
-      const cover = coverProtocolsData.find(
-        (c) =>
-          c.protocolAddress.toLowerCase() === contractAddress.toLowerCase(),
-      );
-      if (cover) {
+      if (coverPoolDataMap[contractAddress.toLowerCase()]) {
         return { type: 'cover' };
       }
 

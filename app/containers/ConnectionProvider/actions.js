@@ -12,9 +12,10 @@ export function connectionConnected() {
   };
 }
 
-export function accountUpdated(account) {
+export function accountUpdated(account, localWeb3) {
   return {
     type: ACCOUNT_UPDATED,
     account,
+    localWeb3,
   };
 }

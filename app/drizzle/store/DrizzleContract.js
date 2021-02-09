@@ -107,13 +107,17 @@ class DrizzleContract {
             type: 'TX_SUCCESSFUL',
             receipt,
             txHash: persistTxHash,
+            contractAddress: contract.address,
           });
         })
         .on('error', (error, receipt) => {
           console.error(error);
           console.error(receipt);
 
-          contract.store.dispatch({ type: 'TX_ERROR', error });
+          contract.store.dispatch({
+            type: 'TX_ERROR',
+            error,
+          });
           return Promise.reject(error);
         });
     };

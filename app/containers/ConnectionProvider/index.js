@@ -29,6 +29,7 @@ export default function ConnectionProvider(props) {
         const newWeb3 = new Web3(newWallet.provider);
         newWeb3.eth.net.isListening().then(dispatchConnectionConnected);
         setWallet(newWallet);
+
         setWeb3(newWeb3);
         window.localStorage.setItem('selectedWallet', newWallet.name);
       } else {
@@ -46,7 +47,7 @@ export default function ConnectionProvider(props) {
 
   const accountChanged = () => {
     if (account) {
-      dispatch(accountUpdated(account));
+      dispatch(accountUpdated(account, web3));
     }
   };
 

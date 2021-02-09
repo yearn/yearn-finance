@@ -1,9 +1,15 @@
 import { END, eventChannel } from 'redux-saga';
-import { call, put, select, take, takeEvery } from 'redux-saga/effects';
+import { call, put, select, take, takeEvery, all } from 'redux-saga/effects';
 import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import * as EventActions from './constants';
+import {
+  selectRelevantAdressesByContract,
+  selectSubscriptionsByAddresses,
+} from '../../../containers/App/selectors';
+import { initializeCover } from '../../../containers/Cover/actions';
+import { initializeCream } from '../../../containers/Cream/actions';
 
 /*
  * Events
@@ -165,10 +171,33 @@ function* processResponse(action) {
   }
 }
 
+function* processAdressesToUpdate(action) {
+  const { contractAddress } = action;
+
+  const { type, relevantAddresses } = yield select(
+    selectRelevantAdressesByContract(contractAddress),
+  );
+
+  if (type === 'cover') {
+    yield put(initializeCover());
+  } else if (type === 'cream') {
+    yield put(initializeCream());
+  } else {
+    const subscriptions = yield select(
+      selectSubscriptionsByAddresses(relevantAddresses),
+    );
+    yield all([
+      put({ type: 'UPDATE_ETH_BALANCE' }),
+      put({ type: 'BATCH_CALL_REQUEST', request: subscriptions }),
+    ]);
+  }
+}
+
 function* contractsSaga() {
   yield takeEvery('BATCH_CALL_REQUEST', executeBatchCall);
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
+  yield takeEvery('TX_SUCCESSFUL', processAdressesToUpdate);
 }
 
 export default contractsSaga;

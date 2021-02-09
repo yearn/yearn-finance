@@ -24,6 +24,7 @@ export function* initializeWeb3(options) {
       try {
         // ethereum.enable() will return the selected account
         // unless user opts out and then it will return undefined
+
         const selectedAccount = yield call([ethereum, 'enable']);
 
         yield put({ type: Action.WEB3_INITIALIZED });
@@ -78,7 +79,6 @@ export function* initializeWeb3(options) {
 export function* getNetworkId({ web3 }) {
   try {
     const networkId = yield call(web3.eth.net.getId);
-
     yield put({ type: Action.NETWORK_ID_FETCHED, networkId });
 
     return networkId;

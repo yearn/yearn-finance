@@ -54,6 +54,12 @@ export function createBlockChannel({ drizzle, web3, syncAlways }) {
 }
 
 function* callCreateBlockChannel({ drizzle, web3, syncAlways }) {
+  if (
+    !process.env.BLOCK_SUBSCRIPTION ||
+    process.env.BLOCK_SUBSCRIPTION === 'FALSE'
+  ) {
+    return;
+  }
   const blockChannel = yield call(createBlockChannel, {
     drizzle,
     web3,
@@ -134,7 +140,7 @@ function* processBlockHeader({ blockHeader, drizzle, web3, syncAlways }) {
 
   try {
     const block = yield call(web3.eth.getBlock, blockNumber, true);
-
+    if (!block) return;
     yield call(processBlock, { block, drizzle, web3, syncAlways });
   } catch (error) {
     console.error('Error in block processing:');
@@ -266,6 +272,7 @@ function* blocksSaga() {
   yield takeEvery('APP_READY', updateAccountEth);
   yield takeEvery('BLOCK_RECEIVED', processBlockHeader);
   yield takeEvery('BLOCK_RECEIVED', updateAccountEth);
+  yield takeEvery('UPDATE_ETH_BALANCE', updateAccountEth);
 
   // Block Polling
   yield takeLatest('BLOCKS_POLLING', callCreateBlockPollChannel);

@@ -27,6 +27,31 @@ And then populate .env with your endpoints
 $ yarn dev
 ```
 
+## Testing on mainnet fork
+https://eth-brownie.readthedocs.io/en/stable/install.html
+#### Requeriments:
+```
+python3 (to install pipx)
+python3-pip (to install pipx)
+python3-venv (to install brownie)
+pipx (to install brownie)
+eth-brownie
+```
+
+```sh
+# terminal 1:
+export WEB3_INFURA_PROJECT_ID=your-infura-id
+yarn fork:start
+
+# terminal 2:
+yarn dev
+```
+
+**[Important]**:
+- Set USE_LOCAL_RPC variable to TRUE on .env file.
+- Change Metamask to Localhost RPC endpoint :)
+
+
 ## Production
 
 ```

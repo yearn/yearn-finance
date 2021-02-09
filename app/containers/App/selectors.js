@@ -3,11 +3,13 @@ import { createSelector } from 'reselect';
 import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
+import { selectPoolData } from '../Cover/selectors';
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
 const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
+const selectCover = (state) => state.cover;
 
 // TODO: Add to constants
 const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -20,6 +22,11 @@ export const selectVaults = () =>
 
 export const selectBackscratcherVault = () =>
   createSelector(selectApp, (substate) => substate.backscratcher);
+
+export const selectCoverProtocols = () =>
+  createSelector(selectCover, (substate) =>
+    substate ? substate.protocols : [],
+  );
 
 export const selectEthBalance = () =>
   createSelector(selectApp, (substate) => substate.ethBalance);
@@ -37,6 +44,74 @@ export const selectContracts = (namespace) =>
   createSelector(selectContractsData, (substate) =>
     _.filter(substate, { namespace }),
   );
+
+export const selectRelevantAdressesByContract = (contractAddress) =>
+  createSelector(
+    selectVaults(),
+    selectPoolData(),
+    selectBackscratcherVault(),
+    selectContractsByTag('creamUnderlyingTokens'),
+    selectContractsByTag('creamCTokens'),
+    (
+      vaultsData,
+      coverPoolDataMap,
+      backscratcherVault,
+      creamUnderlyingTokensContracts,
+      creamCTokensContracts,
+    ) => {
+      const vault = vaultsData.find(
+        (v) => v.address.toLowerCase() === contractAddress.toLowerCase(),
+      );
+      if (vault) {
+        return {
+          type: 'vault',
+          relevantAddresses: [vault.address, vault.tokenAddress].filter(
+            (val) => !!val,
+          ),
+        };
+      }
+
+      if (contractAddress === backscratcherVault.address) {
+        return {
+          type: 'backscratcher',
+          relevantAddresses: [
+            backscratcherVault.address,
+            backscratcherVault.tokenAddress,
+          ],
+        };
+      }
+
+      if (coverPoolDataMap && coverPoolDataMap[contractAddress.toLowerCase()]) {
+        return { type: 'cover' };
+      }
+
+      const creamContracts = creamUnderlyingTokensContracts.concat(
+        creamCTokensContracts,
+      );
+
+      const cream = creamContracts.find(
+        (c) => c.address.toLowerCase() === contractAddress.toLowerCase(),
+      );
+      if (cream) {
+        return { type: 'cream' };
+      }
+
+      return { type: 'token', relevantAddresses: [contractAddress] };
+    },
+  );
+
+export const selectSubscriptionsByAddresses = (addresses) =>
+  createSelector(selectSubscriptionsData, (subscriptionsData) => {
+    const subscriptionsMatch = _.filter(
+      subscriptionsData,
+      (subscription) =>
+        _.intersection(
+          _.map(subscription.addresses, (address) => address.toLowerCase()),
+          _.map(addresses, (address) => address.toLowerCase()),
+        ).length > 0,
+    );
+    return subscriptionsMatch;
+  });
 
 export const selectContractsByTag = (tag) =>
   createSelector(

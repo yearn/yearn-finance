@@ -68,10 +68,20 @@ function* loadVaultContracts(clear) {
           name: 'balanceOf',
           args: [account],
         },
+        {
+          name: 'index',
+        },
+        {
+          name: 'supplyIndex',
+          args: [account],
+        },
       ],
       writeMethods: [
         {
           name: 'deposit',
+        },
+        {
+          name: 'claim',
         },
       ],
     },

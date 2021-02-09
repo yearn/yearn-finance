@@ -27,3 +27,10 @@ export function depositToVault(payload) {
     payload,
   };
 }
+
+export function claimBackscratcherRewards(payload) {
+  return {
+    type: c.CLAIM_BACKSCRATCHER_REWARDS,
+    payload,
+  };
+}

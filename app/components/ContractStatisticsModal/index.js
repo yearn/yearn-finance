@@ -198,7 +198,12 @@ export default function TransactionModal(props) {
 
   const renderChart = (method, key) => {
     const chartData = _.get(data, method.name);
-    const scaleAllowList = ['balance', 'balanceOf', 'totalSupply'];
+    const scaleAllowList = [
+      'balance',
+      'balanceOf',
+      'totalSupply',
+      'getPricePerFullShare',
+    ];
     const dataShouldBeScaled = _.includes(scaleAllowList, method.name);
     const scaleData = (point) => {
       const { value } = point;
@@ -281,7 +286,11 @@ export default function TransactionModal(props) {
 
     let currentValue;
     if (scaledData) {
-      currentValue = scaledData[scaledData.length - 1].value;
+      const scaledValue = scaledData[scaledData.length - 1].value;
+      currentValue =
+        typeof scaledValue === 'number'
+          ? scaledValue.toLocaleString()
+          : scaledValue;
     } else {
       currentValue = (
         <SkeletonWrapper>

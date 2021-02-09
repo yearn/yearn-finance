@@ -224,25 +224,29 @@ const Vault = (props) => {
 
   const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
   const apy = truncateApy(apyOneMonthSample * 100);
-  const tokenBalanceOf = new BigNumber(tokenBalance)
-    .dividedBy(10 ** decimals)
-    .toFixed();
+  const tokenBalanceOf = tokenBalance
+    ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed()
+    : '0.00';
 
   let vaultBalanceOf;
   if (v2Vault) {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .multipliedBy(pricePerShare / 10 ** decimals)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf)
+          .dividedBy(10 ** decimals)
+          .multipliedBy(pricePerShare / 10 ** decimals)
+          .toFixed()
+      : '0.00';
   } else if (vaultIsBackscratcher) {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf).dividedBy(10 ** decimals).toFixed()
+      : '0.00';
   } else {
-    vaultBalanceOf = new BigNumber(balanceOf)
-      .dividedBy(10 ** decimals)
-      .multipliedBy(getPricePerFullShare / 10 ** 18)
-      .toFixed();
+    vaultBalanceOf = balanceOf
+      ? new BigNumber(balanceOf)
+          .dividedBy(10 ** decimals)
+          .multipliedBy(getPricePerFullShare / 10 ** 18)
+          .toFixed()
+      : '0.00';
   }
 
   let vaultAssets = vaultIsBackscratcher
@@ -456,7 +460,11 @@ const Vault = (props) => {
             >
               WETH/yveCRV-DAO pool
             </A>{' '}
-            for 🍣 rewards.
+            for 🍣 rewards and then{' '}
+            <A href="https://app.pickle.finance/jars" target="_blank">
+              SLP YVECRV/ETH jar
+            </A>{' '}
+            for 🥒 rewards.
           </span>
         </AdditionalInfo>
       );
@@ -510,10 +518,7 @@ const Vault = (props) => {
             {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
-                <span>
-                  Due to recent hack, do not withdraw from DAI V1 vault if you
-                  do not want to realize losses.
-                </span>
+                <span>Your tokens can be safely withdrawn, now</span>
               </Notice>
             )}
             {backscratcherInfo}

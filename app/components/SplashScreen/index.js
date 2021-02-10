@@ -8,7 +8,7 @@ import { Backscratcher } from './Backscratcher';
 // import { Security } from './Security';
 
 export const SplashScreen = () => (
-  <div tw="flex flex-col bg-black">
+  <div tw="flex flex-col">
     <Backscratcher />
     {/* <Hero /> */}
     {/* TODO: Uncomment when designs are finalised :)  */}

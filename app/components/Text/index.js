@@ -7,7 +7,7 @@ const StyledBox = styled(Box)`
   white-space: normal;
 `;
 
-const Text = ({ children, bold, italic, large, small, ...props }) => {
+const Text = ({ children, bold, italic, large, small, center, ...props }) => {
   let fontSize = 2;
   if (small) {
     fontSize = 1;
@@ -20,6 +20,7 @@ const Text = ({ children, bold, italic, large, small, ...props }) => {
       fontSize={fontSize}
       fontWeight={bold ? 2 : 0}
       fontStyle={italic ? 'italic' : 'normal'}
+      textAlign={center ? 'center' : 'left'}
       {...props}
     >
       {children}

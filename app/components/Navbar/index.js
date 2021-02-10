@@ -216,8 +216,8 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div tw="flex self-center">
-            <Link to="/" tw="no-underline mx-auto md:mx-0 ">
+          <div tw="flex self-center invisible md:visible">
+            <Link to="/" tw="no-underline mx-auto md:mx-0">
               <span tw="sr-only">Logo</span>
               <div tw="h-5 w-auto">
                 <Logo />

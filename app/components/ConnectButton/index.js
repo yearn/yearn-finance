@@ -43,7 +43,7 @@ export default function ConnectButton(props) {
   } else {
     content = (
       <StyledButton className={className} onClick={selectWallet}>
-        <Text small fontWeight={1} mx={6} my={2}>
+        <Text small center fontWeight={1} mx={6} my={2}>
           Connect <span tw="hidden md:inline-block">Wallet</span>
         </Text>
         {/* <FormattedMessage id="account.connect" /> */}

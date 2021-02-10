@@ -42,3 +42,12 @@ export function deleteContract(contractName) {
     contractName,
   };
 }
+
+const PROCESS_ADDRESSES_TO_UPDATE = 'PROCESS_ADDRESSES_TO_UPDATE';
+
+export function processAdressesToUpdate(contractAddress) {
+  return {
+    type: PROCESS_ADDRESSES_TO_UPDATE,
+    contractAddress,
+  };
+}

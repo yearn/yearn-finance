@@ -14,6 +14,7 @@ import { unlockDevMode } from 'containers/DevMode/actions';
 import { setThemeMode } from 'containers/ThemeProvider/actions';
 import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
+import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
 import { APP_READY, APP_INITIALIZED } from './constants';
 
@@ -237,8 +238,17 @@ function* startKonamiWatcher() {
 }
 
 function* watchTransactions(action) {
-  const { notify, txHash } = action;
-  notify.hash(txHash);
+  const { notify, txHash, contractAddress } = action;
+  const { emitter } = notify.hash(txHash);
+  console.log({ emitter });
+
+  emitter.on('all', (transaction) => {
+    if (transaction.status === 'confirmed') {
+      // yield put(processAdressesToUpdate(contractAddress));
+      console.log({ contractAddress });
+      console.log(processAdressesToUpdate());
+    }
+  });
 }
 
 // function* connectWebsocket() {

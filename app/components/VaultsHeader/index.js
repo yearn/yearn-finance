@@ -31,7 +31,7 @@ export default function VaultsHeader({ backscratcher }) {
       }
     >
       {columns.map((column) => (
-        <Text large mb={18} pt={20}>
+        <Text key={column} large mb={18} pt={20}>
           {column}
         </Text>
       ))}

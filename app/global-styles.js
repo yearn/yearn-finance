@@ -134,7 +134,7 @@ const GlobalStyle = createGlobalStyle`
   background-color: ${(props) => props.theme.surface};
   margin: 0px 0px;
   margin-bottom: 7px;
-  border-radius: 15px;
+  border-radius: 7px;
   border: 4px solid;
   border-color: ${(props) => props.theme.surface};
   color: ${(props) => props.theme.onSurface};

@@ -1,10 +1,19 @@
 import React, { useRef } from 'react';
+import styled from 'styled-components';
 import tw, { css } from 'twin.macro';
+import { useSelector } from 'react-redux';
+import { selectLocation } from 'containers/App/selectors';
 import ConnectButton from 'components/ConnectButton';
 import { Link } from 'react-router-dom';
+import YearnLogo from 'images/yearn-logo.svg';
 import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
-import { Logo } from './logo';
+
+const StyledP = styled.p`
+  text-decoration: ${({ isSelected }) =>
+    isSelected ? 'underline solid #E5E5E5 5px' : null};
+  text-underline-offset: ${({ isSelected }) => (isSelected ? '10px' : null)};
+`;
 
 const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
   <div
@@ -33,7 +42,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
                     ${tw`w-full`};
                     &:hover {
                       > *:not(:last-child) {
-                        ${tw`text-yearn-blue`}
+                        ${tw`text-white`}
                       }
                     }
                   `,
@@ -77,7 +86,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
                     ${tw`w-full`};
                     &:hover {
                       > *:not(:last-child) {
-                        ${tw`text-yearn-blue`}
+                        ${tw`text-white`}
                       }
                     }
                   `,
@@ -115,10 +124,18 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
   </div>
 );
 
-const MenuItem = ({ text, isActive, setIsActive, links }) => {
+const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
   const ref = useRef(null);
 
   if (Array.isArray(links)) {
+    let isSelected = false;
+    if (
+      links
+        .map(({ href }) => href.toLowerCase())
+        .includes(selected.toLowerCase())
+    ) {
+      isSelected = true;
+    }
     return (
       <div tw="relative" onMouseLeave={() => setIsActive(false)}>
         <button
@@ -135,12 +152,13 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
           }}
           tabIndex="0"
         >
-          <p
-            css={[isActive === text && tw`text-yearn-blue`]}
-            tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          <StyledP
+            isSelected={isSelected}
+            css={[isActive === text && tw`text-white`]}
+            tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {text}
-          </p>
+          </StyledP>
         </button>
         <FlyingMenu
           clickAwayRef={ref}
@@ -161,8 +179,8 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
         tw="no-underline"
       >
         <p
-          css={[isActive === text && tw`text-yearn-blue`]}
-          tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          css={[isActive === text && tw`text-white`]}
+          tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
         </p>
@@ -171,12 +189,13 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
   ) : (
     <div tw="relative">
       <Link to={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
-        <p
-          css={[isActive === text && tw`text-yearn-blue`]}
-          tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        <StyledP
+          isSelected={links.href.toLowerCase() === selected.toLowerCase()}
+          css={[isActive === text && tw`text-white`]}
+          tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
-        </p>
+        </StyledP>
       </Link>
     </div>
   );
@@ -186,6 +205,8 @@ const Navbar = () => {
   const [isActive, setIsActive] = React.useState(undefined);
   const [isMobileOpen, setIsMobileOpen] = React.useState(false);
   const [mobileIsActive, setMobileIsActive] = React.useState(false);
+  const location = useSelector(selectLocation());
+  const { pathname } = location;
 
   return (
     <div tw="relative z-20 w-full">
@@ -218,10 +239,7 @@ const Navbar = () => {
 
           <div tw="flex self-center invisible md:visible">
             <Link to="/" tw="no-underline mx-auto md:mx-0">
-              <span tw="sr-only">Logo</span>
-              <div tw="h-5 w-auto">
-                <Logo />
-              </div>
+              <img src={YearnLogo} alt="Yearn" height="48" width="150" />
             </Link>
           </div>
 
@@ -243,6 +261,7 @@ const Navbar = () => {
                   isActive={isActive}
                   text={menuLink}
                   links={links}
+                  selected={pathname}
                 />
               );
             })}

@@ -62,7 +62,15 @@ function CoverCards() {
     return newProtocol;
   };
 
-  const protocolsWithClaimData = _.map(protocols, injectClaimData);
+  const filteredProtocols = _.filter(protocols, (protocol) => {
+    const claimAddress = _.get(
+      protocol,
+      `coverObjects[${protocol.claimNonce}].tokens`,
+    );
+    return claimAddress;
+  });
+
+  const protocolsWithClaimData = _.map(filteredProtocols, injectClaimData);
 
   const sortedProtocols = _.orderBy(
     protocolsWithClaimData,

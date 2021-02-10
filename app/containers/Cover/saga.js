@@ -35,10 +35,20 @@ function* fetchCoverData(action) {
 
 function* coverDataLoadedSaga(action) {
   const { payload } = action;
+
+  const filteredProtocols = _.filter(payload.protocols, (protocol) => {
+    const claimAddress = _.get(
+      protocol,
+      `coverObjects[${protocol.claimNonce}].tokens`,
+    );
+    return claimAddress;
+  });
+
   const claimTokens = {};
   const collateralTokens = {};
   const account = yield select(selectAccount());
   const addTokens = (protocol) => {
+    console.log(protocol);
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
     const { collaterals } = protocol;
     const setCollateral = (collateralArr) => {
@@ -52,7 +62,7 @@ function* coverDataLoadedSaga(action) {
     const claimPool = getClaimPool(payload.poolData, claimAddress);
     claimTokens[claimAddress] = claimPool;
   };
-  _.each(payload.protocols, addTokens);
+  _.each(filteredProtocols, addTokens);
 
   const claimPools = Object.values(claimTokens);
 

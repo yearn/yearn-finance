@@ -1,14 +1,93 @@
 import { createGlobalStyle } from 'styled-components';
-import Roboto from 'fonts/Roboto-Regular.ttf';
-import RobotoMedium from 'fonts/Roboto-Medium.ttf';
-import RobotoBold from 'fonts/Roboto-Bold.ttf';
-import RobotoLight from 'fonts/Roboto-Light.ttf';
-import RobotoMonoLight from 'fonts/RobotoMono-Light.ttf';
-import CalibreBold from 'fonts/Calibre-Bold.otf';
-import CalibreMedium from 'fonts/Calibre-Medium.otf';
-import CalibreSemibold from 'fonts/Calibre-Semibold.otf';
+
+import OpenSansLight from 'fonts/OpenSans-Light.ttf';
+import OpenSansLightItalic from 'fonts/OpenSans-LightItalic.ttf';
+import OpenSansRegular from 'fonts/OpenSans-Regular.ttf';
+import OpenSansItalic from 'fonts/OpenSans-Italic.ttf';
+import OpenSansSemiBold from 'fonts/OpenSans-SemiBold.ttf';
+import OpenSansSemiBoldItalic from 'fonts/OpenSans-SemiBoldItalic.ttf';
+import OpenSansBold from 'fonts/OpenSans-Bold.ttf';
+import OpenSansBoldItalic from 'fonts/OpenSans-BoldItalic.ttf';
+import OpenSansExtraBold from 'fonts/OpenSans-ExtraBold.ttf';
+import OpenSansExtraBoldItalic from 'fonts/OpenSans-ExtraBoldItalic.ttf';
 
 const GlobalStyle = createGlobalStyle`
+// ---------- OPEN SANS ----------
+@font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansLight}) format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansLightItalic}) format('truetype');
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansRegular}) format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansItalic}) format('truetype');
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansSemiBold}) format('truetype');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansSemiBoldItalic}) format('truetype');
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansBold}) format('truetype');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansBoldItalic}) format('truetype');
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansExtraBold}) format('truetype');
+    font-weight: 800;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: ${(props) => props.theme.fontFamily};
+    src: url(${OpenSansExtraBoldItalic}) format('truetype');
+    font-weight: 800;
+    font-style: italic;
+  }
+
+  // --------------------
+  * {
+    font-family: ${(props) => props.theme.fontFamily};
+  }
+
   html,
   body {
     height: 100%;
@@ -26,63 +105,6 @@ const GlobalStyle = createGlobalStyle`
   img {
     max-width: initial;
   }
-  @font-face {
-    font-family: 'Calibre Bold';
-    src: url(${CalibreBold}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Calibre Medium';
-    src: url(${CalibreMedium}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: 'Calibre Semibold';
-    src: url(${CalibreSemibold}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: 'Roboto Medium';
-    src: url(${RobotoMedium}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Roboto Bold';
-    src: url(${RobotoBold}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Roboto';
-    src: url(${Roboto}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Roboto Light';
-    src: url(${RobotoLight}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Roboto Mono Light';
-    src: url(${RobotoMonoLight}) format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  body {
-    font-family: 'Calibre Semibold', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-
-  body.fontLoaded {
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
 
   #app {
     background-color: ${(props) => props.theme.background};
@@ -97,7 +119,6 @@ const GlobalStyle = createGlobalStyle`
 
   p,
   label {
-    font-family: Georgia, Times, 'Times New Roman', serif;
     line-height: 1.5em;
   }
 
@@ -110,13 +131,13 @@ const GlobalStyle = createGlobalStyle`
   min-width: 0;
   word-wrap: break-word;
   background-clip: border-box;
-  background-color: ${(props) => props.theme.vaultBackground};
+  background-color: ${(props) => props.theme.surface};
   margin: 0px 0px;
   margin-bottom: 7px;
   border-radius: 15px;
   border: 4px solid;
-  border-color: ${(props) => props.theme.vaultBackground};
-  color: ${(props) => props.theme.vaultText};
+  border-color: ${(props) => props.theme.surface};
+  color: ${(props) => props.theme.onSurface};
   transition: background-color .1s ease-out, border-color .15s ease-out;
 }
 
@@ -126,8 +147,8 @@ a {
 }
 
 .card.active {
-  border-color: ${(props) => props.theme.vaultBorderActive};
-  background-color: ${(props) => props.theme.vaultBackgroundActive};
+  border-color: ${(props) => props.theme.surface};
+  background-color: ${(props) => props.theme.surface};
   transition: background-color .1s ease-in;
 }
 
@@ -153,11 +174,11 @@ a {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-height: 1px;
-  background-color: ${(props) => props.theme.vaultBackgroundMiddle};
+  background-color: ${(props) => props.theme.surface};
 }
 
 .card-footer {
-  background-color: ${(props) => props.theme.vaultBackgroundActive};
+  background-color: ${(props) => props.theme.surface};
   display: flex;
   justify-content: flex-end;
   opacity: 1;

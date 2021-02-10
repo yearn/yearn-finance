@@ -31,8 +31,8 @@ module.exports = {
     }),
     extend: {
       fontFamily: {
-        sans: 'Roboto',
-        mono: 'Roboto Mono Light',
+        sans: 'Open Sans',
+        mono: 'Open Sans',
       },
       colors: {
         // uses root variables in tailwind.css

@@ -1,5 +1,5 @@
 export const menuLinks = {
-  yield: [
+  invest: [
     {
       href: '/vaults',
       title: 'Vaults',
@@ -11,9 +11,9 @@ export const menuLinks = {
       description: '',
     },
   ],
-  cover: {
+  protect: {
     href: '/cover',
-    title: 'yCover',
+    title: 'Protect',
     description: '',
   },
   // earn: {

@@ -36,6 +36,7 @@ const newDarkTheme = {
   onBackground: '#FFF',
   black: '#000',
   white: '#FFF',
+  text: '#FFF',
   fontFamily: 'Open Sans',
   fonts: ['Open Sans'],
   fontSizes: [12, 14, 16, 18, 20, 24, 28, 32],

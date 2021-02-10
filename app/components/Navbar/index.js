@@ -137,7 +137,7 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
         >
           <p
             css={[isActive === text && tw`text-yearn-blue`]}
-            tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {text}
           </p>
@@ -162,7 +162,7 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
       >
         <p
           css={[isActive === text && tw`text-yearn-blue`]}
-          tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
         </p>
@@ -173,7 +173,7 @@ const MenuItem = ({ text, isActive, setIsActive, links }) => {
       <Link to={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
         <p
           css={[isActive === text && tw`text-yearn-blue`]}
-          tw="font-sans hover:text-yearn-blue text-white uppercase font-black rounded-md inline-flex items-center text-base focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          tw="font-sans hover:text-yearn-blue text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {text}
         </p>
@@ -188,14 +188,14 @@ const Navbar = () => {
   const [mobileIsActive, setMobileIsActive] = React.useState(false);
 
   return (
-    <div tw="relative z-20 bg-black w-full">
+    <div tw="relative z-20 w-full">
       <div tw="px-4 sm:px-6">
-        <div tw="flex py-4 justify-center items-center">
+        <div tw="flex py-4 items-center">
           <div tw="flex flex-1 -mr-2 -my-2 md:hidden">
             <button
               type="button"
               onClick={() => setIsMobileOpen(true)}
-              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             >
               <span tw="sr-only">Open menu</span>
               <svg
@@ -216,7 +216,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div tw="flex flex-1 self-center">
+          <div tw="flex self-center">
             <Link to="/" tw="no-underline mx-auto md:mx-0 ">
               <span tw="sr-only">Logo</span>
               <div tw="h-5 w-auto">
@@ -233,7 +233,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav tw="flex flex-none space-x-10 hidden md:flex items-center px-4">
+          <nav tw="flex flex-1 justify-end space-x-10 hidden md:flex items-center px-4 mr-6">
             {Object.keys(menuLinks).map((menuLink) => {
               const links = menuLinks[menuLink];
               return (
@@ -248,7 +248,7 @@ const Navbar = () => {
             })}
           </nav>
 
-          <nav tw="flex flex-1 justify-end">
+          <nav tw="flex">
             <ConnectButton />
           </nav>
         </div>

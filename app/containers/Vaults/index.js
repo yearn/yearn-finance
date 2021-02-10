@@ -4,7 +4,6 @@ import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import BackscratchersHeaders from 'components/BackscratchersHeaders';
 import {
   selectContractsByTag,
   selectBackscratcherVault,
@@ -53,6 +52,7 @@ const DevHeader = styled.div`
 
 const StyledAccordion = styled(Accordion)`
   width: 1085px;
+  padding-bottom: 10px;
 `;
 
 const Vaults = () => {
@@ -77,7 +77,7 @@ const Vaults = () => {
   } else if (backscratcherVault) {
     backscratcherWrapper = (
       <WrapTable>
-        <BackscratchersHeaders />
+        <VaultsHeader backscratcher />
         <StyledAccordion defaultActiveKey={backscratcherVault.address}>
           <BackscratchersWrapper
             showDevVaults={showDevVaults}
@@ -95,9 +95,7 @@ const Vaults = () => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader>
       {warning}
-
       {backscratcherWrapper}
-
       <WrapTable>
         {columnHeader}
         <StyledAccordion>

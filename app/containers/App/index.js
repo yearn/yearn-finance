@@ -34,8 +34,8 @@ export default function App() {
   return (
     <div>
       <canvas id="matrix" />
-      <Main />
       <GlobalStyle />
+      <Main />
     </div>
   );
 }

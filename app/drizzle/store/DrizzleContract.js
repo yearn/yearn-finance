@@ -108,7 +108,7 @@ class DrizzleContract {
           contract.store.dispatch({
             type: 'TX_SUCCESSFUL',
             receipt,
-            txHash: persistTxHash
+            txHash: persistTxHash,
           });
         })
         .on('error', (error, receipt) => {

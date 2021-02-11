@@ -85,26 +85,16 @@ class DrizzleContract {
       const call = contract.methods[fnName](...newArgs);
       let persistTxHash;
 
-      // TODO REMOVE. ONLY FOR TESTING
-      contract.store.dispatch({
-        type: 'TX_BROADCASTED',
-        txHash:
-          '0xa7a8a10ada20720e5a5226b2cd1f8df3a3219c36fc608ac1075f0320fbfa5baa',
-        contractAddress: contract.address,
-      });
-      // //////////////////////
-
       return call
         .send(sendArgs)
         .on('transactionHash', (txHash) => {
           persistTxHash = txHash;
 
-          // TODO UNCOMMENT THIS WHEN READY FOR REAL TESTING ON TX SUCCESS
-          // contract.store.dispatch({
-          //   type: 'TX_BROADCASTED',
-          //   txHash,
-          //   contractAddress: contract.address,
-          // });
+          contract.store.dispatch({
+            type: 'TX_BROADCASTED',
+            txHash,
+            contractAddress: contract.address,
+          });
         })
         .on('confirmation', (confirmationNumber, receipt) => {
           contract.store.dispatch({
@@ -118,8 +108,7 @@ class DrizzleContract {
           contract.store.dispatch({
             type: 'TX_SUCCESSFUL',
             receipt,
-            txHash: persistTxHash,
-            contractAddress: contract.address,
+            txHash: persistTxHash
           });
         })
         .on('error', (error, receipt) => {

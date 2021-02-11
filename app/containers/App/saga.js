@@ -1,5 +1,5 @@
-import { put, call, takeLatest, take, select } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
+import { put, call, takeLatest, take, select, delay } from 'redux-saga/effects';
+import { eventChannel, END } from 'redux-saga';
 import vaultAbi from 'abi/yVault.json';
 import backscratcherAbi from 'abi/backscratcher.json';
 import veCrvAbi from 'abi/veCrv.json';
@@ -237,18 +237,30 @@ function* startKonamiWatcher() {
   }
 }
 
+function checkTx(notifyEmitter) {
+  return eventChannel((emitter) => {
+    notifyEmitter.on('all', (transaction) => {
+      if (transaction.status === 'confirmed') {
+        emitter(END);
+      }
+    });
+    return () => {};
+  });
+}
+
 function* watchTransactions(action) {
   const { notify, txHash, contractAddress } = action;
   const { emitter } = notify.hash(txHash);
-  console.log({ emitter });
 
-  emitter.on('all', (transaction) => {
-    if (transaction.status === 'confirmed') {
-      // yield put(processAdressesToUpdate(contractAddress));
-      console.log({ contractAddress });
-      console.log(processAdressesToUpdate());
+  const chan = yield call(checkTx, emitter);
+  try {
+    while (true) {
+      yield take(chan);
     }
-  });
+  } finally {
+    yield delay(6000);
+    yield put(processAdressesToUpdate(contractAddress));
+  }
 }
 
 // function* connectWebsocket() {

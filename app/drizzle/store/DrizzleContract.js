@@ -84,6 +84,7 @@ class DrizzleContract {
       }
       const call = contract.methods[fnName](...newArgs);
       let persistTxHash;
+
       return call
         .send(sendArgs)
         .on('transactionHash', (txHash) => {
@@ -92,6 +93,7 @@ class DrizzleContract {
           contract.store.dispatch({
             type: 'TX_BROADCASTED',
             txHash,
+            contractAddress: contract.address,
           });
         })
         .on('confirmation', (confirmationNumber, receipt) => {
@@ -107,7 +109,6 @@ class DrizzleContract {
             type: 'TX_SUCCESSFUL',
             receipt,
             txHash: persistTxHash,
-            contractAddress: contract.address,
           });
         })
         .on('error', (error, receipt) => {

@@ -455,7 +455,7 @@ const Vault = (props) => {
           <span>
             After depositing join{' '}
             <A
-              href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991"
+              href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
               target="_blank"
             >
               WETH/yveCRV-DAO pool

@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import Background from 'images/background.jpg';
 
 import OpenSansLight from 'fonts/OpenSans-Light.ttf';
 import OpenSansLightItalic from 'fonts/OpenSans-LightItalic.ttf';
@@ -108,6 +109,9 @@ const GlobalStyle = createGlobalStyle`
 
   #app {
     background-color: ${(props) => props.theme.background};
+    background-size: cover;
+    background-image: url(${Background});
+    background-position: center bottom;
     position: fixed;
     top: 0;
     bottom: 0;

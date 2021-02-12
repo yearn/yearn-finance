@@ -15,11 +15,11 @@ export const SplashScreen = () => (
     {/* <Products />
     <Security />
     <Reviews /> */}
-    <p
+    {/* <p
       tw="text-gray-700 font-mono text-center"
       style={{ backgroundColor: '#111' }}
     >
       Version: {process.env.REACT_APP_VERSION}
-    </p>
+    </p> */}
   </div>
 );

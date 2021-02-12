@@ -29,7 +29,7 @@ const newDarkTheme = {
   primary: '#006AE3',
   secondary: '#01E2A0',
   surface: '#0A1D3F',
-  background: '#1D265F',
+  background: '#1F255F',
   onPrimary: '#FFF',
   onSecondary: '#FFF',
   onSurface: '#FFF',

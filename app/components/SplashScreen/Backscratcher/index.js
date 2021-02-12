@@ -8,8 +8,9 @@ import LogoImg from '../../../images/Splash/logo.svg';
 
 const Logo = styled.div`
   img {
-    width: 60vw;
+    width: 40vw;
     max-width: 210px;
+    min-width: 164px;
     opacity: 0.8;
     margin: 0 auto;
   }
@@ -37,12 +38,7 @@ const StyledLink = styled(Link)`
 `;
 
 const backgroundStyle = `
-  height: calc(100vh - 64px);
-  @media (max-width: 570px) {
-    height: calc(100vh);
-    font-size: 35px;
-  }
-  background-color: #1D265F;
+  height: calc(100vh - 80px);
 `;
 
 const imageStyle = `
@@ -55,7 +51,6 @@ const imageStyle = `
         transform: rotate(-20deg);
       }
   }
-  opacity: .9;
 `;
 
 export const Backscratcher = () => (
@@ -68,15 +63,15 @@ export const Backscratcher = () => (
         <img css={imageStyle} src={LogoImg} alt="logo" />
       </Logo>
 
-      <Text bold fontSize={61} center lineHeight="1" mt={30}>
+      <Text bold fontSize={[44, 61]} center lineHeight="1" mt={30} mx={[5, 0]}>
         Maximize your CRV Rewards
       </Text>
-      <Text large center my={30}>
+      <Text large center my={30} mx={[80, 0]}>
         Earn 38% more in weekly fees staking with yearn
       </Text>
 
       <StyledLink to="/vaults" type="button">
-        <Text bold px={6} py={4} center>
+        <Text bold fontSize={[1, 2]} px={6} py={4} center>
           Go to vaults
         </Text>
       </StyledLink>

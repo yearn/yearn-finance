@@ -109,6 +109,7 @@ class DrizzleContract {
             type: 'TX_SUCCESSFUL',
             receipt,
             txHash: persistTxHash,
+            contractAddress: contract.address,
           });
         })
         .on('error', (error, receipt) => {

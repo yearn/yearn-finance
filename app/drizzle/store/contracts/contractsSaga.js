@@ -198,6 +198,7 @@ function* contractsSaga() {
   yield takeEvery('BATCH_CALL_RESPONSE', processResponse);
   yield takeEvery('LISTEN_FOR_EVENT', callListenForContractEvent);
   yield takeEvery('PROCESS_ADDRESSES_TO_UPDATE', processAdressesToUpdate);
+  yield takeEvery('TX_SUCCESSFUL', processAdressesToUpdate);
 }
 
 export default contractsSaga;

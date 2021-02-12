@@ -17,6 +17,7 @@ import ArrowDownAlt from './arrowDownAlt.svg';
 import ArrowUpAlt from './arrowUpAlt.svg';
 import Info from './info.svg';
 import Close from './close.svg';
+import ArrowRight from './arrowRight.svg';
 
 export default function Icon(props) {
   const { onClick, disabled, className, type } = props;
@@ -31,6 +32,7 @@ export default function Icon(props) {
     arrowDownAlt: ArrowDownAlt,
     arrowUpAlt: ArrowUpAlt,
     arrowDown: ArrowDown,
+    arrowRight: ArrowRight,
     close: Close,
   };
   const src = icons[type];

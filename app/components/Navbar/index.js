@@ -1,18 +1,46 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import tw, { css } from 'twin.macro';
+import tw from 'twin.macro';
 import { useSelector } from 'react-redux';
 import { selectLocation } from 'containers/App/selectors';
 import ConnectButton from 'components/ConnectButton';
+import Text from 'components/Text';
+import Box from 'components/Box';
+import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import YearnLogo from 'images/yearn-logo.svg';
 import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
 
 const StyledP = styled.p`
+  color: ${(props) => (props.colored ? props.theme.primary : null)};
   text-decoration: ${({ isSelected }) =>
     isSelected ? 'underline solid #E5E5E5 5px' : null};
   text-underline-offset: ${({ isSelected }) => (isSelected ? '10px' : null)};
+  :hover {
+    color: ${(props) => (props.hover ? props.theme.primary : null)};
+  }
+`;
+
+const StyledDiv = styled.div`
+  background-color: ${(props) =>
+    props.colored ? props.theme.background : null};
+  box-shadow: ${(props) =>
+    props.colored ? '0px 4px 5px 2px rgba(0, 0, 0, 0.17)' : null};
+`;
+
+const ItemContainer = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: ${(props) => props.theme.surface};
+  background-color: #fff;
+  border-radius: 3px;
+  :hover {
+    background-color: rgba(196, 196, 196, 0.2);
+  }
+  width: 100%;
 `;
 
 const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
@@ -25,108 +53,82 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
     ]}
     tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
   >
-    <div tw="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
-      <div tw=" bg-black relative pl-4 min-w-max max-w-md  pr-4 space-y-2 py-6">
-        {links.map((link) =>
-          link.href.includes('http') ? (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              tw="flex items-start no-underline"
-            >
-              <div
-                css={[
-                  // amazing
-                  css`
-                    ${tw`w-full`};
-                    &:hover {
-                      > *:not(:last-child) {
-                        ${tw`text-white`}
-                      }
-                    }
-                  `,
-                ]}
+    <Box
+      position="relative"
+      bg="white"
+      borderRadius={4}
+      p={4}
+      width={150}
+      mt={4}
+    >
+      {links.map((link) =>
+        link.href.includes('http') ? (
+          <a
+            key={link.href}
+            href={link.href}
+            target="_blank"
+            tw="flex items-start no-underline"
+          >
+            <ItemContainer py={3} px={5}>
+              <Text small>{link.title}</Text>
+              <Icon type="arrowRight" />
+            </ItemContainer>
+            {/* <svg
+                css={[link.href[0] !== '/' && tw`inline-block`]}
+                tw="hidden text-white h-4 self-start"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <p tw="text-lg font-black font-sans text-white inline-block mr-2">
-                  {link.title}
-                </p>
-                <svg
-                  css={[link.href[0] !== '/' && tw`inline-block`]}
-                  tw="hidden text-white h-4 self-start"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-                {link.description && (
-                  <p tw="mt-1 text-sm text-white font-sans">
-                    {link.description}
-                  </p>
-                )}
-              </div>
-            </a>
-          ) : (
-            <Link
-              key={link.href}
-              to={link.href}
-              tw="flex items-start no-underline"
-            >
-              <div
-                css={[
-                  // amazing
-                  css`
-                    ${tw`w-full`};
-                    &:hover {
-                      > *:not(:last-child) {
-                        ${tw`text-white`}
-                      }
-                    }
-                  `,
-                ]}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              {link.description && (
+                <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
+              )} */}
+          </a>
+        ) : (
+          <Link
+            key={link.href}
+            to={link.href}
+            tw="flex items-start no-underline"
+          >
+            <ItemContainer py={3} px={5}>
+              <Text small>{link.title}</Text>
+              <Icon type="arrowRight" />
+            </ItemContainer>
+            {/* <svg
+                css={[link.href[0] !== '/' && tw`inline-block`]}
+                tw="hidden text-white h-4 self-start"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <p tw="text-lg font-black font-sans text-white inline-block mr-2">
-                  {link.title}
-                </p>
-                <svg
-                  css={[link.href[0] !== '/' && tw`inline-block`]}
-                  tw="hidden text-white h-4 self-start"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-                {link.description && (
-                  <p tw="mt-1 text-sm text-white font-sans">
-                    {link.description}
-                  </p>
-                )}
-              </div>
-            </Link>
-          ),
-        )}
-      </div>
-    </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              {link.description && (
+                <p tw="mt-1 text-sm text-white font-sans">{link.description}</p>
+              )} */}
+          </Link>
+        ),
+      )}
+    </Box>
   </div>
 );
 
 const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
   const ref = useRef(null);
-
   if (Array.isArray(links)) {
     let isSelected = false;
     if (
@@ -136,6 +138,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
     ) {
       isSelected = true;
     }
+
     return (
       <div tw="relative" onMouseLeave={() => setIsActive(false)}>
         <button
@@ -154,8 +157,9 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
         >
           <StyledP
             isSelected={isSelected}
-            css={[isActive === text && tw`text-white`]}
-            tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            colored={text === isActive}
+            tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            hover
           >
             {text}
           </StyledP>
@@ -178,12 +182,12 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
         target="_blank"
         tw="no-underline"
       >
-        <p
-          css={[isActive === text && tw`text-white`]}
-          tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        <StyledP
+          tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          hover
         >
           {text}
-        </p>
+        </StyledP>
       </a>
     </div>
   ) : (
@@ -191,8 +195,8 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
       <Link to={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
         <StyledP
           isSelected={links.href.toLowerCase() === selected.toLowerCase()}
-          css={[isActive === text && tw`text-white`]}
-          tw="font-sans hover:text-white text-white capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          hover
         >
           {text}
         </StyledP>
@@ -208,36 +212,26 @@ const Navbar = () => {
   const location = useSelector(selectLocation());
   const { pathname } = location;
 
+  const [isScrollTop, setIsScrollTop] = useState(true);
+
+  const listener = () => {
+    const app = document.getElementById('app');
+    setIsScrollTop(app.scrollTop === 0);
+  };
+
+  useEffect(() => {
+    const app = document.getElementById('app');
+    app.addEventListener('scroll', listener);
+    return () => {
+      app.removeEventListener('scroll', listener);
+    };
+  }, []);
+
   return (
-    <div tw="relative z-20 w-full">
+    <StyledDiv colored={!isScrollTop} tw="sticky top-0 z-20">
       <div tw="px-4 sm:px-6">
         <div tw="flex py-4 items-center">
-          <div tw="flex flex-1 -mr-2 -my-2 md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsMobileOpen(true)}
-              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-            >
-              <span tw="sr-only">Open menu</span>
-              <svg
-                tw="h-8 w-8"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div tw="flex self-center invisible md:visible">
+          <div tw="flex self-center">
             <Link to="/" tw="no-underline mx-auto md:mx-0">
               <img src={YearnLogo} alt="Yearn" height="48" width="150" />
             </Link>
@@ -267,12 +261,37 @@ const Navbar = () => {
             })}
           </nav>
 
-          <nav tw="flex">
+          <nav tw="flex invisible md:visible">
             <ConnectButton />
           </nav>
+
+          <div tw="flex flex-1 justify-end -mr-3 md:hidden">
+            <button
+              type="button"
+              onClick={() => setIsMobileOpen(true)}
+              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            >
+              <span tw="sr-only">Open menu</span>
+              <svg
+                tw="h-8 w-8"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </StyledDiv>
   );
 };
 

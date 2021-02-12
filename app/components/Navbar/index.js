@@ -13,14 +13,14 @@ import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
 
 const StyledP = styled.p`
-  font-weight: ${(props) => (props.isActive ? '700' : '400')};
+  /* font-weight: ${(props) => (props.isActive ? '700' : '400')}; */
   color: ${(props) => (props.colored ? '#4B9FFF' : null)};
   text-decoration: ${({ isSelected }) =>
     isSelected ? 'underline solid #E5E5E5 5px' : null};
   text-underline-offset: ${({ isSelected }) => (isSelected ? '10px' : null)};
   :hover {
     color: ${(props) => (props.hover ? '#4B9FFF' : null)};
-    font-weight: ${(props) => (props.hover ? '700' : '400')};
+    /* font-weight: ${(props) => (props.hover ? '700' : '400')}; */
   }
 `;
 

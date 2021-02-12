@@ -518,7 +518,10 @@ const Vault = (props) => {
             {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
-                <span>Your tokens can be safely withdrawn, now</span>
+                <span>
+                  Due to recent hack, do not withdraw from DAI V1 vault if you
+                  do not want to realize losses.
+                </span>
               </Notice>
             )}
             {backscratcherInfo}

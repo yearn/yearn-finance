@@ -41,18 +41,6 @@ const backgroundStyle = `
   height: calc(100vh - 80px);
 `;
 
-const imageStyle = `
-  animation: cowmove 4s infinite;
-  @keyframes cowmove{
-      0% {
-        transform: rotate(0deg);
-      }
-      49% {
-        transform: rotate(-20deg);
-      }
-  }
-`;
-
 export const Backscratcher = () => (
   <div
     tw="w-screen relative flex flex-col justify-center items-center overflow-hidden"
@@ -60,7 +48,7 @@ export const Backscratcher = () => (
   >
     <div tw="flex flex-col justify-center items-center z-10 absolute">
       <Logo>
-        <img css={imageStyle} src={LogoImg} alt="logo" />
+        <img src={LogoImg} alt="logo" />
       </Logo>
 
       <Text bold fontSize={[44, 61]} center lineHeight="1" mt={30} mx={[5, 0]}>

@@ -13,20 +13,22 @@ import { FlyingMobileMenu } from './FlyingMobileMenu';
 import { menuLinks } from './menuLinks';
 
 const StyledP = styled.p`
-  color: ${(props) => (props.colored ? props.theme.primary : null)};
+  font-weight: ${(props) => (props.isActive ? '700' : '400')};
+  color: ${(props) => (props.colored ? '#4B9FFF' : null)};
   text-decoration: ${({ isSelected }) =>
     isSelected ? 'underline solid #E5E5E5 5px' : null};
   text-underline-offset: ${({ isSelected }) => (isSelected ? '10px' : null)};
   :hover {
-    color: ${(props) => (props.hover ? props.theme.primary : null)};
+    color: ${(props) => (props.hover ? '#4B9FFF' : null)};
+    font-weight: ${(props) => (props.hover ? '700' : '400')};
   }
 `;
 
 const StyledDiv = styled.div`
-  background-color: ${(props) =>
-    props.colored ? props.theme.background : null};
+  background-color: ${(props) => props.theme.background};
   box-shadow: ${(props) =>
     props.colored ? '0px 4px 5px 2px rgba(0, 0, 0, 0.17)' : null};
+  transition: box-shadow 0.3s ease-in-out;
 `;
 
 const ItemContainer = styled(Box)`
@@ -43,6 +45,22 @@ const ItemContainer = styled(Box)`
   width: 100%;
 `;
 
+const BoxedItems = styled(Box)`
+  :after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 4px;
+    transform: rotate(45deg);
+
+    left: 50px;
+    top: 2px;
+    z-index: -1;
+  }
+`;
+
 const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
   <div
     ref={clickAwayRef}
@@ -53,13 +71,13 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
     ]}
     tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
   >
-    <Box
+    <BoxedItems
       position="relative"
       bg="white"
       borderRadius={4}
       p={4}
       width={150}
-      mt={4}
+      mt={3}
     >
       {links.map((link) =>
         link.href.includes('http') ? (
@@ -100,7 +118,6 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
           >
             <ItemContainer py={3} px={5}>
               <Text small>{link.title}</Text>
-              <Icon type="arrowRight" />
             </ItemContainer>
             {/* <svg
                 css={[link.href[0] !== '/' && tw`inline-block`]}
@@ -123,7 +140,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
           </Link>
         ),
       )}
-    </Box>
+    </BoxedItems>
   </div>
 );
 
@@ -160,6 +177,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
             colored={text === isActive}
             tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             hover
+            isActive={text === isActive}
           >
             {text}
           </StyledP>

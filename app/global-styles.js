@@ -111,7 +111,8 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${(props) => props.theme.background};
     background-size: cover;
     background-image: url(${Background});
-    background-position: center bottom;
+    background-position: center 80px;
+    background-repeat: no-repeat;
     position: fixed;
     top: 0;
     bottom: 0;

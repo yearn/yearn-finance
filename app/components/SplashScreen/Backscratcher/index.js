@@ -28,6 +28,9 @@ const Logo = styled.div`
 // `;
 
 const StyledLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.onPrimary};
   border-radius: 33px;
@@ -38,31 +41,29 @@ const StyledLink = styled(Link)`
 `;
 
 const backgroundStyle = `
-  height: calc(100vh - 80px);
+  padding-top: 80px;
 `;
 
 export const Backscratcher = () => (
   <div
-    tw="w-screen relative flex flex-col justify-center items-center overflow-hidden"
+    tw="w-screen relative flex flex-1 flex-col justify-center items-center overflow-hidden"
     css={backgroundStyle}
   >
-    <div tw="flex flex-col justify-center items-center z-10 absolute">
-      <Logo>
-        <img src={LogoImg} alt="logo" />
-      </Logo>
+    <Logo>
+      <img src={LogoImg} alt="logo" />
+    </Logo>
 
-      <Text bold fontSize={[44, 61]} center lineHeight="1" mt={30} mx={[5, 0]}>
-        Maximize your CRV Rewards
-      </Text>
-      <Text large center my={30} mx={[80, 0]}>
-        Earn 38% more in weekly fees staking with yearn
-      </Text>
+    <Text bold fontSize={[44, 61]} center lineHeight="1" mt={30} mx={[5, 0]}>
+      Maximize your CRV Rewards
+    </Text>
+    <Text large center my={30} mx={[80, 0]}>
+      Earn 38% more in weekly fees staking with yearn
+    </Text>
 
-      <StyledLink to="/vaults" type="button">
-        <Text bold fontSize={[1, 2]} px={6} py={4} center>
-          Go to vaults
-        </Text>
-      </StyledLink>
-    </div>
+    <StyledLink to="/vaults">
+      <Text bold fontSize={[1, 2]} px={6} py={4} center>
+        Go to vaults
+      </Text>
+    </StyledLink>
   </div>
 );

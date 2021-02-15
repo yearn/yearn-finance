@@ -14,7 +14,7 @@ import OpenSansExtraBoldItalic from 'fonts/OpenSans-ExtraBoldItalic.ttf';
 
 const GlobalStyle = createGlobalStyle`
 // ---------- OPEN SANS ----------
-@font-face {
+  @font-face {
     font-family: ${(props) => props.theme.fontFamily};
     src: url(${OpenSansLight}) format('truetype');
     font-weight: 300;
@@ -125,6 +125,10 @@ const GlobalStyle = createGlobalStyle`
   p,
   label {
     line-height: 1.5em;
+  }
+
+  aside {
+    backdrop-filter: blur(10px) drop-shadow(0px 4px 4px rgba(0,0,0,0.25)) !important;
   }
 
 .card {

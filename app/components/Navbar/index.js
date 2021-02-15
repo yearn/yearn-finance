@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { useSelector } from 'react-redux';
 import { selectLocation } from 'containers/App/selectors';
@@ -10,18 +10,54 @@ import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import YearnLogo from 'images/yearn-logo.svg';
 import { FlyingMobileMenu } from './FlyingMobileMenu';
-import { menuLinks } from './menuLinks';
+import { menuLinks, menuLinksMeta } from './menuLinks';
 
-const StyledP = styled.p`
-  /* font-weight: ${(props) => (props.isActive ? '700' : '400')}; */
-  color: ${(props) => (props.colored ? '#4B9FFF' : null)};
-  text-decoration: ${({ isSelected }) =>
-    isSelected ? 'underline solid #E5E5E5 5px' : null};
-  text-underline-offset: ${({ isSelected }) => (isSelected ? '10px' : null)};
+const StyledItem = styled.li`
+  display: inline-block;
+`;
+
+const ItemStyle = css`
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  font-size: 14px;
+  text-transform: capitalize;
+
+  font-weight: ${(props) => (props.isActive ? '700' : '400')};
+  color: ${(props) => (props.colored ? '#4B9FFF' : '#fff')};
+  text-decoration: ${({ selected }) =>
+    selected ? 'underline solid #E5E5E5 5px' : 'none'};
+  text-underline-offset: ${({ selected }) => (selected ? '10px' : null)};
   :hover {
-    color: ${(props) => (props.hover ? '#4B9FFF' : null)};
-    /* font-weight: ${(props) => (props.hover ? '700' : '400')}; */
+    color: ${(props) => (props.hoverable ? '#4B9FFF' : '#fff')};
+    font-weight: ${(props) => (props.hoverable ? '700' : '400')};
   }
+  :focus {
+    outline: none;
+  }
+
+  ::before {
+    display: block;
+    content: attr(data-text);
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  [title]:hover::after {
+    position: absolute;
+    top: -100%;
+    left: 0;
+  }
+`;
+
+const StyledLink = styled.a`
+  ${ItemStyle}
+`;
+
+const LinkWrapper = styled(Link)`
+  ${ItemStyle}
 `;
 
 const StyledDiv = styled.div`
@@ -51,32 +87,36 @@ const BoxedItems = styled(Box)`
     position: absolute;
     width: 50px;
     height: 50px;
-    background-color: white;
+    background-color: #fff;
     border-radius: 4px;
     transform: rotate(45deg);
 
-    left: 50px;
+    left: ${(props) => props.pointer};
     top: 2px;
     z-index: -1;
   }
 `;
 
-const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
-  <div
+const FlyingMenu = ({ isActive, clickAwayRef, links, meta }) => (
+  <Box
     ref={clickAwayRef}
+    position="absolute"
+    pt={0.8}
+    zIndex={10}
+    left={`-${meta.centerPosition}px`}
     css={[
       isActive
         ? tw`opacity-100 animate-flyingMenuEntering`
         : tw`hidden opacity-0`,
     ]}
-    tw="absolute z-10 -ml-6 transform px-2 sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 animate-flyingMenuEntering"
   >
     <BoxedItems
       position="relative"
       bg="white"
       borderRadius={4}
       p={4}
-      width={150}
+      width={meta.menuWidth || 184}
+      pointer={`${meta.pointer}px` || '67.5px'}
       mt={3}
     >
       {links.map((link) =>
@@ -141,7 +181,7 @@ const FlyingMenu = ({ isActive, clickAwayRef, links }) => (
         ),
       )}
     </BoxedItems>
-  </div>
+  </Box>
 );
 
 const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
@@ -157,10 +197,9 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
     }
 
     return (
-      <div tw="relative" onMouseLeave={() => setIsActive(false)}>
-        <button
-          type="button"
-          tw="focus:outline-none"
+      <StyledItem tw="relative" onMouseLeave={() => setIsActive(false)}>
+        <StyledLink
+          data-text={text}
           onClick={() => {
             if (Array.isArray(links)) setIsActive(text);
           }}
@@ -171,55 +210,48 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
             if (Array.isArray(links)) setIsActive(text);
           }}
           tabIndex="0"
+          selected={isSelected}
+          colored={text === isActive}
+          hoverable={1}
+          isActive={text === isActive}
         >
-          <StyledP
-            isSelected={isSelected}
-            colored={text === isActive}
-            tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            hover
-            isActive={text === isActive}
-          >
-            {text}
-          </StyledP>
-        </button>
+          {text}
+        </StyledLink>
         <FlyingMenu
           clickAwayRef={ref}
           isActive={text === isActive}
           links={links}
+          meta={menuLinksMeta[text]}
         />
-      </div>
+      </StyledItem>
     );
   }
 
   return links.href.includes('http') ? (
-    <div tw="relative">
-      <a
+    <StyledItem tw="relative">
+      <StyledLink
+        data-text={text}
         href={`${links.href}`}
         role="button"
         tabIndex="0"
         target="_blank"
         tw="no-underline"
+        hoverable={1}
       >
-        <StyledP
-          tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          hover
-        >
-          {text}
-        </StyledP>
-      </a>
-    </div>
+        {text}
+      </StyledLink>
+    </StyledItem>
   ) : (
-    <div tw="relative">
-      <Link to={`${links.href}`} role="button" tabIndex="0" tw="no-underline">
-        <StyledP
-          isSelected={links.href.toLowerCase() === selected.toLowerCase()}
-          tw="font-sans capitalize rounded-md inline-flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          hover
-        >
-          {text}
-        </StyledP>
-      </Link>
-    </div>
+    <StyledItem tw="relative">
+      <LinkWrapper
+        data-text={text}
+        to={`${links.href}`}
+        selected={links.href.toLowerCase() === selected.toLowerCase()}
+        hoverable={1}
+      >
+        {text}
+      </LinkWrapper>
+    </StyledItem>
   );
 };
 
@@ -263,7 +295,7 @@ const Navbar = () => {
             />
           )}
 
-          <nav tw="flex flex-1 justify-end space-x-10 hidden md:flex items-center px-4 mr-6">
+          <nav tw="flex flex-1 justify-end space-x-5 hidden md:flex items-center px-4 mr-5">
             {Object.keys(menuLinks).map((menuLink) => {
               const links = menuLinks[menuLink];
               return (

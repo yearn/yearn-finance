@@ -12,7 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Wrapper = styled(Link)`
   height: 312px;
-  background-color: ${(props) => props.theme.vaultBackground};
+  background-color: ${(props) => props.theme.surface};
   border-radius: 15px;
   position: relative;
   text-decoration: none;
@@ -50,7 +50,6 @@ const Bottom = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0px 20px;
-  font-family: 'Roboto Light';
   font-style: normal;
   font-weight: bold;
 `;
@@ -66,7 +65,6 @@ const Top = styled.div`
   justify-content: space-between;
   font-size: 16px;
   padding: 0px 20px;
-  font-family: 'Roboto Medium';
   font-style: normal;
   font-weight: bold;
 `;
@@ -87,7 +85,6 @@ const StyledTokenIcon = styled(TokenIcon)`
 const ProtocolName = styled.div`
   font-weight: 900;
   font-size: 30px;
-  font-family: 'Roboto Medium';
   margin-bottom: 14px;
   line-height: 24px;
 `;
@@ -95,7 +92,6 @@ const ProtocolName = styled.div`
 const ProtocolUrl = styled.a`
   text-decoration: underline;
   font-weight: 500;
-  font-family: 'Roboto Medium';
   font-size: 16px;
   line-height: 16px;
   position: absolute;
@@ -114,7 +110,6 @@ const Card = styled.div`
 `;
 
 const Address = styled.div`
-  font-family: 'Roboto Mono Light';
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -144,13 +139,11 @@ const Clock = styled(Icon)`
 // `;
 
 const PercentLeft = styled.div`
-  font-family: 'Roboto Mono Light';
   font-weight: bold;
   font-size: 16px;
 `;
 
 const TotalCollateral = styled.div`
-  font-family: 'Roboto Mono Light';
   font-size: 14px;
   opacity: 0.5;
 `;

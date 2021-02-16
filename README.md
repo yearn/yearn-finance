@@ -38,6 +38,11 @@ pipx (to install brownie)
 eth-brownie
 ```
 
+**[Important]**:
+- SET `WEB3_PROVIDER_HTTPS` and `WEB3_PROVIDER_WSS` variables in the .env file with your alchemy key
+- Set `USE_LOCAL_RPC` variable to TRUE on .env file.
+- Change Metamask to Localhost RPC endpoint :)
+
 ```sh
 # terminal 1:
 export WEB3_INFURA_PROJECT_ID=your-infura-id
@@ -46,10 +51,6 @@ yarn fork:start
 # terminal 2:
 yarn dev
 ```
-
-**[Important]**:
-- Set USE_LOCAL_RPC variable to TRUE on .env file.
-- Change Metamask to Localhost RPC endpoint :)
 
 #### How to add new tokens
 - Open `internals/forknet/supply-tokens.py`

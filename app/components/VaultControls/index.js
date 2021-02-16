@@ -16,7 +16,7 @@ const MaxWrapper = styled.div`
   align-items: center;
   color: initial;
   position: relative;
-  top: 2px;
+  top: -2px;
 `;
 
 const StyledRoundedInput = styled(RoundedInput)`

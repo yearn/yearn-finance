@@ -171,7 +171,12 @@ export default function VaultControls(props) {
           <ActionButton
             disabled={!vaultContract || !tokenContract || depositsDisabled}
             handler={deposit}
-            text={tokenAllowance || pureEthereum > 0 ? 'Deposit' : 'Approve'}
+            text={
+              (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+              pureEthereum > 0
+                ? 'Deposit'
+                : 'Approve'
+            }
             title="Deposit into vault"
             showTooltip
             tooltipText={

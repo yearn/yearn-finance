@@ -449,42 +449,34 @@ const Vault = (props) => {
       );
 
       backscratcherInfo = (
-        <Box my={16} mx={70}>
-          <Text bold fontSize={4} mb={6}>
-            Read carefully before use
-          </Text>
-          <Grid container spacing={8}>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                This vault converts your CRV into yveCRV, earning you a
-                continuous share of Curve fees. The more converted, the greater
-                the rewards. Every week, these can be claimed from the vault as
-                3Crv (Curve’s 3pool LP token).
-              </Text>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                The operation is non-reversible: You can only convert CRV into
-                yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-                escrow.
-                <br />
-                <br />
-                After depositing join{' '}
-                <A
-                  href="https://sushiswap.fi/pair/0x10b47177e92ef9d5c6059055d92ddf6290848991"
-                  target="_blank"
-                >
-                  WETH/yveCRV-DAO pool
-                </A>{' '}
-                for 🍣 rewards and then{' '}
-                <A href="https://app.pickle.finance/jars" target="_blank">
-                  SLP YVECRV/ETH jar
-                </A>{' '}
-                for 🥒 rewards.
-              </Text>
-            </Grid>
-          </Grid>
-        </Box>
+        <AdditionalInfo>
+          <strong>Read carefully before use</strong>
+          <span className="main-text">
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve fees. The more converted, the greater the rewards.
+            Every week, these can be claimed from the vault as 3Crv (Curve’s
+            3pool LP token).
+          </span>
+          <span className="main-text">
+            The operation is non-reversible: You can only convert CRV into
+            yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+            escrow.
+          </span>
+          <span>
+            After depositing join{' '}
+            <A
+              href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
+              target="_blank"
+            >
+              WETH/yveCRV-DAO pool
+            </A>{' '}
+            for 🍣 rewards and then{' '}
+            <A href="https://app.pickle.finance/jars" target="_blank">
+              SLP YVECRV/ETH jar
+            </A>{' '}
+            for 🥒 rewards.
+          </span>
+        </AdditionalInfo>
       );
     } else {
       vaultTop = (
@@ -548,10 +540,7 @@ const Vault = (props) => {
             {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
-                <span>
-                  Due to recent hack, do not withdraw from DAI V1 vault if you
-                  do not want to realize losses.
-                </span>
+                <span>Your tokens can be safely withdrawn, now</span>
               </Notice>
             )} */}
             {backscratcherInfo}

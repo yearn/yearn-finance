@@ -48,7 +48,6 @@ function* coverDataLoadedSaga(action) {
   const collateralTokens = {};
   const account = yield select(selectAccount());
   const addTokens = (protocol) => {
-    console.log(protocol);
     const { claimAddress } = protocol.coverObjects[protocol.claimNonce].tokens;
     const { collaterals } = protocol;
     const setCollateral = (collateralArr) => {
@@ -60,7 +59,11 @@ function* coverDataLoadedSaga(action) {
     };
     _.each(collaterals, setCollateral);
     const claimPool = getClaimPool(payload.poolData, claimAddress);
-    claimTokens[claimAddress] = claimPool;
+    if (claimPool.noData) {
+      console.log(`No Claim Pool Available for ${claimAddress}`);
+    } else {
+      claimTokens[claimAddress] = claimPool;
+    }
   };
   _.each(filteredProtocols, addTokens);
 

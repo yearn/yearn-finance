@@ -239,20 +239,7 @@ const Vault = (props) => {
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
-  // TODO: Don't hardcode this
-  // const apy = vault.apy;
-  const apy = {
-    recommended: '0.7127102588488774',
-    type: 'curve',
-    composite: true,
-    description: 'Pool APY + Lending APY + Underlying APY',
-    data: {
-      baseApy: '.246559',
-      currentBoost: '2.5',
-      poolApy: '.1003',
-      totalApy: '.7127102588488774',
-    },
-  };
+  const { apy } = vault;
 
   const apyRecommended = truncateApy(apy.recommended);
 
@@ -277,7 +264,7 @@ const Vault = (props) => {
               <td>{apy.data.currentBoost}x</td>
             </tr>
             <tr>
-              <td>Base APY</td>
+              <td>Base CRV APY</td>
               <td>{truncateApy(apy.data.baseApy)}</td>
             </tr>
             <tr>
@@ -505,7 +492,11 @@ const Vault = (props) => {
             {multiplier}
           </Text>
           <Text large bold>
-            51.06%
+            <Tooltip title={apyTooltip} arrow>
+              <span>
+                <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
+              </span>
+            </Tooltip>
           </Text>
           <Text large bold>
             {vaultAssets}

@@ -1,5 +1,5 @@
 export const menuLinks = {
-  yield: [
+  invest: [
     {
       href: '/vaults',
       title: 'Vaults',
@@ -11,9 +11,9 @@ export const menuLinks = {
       description: '',
     },
   ],
-  cover: {
+  protect: {
     href: '/cover',
-    title: 'yCover',
+    title: 'Protect',
     description: '',
   },
   // earn: {
@@ -106,4 +106,31 @@ export const menuLinks = {
     href: 'https://v1.yearn.finance',
     title: 'Back to the old v1 UI',
   },
+};
+
+export const menuLinksMeta = {
+  invest: {
+    width: 43.11,
+    menuWidth: 186.01,
+    centerPosition: 71.45,
+    pointer: 68,
+  },
+  protect: {
+    width: 51.45,
+  },
+  gov: {
+    width: 26.775,
+    menuWidth: 169.675,
+    centerPosition: 71.45,
+    pointer: 60,
+  },
+  social: {
+    width: 40.59,
+    menuWidth: 140.565,
+    centerPosition: 46.775,
+    pointer: 42,
+  },
+  docs: { width: 33.2 },
+  security: { width: 57.06 },
+  v1: { width: 17.1 },
 };

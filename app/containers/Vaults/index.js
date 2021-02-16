@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
-import BackscratchersHeaders from 'components/BackscratchersHeaders';
 import {
   selectContractsByTag,
   selectBackscratcherVault,
@@ -12,15 +11,16 @@ import {
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
-import VaultsNavLinks from 'components/VaultsNavLinks';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
-import AddVault from 'components/AddVault';
+// import VaultsNavLinks from 'components/VaultsNavLinks';
+// import AddVault from 'components/AddVault';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Wrapper = styled.div`
   margin: 0 auto;
+  margin-top: 20px;
   @media (min-width: 768px) {
     width: 1088px;
   }
@@ -36,27 +36,28 @@ const Warning = styled.div`
   margin-top: 50px;
 `;
 
-const DevHeader = styled.div`
-  opacity: ${(props) => (props.devMode ? 1 : 0)};
-  transition: opacity 100ms ease-in, margin-top 100ms ease-out;
-  margin-top: -50px;
-  pointer-events: none;
-  ${(props) =>
-    props.devMode &&
-    css`
-      margin-top: 30px;
-      color: black;
-      transition: opacity 100ms ease-in, margin-top 100ms ease-out;
-      pointer-events: inherit;
-    `}
-`;
+// const DevHeader = styled.div`
+//   opacity: ${(props) => (props.devMode ? 1 : 0)};
+//   transition: opacity 100ms ease-in, margin-top 100ms ease-out;
+//   margin-top: -50px;
+//   pointer-events: none;
+//   ${(props) =>
+//     props.devMode &&
+//     css`
+//       margin-top: 30px;
+//       color: black;
+//       transition: opacity 100ms ease-in, margin-top 100ms ease-out;
+//       pointer-events: inherit;
+//     `}
+// `;
 
 const StyledAccordion = styled(Accordion)`
   width: 1085px;
+  padding-bottom: 10px;
 `;
 
 const Vaults = () => {
-  const devMode = true;
+  // const devMode = true;
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
   const account = useAccount();
@@ -77,7 +78,7 @@ const Vaults = () => {
   } else if (backscratcherVault) {
     backscratcherWrapper = (
       <WrapTable>
-        <BackscratchersHeaders />
+        <VaultsHeader backscratcher />
         <StyledAccordion defaultActiveKey={backscratcherVault.address}>
           <BackscratchersWrapper
             showDevVaults={showDevVaults}
@@ -90,14 +91,12 @@ const Vaults = () => {
 
   return (
     <Wrapper>
-      <DevHeader devMode={devMode}>
+      {/* <DevHeader devMode={devMode}>
         <VaultsNavLinks />
         <AddVault devVaults={showDevVaults} />
-      </DevHeader>
+      </DevHeader> */}
       {warning}
-
       {backscratcherWrapper}
-
       <WrapTable>
         {columnHeader}
         <StyledAccordion>

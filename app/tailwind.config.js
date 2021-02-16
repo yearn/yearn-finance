@@ -31,8 +31,8 @@ module.exports = {
     }),
     extend: {
       fontFamily: {
-        sans: 'Roboto',
-        mono: 'Roboto Mono Light',
+        sans: 'Open Sans',
+        mono: 'Open Sans',
       },
       colors: {
         // uses root variables in tailwind.css
@@ -40,7 +40,7 @@ module.exports = {
         secondary: 'var(--color-secondary)',
         whiteAlt: 'var(--color-white-alt)',
         yearn: {
-          blue: '#0657F9',
+          blue: '#006AE3',
           green: '#23D198',
           red: '#EF1E02',
           yellow: '#FABF06',
@@ -49,7 +49,7 @@ module.exports = {
 
       boxShadow: {
         yearn: {
-          blue: '0px 0px 10px 2px rgba(6, 87, 249, 0.1)',
+          blue: '#006AE3',
           green: '0px 0px 10px 2px rgba(35, 209, 152, 0.1)',
           red: '0px 0px 10px 2px rgba(239, 30, 2, 0.15)',
           yellow: '0px 0px 10px 2px rgba(239, 30, 2, 0.15)',

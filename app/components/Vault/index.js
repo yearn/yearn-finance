@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import AdditionalInfo from 'components/Vault/additionalInfo';
+import Grid from '@material-ui/core/Grid';
 import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
@@ -10,7 +10,6 @@ import AnimatedNumber from 'components/AnimatedNumber';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
-import Arrow from 'images/arrow.svg';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
@@ -19,6 +18,8 @@ import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
+import Text from 'components/Text';
+import Box from 'components/Box';
 // import tw from 'twin.macro';
 
 // const formatVaultStatistic = stat => {
@@ -82,12 +83,6 @@ const IconName = styled.div`
   text-overflow: ellipsis;
 `;
 
-const StyledArrow = styled.img`
-  margin-right: 30px;
-  transform: ${(props) => (props.expanded ? 'rotate(0)' : 'rotate(-180deg)')};
-  transition: transform 0.1s linear;
-`;
-
 const A = styled.a`
   display: inline-grid;
 `;
@@ -122,18 +117,22 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
-const Notice = styled.div`
-  padding: 1em 0;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
+// const Notice = styled.div`
+//   padding: 1em 0;
+//   display: flex;
+//   justify-content: center;
+//   width: 100%;
+// `;
 
-const NoticeIcon = styled(Icon)`
-  height: 1.2em;
-  position: relative;
+// const NoticeIcon = styled(Icon)`
+//   height: 1.2em;
+//   position: relative;
+//   cursor: pointer;
+//   margin: 0 0.8em;
+// `;
+
+const StyledText = styled(Text)`
   cursor: pointer;
-  margin: 0 0.8em;
 `;
 
 const truncateApy = (apy) => {
@@ -268,6 +267,7 @@ const Vault = (props) => {
 
   let vaultBottom;
   let vaultTop;
+  // eslint-disable-next-line no-unused-vars
   let vaultStats;
   let vaultControls;
   let backscratcherInfo;
@@ -419,22 +419,32 @@ const Vault = (props) => {
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address}>
               <div tw="flex items-center">
-                <IconName devMode={devMode}>{vaultName}</IconName>
+                <IconName devMode={devMode}>
+                  <Text large bold>
+                    {vaultName}
+                  </Text>
+                </IconName>
               </div>
             </LinkWrap>
           </IconAndName>
-          <div>
+          <Text large bold>
             <AnimatedNumber value={vaultBalanceOf} />
-          </div>
-          <div>{multiplier}</div>
-          <div>{apy}</div>
-          <div>{vaultAssets}</div>
-          <div>
+          </Text>
+          <Text large bold>
+            {multiplier}
+          </Text>
+          <Text large bold>
+            {apy}
+          </Text>
+          <Text large bold>
+            {vaultAssets}
+          </Text>
+          <Text large bold>
             <AnimatedNumber value={tokenBalanceOf} />{' '}
             <LinkWrap devMode={devMode} address={tokenAddress}>
               {tokenSymbol}
             </LinkWrap>
-          </div>
+          </Text>
         </ColumnListBackscratcher>
       );
 
@@ -477,22 +487,32 @@ const Vault = (props) => {
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address}>
               <div tw="flex items-center">
-                <IconName devMode={devMode}>{vaultName}</IconName>
+                <IconName devMode={devMode}>
+                  <Text large bold>
+                    {vaultName}
+                  </Text>
+                </IconName>
               </div>
             </LinkWrap>
           </IconAndName>
-          <div>{vault.type}</div>
-          <div>
+          <Text large bold>
+            {vault.type}
+          </Text>
+          <Text large bold>
             <AnimatedNumber value={vaultBalanceOf} />
-          </div>
-          <div>{apy}</div>
-          <div>{vaultAssets}</div>
-          <div>
+          </Text>
+          <Text large bold>
+            {apy}
+          </Text>
+          <Text large bold>
+            {vaultAssets}
+          </Text>
+          <Text large bold>
             <AnimatedNumber value={tokenBalanceOf} />{' '}
             <LinkWrap devMode={devMode} address={tokenAddress}>
               {tokenSymbol}
             </LinkWrap>
-          </div>
+          </Text>
         </ColumnList>
       );
       vaultStats = (
@@ -509,18 +529,20 @@ const Vault = (props) => {
           eventKey={accordionKey}
         >
           {vaultTop}
-          {vaultStats}
-          <StyledArrow src={Arrow} alt="arrow" expanded={active} />
+          {/* {vaultStats} */}
+          <StyledText fontWeight={600} mr={32}>
+            {active ? 'HIDE' : 'SHOW'}
+          </StyledText>
         </Accordion.Toggle>
         <Accordion.Collapse eventKey={accordionKey}>
           <Card.Body>
             {vaultBottom}
-            {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
               <Notice>
                 <NoticeIcon type="info" />
                 <span>Your tokens can be safely withdrawn, now</span>
               </Notice>
-            )}
+            )} */}
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>

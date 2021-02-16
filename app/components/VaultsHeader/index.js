@@ -1,23 +1,40 @@
 import React from 'react';
-import styled from 'styled-components';
 import ColumnList from 'components/Vault/columns';
+import Text from 'components/Text';
 
-const ColumnHeader = styled.div`
-  margin-bottom: 10px;
-  padding-top: 20px;
-  font-size: 17px;
-  text-transform: uppercase;
-`;
+const backscratcherGridTemplate = '190px 155px 155px 140px 160px 140px 1fr';
+const vaultsGridTemplate = '210px 110px 160px 140px 200px 1fr';
 
-export default function VaultsHeader() {
+const backscratcherColumns = [
+  'Asset',
+  'Deposited',
+  'Multiplier',
+  'Growth',
+  'Total Assets',
+  'Available to deposit',
+];
+const vaultColumns = [
+  'Asset',
+  'Version',
+  'Deposited',
+  'Growth',
+  'Total Assets',
+  'Available to deposit',
+];
+
+export default function VaultsHeader({ backscratcher }) {
+  const columns = backscratcher ? backscratcherColumns : vaultColumns;
   return (
-    <ColumnList>
-      <ColumnHeader>Asset</ColumnHeader>
-      <ColumnHeader>Version</ColumnHeader>
-      <ColumnHeader>Deposited</ColumnHeader>
-      <ColumnHeader>Growth</ColumnHeader>
-      <ColumnHeader>Total Assets</ColumnHeader>
-      <ColumnHeader>Available to deposit</ColumnHeader>
+    <ColumnList
+      gridTemplate={
+        backscratcher ? backscratcherGridTemplate : vaultsGridTemplate
+      }
+    >
+      {columns.map((column) => (
+        <Text key={column} large mb={18} pt={20}>
+          {column}
+        </Text>
+      ))}
     </ColumnList>
   );
 }

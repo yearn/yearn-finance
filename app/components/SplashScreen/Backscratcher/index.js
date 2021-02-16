@@ -2,105 +2,68 @@ import React from 'react';
 import 'twin.macro';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Text from 'components/Text';
 
 import LogoImg from '../../../images/Splash/logo.svg';
 
 const Logo = styled.div`
   img {
-    width: 60vw;
-    max-width: 270px;
+    width: 40vw;
+    max-width: 210px;
+    min-width: 164px;
     opacity: 0.8;
     margin: 0 auto;
   }
 `;
 
-const HeaderText = styled.div`
-  font-size: 19px;
-  font-family: 'roboto light';
-  text-align: center;
-  letter-spacing: 2.2px;
-  @media (max-width: 570px) {
-    max-width: 280px;
+// const HeaderText = styled.div`
+//   font-size: 19px;
+//   text-align: center;
+//   letter-spacing: 2.2px;
+//   @media (max-width: 570px) {
+//     max-width: 280px;
+//   }
+//   line-height: 28px;
+//   margin-bottom: 10px;
+// `;
+
+const StyledLink = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.primary};
+  color: ${(props) => props.theme.onPrimary};
+  border-radius: 33px;
+  text-decoration: none;
+  :focus {
+    outline: 0;
   }
-  line-height: 28px;
-  margin-bottom: 10px;
 `;
-
-const Percent = styled.div`
-  display: inline;
-  opacity: 1;
-`;
-
-const Grey = styled.div`
-  display: inline;
-  opacity: 0.5;
-`;
-
-const HeaderTextBig = {
-  fontSize: '40px',
-  letterSpacing: '1.0px',
-  marginBottom: '6px',
-  lineHeight: '43px',
-  marginTop: '30px',
-  opacity: '1',
-};
-
-const buttonLink = {
-  background: '#4F41FF',
-};
 
 const backgroundStyle = `
-  height: calc(100vh - 64px);
-  @media (max-width: 570px) {
-    height: calc(100vh);
-    font-size: 35px;
-  }
-  background-color: #111;
-`;
-
-const imageStyle = `
-  animation: cowmove 4s infinite;
-  @keyframes cowmove{
-      0% {
-        transform: rotate(0deg);
-      }
-      49% {
-        transform: rotate(-20deg);
-      }
-  }
-  opacity: .9;
+  padding-top: 80px;
 `;
 
 export const Backscratcher = () => (
   <div
-    tw="w-screen relative flex flex-col justify-center items-center overflow-hidden"
+    tw="w-screen relative flex flex-1 flex-col justify-center items-center overflow-hidden"
     css={backgroundStyle}
   >
-    <div tw="flex flex-col justify-center items-center z-10 absolute">
-      <Logo tw="mb-8">
-        <img css={imageStyle} src={LogoImg} alt="logo" />
-      </Logo>
+    <Logo>
+      <img src={LogoImg} alt="logo" />
+    </Logo>
 
-      <div tw="text-white font-bold md:text-3xl justify-center flex flex-col items-center text-2xl">
-        <HeaderText style={HeaderTextBig}>Maximize your CRV rewards</HeaderText>
-      </div>
-      <div tw="text-white font-bold md:text-3xl justify-center flex flex-col items-center mb-6 text-2xl">
-        <HeaderText>
-          <Grey>Earn</Grey> <Percent>38% more</Percent>{' '}
-          <Grey>in weekly fees staking with Yearn</Grey>
-        </HeaderText>
-      </div>
+    <Text bold fontSize={[44, 61]} center lineHeight="1" mt={30} mx={[5, 0]}>
+      Maximize your CRV Rewards
+    </Text>
+    <Text large center my={30} mx={[80, 0]}>
+      Earn 38% more in weekly fees staking with yearn
+    </Text>
 
-      <Link
-        style={buttonLink}
-        type="button"
-        tw="bg-yearn-blue px-6 rounded-lg py-1.5 flex justify-center items-center align-middle no-underline"
-        to="/vaults"
-      >
-        <p tw="text-white text-base font-sans font-black no-underline">
-          GO TO VAULTS
-        </p>
-      </Link>
-    </div>
+    <StyledLink to="/vaults">
+      <Text bold fontSize={[1, 2]} px={6} py={4} center>
+        Go to vaults
+      </Text>
+    </StyledLink>
   </div>
 );

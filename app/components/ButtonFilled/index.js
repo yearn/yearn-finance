@@ -18,28 +18,30 @@ export default function ButtonFilled(props) {
   } = props;
   const showDevVaults = useShowDevVaults();
 
+  // TODO: Refactor to use theme colors
   const ColorButton = withStyles(() => ({
     root: {
-      fontFamily: 'Roboto',
       fontSize: '16px',
+      fontWeight: 'bold',
+      borderRadius: '7px',
       padding: '8px 20px 8px 20px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
       direction: 'ltr',
       height: '46px',
       textTransform: showDevVaults ? 'inherit' : 'capitalize',
-      backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+      backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
       color: color === 'secondary' ? '#333' : '#fff',
       '&:hover': {
-        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
       },
       '&:hover.Mui-disabled': {
-        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
       },
       textAlign: 'center',
       '&.Mui-disabled': {
         opacity: 0.5,
-        backgroundColor: color === 'secondary' ? '#999' : '#0657F9',
+        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
         color: color === 'secondary' ? '#333' : '#fff',
         cursor: 'not-allowed',
         pointerEvents: 'auto',

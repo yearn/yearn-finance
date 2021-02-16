@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import styled from 'styled-components';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { compose } from 'redux';
 import Vaults from 'containers/Vaults/Loadable';
@@ -10,8 +9,7 @@ import Cover from 'containers/Cover/Loadable';
 import Cream from 'containers/Cream/Loadable';
 import LiteVaults from 'containers/LiteVaults/Loadable';
 import LiteCover from 'containers/LiteCover/Loadable';
-
-const Wrapper = styled.div``;
+import Box from 'components/Box';
 
 let header;
 
@@ -41,10 +39,10 @@ if (!liteMode) {
 
 function Main() {
   return (
-    <Wrapper>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       {header}
       {content}
-    </Wrapper>
+    </Box>
   );
 }
 

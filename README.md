@@ -51,6 +51,13 @@ yarn dev
 - Set USE_LOCAL_RPC variable to TRUE on .env file.
 - Change Metamask to Localhost RPC endpoint :)
 
+#### How to add new tokens
+- Open `internals/forknet/supply-tokens.py`
+- Add the desired token like `crvToken = Contract.from_explorer("0xD533a949740bb3306d119CC777fa900bA034cd52")`
+- Go to etherscan and find a whale that has enough balance of that token and
+- Add the whale like `crvWhale = accounts.at("0x4ce799e6ed8d64536b67dd428565d52a531b3640", force=True)`
+- Set the desired amount like `crvToken.transfer(account, "1000 ether", {'from': crvWhale})`
+- Restart or run `yarn fork start`
 
 ## Production
 

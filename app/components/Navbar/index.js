@@ -2,6 +2,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { useSelector } from 'react-redux';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import CloseIcon from '@material-ui/icons/Close';
+import MenuIcon from '@material-ui/icons/Menu';
 import { selectLocation } from 'containers/App/selectors';
 import ConnectButton from 'components/ConnectButton';
 import Text from 'components/Text';
@@ -9,7 +12,7 @@ import Box from 'components/Box';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import YearnLogo from 'images/yearn-logo.svg';
-import { FlyingMobileMenu } from './FlyingMobileMenu';
+import MobileMenu from './MobileMenu';
 import { menuLinks, menuLinksMeta } from './menuLinks';
 
 const StyledItem = styled.li`
@@ -60,7 +63,7 @@ const LinkWrapper = styled(Link)`
   ${ItemStyle}
 `;
 
-const StyledDiv = styled.div`
+const StyledNav = styled(Box)`
   background-color: ${(props) => props.theme.background};
   box-shadow: ${(props) =>
     props.colored ? '0px 4px 5px 2px rgba(0, 0, 0, 0.17)' : null};
@@ -256,9 +259,9 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
 };
 
 const Navbar = () => {
+  const isScreenMd = useMediaQuery('(min-width:768px)');
   const [isActive, setIsActive] = React.useState(undefined);
   const [isMobileOpen, setIsMobileOpen] = React.useState(false);
-  const [mobileIsActive, setMobileIsActive] = React.useState(false);
   const location = useSelector(selectLocation());
   const { pathname } = location;
 
@@ -278,70 +281,55 @@ const Navbar = () => {
   }, []);
 
   return (
-    <StyledDiv colored={!isScrollTop} tw="sticky top-0 z-20">
-      <div tw="px-4 sm:px-6">
-        <div tw="flex py-4 items-center">
-          <div tw="flex self-center">
-            <Link to="/" tw="no-underline mx-auto md:mx-0">
-              <img src={YearnLogo} alt="Yearn" height="48" width="150" />
-            </Link>
-          </div>
-
-          {isMobileOpen && (
-            <FlyingMobileMenu
-              setMobileIsActive={setMobileIsActive}
-              mobileIsActive={mobileIsActive}
-              setIsMobileOpen={setIsMobileOpen}
-            />
-          )}
-
-          <nav tw="flex flex-1 justify-end space-x-5 hidden md:flex items-center px-4 mr-5">
-            {Object.keys(menuLinks).map((menuLink) => {
-              const links = menuLinks[menuLink];
-              return (
-                <MenuItem
-                  key={menuLink}
-                  setIsActive={setIsActive}
-                  isActive={isActive}
-                  text={menuLink}
-                  links={links}
-                  selected={pathname}
-                />
-              );
-            })}
-          </nav>
-
-          <nav tw="flex invisible md:visible">
-            <ConnectButton />
-          </nav>
-
-          <div tw="flex flex-1 justify-end -mr-3 md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsMobileOpen(true)}
-              tw="rounded-md p-2 inline-flex items-center justify-center text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-            >
-              <span tw="sr-only">Open menu</span>
-              <svg
-                tw="h-8 w-8"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <StyledNav
+      position="sticky"
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      p={6}
+      top={0}
+      zIndex={20}
+      colored={!isScrollTop}
+      height={isScreenMd ? 80 : 66}
+    >
+      <div tw="flex self-center">
+        <Link to="/" tw="no-underline" onClick={() => setIsMobileOpen(false)}>
+          <img src={YearnLogo} alt="Yearn" width={isScreenMd ? '150' : '110'} />
+        </Link>
       </div>
-    </StyledDiv>
+
+      {isMobileOpen && <MobileMenu close={() => setIsMobileOpen(false)} />}
+
+      <nav tw="flex flex-1 justify-end space-x-5 hidden md:flex items-center px-4 mr-5">
+        {Object.keys(menuLinks).map((menuLink) => {
+          const links = menuLinks[menuLink];
+          return (
+            <MenuItem
+              key={menuLink}
+              setIsActive={setIsActive}
+              isActive={isActive}
+              text={menuLink}
+              links={links}
+              selected={pathname}
+            />
+          );
+        })}
+      </nav>
+
+      <nav tw="flex invisible md:visible">
+        <ConnectButton />
+      </nav>
+
+      {isMobileOpen && (
+        <div tw="flex flex-1 justify-end -mr-1">
+          <CloseIcon fontSize="large" onClick={() => setIsMobileOpen(false)} />
+        </div>
+      )}
+
+      {!isMobileOpen && !isScreenMd && (
+        <MenuIcon onClick={() => setIsMobileOpen(true)} />
+      )}
+    </StyledNav>
   );
 };
 

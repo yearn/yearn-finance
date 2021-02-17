@@ -124,7 +124,7 @@ const InfoIcon = styled(Icon)`
 
 const Apy = styled.div`
   display: inline-block;
-  width: 65px;
+  width: 73px;
 `;
 
 const TooltipTable = styled.table`

@@ -13,6 +13,8 @@ const Logo = styled.div`
     min-width: 164px;
     opacity: 0.8;
     margin: 0 auto;
+    mix-blend-mode: lighten;
+    opacity: 100%;
   }
 `;
 
@@ -40,15 +42,8 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const backgroundStyle = `
-  padding-top: 80px;
-`;
-
 export const Backscratcher = () => (
-  <div
-    tw="w-screen relative flex flex-1 flex-col justify-center items-center overflow-hidden"
-    css={backgroundStyle}
-  >
+  <div tw="w-screen relative flex flex-1 flex-col justify-center items-center overflow-hidden">
     <Logo>
       <img src={LogoImg} alt="logo" />
     </Logo>

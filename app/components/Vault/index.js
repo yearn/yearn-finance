@@ -261,7 +261,7 @@ const Vault = (props) => {
           <tbody>
             <tr>
               <td>Boost</td>
-              <td>{apy.data.currentBoost}x</td>
+              <td>{apy.data.currentBoost.toFixed(2)}x</td>
             </tr>
             <tr>
               <td>Base CRV APY</td>

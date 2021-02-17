@@ -74,6 +74,7 @@ export const getClaimPool = (poolData, claimAddress) => {
       symbol: 'N/A',
       swapFee: 0,
       liquidity: 0,
+      noData: true,
     };
   }
   return claimPoolData;

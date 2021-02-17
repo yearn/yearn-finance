@@ -124,7 +124,7 @@ const InfoIcon = styled(Icon)`
 
 const Apy = styled.div`
   display: inline-block;
-  width: 65px;
+  width: 73px;
 `;
 
 const TooltipTable = styled.table`
@@ -260,16 +260,16 @@ const Vault = (props) => {
         <TooltipTable>
           <tbody>
             <tr>
-              <td>Boost</td>
-              <td>{apy.data.currentBoost}x</td>
+              <td>Pool APY</td>
+              <td>{truncateApy(apy.data.poolApy)}</td>
             </tr>
             <tr>
               <td>Base CRV APY</td>
               <td>{truncateApy(apy.data.baseApy)}</td>
             </tr>
             <tr>
-              <td>Pool APY</td>
-              <td>{truncateApy(apy.data.poolApy)}</td>
+              <td>Boost</td>
+              <td>{apy.data.currentBoost.toFixed(2)}x</td>
             </tr>
             <tr>
               <td>Total APY</td>

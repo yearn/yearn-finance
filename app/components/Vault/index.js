@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
+import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
 import VaultButtons from 'components/VaultButtons';
@@ -117,6 +117,24 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
+const InfoIcon = styled(Icon)`
+  display: inline-block;
+  margin-left: 3px;
+`;
+
+const Apy = styled.div`
+  display: inline-block;
+  width: 65px;
+`;
+
+const TooltipTable = styled.table`
+  > tbody > tr > td {
+    &:first-of-type {
+      padding-right: 10px;
+    }
+  }
+`;
+
 // const Notice = styled.div`
 //   padding: 1em 0;
 //   display: flex;
@@ -139,7 +157,7 @@ const truncateApy = (apy) => {
   if (!apy) {
     return 'N/A';
   }
-  const truncatedApy = apy && apy.toFixed(2);
+  const truncatedApy = (apy && apy * 100).toFixed(2);
   const apyStr = `${truncatedApy}%`;
   return apyStr;
 };
@@ -221,8 +239,48 @@ const Vault = (props) => {
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
-  const apyOneMonthSample = _.get(vault, 'apy.oneMonthSample');
-  const apy = truncateApy(apyOneMonthSample * 100);
+  const { apy } = vault;
+
+  const apyRecommended = truncateApy(apy.recommended);
+
+  const apyType = apy.type;
+  let apyTooltip = (
+    <div>
+      Annualized continuous compound interest
+      <br />
+      (one month sample)
+    </div>
+  );
+  if (apyType === 'curve') {
+    apyTooltip = (
+      <div>
+        {apy.description}
+        <br />
+        <br />
+        <TooltipTable>
+          <tbody>
+            <tr>
+              <td>Boost</td>
+              <td>{apy.data.currentBoost}x</td>
+            </tr>
+            <tr>
+              <td>Base CRV APY</td>
+              <td>{truncateApy(apy.data.baseApy)}</td>
+            </tr>
+            <tr>
+              <td>Pool APY</td>
+              <td>{truncateApy(apy.data.poolApy)}</td>
+            </tr>
+            <tr>
+              <td>Total APY</td>
+              <td>{truncateApy(apy.data.totalApy)}</td>
+            </tr>
+          </tbody>
+        </TooltipTable>
+      </div>
+    );
+  }
+
   const tokenBalanceOf = tokenBalance
     ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed()
     : '0.00';
@@ -434,7 +492,11 @@ const Vault = (props) => {
             {multiplier}
           </Text>
           <Text large bold>
-            {apy}
+            <Tooltip title={apyTooltip} arrow>
+              <span>
+                <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
+              </span>
+            </Tooltip>
           </Text>
           <Text large bold>
             {vaultAssets}
@@ -509,9 +571,15 @@ const Vault = (props) => {
           <Text large bold>
             <AnimatedNumber value={vaultBalanceOf} />
           </Text>
+
           <Text large bold>
-            {apy}
+            <Tooltip title={apyTooltip} arrow>
+              <span>
+                <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
+              </span>
+            </Tooltip>
           </Text>
+
           <Text large bold>
             {vaultAssets}
           </Text>

@@ -148,8 +148,6 @@ const Vaults = () => {
 
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
 
-  console.log(items);
-
   let columnHeader;
   let backscratcherWrapper;
   if (showDevVaults) {

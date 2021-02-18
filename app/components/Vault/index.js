@@ -280,6 +280,31 @@ const Vault = (props) => {
       </div>
     );
   }
+  if (vaultIsBackscratcher) {
+    apyTooltip = (
+      <div>
+        Boosted yveCRV APY
+        <br />
+        <br />
+        <TooltipTable>
+          <tbody>
+            <tr>
+              <td>veCRV APY</td>
+              <td>{truncateApy(apy.data.poolApy)}</td>
+            </tr>
+            <tr>
+              <td>Boost</td>
+              <td>{apy.data.currentBoost.toFixed(2)}x</td>
+            </tr>
+            <tr>
+              <td>Total APY</td>
+              <td>{truncateApy(apy.data.totalApy)}</td>
+            </tr>
+          </tbody>
+        </TooltipTable>
+      </div>
+    );
+  }
 
   const tokenBalanceOf = tokenBalance
     ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed()

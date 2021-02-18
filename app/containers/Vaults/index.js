@@ -57,7 +57,6 @@ const StyledAccordion = styled(Accordion)`
 `;
 
 const Vaults = () => {
-  // const devMode = true;
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
   const account = useAccount();
@@ -114,7 +113,10 @@ const BackscratchersWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const currentEventKey = useContext(AccordionContext);
-
+  const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost');
+  const multiplierText = `${multiplier.toFixed(2)}x`;
+  backscratcherVault.multiplier = multiplierText;
+  backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (

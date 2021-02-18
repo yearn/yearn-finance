@@ -66,7 +66,6 @@ function* fetchVaults() {
       icon: null,
       symbol: 'yveCRV',
       apy: {},
-      multiplier: '1.367x',
       address: '0xc5bDdf9843308380375a611c18B50Fb9341f502A',
       strategies: [],
       endorsed: false,

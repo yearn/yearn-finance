@@ -72,7 +72,7 @@ export default function VaultsHeader({ backscratcher, requestSort = null, sortCo
           <StyledText key={column} large mb={18} pt={20} sortKey={sortKey} onClick={columnClick}>
             {column} {sortArrow}
           </StyledText>
-        )
+        );
       })}
     </ColumnList>
   );

@@ -19,7 +19,6 @@ import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -80,6 +79,7 @@ const useSortableData = (items, config = null) => {
 
   const requestSort = (key) => {
     let direction = 'descending';
+    let newKey = key;
     if (
       sortConfig &&
       sortConfig.key === key &&
@@ -91,10 +91,10 @@ const useSortableData = (items, config = null) => {
       sortConfig.key === key &&
       sortConfig.direction === 'ascending'
     ) {
-      key = null;
+      newKey = null;
       direction = null; 
     }
-    setSortConfig({ key, direction });
+    setSortConfig({ key: newKey, direction });
   };
 
   return { items: sortedItems, requestSort, sortConfig };
@@ -115,24 +115,20 @@ const Vaults = () => {
 
   vaultItems = _.map(vaultItems, (vault) => {
     const vaultContractData = allContracts[vault.address];
-
-    let newVault;
-    newVault = _.merge(vault, vaultContractData);
+    const newVault = _.merge(vault, vaultContractData);
 
     const {
-      balance,
       balanceOf,
       decimals,
-      getPricePerFullShare,
+      getPricePerFullShare,gi
       pricePerShare,
-      totalAssets
     } = newVault;
 
     // Value Deposited
     const v2Vault = vault.type === 'v2' || vault.apiVersion;
     const price = v2Vault ? pricePerShare / (10 ** decimals) : getPricePerFullShare / (10 ** 18);
     const vaultBalanceOf = balanceOf / (10 ** decimals) * price;
-    newVault.valueDeposited = vaultBalanceOf ? vaultBalanceOf : 0;
+    newVault.valueDeposited = vaultBalanceOf || 0;
 
     // Growth
     newVault.valueApy = newVault.apy.recommended;
@@ -143,9 +139,9 @@ const Vaults = () => {
     // Available to Deposit
     const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
     const tokenContractData = allContracts[tokenContractAddress];
-    let tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf');
+    const tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf');
     const tokenBalanceOf = tokenBalance ? tokenBalance / (10 ** decimals) : 0;
-    newVault.valueAvailableToDeposit = tokenBalanceOf ? tokenBalanceOf : 0;
+    newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
     return newVault;
   });

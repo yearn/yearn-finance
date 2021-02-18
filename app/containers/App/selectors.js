@@ -175,29 +175,10 @@ export const selectOrderedVaults = createSelector(
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
     // Remove non-endorsed v2 vaults
-    let filteredVaults = _.filter(
+    const filteredVaults = _.filter(
       vaults,
       (vault) => !(vault.type === 'v2' && vault.endorsed === false),
     );
-
-    // TODO: REMOVE WHEN crvUSDN APY DATA IS CORRECT
-    filteredVaults = filteredVaults.map((vault) => {
-      if (vault.displayName === 'crvUSDN') {
-        const updatedVault = vault;
-        updatedVault.apy.data = {
-          ...vault.apy.data,
-          baseApy: vault.apy.data.baseApy,
-          boostedApy: vault.apy.data.baseApy * vault.apy.data.currentBoost,
-          totalApy:
-            vault.apy.data.baseApy * vault.apy.data.currentBoost +
-            vault.apy.data.poolApy,
-        };
-        updatedVault.apy.recommended = updatedVault.apy.data.totalApy;
-        return updatedVault;
-      }
-
-      return vault;
-    });
 
     // If no contract data is available sort by vault version
     if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {

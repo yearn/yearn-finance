@@ -50,18 +50,33 @@ const appReducer = (state = initialState, action) =>
         draft.vaults = action.vaults;
         checkReadyState();
         break;
-      case VAULTS_LOADED:
+      case VAULTS_LOADED: {
         draft.loading.vaults = false;
         draft.vaults = action.vaults.filter(
           (vault) =>
             !vault.tags || vault.tags.find((tag) => tag !== 'backscratcher'),
         );
+
+        const usdnVault = _.find(action.vaults, { displayName: 'crvUSDN' });
+        let { baseApy } = usdnVault.apy.data;
+        baseApy *= 0.5;
+        usdnVault.apy.data = {
+          ...usdnVault.apy.data,
+          baseApy,
+          boostedApy: baseApy * usdnVault.apy.data.currentBoost,
+          totalApy:
+            baseApy * usdnVault.apy.data.currentBoost +
+            usdnVault.apy.data.poolApy,
+        };
+        usdnVault.apy.recommended = usdnVault.apy.data.totalApy;
+
         draft.backscratcher = action.vaults.find((vault) => {
           if (!vault.tags) return false;
           return vault.tags.find((tag) => tag === 'backscratcher');
         });
         checkReadyState();
         break;
+      }
       case CONNECTION_CONNECTED:
         draft.loading.web3 = false;
         checkReadyState();

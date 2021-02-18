@@ -85,6 +85,7 @@ const IconName = styled.div`
 
 const A = styled.a`
   display: inline-grid;
+  text-decoration: underline;
 `;
 
 const Td = styled.td`

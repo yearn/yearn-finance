@@ -3,10 +3,17 @@ import { styled } from 'twin.macro';
 import ENS from 'ethjs-ens';
 import { getShortenedAddress } from 'utils/string';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
+import Text from 'components/Text';
 
 const ConnectedAccount = styled.button`
-  border: 1px solid #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid
+    ${(props) => (props.inverted ? props.theme.primary : '#fff')};
   border-radius: 33px;
+  width: ${(props) => (props.inverted ? '100%' : null)};
   :focus {
     outline: 0;
   }
@@ -22,8 +29,12 @@ const ConnectedCircle = styled.div`
   margin-right: 5px;
 `;
 
+const StyledText = styled(Text)`
+  color: ${(props) => (props.inverted ? props.theme.primary : '#4b9fff')};
+`;
+
 export default function Account(props) {
-  const { account, onClick, className } = props;
+  const { account, onClick, className, inverted } = props;
   const web3 = useWeb3();
   const [address, setAddress] = React.useState(getShortenedAddress(account));
 
@@ -50,10 +61,16 @@ export default function Account(props) {
     setAddressEnsName();
   }, [account, address, web3]);
   return (
-    <ConnectedAccount onClick={onClick} className={className}>
-      <p tw="text-sm font-mono">
-        <ConnectedCircle /> {address}
-      </p>
+    <ConnectedAccount
+      onClick={onClick}
+      className={className}
+      inverted={inverted}
+    >
+      <ConnectedCircle />
+      <StyledText small center fontWeight={1} inverted={inverted}>
+        {' '}
+        {address}
+      </StyledText>
     </ConnectedAccount>
   );
 }

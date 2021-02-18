@@ -74,7 +74,7 @@ function CoverCards() {
 
   const sortedProtocols = _.orderBy(
     protocolsWithClaimData,
-    (protocol) => protocol.claimTokenBalanceOf,
+    (protocol) => protocol.claimTokenBalanceOf || 0,
     'desc',
   );
 

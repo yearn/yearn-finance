@@ -16,15 +16,6 @@ const StyledButton = styled.button`
   }
 `;
 
-// const StyledButton = styled.button(() => [
-//   tw`
-//   rounded-xl border-2 border-yearn-blue px-4
-//   items-center justify-center align-middle
-//   flex hover:text-yearn-blue py-1
-//   uppercase
-//   `,
-// ]);
-
 export default function ConnectButton(props) {
   const { className } = props;
   const wallet = useWallet();

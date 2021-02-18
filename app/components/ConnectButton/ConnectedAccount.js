@@ -1,19 +1,25 @@
 import React from 'react';
-import tw, { styled } from 'twin.macro';
+import { styled } from 'twin.macro';
 import ENS from 'ethjs-ens';
 import { getShortenedAddress } from 'utils/string';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 
 const ConnectedAccount = styled.button`
-  width: 130px;
-  ${tw`
-  md:w-auto border-2 border-yearn-blue rounded-xl
-  py-1
-  px-4 items-center justify-center align-middle
-  text-xs flex
-  bg-gradient-to-r from-gray-900 to-yearn-blue
-  text-white
-  `}
+  border: 1px solid #fff;
+  border-radius: 33px;
+  :focus {
+    outline: 0;
+  }
+  padding: 4px 16px;
+`;
+
+const ConnectedCircle = styled.div`
+  background-color: #23d198;
+  border-radius: 50%;
+  width: 10px;
+  display: inline-block;
+  height: 10px;
+  margin-right: 5px;
 `;
 
 export default function Account(props) {
@@ -45,7 +51,9 @@ export default function Account(props) {
   }, [account, address, web3]);
   return (
     <ConnectedAccount onClick={onClick} className={className}>
-      <p tw="text-sm font-mono">{address}</p>
+      <p tw="text-sm font-mono">
+        <ConnectedCircle /> {address}
+      </p>
     </ConnectedAccount>
   );
 }

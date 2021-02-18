@@ -139,7 +139,7 @@ const Vaults = () => {
     // Available to Deposit
     const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
     const tokenContractData = allContracts[tokenContractAddress];
-    const tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf');
+    const tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf[0].value');
     const tokenBalanceOf = tokenBalance ? tokenBalance / (10 ** decimals) : 0;
     newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 

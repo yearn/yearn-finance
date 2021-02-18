@@ -93,7 +93,7 @@ const useSortableData = (items, config = null) => {
       sortConfig.direction === 'ascending'
     ) {
       newKey = null;
-      direction = null; 
+      direction = null;
     }
     setSortConfig({ key: newKey, direction });
   };
@@ -118,15 +118,9 @@ const Vaults = () => {
     const vaultContractData = allContracts[vault.address];
     const newVault = _.merge(vault, vaultContractData);
 
-    const {
-      decimals
-    } = vault;
+    const { decimals } = vault;
 
-    const {
-      balanceOf,
-      getPricePerFullShare,
-      pricePerShare,
-    } = newVault;
+    const { balanceOf, getPricePerFullShare, pricePerShare } = newVault;
 
     // Value Deposited
     const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -149,18 +143,26 @@ const Vaults = () => {
     newVault.valueDeposited = vaultBalanceOf || 0;
 
     // Growth
-    newVault.valueApy = newVault.apy.recommended;
+    newVault.valueApy = _.get(newVault, 'apy.recommended');
 
     // Total Assets
-    let vaultAssets = _.get(newVault, 'balance[0].value') || _.get(newVault, 'totalAssets[0].value'); 
-    vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toNumber();
-    newVault.valueTotalAssets = vaultAssets; 
+    let vaultAssets =
+      _.get(newVault, 'balance[0].value') ||
+      _.get(newVault, 'totalAssets[0].value');
+    vaultAssets = new BigNumber(vaultAssets)
+      .dividedBy(10 ** decimals)
+      .toNumber();
+    newVault.valueTotalAssets = vaultAssets;
 
     // Available to Deposit
     const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
     const tokenContractData = allContracts[tokenContractAddress];
-    const tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf[0].value');
-    const tokenBalanceOf = tokenBalance ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber() : 0;
+    const tokenBalance = vault.pureEthereum
+      ? ethBalance
+      : _.get(tokenContractData, 'balanceOf[0].value');
+    const tokenBalanceOf = tokenBalance
+      ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber()
+      : 0;
     newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
     return newVault;
@@ -173,7 +175,9 @@ const Vaults = () => {
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
-    columnHeader = <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />;
+    columnHeader = (
+      <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />
+    );
   }
 
   let warning;

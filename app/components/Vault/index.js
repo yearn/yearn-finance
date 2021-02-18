@@ -242,9 +242,9 @@ const Vault = (props) => {
 
   const { apy } = vault;
 
-  const apyRecommended = truncateApy(apy.recommended);
+  const apyRecommended = truncateApy(_.get(apy, 'recommended'));
 
-  const apyType = apy.type;
+  const apyType = apy && apy.type;
   let apyTooltip = (
     <div>
       Annualized continuous compound interest

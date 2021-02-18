@@ -5,6 +5,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import {
+  selectAllContracts,
   selectContractsByTag,
   selectBackscratcherVault,
   selectOrderedVaults,
@@ -17,6 +18,7 @@ import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -56,6 +58,40 @@ const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
 `;
 
+const useSortableData = (items, config = null) => {
+  const [sortConfig, setSortConfig] = React.useState(config);
+
+  const sortedItems = React.useMemo(() => {
+    const sortableItems = Object.values(items);
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [items, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === 'ascending'
+    ) {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  return { items: sortedItems, requestSort, sortConfig };
+};
+
 const Vaults = () => {
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
@@ -64,14 +100,37 @@ const Vaults = () => {
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const backscratcherVault = useSelector(selectBackscratcherVault());
-  const vaultItems = showDevVaults ? localContracts : orderedVaults;
+  const allContracts = useSelector(selectAllContracts());
+  let vaultItems = showDevVaults ? localContracts : orderedVaults;
+
+  const injectTokenBalanceOf = (vault) => {
+    const newVault = vault;
+    const { tokenAddress } = vault;
+    const tokenContractData = allContracts[tokenAddress];
+    const tokenBalanceOf = _.get(tokenContractData, 'balanceOf[0].value');
+    newVault.tokenBalanceOf = tokenBalanceOf;
+    return newVault;
+  };
+
+  vaultItems = _.map(vaultItems, (vault) => {
+    let newVault;
+    const vaultContractData = allContracts[vault.address];
+    newVault = _.merge(vault, vaultContractData);
+    newVault.balance = new BigNumber(vault.balance);
+    newVault.apyRecommended = vault.apy.recommended;
+    newVault = injectTokenBalanceOf(newVault);
+    return newVault;
+  });
+
+  console.log(vaultItems);
+
+  const { items, requestSort, sortConfig } = useSortableData(vaultItems);
   let columnHeader;
   let backscratcherWrapper;
-
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
-    columnHeader = <VaultsHeader />;
+    columnHeader = <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />;
   }
 
   let warning;
@@ -103,7 +162,7 @@ const Vaults = () => {
         {columnHeader}
         <StyledAccordion>
           <VaultsWrapper
-            vaultItems={vaultItems}
+            vaultItems={items}
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
           />

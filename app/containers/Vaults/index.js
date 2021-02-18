@@ -61,7 +61,10 @@ const Vaults = () => {
   const wallet = useWallet();
   const account = useAccount();
   const walletConnected = wallet.provider && account;
+  const orderedVaults = useSelector(selectOrderedVaults);
+  const localContracts = useSelector(selectContractsByTag('localContracts'));
   const backscratcherVault = useSelector(selectBackscratcherVault());
+  const vaultItems = showDevVaults ? localContracts : orderedVaults;
   let columnHeader;
   let backscratcherWrapper;
 
@@ -100,6 +103,7 @@ const Vaults = () => {
         {columnHeader}
         <StyledAccordion>
           <VaultsWrapper
+            vaultItems={vaultItems}
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
           />
@@ -144,9 +148,7 @@ const BackscratchersWrapper = (props) => {
 };
 
 const VaultsWrapper = (props) => {
-  const { showDevVaults, walletConnected } = props;
-  const orderedVaults = useSelector(selectOrderedVaults);
-  const localContracts = useSelector(selectContractsByTag('localContracts'));
+  const { showDevVaults, walletConnected, vaultItems } = props;
   const currentEventKey = useContext(AccordionContext);
 
   const renderVault = (vault) => {
@@ -166,13 +168,8 @@ const VaultsWrapper = (props) => {
   };
 
   // Show Linear progress when orderedvaults is empty
-  if (walletConnected && orderedVaults == null) return <LinearProgress />;
-
-  let vaultRows = _.map(orderedVaults, renderVault);
-  if (showDevVaults) {
-    vaultRows = _.map(localContracts, renderVault);
-  }
-
+  if (walletConnected && vaultItems == null) return <LinearProgress />;
+  const vaultRows = _.map(vaultItems, renderVault);
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 

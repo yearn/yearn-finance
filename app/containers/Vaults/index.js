@@ -7,6 +7,7 @@ import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import {
   selectAllContracts,
   selectContractsByTag,
+  selectEthBalance,
   selectBackscratcherVault,
   selectOrderedVaults,
 } from 'containers/App/selectors';
@@ -78,13 +79,20 @@ const useSortableData = (items, config = null) => {
   }, [items, sortConfig]);
 
   const requestSort = (key) => {
-    let direction = 'ascending';
+    let direction = 'descending';
     if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === 'descending'
+    ) {
+      direction = 'ascending';
+    } else if (
       sortConfig &&
       sortConfig.key === key &&
       sortConfig.direction === 'ascending'
     ) {
-      direction = 'descending';
+      key = null;
+      direction = null; 
     }
     setSortConfig({ key, direction });
   };
@@ -101,30 +109,51 @@ const Vaults = () => {
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const allContracts = useSelector(selectAllContracts());
+  const ethBalance = useSelector(selectEthBalance());
+
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
-  const injectTokenBalanceOf = (vault) => {
-    const newVault = vault;
-    const { tokenAddress } = vault;
-    const tokenContractData = allContracts[tokenAddress];
-    const tokenBalanceOf = _.get(tokenContractData, 'balanceOf[0].value');
-    newVault.tokenBalanceOf = tokenBalanceOf;
-    return newVault;
-  };
-
   vaultItems = _.map(vaultItems, (vault) => {
-    let newVault;
     const vaultContractData = allContracts[vault.address];
+
+    let newVault;
     newVault = _.merge(vault, vaultContractData);
-    newVault.balance = new BigNumber(vault.balance);
-    newVault.apyRecommended = vault.apy.recommended;
-    newVault = injectTokenBalanceOf(newVault);
+
+    const {
+      balance,
+      balanceOf,
+      decimals,
+      getPricePerFullShare,
+      pricePerShare,
+      totalAssets
+    } = newVault;
+
+    // Value Deposited
+    const v2Vault = vault.type === 'v2' || vault.apiVersion;
+    const price = v2Vault ? pricePerShare / (10 ** decimals) : getPricePerFullShare / (10 ** 18);
+    const vaultBalanceOf = balanceOf / (10 ** decimals) * price;
+    newVault.valueDeposited = vaultBalanceOf ? vaultBalanceOf : 0;
+
+    // Growth
+    newVault.valueApy = newVault.apy.recommended;
+
+    // Total Assets
+    newVault.valueTotalAssets = _.get(newVault, 'balance[0].value') || _.get(newVault, 'totalAssets[0].value'); 
+
+    // Available to Deposit
+    const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
+    const tokenContractData = allContracts[tokenContractAddress];
+    let tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf');
+    const tokenBalanceOf = tokenBalance ? tokenBalance / (10 ** decimals) : 0;
+    newVault.valueAvailableToDeposit = tokenBalanceOf ? tokenBalanceOf : 0;
+
     return newVault;
   });
 
-  console.log(vaultItems);
-
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
+
+  console.log(items);
+
   let columnHeader;
   let backscratcherWrapper;
   if (showDevVaults) {

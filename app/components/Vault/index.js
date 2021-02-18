@@ -649,7 +649,7 @@ const Vault = (props) => {
               <Notice>
                 <NoticeIcon type="info" />
                 <span>
-                  80% of USDN CRV harvest is locked to boost yield. APY
+                  50% of USDN CRV harvest is locked to boost yield. APY
                   displayed reflects this.
                 </span>
               </Notice>

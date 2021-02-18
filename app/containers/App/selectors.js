@@ -186,11 +186,11 @@ export const selectOrderedVaults = createSelector(
         const updatedVault = vault;
         updatedVault.apy.data = {
           ...vault.apy.data,
-          baseApy: vault.apy.data.baseApy * 0.2,
+          baseApy: vault.apy.data.baseApy * 0.5,
           boostedApy:
-            vault.apy.data.baseApy * 0.2 * vault.apy.data.currentBoost,
+            vault.apy.data.baseApy * 0.5 * vault.apy.data.currentBoost,
           totalApy:
-            vault.apy.data.baseApy * 0.2 * vault.apy.data.currentBoost +
+            vault.apy.data.baseApy * 0.5 * vault.apy.data.currentBoost +
             vault.apy.data.poolApy,
         };
         updatedVault.apy.recommended = updatedVault.apy.data.totalApy;

@@ -56,6 +56,8 @@ const StyledItem = styled(ListItem)`
 
   text-transform: capitalize;
   border-bottom: 1px solid ${(props) => (props.nested ? '#f3f3f3' : '#c4c4c4')};
+  background-color: ${(props) =>
+    props.nested ? 'rgba(196, 196, 196, 0.08)' : '#fff'};
 `;
 
 const LastItem = styled(ListItem)`

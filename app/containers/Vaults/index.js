@@ -5,7 +5,9 @@ import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import {
+  selectAllContracts,
   selectContractsByTag,
+  selectEthBalance,
   selectBackscratcherVault,
   selectOrderedVaults,
 } from 'containers/App/selectors';
@@ -17,6 +19,7 @@ import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -56,19 +59,121 @@ const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
 `;
 
+const useSortableData = (items, config = null) => {
+  const [sortConfig, setSortConfig] = React.useState(config);
+
+  const sortedItems = React.useMemo(() => {
+    const sortableItems = Object.values(items);
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [items, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'descending';
+    let newKey = key;
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === 'descending'
+    ) {
+      direction = 'ascending';
+    } else if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === 'ascending'
+    ) {
+      newKey = null;
+      direction = null; 
+    }
+    setSortConfig({ key: newKey, direction });
+  };
+
+  return { items: sortedItems, requestSort, sortConfig };
+};
+
 const Vaults = () => {
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
   const account = useAccount();
   const walletConnected = wallet.provider && account;
+  const orderedVaults = useSelector(selectOrderedVaults);
+  const localContracts = useSelector(selectContractsByTag('localContracts'));
   const backscratcherVault = useSelector(selectBackscratcherVault());
+  const allContracts = useSelector(selectAllContracts());
+  const ethBalance = useSelector(selectEthBalance());
+
+  let vaultItems = showDevVaults ? localContracts : orderedVaults;
+
+  vaultItems = _.map(vaultItems, (vault) => {
+    const vaultContractData = allContracts[vault.address];
+    const newVault = _.merge(vault, vaultContractData);
+
+    const {
+      decimals
+    } = vault;
+
+    const {
+      balanceOf,
+      getPricePerFullShare,
+      pricePerShare,
+    } = newVault;
+
+    // Value Deposited
+    const v2Vault = vault.type === 'v2' || vault.apiVersion;
+    let vaultBalanceOf;
+    if (v2Vault) {
+      vaultBalanceOf = balanceOf
+        ? new BigNumber(balanceOf[0].value)
+            .dividedBy(10 ** decimals)
+            .multipliedBy(pricePerShare[0].value / 10 ** decimals)
+            .toNumber()
+        : 0;
+    } else {
+      vaultBalanceOf = balanceOf
+        ? new BigNumber(balanceOf[0].value)
+            .dividedBy(10 ** decimals)
+            .multipliedBy(getPricePerFullShare[0].value / 10 ** 18)
+            .toNumber()
+        : 0;
+    }
+    newVault.valueDeposited = vaultBalanceOf || 0;
+
+    // Growth
+    newVault.valueApy = newVault.apy.recommended;
+
+    // Total Assets
+    let vaultAssets = _.get(newVault, 'balance[0].value') || _.get(newVault, 'totalAssets[0].value'); 
+    vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toNumber();
+    newVault.valueTotalAssets = vaultAssets; 
+
+    // Available to Deposit
+    const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
+    const tokenContractData = allContracts[tokenContractAddress];
+    const tokenBalance = vault.pureEthereum ? ethBalance : _.get(tokenContractData, 'balanceOf[0].value');
+    const tokenBalanceOf = tokenBalance ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber() : 0;
+    newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
+
+    return newVault;
+  });
+
+  const { items, requestSort, sortConfig } = useSortableData(vaultItems);
+
   let columnHeader;
   let backscratcherWrapper;
-
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
-    columnHeader = <VaultsHeader />;
+    columnHeader = <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />;
   }
 
   let warning;
@@ -100,6 +205,7 @@ const Vaults = () => {
         {columnHeader}
         <StyledAccordion>
           <VaultsWrapper
+            vaultItems={items}
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
           />
@@ -144,9 +250,7 @@ const BackscratchersWrapper = (props) => {
 };
 
 const VaultsWrapper = (props) => {
-  const { showDevVaults, walletConnected } = props;
-  const orderedVaults = useSelector(selectOrderedVaults);
-  const localContracts = useSelector(selectContractsByTag('localContracts'));
+  const { showDevVaults, walletConnected, vaultItems } = props;
   const currentEventKey = useContext(AccordionContext);
 
   const renderVault = (vault) => {
@@ -166,13 +270,8 @@ const VaultsWrapper = (props) => {
   };
 
   // Show Linear progress when orderedvaults is empty
-  if (walletConnected && orderedVaults == null) return <LinearProgress />;
-
-  let vaultRows = _.map(orderedVaults, renderVault);
-  if (showDevVaults) {
-    vaultRows = _.map(localContracts, renderVault);
-  }
-
+  if (walletConnected && vaultItems == null) return <LinearProgress />;
+  const vaultRows = _.map(vaultItems, renderVault);
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 

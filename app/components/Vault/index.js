@@ -135,19 +135,19 @@ const TooltipTable = styled.table`
   }
 `;
 
-// const Notice = styled.div`
-//   padding: 1em 0;
-//   display: flex;
-//   justify-content: center;
-//   width: 100%;
-// `;
+const Notice = styled.div`
+  padding: 1em 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
 
-// const NoticeIcon = styled(Icon)`
-//   height: 1.2em;
-//   position: relative;
-//   cursor: pointer;
-//   margin: 0 0.8em;
-// `;
+const NoticeIcon = styled(Icon)`
+  height: 1.2em;
+  position: relative;
+  cursor: pointer;
+  margin: 0 0.8em;
+`;
 
 const StyledText = styled(Text)`
   cursor: pointer;
@@ -619,6 +619,15 @@ const Vault = (props) => {
                 <span>Your tokens can be safely withdrawn, now</span>
               </Notice>
             )} */}
+            {['crvUSDN'].includes(vaultName) && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  80% of USDN CRV harvest is locked to boost yield. APY
+                  displayed reflects this.
+                </span>
+              </Notice>
+            )}
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer>{vaultControls}</Footer>

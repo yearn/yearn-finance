@@ -12,6 +12,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Box from 'components/Box';
+import ConnectButton from 'components/ConnectButton';
 import YearnLogo from 'images/yearn-logo.svg';
 import { menuLinks } from './menuLinks';
 
@@ -44,7 +45,8 @@ const StyledItem = styled(ListItem)`
   span,
   svg {
     font-family: ${(props) => props.theme.fontFamily} !important;
-    color: ${(props) => (props.active ? '#0657f9' : '#000')} !important;
+    color: ${(props) =>
+      props.active ? props.theme.primary : '#000'} !important;
     font-weight: ${(props) => (props.active ? '700' : '400')} !important;
   }
 
@@ -115,6 +117,17 @@ const MobileMenu = ({ close }) => {
         <CloseIcon onClick={close} />
       </StyledNav>
       <StyledList component="nav">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={100}
+          borderBottom="1px solid #c4c4c4"
+          px={24}
+          bg="rgba(196, 196, 196, 0.08)"
+        >
+          <ConnectButton inverted />
+        </Box>
         {Object.keys(menuLinks).map((key) => {
           const item = menuLinks[key];
           const isGrouped = Array.isArray(item);

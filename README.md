@@ -28,8 +28,11 @@ $ yarn dev
 ```
 
 ## Testing on mainnet fork
+
 https://eth-brownie.readthedocs.io/en/stable/install.html
+
 #### Requeriments:
+
 ```
 python3 (to install pipx)
 python3-pip (to install pipx)
@@ -39,6 +42,7 @@ eth-brownie
 ```
 
 **[Important]**:
+
 - SET `WEB3_PROVIDER_HTTPS` and `WEB3_PROVIDER_WSS` variables in the .env file with your alchemy key
 - Set `USE_LOCAL_RPC` variable to TRUE on .env file.
 - Change Metamask to Localhost RPC endpoint :)
@@ -53,6 +57,7 @@ yarn dev
 ```
 
 #### How to add new tokens
+
 - Open `internals/forknet/supply-tokens.py`
 - Add the desired token like `crvToken = Contract.from_explorer("0xD533a949740bb3306d119CC777fa900bA034cd52")`
 - Go to etherscan and find a whale that has enough balance of that token and

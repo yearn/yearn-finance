@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import Accordion from 'react-bootstrap/Accordion';
@@ -169,6 +169,10 @@ const Vaults = () => {
   });
 
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
+
+  useEffect(() => {
+    requestSort('valueDeposited');
+  }, []);
 
   let columnHeader;
   let backscratcherWrapper;

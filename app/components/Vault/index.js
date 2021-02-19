@@ -242,7 +242,7 @@ const Vault = (props) => {
 
   const { apy } = vault;
 
-  const apyRecommended = truncateApy(_.get(apy, 'recommended'));
+  let apyRecommended = truncateApy(_.get(apy, 'recommended'));
 
   const apyType = apy && apy.type;
   let apyTooltip = (
@@ -305,6 +305,11 @@ const Vault = (props) => {
         </TooltipTable>
       </div>
     );
+  }
+
+  if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
+    apyRecommended = 'N/A';
+    apyTooltip = 'Inactive with YIP-56: Buyback and Build';
   }
 
   const tokenBalanceOf = tokenBalance

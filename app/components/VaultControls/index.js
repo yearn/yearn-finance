@@ -99,9 +99,16 @@ export default function VaultControls(props) {
 
   const depositsDisabled = useMemo(() => {
     if (vault.type === 'v2') {
-      return totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN);
+      if (totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)) {
+        return 'Vault deposit limit reached.';
+      }
+    } else if (
+      vault.type === 'v1' &&
+      vault.address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1'
+    ) {
+      return 'Inactive with YIP-56: Buyback and Build';
     }
-    return false;
+    return undefined;
   }, [depositAmount, totalAssets, depositLimit]);
 
   useEffect(() => {
@@ -169,7 +176,7 @@ export default function VaultControls(props) {
             decimals={decimals}
           />
           <ActionButton
-            disabled={!vaultContract || !tokenContract || depositsDisabled}
+            disabled={!vaultContract || !tokenContract || !!depositsDisabled}
             handler={deposit}
             text={
               (tokenAllowance !== undefined && tokenAllowance !== '0') ||
@@ -180,9 +187,7 @@ export default function VaultControls(props) {
             title="Deposit into vault"
             showTooltip
             tooltipText={
-              depositsDisabled
-                ? 'Vault deposit limit reached.'
-                : 'Connect your wallet to deposit into vault'
+              depositsDisabled || 'Connect your wallet to deposit into vault'
             }
           />
           {vaultIsBackscratcher && (

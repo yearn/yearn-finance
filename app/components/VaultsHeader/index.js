@@ -25,12 +25,12 @@ const vaultColumns = [
 ];
 
 const sortColumnMap = {
-  'Asset' : 'displayName',
-  'Version' : 'type',
-  'Deposited' : 'valueDeposited',
-  'Growth' : 'valueApy',
-  'Total Assets' : 'valueTotalAssets',
-  'Available to deposit' : 'valueAvailableToDeposit'
+  Asset: 'displayName',
+  Version: 'type',
+  Deposited: 'valueDeposited',
+  Growth: 'valueApy',
+  'Total Assets': 'valueTotalAssets',
+  'Available to deposit': 'valueAvailableToDeposit',
 };
 
 const StyledText = styled(Text)`
@@ -40,7 +40,8 @@ const StyledText = styled(Text)`
 const StyledArrow = styled.div`
   margin-left: 5px;
   display: inline-block;
-  transform: ${(props) => props.order === 'descending' ? 'rotate(0)' : 'rotate(-180deg)'};
+  transform: ${(props) =>
+    props.order === 'descending' ? 'rotate(0)' : 'rotate(-180deg)'};
   transition: transform 0.05s linear;
   width: 7px;
   height: 7px;
@@ -52,7 +53,11 @@ const StyledArrow = styled.div`
   border-top: 7px solid #ffffff;
 `;
 
-export default function VaultsHeader({ backscratcher, requestSort = null, sortConfig = null }) {
+export default function VaultsHeader({
+  backscratcher,
+  requestSort = null,
+  sortConfig = null,
+}) {
   const columns = backscratcher ? backscratcherColumns : vaultColumns;
   return (
     <ColumnList
@@ -61,15 +66,23 @@ export default function VaultsHeader({ backscratcher, requestSort = null, sortCo
       }
     >
       {columns.map((column) => {
-
         const sortKey = _.get(sortColumnMap, column);
         const sortedColumn = sortConfig ? sortConfig.key === sortKey : false;
         const sortedDirection = sortedColumn ? sortConfig.direction : null;
         const columnClick = sortKey ? () => requestSort(sortKey) : () => {};
-        const sortArrow = sortedColumn ? <StyledArrow order={sortedDirection} /> : null;
+        const sortArrow = sortedColumn ? (
+          <StyledArrow order={sortedDirection} />
+        ) : null;
 
         return (
-          <StyledText key={column} large mb={18} pt={20} sortKey={sortKey} onClick={columnClick}>
+          <StyledText
+            key={column}
+            large
+            mb={18}
+            pt={20}
+            sortKey={sortKey}
+            onClick={columnClick}
+          >
             {column} {sortArrow}
           </StyledText>
         );

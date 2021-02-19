@@ -21,6 +21,7 @@ import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import BigNumber from 'bignumber.js';
 
+
 const Wrapper = styled.div`
   margin: 0 auto;
   margin-top: 20px;
@@ -101,7 +102,8 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort, sortConfig };
 };
 
-const Vaults = () => {
+const Vaults = (props) => {
+  const { history } = props;
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
   const account = useAccount();
@@ -174,6 +176,19 @@ const Vaults = () => {
     requestSort('valueDeposited');
   }, []);
 
+  // Show the vault based on URL path
+  const pathArray = history.location.pathname.split('/');
+  const showAccordionKey = pathArray[2] || '';
+
+  useEffect(() => {
+    // Scroll to the vault
+    if ( showAccordionKey ) {
+      const anchor = `vault-${showAccordionKey}`;
+      const el = document.getElementById(anchor);
+      if ( el ) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
   let columnHeader;
   let backscratcherWrapper;
   if (showDevVaults) {
@@ -200,6 +215,11 @@ const Vaults = () => {
       </WrapTable>
     );
   }
+  
+  const linkToVault = (accordionKey) => {
+    const path = accordionKey || '';
+    history.push(`/vaults/${path}`);
+  }
 
   return (
     <Wrapper>
@@ -211,7 +231,7 @@ const Vaults = () => {
       {backscratcherWrapper}
       <WrapTable>
         {columnHeader}
-        <StyledAccordion>
+        <StyledAccordion onSelect={linkToVault} defaultActiveKey={showAccordionKey}>
           <VaultsWrapper
             vaultItems={items}
             showDevVaults={showDevVaults}

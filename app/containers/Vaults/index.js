@@ -19,12 +19,13 @@ import { useShowDevVaults } from 'containers/Vaults/hooks';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
-  overflow: hidden;
+  overflow: auto;
 `;
 
 const WrapTable = styled(Box)`
@@ -106,6 +107,7 @@ const useSortableData = (items, config = null) => {
 
 const Vaults = (props) => {
   const { history } = props;
+  const isScreenMd = useMediaQuery('(min-width:960px)');
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
   const account = useAccount();
@@ -225,26 +227,33 @@ const Vaults = (props) => {
   };
 
   return (
-    <Wrapper mx={[16, 32, 64, 128]} center>
-      {/* <DevHeader devMode={devMode}>
+    <Wrapper center mx={isScreenMd ? 0 : [16, 32]}>
+      <Box
+        width={isScreenMd ? '90%' : '100%'}
+        minWidth={isScreenMd ? 940 : null}
+        maxWidth={1200}
+        center
+      >
+        {/* <DevHeader devMode={devMode}>
         <VaultsNavLinks />
         <AddVault devVaults={showDevVaults} />
       </DevHeader> */}
-      {warning}
-      {backscratcherWrapper}
-      <WrapTable center width={1}>
-        <Hidden smDown>{columnHeader}</Hidden>
-        <StyledAccordion
-          onSelect={linkToVault}
-          defaultActiveKey={showAccordionKey}
-        >
-          <VaultsWrapper
-            vaultItems={items}
-            showDevVaults={showDevVaults}
-            walletConnected={walletConnected}
-          />
-        </StyledAccordion>
-      </WrapTable>
+        {warning}
+        {backscratcherWrapper}
+        <WrapTable center width={1}>
+          <Hidden smDown>{columnHeader}</Hidden>
+          <StyledAccordion
+            onSelect={linkToVault}
+            defaultActiveKey={showAccordionKey}
+          >
+            <VaultsWrapper
+              vaultItems={items}
+              showDevVaults={showDevVaults}
+              walletConnected={walletConnected}
+            />
+          </StyledAccordion>
+        </WrapTable>
+      </Box>
     </Wrapper>
   );
 };

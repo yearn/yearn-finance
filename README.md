@@ -31,7 +31,7 @@ $ yarn dev
 
 https://eth-brownie.readthedocs.io/en/stable/install.html
 
-#### Requeriments:
+#### Requirements:
 
 ```
 python3 (to install pipx)

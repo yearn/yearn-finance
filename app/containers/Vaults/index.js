@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import tw from 'twin.macro';
+import Hidden from '@material-ui/core/Hidden';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
@@ -20,19 +20,21 @@ import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import BigNumber from 'bignumber.js';
+import Box from 'components/Box';
 
-
-const Wrapper = styled.div`
-  margin: 0 auto;
+const Wrapper = styled(Box)`
   margin-top: 20px;
-  @media (min-width: 768px) {
-    width: 1088px;
+  overflow: hidden;
+`;
+
+const WrapTable = styled(Box)`
+  padding-bottom: 10px;
+
+  div {
+    padding-bottom: 0px;
   }
 `;
 
-const WrapTable = styled.div`
-  ${tw`w-5/6 md:w-full m-0 m-auto md:overflow-x-auto overflow-x-scroll whitespace-nowrap`};
-`;
 const Warning = styled.div`
   display: table;
   font-size: 29px;
@@ -56,8 +58,8 @@ const Warning = styled.div`
 // `;
 
 const StyledAccordion = styled(Accordion)`
-  width: 1085px;
   padding-bottom: 10px;
+  width: 100%;
 `;
 
 const useSortableData = (items, config = null) => {
@@ -182,10 +184,10 @@ const Vaults = (props) => {
 
   useEffect(() => {
     // Scroll to the vault
-    if ( showAccordionKey ) {
+    if (showAccordionKey) {
       const anchor = `vault-${showAccordionKey}`;
       const el = document.getElementById(anchor);
-      if ( el ) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   });
 
@@ -204,8 +206,9 @@ const Vaults = (props) => {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
   } else if (backscratcherVault) {
     backscratcherWrapper = (
-      <WrapTable>
-        <VaultsHeader backscratcher />
+      <WrapTable center width={1}>
+        <Hidden smDown>{<VaultsHeader backscratcher />}</Hidden>
+
         <StyledAccordion defaultActiveKey={backscratcherVault.address}>
           <BackscratchersWrapper
             showDevVaults={showDevVaults}
@@ -215,23 +218,26 @@ const Vaults = (props) => {
       </WrapTable>
     );
   }
-  
+
   const linkToVault = (accordionKey) => {
     const path = accordionKey || '';
     history.push(`/vaults/${path}`);
-  }
+  };
 
   return (
-    <Wrapper>
+    <Wrapper mx={[16, 32, 64, 128]} center>
       {/* <DevHeader devMode={devMode}>
         <VaultsNavLinks />
         <AddVault devVaults={showDevVaults} />
       </DevHeader> */}
       {warning}
       {backscratcherWrapper}
-      <WrapTable>
-        {columnHeader}
-        <StyledAccordion onSelect={linkToVault} defaultActiveKey={showAccordionKey}>
+      <WrapTable center width={1}>
+        <Hidden smDown>{columnHeader}</Hidden>
+        <StyledAccordion
+          onSelect={linkToVault}
+          defaultActiveKey={showAccordionKey}
+        >
           <VaultsWrapper
             vaultItems={items}
             showDevVaults={showDevVaults}

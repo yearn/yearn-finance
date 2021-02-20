@@ -5,7 +5,7 @@ import { toNumber } from 'lodash';
 const Input = styled.input`
   background: #ffffff;
   border-radius: 5px;
-  height: 47px;
+  height: 46px;
   outline: none;
   background: #ffffff;
   border-radius: 5px;
@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 const Right = styled.div`
   position: absolute;
   right: 13px;
-  height: 47px;
+  height: 46px;
   display: flex;
   align-items: center;
   top: 0px;

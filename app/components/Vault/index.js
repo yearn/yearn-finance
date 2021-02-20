@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
@@ -107,7 +109,7 @@ const Table = styled.table`
 const Footer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: ${({ small }) => (small ? '8px 20px' : '10px 20px')} !important;
   width: 100%;
 `;
 
@@ -211,6 +213,7 @@ const Vault = (props) => {
   } = vault;
 
   const { openModal } = useModal();
+  const isScreenMd = useMediaQuery('(min-width:960px)');
 
   const devMode = true;
   const tokenContractAddress = tokenAddress || token || CRV;
@@ -502,7 +505,7 @@ const Vault = (props) => {
 
     if (backscratcherVault) {
       vaultTop = (
-        <ColumnListBackscratcher>
+        <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address}>
               <StyledTokenIcon address={tokenIconAddress} />
@@ -517,37 +520,39 @@ const Vault = (props) => {
               </div>
             </LinkWrap>
           </IconAndName>
-          <Text large bold>
-            <AnimatedNumber value={vaultBalanceOf} />
-          </Text>
-          <Text large bold>
-            {multiplier}
-          </Text>
-          <Text large bold>
-            <Tooltip title={apyTooltip} arrow>
-              <span>
-                <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-              </span>
-            </Tooltip>
-          </Text>
-          <Text large bold>
-            {vaultAssets}
-          </Text>
-          <Text large bold>
-            <AnimatedNumber value={tokenBalanceOf} />{' '}
-            <LinkWrap devMode={devMode} address={tokenAddress}>
-              {tokenSymbol}
-            </LinkWrap>
-          </Text>
+          <Hidden smDown>
+            <Text large bold>
+              <AnimatedNumber value={vaultBalanceOf} />
+            </Text>
+            <Text large bold>
+              {multiplier}
+            </Text>
+            <Text large bold>
+              <Tooltip title={apyTooltip} arrow>
+                <span>
+                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
+                </span>
+              </Tooltip>
+            </Text>
+            <Text large bold>
+              {vaultAssets}
+            </Text>
+            <Text large bold>
+              <AnimatedNumber value={tokenBalanceOf} />{' '}
+              <LinkWrap devMode={devMode} address={tokenAddress}>
+                {tokenSymbol}
+              </LinkWrap>
+            </Text>
+          </Hidden>
         </ColumnListBackscratcher>
       );
 
       backscratcherInfo = (
-        <Box my={16} mx={70}>
+        <Box my={16} mx={isScreenMd ? 70 : 20}>
           <Text bold fontSize={4} mb={6}>
             Read carefully before use
           </Text>
-          <Grid container spacing={8}>
+          <Grid container spacing={isScreenMd ? 8 : 0}>
             <Grid item xs={12} md={6}>
               <Text large>
                 This vault converts your CRV into yveCRV, earning you a
@@ -582,7 +587,7 @@ const Vault = (props) => {
       );
     } else {
       vaultTop = (
-        <ColumnList>
+        <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address}>
               <StyledTokenIcon address={tokenIconAddress} />
@@ -597,30 +602,32 @@ const Vault = (props) => {
               </div>
             </LinkWrap>
           </IconAndName>
-          <Text large bold>
-            {vault.type}
-          </Text>
-          <Text large bold>
-            <AnimatedNumber value={vaultBalanceOf} />
-          </Text>
+          <Hidden smDown>
+            <Text large bold>
+              {vault.type}
+            </Text>
+            <Text large bold>
+              <AnimatedNumber value={vaultBalanceOf} />
+            </Text>
 
-          <Text large bold>
-            <Tooltip title={apyTooltip} arrow>
-              <span>
-                <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-              </span>
-            </Tooltip>
-          </Text>
+            <Text large bold>
+              <Tooltip title={apyTooltip} arrow>
+                <span>
+                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
+                </span>
+              </Tooltip>
+            </Text>
 
-          <Text large bold>
-            {vaultAssets}
-          </Text>
-          <Text large bold>
-            <AnimatedNumber value={tokenBalanceOf} />{' '}
-            <LinkWrap devMode={devMode} address={tokenAddress}>
-              {tokenSymbol}
-            </LinkWrap>
-          </Text>
+            <Text large bold>
+              {vaultAssets}
+            </Text>
+            <Text large bold>
+              <AnimatedNumber value={tokenBalanceOf} />{' '}
+              <LinkWrap devMode={devMode} address={tokenAddress}>
+                {tokenSymbol}
+              </LinkWrap>
+            </Text>
+          </Hidden>
         </ColumnList>
       );
       vaultStats = (
@@ -630,44 +637,43 @@ const Vault = (props) => {
   }
   return (
     <React.Fragment>
-        <Card className={active && 'active'} id={`vault-${accordionKey}`}>
-          <Accordion.Toggle
-            as={Card.Header}
-            variant="link"
-            eventKey={accordionKey}
-          >
-            {vaultTop}
-            {/* {vaultStats} */}
-            <StyledText fontWeight={600} mr={32}>
-              {active ? 'HIDE' : 'SHOW'}
-            </StyledText>
-          </Accordion.Toggle>
-          <Accordion.Collapse eventKey={accordionKey}>
-            <Card.Body>
-              {vaultBottom}
-              {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+      <Card className={active && 'active'} id={`vault-${accordionKey}`}>
+        <Accordion.Toggle
+          as={Card.Header}
+          variant="link"
+          eventKey={accordionKey}
+        >
+          {vaultTop}
+          {/* {vaultStats} */}
+          <StyledText fontWeight={600} mr={20}>
+            {active ? 'HIDE' : 'SHOW'}
+          </StyledText>
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey={accordionKey}>
+          <Card.Body>
+            {vaultBottom}
+            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
                 <Notice>
                   <NoticeIcon type="info" />
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
-              {['crvUSDN'].includes(vaultName) && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>
-                    50% of USDN CRV harvest is locked to boost yield. APY
-                    displayed reflects this.
-                  </span>
-                </Notice>
-              )}
-              {backscratcherInfo}
-              <Card.Footer className={active && 'active'}>
-                <Footer>{vaultControls}</Footer>
-              </Card.Footer>
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      
+            {['crvUSDN'].includes(vaultName) && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  50% of USDN CRV harvest is locked to boost yield. APY
+                  displayed reflects this.
+                </span>
+              </Notice>
+            )}
+            {backscratcherInfo}
+            <Card.Footer className={active && 'active'}>
+              <Footer small={!isScreenMd}>{vaultControls}</Footer>
+            </Card.Footer>
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
     </React.Fragment>
   );
 };

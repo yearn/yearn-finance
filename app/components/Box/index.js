@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import {
   space,
@@ -13,7 +14,7 @@ import {
   compose,
 } from 'styled-system';
 
-const Box = styled('div')(
+const StyledBox = styled('div')(
   compose(
     space,
     color,
@@ -26,6 +27,16 @@ const Box = styled('div')(
     position,
     shadow,
   ),
+);
+
+const Box = ({ center, ...props }) => (
+  <StyledBox
+    display={center ? 'flex' : null}
+    flexDirection={center ? 'column' : null}
+    justifyContent={center ? 'center' : null}
+    alignItems={center ? 'center' : null}
+    {...props}
+  />
 );
 
 export default Box;

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import { useSelector } from 'react-redux';
@@ -100,9 +100,8 @@ const BoxedItems = styled(Box)`
   }
 `;
 
-const FlyingMenu = ({ isActive, clickAwayRef, links, meta }) => (
+const FlyingMenu = ({ isActive, links, meta }) => (
   <Box
-    ref={clickAwayRef}
     position="absolute"
     pt={0.8}
     zIndex={10}
@@ -188,7 +187,6 @@ const FlyingMenu = ({ isActive, clickAwayRef, links, meta }) => (
 );
 
 const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
-  const ref = useRef(null);
   if (Array.isArray(links)) {
     let isSelected = false;
     if (
@@ -221,7 +219,6 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
           {text}
         </StyledLink>
         <FlyingMenu
-          clickAwayRef={ref}
           isActive={text === isActive}
           links={links}
           meta={menuLinksMeta[text]}

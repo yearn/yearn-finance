@@ -184,12 +184,12 @@ const Vaults = (props) => {
 
   useEffect(() => {
     // Scroll to the vault
-    if (showAccordionKey) {
+    if (showAccordionKey && orderedVaults) {
       const anchor = `vault-${showAccordionKey}`;
       const el = document.getElementById(anchor);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  });
+  }, [orderedVaults]);
 
   let columnHeader;
   let backscratcherWrapper;

@@ -20,6 +20,7 @@ import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
+
 // import tw from 'twin.macro';
 
 // const formatVaultStatistic = stat => {
@@ -629,43 +630,44 @@ const Vault = (props) => {
   }
   return (
     <React.Fragment>
-      <Card className={active && 'active'}>
-        <Accordion.Toggle
-          as={Card.Header}
-          variant="link"
-          eventKey={accordionKey}
-        >
-          {vaultTop}
-          {/* {vaultStats} */}
-          <StyledText fontWeight={600} mr={32}>
-            {active ? 'HIDE' : 'SHOW'}
-          </StyledText>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={accordionKey}>
-          <Card.Body>
-            {vaultBottom}
-            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>Your tokens can be safely withdrawn, now</span>
-              </Notice>
-            )} */}
-            {['crvUSDN'].includes(vaultName) && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>
-                  50% of USDN CRV harvest is locked to boost yield. APY
-                  displayed reflects this.
-                </span>
-              </Notice>
-            )}
-            {backscratcherInfo}
-            <Card.Footer className={active && 'active'}>
-              <Footer>{vaultControls}</Footer>
-            </Card.Footer>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
+        <Card className={active && 'active'} id={`vault-${accordionKey}`}>
+          <Accordion.Toggle
+            as={Card.Header}
+            variant="link"
+            eventKey={accordionKey}
+          >
+            {vaultTop}
+            {/* {vaultStats} */}
+            <StyledText fontWeight={600} mr={32}>
+              {active ? 'HIDE' : 'SHOW'}
+            </StyledText>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={accordionKey}>
+            <Card.Body>
+              {vaultBottom}
+              {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+                <Notice>
+                  <NoticeIcon type="info" />
+                  <span>Your tokens can be safely withdrawn, now</span>
+                </Notice>
+              )} */}
+              {['crvUSDN'].includes(vaultName) && (
+                <Notice>
+                  <NoticeIcon type="info" />
+                  <span>
+                    50% of USDN CRV harvest is locked to boost yield. APY
+                    displayed reflects this.
+                  </span>
+                </Notice>
+              )}
+              {backscratcherInfo}
+              <Card.Footer className={active && 'active'}>
+                <Footer>{vaultControls}</Footer>
+              </Card.Footer>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      
     </React.Fragment>
   );
 };

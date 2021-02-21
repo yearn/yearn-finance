@@ -230,7 +230,7 @@ const Vaults = (props) => {
     <Wrapper center mx={isScreenMd ? 0 : [16, 32]}>
       <Box
         width={isScreenMd ? '90%' : '100%'}
-        minWidth={isScreenMd ? 940 : null}
+        minWidth={isScreenMd ? 1030 : null}
         maxWidth={1200}
         center
       >

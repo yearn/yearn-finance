@@ -26,7 +26,7 @@ const StyledRoundedInput = styled(RoundedInput)`
 
 const ActionGroup = styled(Box)`
   display: ${(props) => (props.hide ? 'none' : 'flex')};
-  flex-direction: column;
+  flex-direction: ${(props) => props.direction || 'column'};
 `;
 
 const ButtonGroup = styled(Box)`
@@ -175,42 +175,49 @@ export default function VaultControls(props) {
           </ButtonGroup>
         </ActionGroup>
 
-        <ActionGroup ml={vaultIsBackscratcher && isScreenMd ? '60px' : '0px'}>
-          <Balance amount={walletBalance} prefix="Your wallet: " />
-          <ButtonGroup width={1}>
-            <Box width={isScreenMd ? '185px' : '100%'}>
-              <AmountField
-                amount={depositAmount}
-                amountSetter={setDepositAmount}
-                gweiAmountSetter={setDepositGweiAmount}
-                maxAmount={tokenBalance}
-                decimals={decimals}
-              />
-            </Box>
-            <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
-              <ActionButton
-                disabled={
-                  !vaultContract || !tokenContract || !!depositsDisabled
-                }
-                handler={deposit}
-                text={
-                  (tokenAllowance !== undefined && tokenAllowance !== '0') ||
-                  pureEthereum > 0
-                    ? 'Deposit'
-                    : 'Approve'
-                }
-                title="Deposit into vault"
-                showTooltip
-                tooltipText={
-                  depositsDisabled ||
-                  'Connect your wallet to deposit into vault'
-                }
-              />
-            </Box>
-            {vaultIsBackscratcher && (
+        <ActionGroup
+          direction={isScreenMd ? 'row' : 'column'}
+          ml={vaultIsBackscratcher && isScreenMd ? '60px' : '0px'}
+        >
+          <Box display="flex" flexDirection="column">
+            <Balance amount={walletBalance} prefix="Your wallet: " />
+            <ButtonGroup width={1}>
+              <Box width={isScreenMd ? '185px' : '100%'}>
+                <AmountField
+                  amount={depositAmount}
+                  amountSetter={setDepositAmount}
+                  gweiAmountSetter={setDepositGweiAmount}
+                  maxAmount={tokenBalance}
+                  decimals={decimals}
+                />
+              </Box>
+              <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                <ActionButton
+                  disabled={
+                    !vaultContract || !tokenContract || !!depositsDisabled
+                  }
+                  handler={deposit}
+                  text={
+                    (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+                    pureEthereum > 0
+                      ? 'Deposit'
+                      : 'Approve'
+                  }
+                  title="Deposit into vault"
+                  showTooltip
+                  tooltipText={
+                    depositsDisabled ||
+                    'Connect your wallet to deposit into vault'
+                  }
+                />
+              </Box>
+            </ButtonGroup>
+          </Box>
+          {vaultIsBackscratcher && (
+            <Box ml={isScreenMd ? 5 : 0} alignSelf="flex-end" width={1}>
               <BackscratcherClaim vaultAddress={vaultAddress} />
-            )}
-          </ButtonGroup>
+            </Box>
+          )}
         </ActionGroup>
       </Box>
     </Wrapper>

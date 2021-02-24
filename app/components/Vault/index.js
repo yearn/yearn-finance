@@ -166,6 +166,14 @@ const truncateApy = (apy) => {
   return apyStr;
 };
 
+const ApyErrorDescriptions = {
+  'no harvests': {
+    recommended: 'NEW ✨',
+    tooltip:
+      'This vault was just added or recently updated its strategy. APY data will be displayed after the first four harvests.',
+  },
+};
+
 const LinkWrap = (props) => {
   const { devMode, children, address } = props;
   if (!devMode) {
@@ -246,46 +254,36 @@ const Vault = (props) => {
 
   const { apy } = vault;
 
-  let apyRecommended = truncateApy(_.get(apy, 'recommended'));
-
   const apyType = apy && apy.type;
+  let apyRecommended =
+    apyType !== 'error'
+      ? truncateApy(_.get(apy, 'recommended'))
+      : ApyErrorDescriptions[apy.description].recommended;
+
   let apyTooltip = (
     <div>
       Annualized continuous compound interest
       <br />
       (one month sample)
+      <br />
+      <br />
+      <TooltipTable>
+        <tbody>
+          <tr>
+            <td>Gross APY</td>
+            <td>{truncateApy(apy.data.grossApy)}</td>
+          </tr>
+          <tr>
+            <td>Net APY</td>
+            <td>{truncateApy(apy.data.netApy)}</td>
+          </tr>
+        </tbody>
+      </TooltipTable>
     </div>
   );
-  if (apyType === 'curve') {
-    apyTooltip = (
-      <div>
-        {apy.description}
-        <br />
-        <br />
-        <TooltipTable>
-          <tbody>
-            <tr>
-              <td>Pool APY</td>
-              <td>{truncateApy(apy.data.poolApy)}</td>
-            </tr>
-            <tr>
-              <td>Base CRV APY</td>
-              <td>{truncateApy(apy.data.baseApy)}</td>
-            </tr>
-            <tr>
-              <td>Boost</td>
-              <td>{apy.data.currentBoost.toFixed(2)}x</td>
-            </tr>
-            <tr>
-              <td>Total APY</td>
-              <td>{truncateApy(apy.data.totalApy)}</td>
-            </tr>
-          </tbody>
-        </TooltipTable>
-      </div>
-    );
-  }
-  if (vaultIsBackscratcher) {
+  if (apyType === 'error') {
+    apyTooltip = ApyErrorDescriptions[apy.description].tooltip;
+  } else if (vaultIsBackscratcher) {
     apyTooltip = (
       <div>
         Boosted yveCRV APY
@@ -309,11 +307,109 @@ const Vault = (props) => {
         </TooltipTable>
       </div>
     );
+  } else if (apyType === 'curve') {
+    const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
+    apyTooltip = (
+      <div>
+        {apy.description}
+        <br />
+        <br />
+        <TooltipTable>
+          <tbody>
+            <tr>
+              <td>Pool APY</td>
+              <td>{truncateApy(apy.data.poolApy)}</td>
+            </tr>
+            <tr>
+              <td>Base CRV APY</td>
+              <td>{truncateApy(apy.data.baseApy)}</td>
+            </tr>
+            <tr>
+              <td>Boost</td>
+              <td>{apy.data.currentBoost.toFixed(2)}x</td>
+            </tr>
+            <tr>
+              <td>Total APY</td>
+              <td>{truncateApy(apy.data.totalApy)}</td>
+            </tr>
+            <tr>
+              <td>Net APY</td>
+              <td>{truncateApy(apy.data.netApy)}</td>
+            </tr>
+            {keepCrv && (
+              <tr>
+                <td>Locked CRV</td>
+                <td>{keepCrv}</td>
+              </tr>
+            )}
+          </tbody>
+        </TooltipTable>
+      </div>
+    );
+  }
+
+  let versionTooltip = null;
+  if (vault.fees && vault.fees.general) {
+    if (v2Vault) {
+      const { managementFee, performanceFee } = vault.fees.general;
+      const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
+      versionTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Management Fee</td>
+                <td>{managementFee}</td>
+              </tr>
+              <tr>
+                <td>Performance Fee</td>
+                <td>{performanceFee}</td>
+              </tr>
+              {keepCrv && (
+                <tr>
+                  <td>Locked CRV</td>
+                  <td>{keepCrv / 1e4}</td>
+                </tr>
+              )}
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
+    } else {
+      const { withdrawalFee, performanceFee } = vault.fees.general;
+      const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
+      versionTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Withdrawal Fee</td>
+                <td>{withdrawalFee}</td>
+              </tr>
+              <tr>
+                <td>Performance Fee</td>
+                <td>{performanceFee}</td>
+              </tr>
+              {keepCrv && (
+                <tr>
+                  <td>Locked CRV</td>
+                  <td>{keepCrv / 1e4}</td>
+                </tr>
+              )}
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
+    }
   }
 
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
+    // yfi vault
     apyRecommended = 'N/A';
     apyTooltip = 'Inactive with YIP-56: Buyback and Build';
+  } else if (address === '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3') {
+    // usdn vault
+    apyRecommended = truncateApy(apy.data.netApy);
   }
 
   const tokenBalanceOf = tokenBalance
@@ -604,7 +700,13 @@ const Vault = (props) => {
           </IconAndName>
           <Hidden smDown>
             <Text large bold>
-              {vault.type}
+              {versionTooltip ? (
+                <Tooltip title={versionTooltip} arrow>
+                  <span>{vault.type}</span>
+                </Tooltip>
+              ) : (
+                vault.type
+              )}
             </Text>
             <Text large bold>
               <AnimatedNumber value={vaultBalanceOf} />

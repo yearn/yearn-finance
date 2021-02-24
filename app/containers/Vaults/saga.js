@@ -35,7 +35,10 @@ const injectEthVault = (vaults) => {
   return vaults;
 };
 
-function mergeVaultsApy(vaults, vaultsApy) {
+// small note
+// pls remove this or 🔪
+// ~ <3 nymmrx
+function mergeApis(vaults, vaultsApy) {
   return vaults.map((_vault) => {
     const vaultApy = vaultsApy.find(
       (_vaultApy) => _vaultApy.address === _vault.address,
@@ -43,6 +46,7 @@ function mergeVaultsApy(vaults, vaultsApy) {
     return {
       ..._vault,
       apy: vaultApy ? vaultApy.apy : _vault.apy,
+      fees: vaultApy.fees,
     };
   });
 }
@@ -82,7 +86,7 @@ function* fetchVaults() {
     vaults.push(backScratcherVault);
 
     const vaultsWithEth = injectEthVault(vaults);
-    const vaultsWithApy = mergeVaultsApy(vaultsWithEth, vaultsApy);
+    const vaultsWithApy = mergeApis(vaultsWithEth, vaultsApy);
 
     yield put(vaultsLoaded(vaultsWithApy));
   } catch (err) {

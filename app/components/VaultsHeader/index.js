@@ -90,7 +90,7 @@ export default function VaultsHeader({
             onClick={columnClick}
           >
             {column.tooltip ? (
-              <Tooltip title={column.tooltip} arrow>
+              <Tooltip title={column.tooltip} placement="top" arrow>
                 <Underlined>{column.name}</Underlined>
               </Tooltip>
             ) : (

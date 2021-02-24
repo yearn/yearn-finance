@@ -26,7 +26,7 @@ const vaultColumns = [
     name: 'Version',
     sort: 'type',
     tooltip:
-      'v1 vaults have one strategy and a withdrawal fee of 0.5%. v2 vaults have a maximum of 20 strategies and a management fee of 2%. Most vaults have a performance fee of 20% that is split between strategists and Yearn’s treasury. Furthermore, Curve vaults lock a percentage of each CRV harvest to boost future yields.',
+      'Vault fees are shown below. For more details about fees, refer to our docs.',
   },
   { name: 'Deposited', sort: 'valueDeposited' },
   {

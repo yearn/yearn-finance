@@ -14,6 +14,9 @@ import { unlockDevMode } from 'containers/DevMode/actions';
 import { setThemeMode } from 'containers/ThemeProvider/actions';
 import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
+import trustedMigratorAbi from 'abi/trustedMigrator.json';
+import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import { TRUSTED_MIGRATOR_ADDRESS } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
 import { APP_READY, APP_INITIALIZED } from './constants';
@@ -204,11 +207,56 @@ function* loadVaultContracts(clear) {
     ],
   };
 
+  const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
+
+  contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
   yield put(addContracts(contracts, clear));
   // yield put(addContracts(localSubscriptions, clear));
 }
+
+function getTrustedMigratorSubscriptions(account) {
+  const trustedMigratorSubscription = {
+    namespace: 'trustedMigrator',
+    abi: trustedMigratorAbi,
+    addresses: [TRUSTED_MIGRATOR_ADDRESS],
+    writeMethods: [
+      {
+        name: 'migrateAll',
+      },
+    ],
+  };
+
+  const allowanceSubscription = getAllowanceSubscription(
+    'vaults',
+    'trustedMigratorVaults',
+    migrationWhitelist.map(({ vaultFrom }) => vaultFrom),
+    account,
+    TRUSTED_MIGRATOR_ADDRESS,
+  );
+
+  return [trustedMigratorSubscription, allowanceSubscription];
+}
+
+const getAllowanceSubscription = (
+  namespace,
+  tag,
+  tokenAddresses,
+  accountAddress,
+  spenderAddress,
+) => ({
+  namespace,
+  tags: [tag],
+  abi: erc20Abi,
+  addresses: tokenAddresses,
+  readMethods: [
+    {
+      name: 'allowance',
+      args: [accountAddress, spenderAddress],
+    },
+  ],
+});
 
 function konamiWatcher() {
   return eventChannel((emitter) => {

@@ -157,11 +157,20 @@ const StyledText = styled(Text)`
   cursor: pointer;
 `;
 
+const truncateFee = (fee) => {
+  if (!fee) {
+    return 'N/A';
+  }
+  const truncatedFee = (fee / 1e4).toFixed(2);
+  const feeStr = `${truncatedFee}%`;
+  return feeStr;
+};
+
 const truncateApy = (apy) => {
   if (!apy) {
     return 'N/A';
   }
-  const truncatedApy = (apy && apy * 100).toFixed(2);
+  const truncatedApy = (apy * 100).toFixed(2);
   const apyStr = `${truncatedApy}%`;
   return apyStr;
 };
@@ -262,11 +271,6 @@ const Vault = (props) => {
 
   let apyTooltip = (
     <div>
-      Annualized continuous compound interest
-      <br />
-      (one month sample)
-      <br />
-      <br />
       <TooltipTable>
         <tbody>
           <tr>
@@ -308,7 +312,6 @@ const Vault = (props) => {
       </div>
     );
   } else if (apyType === 'curve') {
-    const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
     apyTooltip = (
       <div>
         {apy.description}
@@ -321,8 +324,8 @@ const Vault = (props) => {
               <td>{truncateApy(apy.data.poolApy)}</td>
             </tr>
             <tr>
-              <td>Base CRV APY</td>
-              <td>{truncateApy(apy.data.baseApy)}</td>
+              <td>Base CRV APR</td>
+              <td>{truncateApy(apy.data.baseApr)}</td>
             </tr>
             <tr>
               <td>Boost</td>
@@ -336,12 +339,6 @@ const Vault = (props) => {
               <td>Net APY</td>
               <td>{truncateApy(apy.data.netApy)}</td>
             </tr>
-            {keepCrv && (
-              <tr>
-                <td>Locked CRV</td>
-                <td>{keepCrv}</td>
-              </tr>
-            )}
           </tbody>
         </TooltipTable>
       </div>
@@ -352,23 +349,26 @@ const Vault = (props) => {
   if (vault.fees && vault.fees.general) {
     if (v2Vault) {
       const { managementFee, performanceFee } = vault.fees.general;
-      const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
+      const keepCrv =
+        vault.fees && vault.fees.special.keepCrv > 0
+          ? vault.fees.special.keepCrv
+          : null;
       versionTooltip = (
         <div>
           <TooltipTable>
             <tbody>
               <tr>
                 <td>Management Fee</td>
-                <td>{managementFee}</td>
+                <td>{truncateFee(managementFee)}</td>
               </tr>
               <tr>
                 <td>Performance Fee</td>
-                <td>{performanceFee}</td>
+                <td>{truncateFee(performanceFee)}</td>
               </tr>
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{keepCrv / 1e4}</td>
+                  <td>{truncateFee(keepCrv)}</td>
                 </tr>
               )}
             </tbody>
@@ -377,23 +377,26 @@ const Vault = (props) => {
       );
     } else {
       const { withdrawalFee, performanceFee } = vault.fees.general;
-      const keepCrv = vault.fees ? vault.fees.special.keepCrv : null;
+      const keepCrv =
+        vault.fees && vault.fees.special.keepCrv > 0
+          ? vault.fees.special.keepCrv
+          : null;
       versionTooltip = (
         <div>
           <TooltipTable>
             <tbody>
               <tr>
                 <td>Withdrawal Fee</td>
-                <td>{withdrawalFee}</td>
+                <td>{truncateFee(withdrawalFee)}</td>
               </tr>
               <tr>
                 <td>Performance Fee</td>
-                <td>{performanceFee}</td>
+                <td>{truncateFee(performanceFee)}</td>
               </tr>
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{keepCrv / 1e4}</td>
+                  <td>{truncateFee(keepCrv)}</td>
                 </tr>
               )}
             </tbody>
@@ -702,7 +705,9 @@ const Vault = (props) => {
             <Text large bold>
               {versionTooltip ? (
                 <Tooltip title={versionTooltip} arrow>
-                  <span>{vault.type}</span>
+                  <div>
+                    {vault.type} <InfoIcon type="info" />
+                  </div>
                 </Tooltip>
               ) : (
                 vault.type

@@ -12,6 +12,8 @@ import {
 import { VAULTS_LOADED } from './constants';
 import { USER_VAULT_STATISTICS_LOADED } from '../Vaults/constants';
 
+const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+
 // The initial state of the App
 export const initialState = {
   ready: false,
@@ -52,11 +54,14 @@ const appReducer = (state = initialState, action) =>
         break;
       case VAULTS_LOADED: {
         draft.loading.vaults = false;
-        draft.vaults = action.vaults.filter(
-          (vault) =>
-            !vault.tags || vault.tags.find((tag) => tag !== 'backscratcher'),
+
+        draft.backscratcher = action.vaults.find(
+          (vault) => vault.address === backscratcherAddress,
         );
 
+        draft.vaults = action.vaults.filter(
+          (vault) => vault.address !== backscratcherAddress,
+        );
         const usdnVault = _.find(action.vaults, { displayName: 'crvUSDN' });
         let { baseApy } = usdnVault.apy.data;
         baseApy *= 0.5;
@@ -69,11 +74,6 @@ const appReducer = (state = initialState, action) =>
             usdnVault.apy.data.poolApy,
         };
         usdnVault.apy.recommended = usdnVault.apy.data.totalApy;
-
-        draft.backscratcher = action.vaults.find((vault) => {
-          if (!vault.tags) return false;
-          return vault.tags.find((tag) => tag === 'backscratcher');
-        });
         checkReadyState();
         break;
       }

@@ -327,6 +327,10 @@ const Vault = (props) => {
               <td>{truncateApy(apy.data.poolApy)}</td>
             </tr>
             <tr>
+              <td>Bonus Rewards APR</td>
+              <td>{truncateApy(apy.data.tokenRewardsApr)}</td>
+            </tr>
+            <tr>
               <td>Base CRV APR</td>
               <td>{truncateApy(apy.data.baseApr)}</td>
             </tr>

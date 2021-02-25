@@ -214,6 +214,11 @@ const Vaults = (props) => {
         </StyledAccordion>
       </WrapTable>
     );
+    // remove backscratcher from items
+    items.splice(
+      items.findIndex(({ address }) => address === backscratcherVault.address),
+      1,
+    );
   }
 
   const linkToVault = (accordionKey) => {

@@ -39,35 +39,6 @@ function* fetchVaults() {
     const url = `https://vaults.finance/all`;
     const vaults = yield call(request, url);
 
-    const backScratcherVault = {
-      token: {
-        name: 'Curve DAO Token',
-        icon: null,
-        symbol: 'CRV',
-        address: '0xD533a949740bb3306d119CC777fa900bA034cd52',
-        displayName: 'CRV',
-        decimals: 18,
-      },
-      icon: null,
-      symbol: 'yveCRV',
-      apy: {
-        data: {},
-      },
-      address: '0xc5bDdf9843308380375a611c18B50Fb9341f502A',
-      strategies: [],
-      endorsed: false,
-      name: 'veCRV-DAO yVault (yveCRV-DAO)',
-      displayName: 'yveCRV',
-      updated: 1612452385,
-      tokenAddress: '0xD533a949740bb3306d119CC777fa900bA034cd52',
-      decimals: 18,
-      emergencyShutdown: false,
-      type: 'v1',
-      tags: ['backscratcher'],
-    };
-
-    vaults.push(backScratcherVault);
-
     const vaultsWithEth = injectEthVault(vaults);
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {

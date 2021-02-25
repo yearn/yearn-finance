@@ -22,15 +22,30 @@ import {
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-const injectEthVault = (vaults) => {
+
+// TODO: Do better v2... never hard-code vault addresses
+const v2WethVaultAddress = '0xa9fE4601811213c340e850ea305481afF02f5b28';
+const v2EthZapAddress = '0x5a0bade607eaca65a0fe6d1437e0e3ec2144d540';
+
+const injectEthVaults = (vaults) => {
   const ethereumString = 'Ethereum';
-  const wethVault = _.find(vaults, { address: v1WethVaultAddress });
-  const ethVault = _.clone(wethVault);
-  ethVault.displayName = ethereumString;
-  ethVault.pureEthereum = true;
-  ethVault.token.address = ethAddress;
-  ethVault.token.symbol = 'ETH';
-  vaults.push(ethVault);
+  const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
+  const v1EthVault = _.clone(v1WethVault);
+  v1EthVault.displayName = ethereumString;
+  v1EthVault.pureEthereum = true;
+  v1EthVault.token.address = ethAddress;
+  v1EthVault.token.symbol = 'ETH';
+
+  const v2WethVault = _.find(vaults, { address: v2WethVaultAddress });
+  const v2EthVault = _.clone(v2WethVault);
+
+  v2EthVault.displayName = ethereumString;
+  v2EthVault.pureEthereum = true;
+  v2EthVault.token.address = ethAddress;
+  v2EthVault.token.symbol = 'ETH';
+  v2EthVault.zapAddress = v2EthZapAddress;
+
+  vaults.push(v1EthVault, v2EthVault);
   return vaults;
 };
 
@@ -39,7 +54,7 @@ function* fetchVaults() {
     const url = `https://vaults.finance/all`;
     const vaults = yield call(request, url);
 
-    const vaultsWithEth = injectEthVault(vaults);
+    const vaultsWithEth = injectEthVaults(vaults);
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
     console.log('Error reading vaults', err);
@@ -153,10 +168,18 @@ function* depositToVault(action) {
         from: account,
       });
     } else {
-      yield call(vaultContract.methods.depositETH.cacheSend, {
-        from: account,
-        value: depositAmount,
-      });
+      const { zapContract } = vaultContract;
+      if (zapContract) {
+        yield call(zapContract.methods.depositETH.cacheSend, {
+          from: account,
+          value: depositAmount,
+        });
+      } else {
+        yield call(vaultContract.methods.depositETH.cacheSend, {
+          from: account,
+          value: depositAmount,
+        });
+      }
     }
   } catch (error) {
     console.error(error);

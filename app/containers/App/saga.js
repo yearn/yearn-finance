@@ -4,6 +4,7 @@ import vaultAbi from 'abi/yVault.json';
 import backscratcherAbi from 'abi/backscratcher.json';
 import veCrvAbi from 'abi/veCrv.json';
 import vaultV2Abi from 'abi/v2Vault.json';
+import v2EthZapAbi from 'abi/v2EthZapAbi.json';
 import erc20Abi from 'abi/erc20.json';
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -33,6 +34,8 @@ function* loadVaultContracts(clear) {
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
   const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
+
+  const v2EthZapAddresses = '0x5a0bade607eaca65a0fe6d1437e0e3ec2144d540';
 
   const contracts = [
     {
@@ -144,6 +147,22 @@ function* loadVaultContracts(clear) {
         {
           name: 'balanceOf',
           args: [account],
+        },
+      ],
+    },
+    {
+      namespace: 'zap',
+      abi: v2EthZapAbi,
+      addresses: [v2EthZapAddresses],
+      readMethods: [
+        {
+          name: 'weth',
+          args: [],
+        },
+      ],
+      writeMethods: [
+        {
+          name: 'depositETH',
         },
       ],
     },

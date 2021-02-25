@@ -161,7 +161,7 @@ const truncateFee = (fee) => {
   if (!fee) {
     return 'N/A';
   }
-  const truncatedFee = (fee / 1e2).toFixed();
+  const truncatedFee = (fee / 1e2).toFixed(2);
   const feeStr = `${truncatedFee}%`;
   return feeStr;
 };

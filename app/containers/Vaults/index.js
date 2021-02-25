@@ -43,21 +43,6 @@ const Warning = styled.div`
   margin-top: 50px;
 `;
 
-// const DevHeader = styled.div`
-//   opacity: ${(props) => (props.devMode ? 1 : 0)};
-//   transition: opacity 100ms ease-in, margin-top 100ms ease-out;
-//   margin-top: -50px;
-//   pointer-events: none;
-//   ${(props) =>
-//     props.devMode &&
-//     css`
-//       margin-top: 30px;
-//       color: black;
-//       transition: opacity 100ms ease-in, margin-top 100ms ease-out;
-//       pointer-events: inherit;
-//     `}
-// `;
-
 const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
   width: 100%;
@@ -121,8 +106,13 @@ const Vaults = (props) => {
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
   vaultItems = _.map(vaultItems, (vault) => {
-    const vaultContractData = allContracts[vault.address];
-    const newVault = _.merge(vault, vaultContractData);
+    const vaultContractData = allContracts[vault.address] || {};
+    const newVault = {
+      ...vault,
+      balanceOf: vaultContractData.balanceOf,
+      getPricePerFullShare: vaultContractData.getPricePerFullShare,
+      pricePerShare: vaultContractData.pricePerShare,
+    };
 
     const { decimals } = vault;
 
@@ -139,17 +129,18 @@ const Vaults = (props) => {
             .toNumber()
         : 0;
     } else {
+      console.log('ggg', getPricePerFullShare);
+      // .multipliedBy(getPricePerFullShare[0].value / 10 ** 18)
       vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value)
-            .dividedBy(10 ** decimals)
-            .multipliedBy(getPricePerFullShare[0].value / 10 ** 18)
-            .toNumber()
+        ? new BigNumber(balanceOf[0].value).dividedBy(10 ** decimals).toNumber()
         : 0;
     }
     newVault.valueDeposited = vaultBalanceOf || 0;
 
     // Growth
-    newVault.valueApy = _.get(newVault, 'apy.recommended');
+    newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
+      .times(100)
+      .toNumber();
 
     // Total Assets
     let vaultAssets =
@@ -161,7 +152,7 @@ const Vaults = (props) => {
     newVault.valueTotalAssets = vaultAssets;
 
     // Available to Deposit
-    const tokenContractAddress = vault.tokenAddress || vault.token || vault.CRV;
+    const tokenContractAddress = vault.token || vault.CRV;
     const tokenContractData = allContracts[tokenContractAddress];
     const tokenBalance = vault.pureEthereum
       ? ethBalance
@@ -262,7 +253,7 @@ const BackscratchersWrapper = (props) => {
   const { showDevVaults, walletConnected } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const currentEventKey = useContext(AccordionContext);
-  const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost');
+  const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
   backscratcherVault.multiplier = multiplierText;
   backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;

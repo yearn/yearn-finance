@@ -233,7 +233,7 @@ const Vault = (props) => {
   const isScreenMd = useMediaQuery('(min-width:960px)');
 
   const devMode = true;
-  const tokenContractAddress = tokenAddress || token || CRV;
+  const tokenContractAddress = token.address || CRV;
   const ethBalance = useSelector(selectEthBalance());
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
@@ -269,17 +269,19 @@ const Vault = (props) => {
       ? truncateApy(_.get(apy, 'recommended'))
       : ApyErrorDescriptions[apy.description].recommended;
 
+  const grossApy = _.get(apy, 'data.grossApy');
+  const netApy = _.get(apy, 'data.netApy');
   let apyTooltip = (
     <div>
       <TooltipTable>
         <tbody>
           <tr>
             <td>Gross APY</td>
-            <td>{truncateApy(apy.data.grossApy)}</td>
+            <td>{truncateApy(grossApy)}</td>
           </tr>
           <tr>
             <td>Net APY</td>
-            <td>{truncateApy(apy.data.netApy)}</td>
+            <td>{truncateApy(netApy)}</td>
           </tr>
         </tbody>
       </TooltipTable>
@@ -288,6 +290,7 @@ const Vault = (props) => {
   if (apyType === 'error') {
     apyTooltip = ApyErrorDescriptions[apy.description].tooltip;
   } else if (vaultIsBackscratcher) {
+    const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
     apyTooltip = (
       <div>
         Boosted yveCRV APY
@@ -301,7 +304,7 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Boost</td>
-              <td>{apy.data.currentBoost.toFixed(2)}x</td>
+              <td>{currentBoost}x</td>
             </tr>
             <tr>
               <td>Total APY</td>
@@ -387,16 +390,16 @@ const Vault = (props) => {
             <tbody>
               <tr>
                 <td>Withdrawal Fee</td>
-                <td>{truncateFee(withdrawalFee)}</td>
+                <td>{truncateFee(withdrawalFee * 100)}</td>
               </tr>
               <tr>
                 <td>Performance Fee</td>
-                <td>{truncateFee(performanceFee)}</td>
+                <td>{truncateFee(performanceFee * 100)}</td>
               </tr>
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{truncateFee(keepCrv)}</td>
+                  <td>{truncateFee(keepCrv * 100)}</td>
                 </tr>
               )}
             </tbody>

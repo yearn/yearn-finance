@@ -65,7 +65,7 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
       if (vault) {
         return {
           type: 'vault',
-          relevantAddresses: [vault.address, vault.tokenAddress].filter(
+          relevantAddresses: [vault.address, vault.token.address].filter(
             (val) => !!val,
           ),
         };
@@ -76,7 +76,7 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
           type: 'backscratcher',
           relevantAddresses: [
             backscratcherVault.address,
-            backscratcherVault.tokenAddress,
+            backscratcherVault.token.address,
           ],
         };
       }

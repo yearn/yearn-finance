@@ -143,7 +143,7 @@ const VaultsWrapper = () => {
     const tokenContractData =
       _.find(
         tokensContractData,
-        (tokenContract) => tokenContract.address === vault.tokenAddress,
+        (tokenContract) => tokenContract.address === vault.token.address,
       ) || {};
 
     const tokenBalanceOf = _.get(tokenContractData, 'balanceOf[0].value');

@@ -28,38 +28,19 @@ const injectEthVault = (vaults) => {
   const ethVault = _.clone(wethVault);
   ethVault.displayName = ethereumString;
   ethVault.pureEthereum = true;
-  ethVault.tokenAddress = ethAddress;
-  ethVault.tokenMetadata.address = ethAddress;
-  ethVault.tokenMetadata.symbol = 'ETH';
+  ethVault.token.address = ethAddress;
+  ethVault.token.symbol = 'ETH';
   vaults.push(ethVault);
   return vaults;
 };
 
-// small note
-// pls remove this or 🔪
-// ~ <3 nymmrx
-function mergeApis(vaults, vaultsApy) {
-  return vaults.map((_vault) => {
-    const vaultApy = vaultsApy.find(
-      (_vaultApy) => _vaultApy.address === _vault.address,
-    );
-    return {
-      ..._vault,
-      apy: vaultApy ? vaultApy.apy : _vault.apy,
-      fees: vaultApy.fees,
-    };
-  });
-}
-
 function* fetchVaults() {
   try {
-    const url = `https://api.yearn.tools/vaults/all`;
-    const apyUrl = `https://vaults.finance/all`;
+    const url = `https://vaults.finance/all`;
     const vaults = yield call(request, url);
-    const vaultsApy = yield call(request, apyUrl);
 
     const backScratcherVault = {
-      tokenMetadata: {
+      token: {
         name: 'Curve DAO Token',
         icon: null,
         symbol: 'CRV',
@@ -69,7 +50,9 @@ function* fetchVaults() {
       },
       icon: null,
       symbol: 'yveCRV',
-      apy: {},
+      apy: {
+        data: {},
+      },
       address: '0xc5bDdf9843308380375a611c18B50Fb9341f502A',
       strategies: [],
       endorsed: false,
@@ -86,9 +69,8 @@ function* fetchVaults() {
     vaults.push(backScratcherVault);
 
     const vaultsWithEth = injectEthVault(vaults);
-    const vaultsWithApy = mergeApis(vaultsWithEth, vaultsApy);
 
-    yield put(vaultsLoaded(vaultsWithApy));
+    yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
     console.log('Error reading vaults', err);
   }

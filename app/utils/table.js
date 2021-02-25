@@ -19,9 +19,8 @@ const IconName = styled.div`
 `;
 
 export const tokenTransform = (dontCare, asset) => {
-  const { vaultAlias, tokenAddress, address, token } = asset;
-  const tokenContractAddress = tokenAddress || token;
-  console.log('buf dude', tokenContractAddress);
+  const { vaultAlias, address, token } = asset;
+  const tokenContractAddress = token.address;
   return (
     <IconAndName>
       <StyledTokenIcon address={tokenContractAddress} />

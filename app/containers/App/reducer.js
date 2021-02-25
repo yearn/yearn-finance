@@ -59,12 +59,9 @@ const appReducer = (state = initialState, action) =>
           (vault) => vault.address === backscratcherAddress,
         );
 
-        draft.vaults = action.vaults
-          .filter((vault) => vault.address !== backscratcherAddress)
-          .filter(
-            (v, i, a) => a.findIndex((t) => t.address === v.address) === i,
-          );
-
+        draft.vaults = action.vaults.filter(
+          (vault) => vault.address !== backscratcherAddress,
+        );
         const usdnVault = _.find(action.vaults, { displayName: 'crvUSDN' });
         let { baseApy } = usdnVault.apy.data;
         baseApy *= 0.5;

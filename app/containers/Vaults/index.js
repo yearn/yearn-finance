@@ -131,7 +131,6 @@ const Vaults = (props) => {
             .multipliedBy(pricePerShare[0].value / 10 ** decimals)
             .toNumber()
         : 0;
-      console.log('here');
     } else {
       vaultBalanceOf = balanceOf
         ? new BigNumber(balanceOf[0].value)

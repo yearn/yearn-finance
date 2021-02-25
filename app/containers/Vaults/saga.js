@@ -69,7 +69,6 @@ function* fetchVaults() {
     vaults.push(backScratcherVault);
 
     const vaultsWithEth = injectEthVault(vaults);
-
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
     console.log('Error reading vaults', err);

@@ -118,6 +118,9 @@ const Vaults = (props) => {
 
     const { balanceOf, getPricePerFullShare, pricePerShare } = newVault;
 
+    // Account for backscratcher being non-standard
+    const pricePerFullShare = getPricePerFullShare || 1;
+
     // Value Deposited
     const v2Vault = vault.type === 'v2' || vault.apiVersion;
     let vaultBalanceOf;
@@ -129,10 +132,11 @@ const Vaults = (props) => {
             .toNumber()
         : 0;
     } else {
-      console.log('ggg', getPricePerFullShare);
-      // .multipliedBy(getPricePerFullShare[0].value / 10 ** 18)
       vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value).dividedBy(10 ** decimals).toNumber()
+        ? new BigNumber(balanceOf[0].value)
+            .dividedBy(10 ** decimals)
+            .multipliedBy(pricePerFullShare / 10 ** 18)
+            .toNumber()
         : 0;
     }
     newVault.valueDeposited = vaultBalanceOf || 0;

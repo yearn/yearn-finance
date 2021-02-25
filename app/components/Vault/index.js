@@ -184,7 +184,7 @@ const ApyErrorDescriptions = {
 };
 
 const LinkWrap = (props) => {
-  const { devMode, children, address } = props;
+  const { devMode, children, address, title } = props;
   if (!devMode) {
     return children || null;
   }
@@ -193,6 +193,7 @@ const LinkWrap = (props) => {
       href={`https://etherscan.io/address/${address}`}
       target="_blank"
       onClick={(evt) => evt.stopPropagation()}
+      title={title}
     >
       {children}
     </A>
@@ -226,6 +227,7 @@ const Vault = (props) => {
     CRV,
     multiplier,
     depositLimit,
+    alias,
     // statistics,
   } = vault;
 
@@ -609,10 +611,10 @@ const Vault = (props) => {
       vaultTop = (
         <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon address={tokenIconAddress} />
             </LinkWrap>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
                 <IconName devMode={devMode}>
                   <Text large bold>
@@ -691,10 +693,10 @@ const Vault = (props) => {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
           <IconAndName>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon address={tokenIconAddress} />
             </LinkWrap>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
                 <IconName devMode={devMode}>
                   <Text large bold>

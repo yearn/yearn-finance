@@ -62,18 +62,6 @@ const appReducer = (state = initialState, action) =>
         draft.vaults = action.vaults.filter(
           (vault) => vault.address !== backscratcherAddress,
         );
-        const usdnVault = _.find(action.vaults, { displayName: 'crvUSDN' });
-        let { baseApy } = usdnVault.apy.data;
-        baseApy *= 0.5;
-        usdnVault.apy.data = {
-          ...usdnVault.apy.data,
-          baseApy,
-          boostedApy: baseApy * usdnVault.apy.data.currentBoost,
-          totalApy:
-            baseApy * usdnVault.apy.data.currentBoost +
-            usdnVault.apy.data.poolApy,
-        };
-        usdnVault.apy.recommended = usdnVault.apy.data.totalApy;
         checkReadyState();
         break;
       }

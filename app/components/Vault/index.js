@@ -161,7 +161,7 @@ const truncateFee = (fee) => {
   if (!fee) {
     return 'N/A';
   }
-  const truncatedFee = (fee / 1e4).toFixed(2);
+  const truncatedFee = (fee / 1e2).toFixed();
   const feeStr = `${truncatedFee}%`;
   return feeStr;
 };
@@ -326,10 +326,12 @@ const Vault = (props) => {
               <td>Pool APY</td>
               <td>{truncateApy(apy.data.poolApy)}</td>
             </tr>
-            <tr>
-              <td>Bonus Rewards APR</td>
-              <td>{truncateApy(apy.data.tokenRewardsApr)}</td>
-            </tr>
+            {apy.data.tokenRewardsApr > 0 && (
+              <tr>
+                <td>Bonus Rewards APR</td>
+                <td>{truncateApy(apy.data.tokenRewardsApr)}</td>
+              </tr>
+            )}
             <tr>
               <td>Base CRV APR</td>
               <td>{truncateApy(apy.data.baseApr)}</td>
@@ -394,16 +396,16 @@ const Vault = (props) => {
             <tbody>
               <tr>
                 <td>Withdrawal Fee</td>
-                <td>{truncateFee(withdrawalFee * 100)}</td>
+                <td>{truncateFee(withdrawalFee)}</td>
               </tr>
               <tr>
                 <td>Performance Fee</td>
-                <td>{truncateFee(performanceFee * 100)}</td>
+                <td>{truncateFee(performanceFee)}</td>
               </tr>
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{truncateFee(keepCrv * 100)}</td>
+                  <td>{truncateFee(keepCrv)}</td>
                 </tr>
               )}
             </tbody>

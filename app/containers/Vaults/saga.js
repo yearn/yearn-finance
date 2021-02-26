@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import { approveTxSpend } from 'utils/contracts';
 import request from 'utils/request';
 import { APP_INITIALIZED } from 'containers/App/constants';
@@ -17,6 +18,8 @@ import {
   WITHDRAW_FROM_VAULT,
   DEPOSIT_TO_VAULT,
   CLAIM_BACKSCRATCHER_REWARDS,
+  MIGRATE_VAULT,
+  TRUSTED_MIGRATOR_ADDRESS,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -177,6 +180,47 @@ function* claimBackscratcherRewards(action) {
   }
 }
 
+function* migrateVault(action) {
+  const { vaultContract, trustedMigratorContract } = action.payload;
+
+  const account = yield select(selectAccount());
+  const allowance = yield select(
+    selectTokenAllowance(vaultContract.address, TRUSTED_MIGRATOR_ADDRESS),
+  );
+  const migrationData = yield select(selectMigrationData);
+  console.log(account);
+
+  const vaultMigrationData = migrationData[vaultContract.address];
+  const isMigratable = !!vaultMigrationData;
+  if (!isMigratable) {
+    console.error(`Cant migrate vault ${vaultContract.address}`);
+    return;
+  }
+
+  const spendTokenApproved = new BigNumber(allowance).gt(0);
+
+  try {
+    if (!spendTokenApproved) {
+      yield call(
+        approveTxSpend,
+        vaultContract,
+        account,
+        trustedMigratorContract.address,
+      );
+    }
+    yield call(
+      trustedMigratorContract.methods.migrateAll.cacheSend,
+      vaultMigrationData.vaultFrom,
+      vaultMigrationData.vaultTo,
+      {
+        from: account,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
@@ -185,4 +229,5 @@ export default function* initialize() {
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
+  yield takeLatest(MIGRATE_VAULT, migrateVault);
 }

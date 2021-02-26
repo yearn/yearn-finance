@@ -48,7 +48,7 @@ export default function VaultControls(props) {
   const {
     address: vaultAddress,
     totalAssets,
-    tokenAddress,
+    token,
     decimals,
     pureEthereum,
     depositLimit,
@@ -72,7 +72,7 @@ export default function VaultControls(props) {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
 
-  const tokenContract = useContract(tokenAddress);
+  const tokenContract = useContract(token.address);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);

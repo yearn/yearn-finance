@@ -16,7 +16,10 @@ export const selectMigrationData = createSelector(
       ...vault,
     }));
 
-    const migrationDataByVault = keyBy(migrationData, 'vaultFrom');
+    const migrationDataByVault = {
+      ...keyBy(migrationData, 'vaultFrom'),
+      ...keyBy(migrationData, 'vaultTo'),
+    };
 
     return migrationDataByVault;
   },

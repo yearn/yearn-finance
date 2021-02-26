@@ -20,15 +20,13 @@ import {
   CLAIM_BACKSCRATCHER_REWARDS,
   MIGRATE_VAULT,
   TRUSTED_MIGRATOR_ADDRESS,
+  V2_WETH_VAULT_ADDRESS,
+  V2_ETH_ZAP_ADDRESS,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-
-// TODO: Do better v2... never hard-code vault addresses
-const v2WethVaultAddress = '0xa9fE4601811213c340e850ea305481afF02f5b28';
-const v2EthZapAddress = '0x5a0bade607eaca65a0fe6d1437e0e3ec2144d540';
 
 const injectEthVaults = (vaults) => {
   const ethereumString = 'Ethereum';
@@ -39,14 +37,14 @@ const injectEthVaults = (vaults) => {
   v1EthVault.token.address = ethAddress;
   v1EthVault.token.symbol = 'ETH';
 
-  const v2WethVault = _.find(vaults, { address: v2WethVaultAddress });
+  const v2WethVault = _.find(vaults, { address: V2_WETH_VAULT_ADDRESS });
   const v2EthVault = _.clone(v2WethVault);
 
   v2EthVault.displayName = ethereumString;
   v2EthVault.pureEthereum = true;
   v2EthVault.token.address = ethAddress;
   v2EthVault.token.symbol = 'ETH';
-  v2EthVault.zapAddress = v2EthZapAddress;
+  v2EthVault.zapAddress = V2_ETH_ZAP_ADDRESS;
 
   vaults.push(v1EthVault, v2EthVault);
   return vaults;

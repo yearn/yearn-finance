@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { keyBy, get } from 'lodash';
 import Hidden from '@material-ui/core/Hidden';
 import Accordion from 'react-bootstrap/Accordion';
 import VaultsHeader from 'components/VaultsHeader';
@@ -22,6 +23,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
+import request from 'utils/request';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
@@ -47,6 +49,8 @@ const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
   width: 100%;
 `;
+
+const ALIASES_API = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json`;
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
@@ -92,6 +96,7 @@ const useSortableData = (items, config = null) => {
 
 const Vaults = (props) => {
   const { history } = props;
+  const [aliasByVault, setAliasByVault] = useState({});
   const isScreenMd = useMediaQuery('(min-width:960px)');
   const showDevVaults = useShowDevVaults();
   const wallet = useWallet();
@@ -166,6 +171,8 @@ const Vaults = (props) => {
       : 0;
     newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
+    newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
+
     return newVault;
   });
 
@@ -173,7 +180,14 @@ const Vaults = (props) => {
 
   useEffect(() => {
     requestSort('valueDeposited');
+    request(ALIASES_API).then((response) => {
+      setAliasByVault(keyBy(response, 'address'));
+    });
   }, []);
+
+  const backscratcherAlias =
+    get(aliasByVault[backscratcherVault.address], 'name') ||
+    backscratcherVault.name;
 
   // Show the vault based on URL path
   const pathArray = history.location.pathname.split('/');
@@ -210,6 +224,7 @@ const Vaults = (props) => {
           <BackscratchersWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
+            backscratcherAlias={backscratcherAlias}
           />
         </StyledAccordion>
       </WrapTable>
@@ -259,13 +274,14 @@ const Vaults = (props) => {
 };
 
 const BackscratchersWrapper = (props) => {
-  const { showDevVaults, walletConnected } = props;
+  const { showDevVaults, walletConnected, backscratcherAlias } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
   backscratcherVault.multiplier = multiplierText;
   backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
+  backscratcherVault.alias = backscratcherAlias;
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (

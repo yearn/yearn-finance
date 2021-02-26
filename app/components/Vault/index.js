@@ -16,6 +16,7 @@ import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { abbreviateNumber } from 'utils/string';
 import { selectContractData, selectEthBalance } from 'containers/App/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -140,7 +141,7 @@ const TooltipTable = styled.table`
 `;
 
 const Notice = styled.div`
-  padding: 1em 0;
+  padding: 15px !important;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -161,7 +162,7 @@ const truncateFee = (fee) => {
   if (!fee) {
     return 'N/A';
   }
-  const truncatedFee = (fee / 1e2).toFixed();
+  const truncatedFee = (fee / 1e2).toFixed(2);
   const feeStr = `${truncatedFee}%`;
   return feeStr;
 };
@@ -184,7 +185,7 @@ const ApyErrorDescriptions = {
 };
 
 const LinkWrap = (props) => {
-  const { devMode, children, address } = props;
+  const { devMode, children, address, title } = props;
   if (!devMode) {
     return children || null;
   }
@@ -193,6 +194,7 @@ const LinkWrap = (props) => {
       href={`https://etherscan.io/address/${address}`}
       target="_blank"
       onClick={(evt) => evt.stopPropagation()}
+      title={title}
     >
       {children}
     </A>
@@ -226,6 +228,7 @@ const Vault = (props) => {
     CRV,
     multiplier,
     depositLimit,
+    alias,
     // statistics,
   } = vault;
 
@@ -247,6 +250,12 @@ const Vault = (props) => {
   const backscratcherTotalAssets = veCrvContract.balanceOf;
 
   const vaultIsBackscratcher = vault.address === backscratcherAddress;
+
+  const migrationData = useSelector(selectMigrationData);
+  const vaultMigrationData = migrationData[address];
+  const isMigratable =
+    !!vaultMigrationData &&
+    new BigNumber(_.get(vaultMigrationData, 'balanceOf')).gt(0);
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -615,10 +624,10 @@ const Vault = (props) => {
       vaultTop = (
         <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon address={tokenIconAddress} />
             </LinkWrap>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
                 <IconName devMode={devMode}>
                   <Text large bold>
@@ -697,10 +706,10 @@ const Vault = (props) => {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
           <IconAndName>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon address={tokenIconAddress} />
             </LinkWrap>
-            <LinkWrap devMode={devMode} address={address}>
+            <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
                 <IconName devMode={devMode}>
                   <Text large bold>
@@ -780,6 +789,16 @@ const Vault = (props) => {
                 <span>
                   50% of USDN CRV harvest is locked to boost yield. APY
                   displayed reflects this.
+                </span>
+              </Notice>
+            )}
+            {isMigratable && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  This vault is eligible for v2 migration. Please click the
+                  migrate button below to continue receiving rewards. This is a
+                  one time migration.
                 </span>
               </Notice>
             )}

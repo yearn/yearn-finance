@@ -8,7 +8,9 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { selectTokenAllowance } from 'containers/App/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import BackscratcherClaim from 'components/BackscratcherClaim';
+import MigrateVault from 'components/MigrateVault';
 import Box from 'components/Box';
 
 const MaxWrapper = styled.div`
@@ -48,7 +50,7 @@ export default function VaultControls(props) {
   const {
     address: vaultAddress,
     totalAssets,
-    tokenAddress,
+    token,
     decimals,
     pureEthereum,
     depositLimit,
@@ -76,8 +78,10 @@ export default function VaultControls(props) {
   if (zapContract) {
     vaultContract = { ...vaultContract, zapContract };
   }
+  const migrationData = useSelector(selectMigrationData);
+  const isMigratable = !!migrationData[vaultAddress];
 
-  const tokenContract = useContract(tokenAddress);
+  const tokenContract = useContract(token.address);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
@@ -221,6 +225,11 @@ export default function VaultControls(props) {
           {vaultIsBackscratcher && (
             <Box ml={isScreenMd ? 5 : 0} alignSelf="flex-end" width={1}>
               <BackscratcherClaim vaultAddress={vaultAddress} />
+            </Box>
+          )}
+          {isMigratable && (
+            <Box ml={isScreenMd ? 56 : 0} alignSelf="flex-end" width={1}>
+              <MigrateVault vaultAddress={vaultAddress} />
             </Box>
           )}
         </ActionGroup>

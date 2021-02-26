@@ -205,6 +205,8 @@ export default function CreamModal(props) {
   const [amount, setAmount] = useState(0);
   const dispatch = useDispatch();
   const tokenAddress = get(modalMetadata, 'address');
+
+  // TODO: There could be a regression here. Might need to use token.address
   const tokenContract = useContract(tokenAddress);
   const creamCTokenAddress = get(modalMetadata, 'cAddress');
   const crTokenContract = useContract(creamCTokenAddress);

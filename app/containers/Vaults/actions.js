@@ -34,3 +34,10 @@ export function claimBackscratcherRewards(payload) {
     payload,
   };
 }
+
+export function migrateVault(payload) {
+  return {
+    type: c.MIGRATE_VAULT,
+    payload,
+  };
+}

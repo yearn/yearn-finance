@@ -4,6 +4,7 @@ import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
 import { selectPoolData } from '../Cover/selectors';
+import { zapsToVaultAddressMap } from '../Vaults/constants';
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
@@ -59,6 +60,23 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
     ) => {
+      const isZap = !!zapsToVaultAddressMap[contractAddress.toLowerCase()];
+      if (isZap) {
+        const vaultAddress =
+          zapsToVaultAddressMap[contractAddress.toLowerCase()];
+        const vault = vaultsData.find(
+          (v) => v.address.toLowerCase() === vaultAddress.toLowerCase(),
+        );
+        if (vault) {
+          return {
+            type: 'vault',
+            relevantAddresses: [vault.address, vault.token.address].filter(
+              (val) => !!val,
+            ),
+          };
+        }
+      }
+
       const vault = vaultsData.find(
         (v) => v.address.toLowerCase() === contractAddress.toLowerCase(),
       );

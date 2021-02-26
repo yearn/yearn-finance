@@ -20,21 +20,35 @@ import {
   CLAIM_BACKSCRATCHER_REWARDS,
   MIGRATE_VAULT,
   TRUSTED_MIGRATOR_ADDRESS,
+  V2_WETH_VAULT_ADDRESS,
+  V2_ETH_ZAP_ADDRESS,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-const injectEthVault = (vaults) => {
+
+const injectEthVaults = (vaults) => {
   const ethereumString = 'Ethereum';
-  const wethVault = _.find(vaults, { address: v1WethVaultAddress });
-  const ethVault = _.cloneDeep(wethVault);
-  ethVault.displayName = ethereumString;
-  ethVault.pureEthereum = true;
-  ethVault.token.address = ethAddress;
-  ethVault.token.symbol = 'ETH';
-  ethVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
-  vaults.push(ethVault);
+  const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
+  const v1EthVault = _.cloneDeep(v1WethVault);
+  v1EthVault.displayName = ethereumString;
+  v1EthVault.pureEthereum = true;
+  v1EthVault.token.address = ethAddress;
+  v1EthVault.token.symbol = 'ETH';
+  v1EthVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
+
+  const v2WethVault = _.find(vaults, { address: V2_WETH_VAULT_ADDRESS });
+  const v2EthVault = _.cloneDeep(v2WethVault);
+
+  v2EthVault.displayName = ethereumString;
+  v2EthVault.pureEthereum = true;
+  v2EthVault.token.address = ethAddress;
+  v2EthVault.token.symbol = 'ETH';
+  v2EthVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
+  v2EthVault.zapAddress = V2_ETH_ZAP_ADDRESS;
+
+  vaults.push(v1EthVault, v2EthVault);
   return vaults;
 };
 
@@ -43,7 +57,7 @@ function* fetchVaults() {
     const url = `https://vaults.finance/all`;
     const vaults = yield call(request, url);
 
-    const vaultsWithEth = injectEthVault(vaults);
+    const vaultsWithEth = injectEthVaults(vaults);
     yield put(vaultsLoaded(vaultsWithEth));
   } catch (err) {
     console.log('Error reading vaults', err);
@@ -157,10 +171,18 @@ function* depositToVault(action) {
         from: account,
       });
     } else {
-      yield call(vaultContract.methods.depositETH.cacheSend, {
-        from: account,
-        value: depositAmount,
-      });
+      const { zapContract } = vaultContract;
+      if (zapContract) {
+        yield call(zapContract.methods.depositETH.cacheSend, {
+          from: account,
+          value: depositAmount,
+        });
+      } else {
+        yield call(vaultContract.methods.depositETH.cacheSend, {
+          from: account,
+          value: depositAmount,
+        });
+      }
     }
   } catch (error) {
     console.error(error);

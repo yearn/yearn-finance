@@ -54,6 +54,7 @@ export default function VaultControls(props) {
     decimals,
     pureEthereum,
     depositLimit,
+    zapAddress,
   } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -72,7 +73,11 @@ export default function VaultControls(props) {
 
   const isScreenMd = useMediaQuery('(min-width:960px)');
   const dispatch = useDispatch();
-  const vaultContract = useContract(vaultAddress);
+  let vaultContract = useContract(vaultAddress);
+  const zapContract = useContract(zapAddress);
+  if (zapContract) {
+    vaultContract = { ...vaultContract, zapContract };
+  }
   const migrationData = useSelector(selectMigrationData);
   const isMigratable = !!migrationData[vaultAddress];
 

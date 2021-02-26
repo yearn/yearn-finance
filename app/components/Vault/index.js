@@ -539,7 +539,7 @@ const Vault = (props) => {
       <ColumnListDev>
         <IconAndName>
           <LinkWrap devMode={devMode} address={address}>
-            <StyledTokenIcon address={tokenContractAddress} />
+            <StyledTokenIcon address={tokenContractAddress} icon={token.icon} />
           </LinkWrap>
           <LinkWrap devMode={devMode} address={address}>
             <div tw="flex">
@@ -625,7 +625,10 @@ const Vault = (props) => {
         <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address} title={alias}>
-              <StyledTokenIcon address={tokenIconAddress} />
+              <StyledTokenIcon
+                address={tokenContractAddress}
+                icon={token.icon}
+              />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
@@ -707,7 +710,7 @@ const Vault = (props) => {
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address} title={alias}>
-              <StyledTokenIcon address={tokenIconAddress} />
+              <StyledTokenIcon address={tokenIconAddress} icon={token.icon} />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">

@@ -28,11 +28,12 @@ const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const injectEthVault = (vaults) => {
   const ethereumString = 'Ethereum';
   const wethVault = _.find(vaults, { address: v1WethVaultAddress });
-  const ethVault = _.clone(wethVault);
+  const ethVault = _.cloneDeep(wethVault);
   ethVault.displayName = ethereumString;
   ethVault.pureEthereum = true;
   ethVault.token.address = ethAddress;
   ethVault.token.symbol = 'ETH';
+  ethVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
   vaults.push(ethVault);
   return vaults;
 };

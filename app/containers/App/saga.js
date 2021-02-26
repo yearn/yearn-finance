@@ -17,7 +17,10 @@ import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
 import trustedMigratorAbi from 'abi/trustedMigrator.json';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
-import { TRUSTED_MIGRATOR_ADDRESS } from 'containers/Vaults/constants';
+import {
+  TRUSTED_MIGRATOR_ADDRESS,
+  V2_ETH_ZAP_ADDRESS,
+} from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
 import { APP_READY, APP_INITIALIZED } from './constants';
@@ -37,8 +40,6 @@ function* loadVaultContracts(clear) {
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
   const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
-
-  const v2EthZapAddresses = '0x5a0bade607eaca65a0fe6d1437e0e3ec2144d540';
 
   const contracts = [
     {
@@ -153,22 +154,6 @@ function* loadVaultContracts(clear) {
         },
       ],
     },
-    {
-      namespace: 'zap',
-      abi: v2EthZapAbi,
-      addresses: [v2EthZapAddresses],
-      readMethods: [
-        {
-          name: 'weth',
-          args: [],
-        },
-      ],
-      writeMethods: [
-        {
-          name: 'depositETH',
-        },
-      ],
-    },
   ];
 
   const generateVaultTokenAllowanceSubscriptions = (vault) => {
@@ -228,11 +213,35 @@ function* loadVaultContracts(clear) {
 
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
 
+  const zapSubscriptions = getZapSubscriptions();
+
+  contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
   yield put(addContracts(contracts, clear));
   // yield put(addContracts(localSubscriptions, clear));
+}
+
+function getZapSubscriptions() {
+  const eth2ZapSubscription = {
+    namespace: 'zap',
+    abi: v2EthZapAbi,
+    addresses: [V2_ETH_ZAP_ADDRESS],
+    readMethods: [
+      {
+        name: 'weth',
+        args: [],
+      },
+    ],
+    writeMethods: [
+      {
+        name: 'depositETH',
+      },
+    ],
+  };
+
+  return [eth2ZapSubscription];
 }
 
 function getTrustedMigratorSubscriptions(account) {

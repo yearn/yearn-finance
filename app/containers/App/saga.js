@@ -5,6 +5,7 @@ import vaultAbi from 'abi/yVault.json';
 import backscratcherAbi from 'abi/backscratcher.json';
 import veCrvAbi from 'abi/veCrv.json';
 import vaultV2Abi from 'abi/v2Vault.json';
+import v2EthZapAbi from 'abi/v2EthZapAbi.json';
 import erc20Abi from 'abi/erc20.json';
 import zapYveCrvAbi from 'abi/zapYveCrv.json';
 
@@ -23,6 +24,7 @@ import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import {
   TRUSTED_MIGRATOR_ADDRESS,
   ZAP_YVE_CRV_ADDRESS,
+  V2_ETH_ZAP_ADDRESS,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -194,8 +196,24 @@ function* loadVaultContracts(clear) {
         },
       ],
     };
+    const eth2ZapSubscription = {
+      namespace: 'zap',
+      abi: v2EthZapAbi,
+      addresses: [V2_ETH_ZAP_ADDRESS],
+      readMethods: [
+        {
+          name: 'weth',
+          args: [],
+        },
+      ],
+      writeMethods: [
+        {
+          name: 'depositETH',
+        },
+      ],
+    };
 
-    return [zapYveCrvSubscription];
+    return [zapYveCrvSubscription, eth2ZapSubscription];
   }
 
   // const localSubscriptions = [

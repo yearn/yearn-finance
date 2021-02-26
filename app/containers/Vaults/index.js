@@ -185,9 +185,10 @@ const Vaults = (props) => {
     });
   }, []);
 
-  const backscratcherAlias =
-    get(aliasByVault[backscratcherVault.address], 'name') ||
-    backscratcherVault.name;
+  const backscratcherAlias = backscratcherVault
+    ? get(aliasByVault[backscratcherVault.address], 'name') ||
+      backscratcherVault.name
+    : 'Backscratcher';
 
   // Show the vault based on URL path
   const pathArray = history.location.pathname.split('/');

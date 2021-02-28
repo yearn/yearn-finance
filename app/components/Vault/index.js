@@ -187,11 +187,17 @@ const truncateUsd = (value) => {
   return usdFormatter.format(value);
 };
 
+const tokenFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+});
+
 const truncateToken = (value) => {
   if (!value) {
     return 'N/A';
   }
-  return usdFormatter.format(value).slice(1);
+  return tokenFormatter.format(value).slice(1);
 };
 
 const ApyErrorDescriptions = {
@@ -494,15 +500,15 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(vault.tvl.value);
     const totalAssets = new BigNumber(vault.tvl.totalAssets)
       .dividedBy(10 ** decimals)
-      .toFixed(0);
+      .toFixed(2);
     if (v2Vault && depositLimit) {
       const limit = new BigNumber(depositLimit)
         .dividedBy(10 ** decimals)
-        .toFixed(0);
+        .toFixed(2);
       const limitUsd = new BigNumber(depositLimit)
         .dividedBy(10 ** decimals)
         .times(vault.tvl.price)
-        .toFixed(0);
+        .toFixed(2);
       vaultAssetsTooltip = (
         <div>
           <TooltipTable>

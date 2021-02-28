@@ -121,11 +121,6 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
-const InfoIcon = styled(Icon)`
-  display: inline-block;
-  margin-left: 3px;
-`;
-
 const Apy = styled.div`
   display: inline-block;
   width: 73px;
@@ -144,6 +139,10 @@ const Notice = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+`;
+
+const Help = styled.span`
+  cursor: help;
 `;
 
 const NoticeIcon = styled(Icon)`
@@ -178,6 +177,7 @@ const truncateApy = (apy) => {
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
+  maximumFractionDigits: 0,
 });
 
 const truncateUsd = (value) => {
@@ -185,6 +185,13 @@ const truncateUsd = (value) => {
     return 'N/A';
   }
   return usdFormatter.format(value);
+};
+
+const truncateToken = (value) => {
+  if (!value) {
+    return 'N/A';
+  }
+  return usdFormatter.format(value).slice(1);
 };
 
 const ApyErrorDescriptions = {
@@ -238,7 +245,7 @@ const Vault = (props) => {
     pureEthereum,
     CRV,
     multiplier,
-    // depositLimit,
+    depositLimit,
     alias,
     // statistics,
   } = vault;
@@ -475,22 +482,70 @@ const Vault = (props) => {
   // vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
   // vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
-  const vaultAssets = vaultIsBackscratcher
-    ? truncateUsd(
-        new BigNumber(backscratcherTotalAssets)
-          .dividedBy(10 ** decimals)
-          .toNumber(),
-      )
-    : truncateUsd(vault.tvl);
-
-  // if (v2Vault && depositLimit && vaultAssets !== 'NaN') {
-  //   const limit = new BigNumber(depositLimit)
-  //     .dividedBy(10 ** decimals)
-  //     .toFixed(0);
-  //   if (parseInt(limit, 10) < Number.MAX_SAFE_INTEGER) {
-  //     vaultAssets = `${vaultAssets} / ${abbreviateNumber(limit)}`;
-  //   }
-  // }
+  let vaultAssets;
+  let vaultAssetsTooltip;
+  if (vaultIsBackscratcher) {
+    vaultAssets = truncateUsd(
+      new BigNumber(backscratcherTotalAssets)
+        .dividedBy(10 ** decimals)
+        .toNumber(),
+    );
+  } else if (vault.tvl) {
+    vaultAssets = truncateUsd(vault.tvl.value);
+    const totalAssets = new BigNumber(vault.tvl.totalAssets)
+      .dividedBy(10 ** decimals)
+      .toFixed(0);
+    if (v2Vault && depositLimit) {
+      const limit = new BigNumber(depositLimit)
+        .dividedBy(10 ** decimals)
+        .toFixed(0);
+      const limitUsd = new BigNumber(depositLimit)
+        .dividedBy(10 ** decimals)
+        .times(vault.tvl.price)
+        .toFixed(0);
+      vaultAssetsTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Deposit limit</td>
+                <td>{truncateUsd(limitUsd)}</td>
+              </tr>
+              <tr>
+                <td>Total assets</td>
+                <td>
+                  {truncateToken(totalAssets)} {token.displayName}
+                </td>
+              </tr>
+              <tr>
+                <td>Deposit limit</td>
+                <td>
+                  {truncateToken(limit)} {token.displayName}
+                </td>
+              </tr>
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
+    } else {
+      vaultAssetsTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Total assets</td>
+                <td>
+                  {truncateToken(totalAssets)} {token.displayName}
+                </td>
+              </tr>
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
+    }
+  } else {
+    vaultAssets = truncateUsd(0);
+  }
 
   const contractType = getContractType(vault);
 
@@ -668,13 +723,19 @@ const Vault = (props) => {
             </Text>
             <Text large bold>
               <Tooltip title={apyTooltip} arrow>
-                <span>
-                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-                </span>
+                <Help>
+                  <Apy>{apyRecommended}</Apy>
+                </Help>
               </Tooltip>
             </Text>
             <Text large bold>
-              {vaultAssets}
+              {vaultAssetsTooltip ? (
+                <Tooltip title={vaultAssetsTooltip} arrow>
+                  <Help>{vaultAssets}</Help>
+                </Tooltip>
+              ) : (
+                vaultAssets
+              )}
             </Text>
             <Text large bold>
               <AnimatedNumber value={tokenBalanceOf} />{' '}
@@ -745,9 +806,7 @@ const Vault = (props) => {
             <Text large bold>
               {versionTooltip ? (
                 <Tooltip title={versionTooltip} arrow>
-                  <div>
-                    {vault.type} <InfoIcon type="info" />
-                  </div>
+                  <Help>{vault.type}</Help>
                 </Tooltip>
               ) : (
                 vault.type
@@ -759,14 +818,20 @@ const Vault = (props) => {
 
             <Text large bold>
               <Tooltip title={apyTooltip} arrow>
-                <span>
-                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-                </span>
+                <Help>
+                  <Apy>{apyRecommended}</Apy>
+                </Help>
               </Tooltip>
             </Text>
 
             <Text large bold>
-              {vaultAssets}
+              {vaultAssetsTooltip ? (
+                <Tooltip title={vaultAssetsTooltip} arrow>
+                  <Help>{vaultAssets}</Help>
+                </Tooltip>
+              ) : (
+                vaultAssets
+              )}
             </Text>
             <Text large bold>
               <AnimatedNumber value={tokenBalanceOf} />{' '}

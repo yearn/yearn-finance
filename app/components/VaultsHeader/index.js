@@ -35,7 +35,12 @@ const vaultColumns = [
     tooltip:
       'Gross APY (Vault yield, annualized) is displayed below. Most vaults report annualized weekly yield, though a vault will default to monthly if weekly is less reliable. Net APY is shown on hover.',
   },
-  { name: 'Total Assets', sort: 'valueTotalAssets' },
+  {
+    name: 'Total Assets',
+    sort: 'valueTotalAssets',
+    tooltip:
+      'Total assets held in the vault and strategy. Total token holdings and deposit limits, if present, are shown on hover.',
+  },
   { name: 'Available to deposit', sort: 'valueAvailableToDeposit' },
 ];
 

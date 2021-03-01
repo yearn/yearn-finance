@@ -178,6 +178,7 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
 });
 
 const truncateUsd = (value) => {
@@ -191,6 +192,7 @@ const tokenFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
 });
 
 const truncateToken = (value) => {

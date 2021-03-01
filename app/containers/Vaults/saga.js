@@ -129,13 +129,26 @@ function* withdrawFromVault(action) {
         },
       );
     } else {
-      yield call(
-        vaultContract.methods.withdrawETH.cacheSend,
-        sharesForWithdrawal,
-        {
+      const { zapContract } = vaultContract;
+      if (zapContract) {
+        let method;
+        if (zapContract.methods.withdrawETH) {
+          method = zapContract.methods.withdrawETH;
+        } else {
+          method = vaultContract.methods.withdraw;
+        }
+        yield call(method.cacheSend, sharesForWithdrawal, {
           from: account,
-        },
-      );
+        });
+      } else {
+        yield call(
+          vaultContract.methods.withdrawETH.cacheSend,
+          sharesForWithdrawal,
+          {
+            from: account,
+          },
+        );
+      }
     }
   } catch (error) {
     console.error(error);

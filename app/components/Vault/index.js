@@ -14,7 +14,6 @@ import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
-import { abbreviateNumber } from 'utils/string';
 import { selectContractData, selectEthBalance } from 'containers/App/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
@@ -122,11 +121,6 @@ const StatsIcon = styled(Icon)`
   left: -22px;
 `;
 
-const InfoIcon = styled(Icon)`
-  display: inline-block;
-  margin-left: 3px;
-`;
-
 const Apy = styled.div`
   display: inline-block;
   width: 73px;
@@ -147,6 +141,10 @@ const Notice = styled.div`
   width: 100%;
 `;
 
+const Help = styled.span`
+  cursor: help;
+`;
+
 const NoticeIcon = styled(Icon)`
   height: 1.2em;
   position: relative;
@@ -160,7 +158,7 @@ const StyledText = styled(Text)`
 
 const truncateFee = (fee) => {
   if (!fee) {
-    return 'N/A';
+    return '0%';
   }
   const truncatedFee = (fee / 1e2).toFixed(2);
   const feeStr = `${truncatedFee}%`;
@@ -174,6 +172,34 @@ const truncateApy = (apy) => {
   const truncatedApy = (apy * 100).toFixed(2);
   const apyStr = `${truncatedApy}%`;
   return apyStr;
+};
+
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+});
+
+const truncateUsd = (value) => {
+  if (!value) {
+    return 'N/A';
+  }
+  return usdFormatter.format(value);
+};
+
+const tokenFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
+const truncateToken = (value) => {
+  if (!value) {
+    return 'N/A';
+  }
+  return tokenFormatter.format(value).slice(1);
 };
 
 const ApyErrorDescriptions = {
@@ -216,8 +242,8 @@ const Vault = (props) => {
     tokenSymbolAlias,
     decimals,
     displayName,
-    totalAssets,
-    balance,
+    // totalAssets,
+    // balance,
     balanceOf,
     address,
     name,
@@ -458,19 +484,75 @@ const Vault = (props) => {
       : '0.00';
   }
 
-  let vaultAssets = vaultIsBackscratcher
-    ? backscratcherTotalAssets
-    : balance || totalAssets;
-  vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
-  vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
+  // let vaultAssets = vaultIsBackscratcher
+  //   ? backscratcherTotalAssets
+  //   : balance || totalAssets;
+  // vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
+  // vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
-  if (v2Vault && depositLimit && vaultAssets !== 'NaN') {
-    const limit = new BigNumber(depositLimit)
+  let vaultAssets;
+  let vaultAssetsTooltip;
+  if (vaultIsBackscratcher) {
+    vaultAssets = truncateUsd(
+      new BigNumber(backscratcherTotalAssets)
+        .dividedBy(10 ** decimals)
+        .toNumber(),
+    );
+  } else if (vault.tvl) {
+    vaultAssets = truncateUsd(vault.tvl.value);
+    const totalAssets = new BigNumber(vault.tvl.totalAssets)
       .dividedBy(10 ** decimals)
-      .toFixed(0);
-    if (parseInt(limit, 10) < Number.MAX_SAFE_INTEGER) {
-      vaultAssets = `${vaultAssets} / ${abbreviateNumber(limit)}`;
+      .toFixed(2);
+    if (v2Vault && depositLimit) {
+      const limit = new BigNumber(depositLimit)
+        .dividedBy(10 ** decimals)
+        .toFixed(2);
+      const limitUsd = new BigNumber(depositLimit)
+        .dividedBy(10 ** decimals)
+        .times(vault.tvl.price)
+        .toFixed(2);
+      vaultAssetsTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Deposit limit</td>
+                <td>{truncateUsd(limitUsd)}</td>
+              </tr>
+              <tr>
+                <td>Total assets</td>
+                <td>
+                  {truncateToken(totalAssets)} {token.displayName}
+                </td>
+              </tr>
+              <tr>
+                <td>Deposit limit</td>
+                <td>
+                  {truncateToken(limit)} {token.displayName}
+                </td>
+              </tr>
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
+    } else {
+      vaultAssetsTooltip = (
+        <div>
+          <TooltipTable>
+            <tbody>
+              <tr>
+                <td>Total assets</td>
+                <td>
+                  {truncateToken(totalAssets)} {token.displayName}
+                </td>
+              </tr>
+            </tbody>
+          </TooltipTable>
+        </div>
+      );
     }
+  } else {
+    vaultAssets = truncateUsd(0);
   }
 
   const contractType = getContractType(vault);
@@ -649,13 +731,19 @@ const Vault = (props) => {
             </Text>
             <Text large bold>
               <Tooltip title={apyTooltip} arrow>
-                <span>
-                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-                </span>
+                <Help>
+                  <Apy>{apyRecommended}</Apy>
+                </Help>
               </Tooltip>
             </Text>
             <Text large bold>
-              {vaultAssets}
+              {vaultAssetsTooltip ? (
+                <Tooltip title={vaultAssetsTooltip} arrow>
+                  <Help>{vaultAssets}</Help>
+                </Tooltip>
+              ) : (
+                vaultAssets
+              )}
             </Text>
             <Text large bold>
               <AnimatedNumber value={tokenBalanceOf} />{' '}
@@ -726,9 +814,7 @@ const Vault = (props) => {
             <Text large bold>
               {versionTooltip ? (
                 <Tooltip title={versionTooltip} arrow>
-                  <div>
-                    {vault.type} <InfoIcon type="info" />
-                  </div>
+                  <Help>{vault.type}</Help>
                 </Tooltip>
               ) : (
                 vault.type
@@ -740,14 +826,20 @@ const Vault = (props) => {
 
             <Text large bold>
               <Tooltip title={apyTooltip} arrow>
-                <span>
-                  <Apy>{apyRecommended}</Apy> <InfoIcon type="info" />
-                </span>
+                <Help>
+                  <Apy>{apyRecommended}</Apy>
+                </Help>
               </Tooltip>
             </Text>
 
             <Text large bold>
-              {vaultAssets}
+              {vaultAssetsTooltip ? (
+                <Tooltip title={vaultAssetsTooltip} arrow>
+                  <Help>{vaultAssets}</Help>
+                </Tooltip>
+              ) : (
+                vaultAssets
+              )}
             </Text>
             <Text large bold>
               <AnimatedNumber value={tokenBalanceOf} />{' '}

@@ -152,13 +152,9 @@ const Vaults = (props) => {
       .toNumber();
 
     // Total Assets
-    let vaultAssets =
-      _.get(newVault, 'balance[0].value') ||
-      _.get(newVault, 'totalAssets[0].value');
-    vaultAssets = new BigNumber(vaultAssets)
-      .dividedBy(10 ** decimals)
-      .toNumber();
-    newVault.valueTotalAssets = vaultAssets;
+    newVault.valueTotalAssets = new BigNumber(
+      _.get(newVault, 'tvl.value'),
+    ).toNumber();
 
     // Available to Deposit
     const tokenContractAddress = vault.token || vault.CRV;

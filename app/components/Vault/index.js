@@ -350,6 +350,7 @@ const Vault = (props) => {
       </div>
     );
   } else if (apyType === 'curve') {
+    const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
     apyTooltip = (
       <div>
         {apy.description}
@@ -373,7 +374,7 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Boost</td>
-              <td>{apy.data.currentBoost.toFixed(2)}x</td>
+              <td>{currentBoost}x</td>
             </tr>
             <tr>
               <td>Total APY</td>

@@ -198,88 +198,45 @@ export const selectOrderedVaults = createSelector(
       (vault) => !(vault.type === 'v2' && vault.endorsed === false),
     );
 
+    const filteredV2Vaults = _.filter(
+      filteredVaults,
+      (vault) => vault.type === 'v2',
+    );
+
+    const filteredV1Vaults = _.filter(
+      filteredVaults,
+      (vault) => vault.type === 'v1',
+    );
+
     // If no contract data is available sort by vault version
     if (_.isUndefined(vaultsContractData) || _.isEmpty(vaultsContractData)) {
       const vaultsSortedByVersion = _.orderBy(filteredVaults, 'type', 'desc');
       return vaultsSortedByVersion;
     }
 
-    const vaultsWithSortingData = _.map(filteredVaults, (vault) => {
-      const vaultWithSortingData = vault;
+    const v2VaultsWithSortingData = getVaultsWithSortingData(
+      filteredV2Vaults,
+      'v2',
+    );
+    const v1VaultsWithSortingData = getVaultsWithSortingData(
+      filteredV1Vaults,
+      'v1',
+    );
 
-      // const contractData = _.find(vaultsContractData, {
-      //   address: vault.address,
-      // });
+    const orderedVaultsV2 = _.orderBy(
+      v2VaultsWithSortingData,
+      ['customOrder'],
+      ['asc'],
+    );
 
-      vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
-        const sortAddress = vault.pureEthereum
-          ? ethereumAddress
-          : vault.address;
-        let vaultOrder = _.indexOf(vaultsOrder, sortAddress);
-        if (vaultOrder === -1) {
-          vaultOrder = 10000000;
-        }
-        return vaultOrder;
-      })();
-
-      // Add user holdings data to enable sorting by it.
-      // vaultWithSortingData.userHoldings = (function getUserHoldings() {
-      //   const rawUserHoldings = _.get(contractData, 'balanceOf[0].value', 0);
-
-      //   let rawSharePrice;
-      //   if (vault.type === 'v1') {
-      //     rawSharePrice = _.get(
-      //       contractData,
-      //       'getPricePerFullShare[0].value',
-      //       0,
-      //     );
-      //   } else if (vault.type === 'v2') {
-      //     rawSharePrice = _.get(contractData, 'pricePerShare[0].value', 0);
-      //   }
-
-      //   const userHoldings = new BigNumber(rawUserHoldings)
-      //     .multipliedBy(rawSharePrice)
-      //     .dividedBy(10 ** vault.decimals);
-
-      //   return userHoldings.toNumber();
-      // })();
-
-      // // Add vault token holdings data to enable sorting by it.
-      // vaultWithSortingData.vaultTokenHoldings = (function getVaultTokenHoldings() {
-      //   let rawVaultTokenHoldings;
-      //   if (vault.type === 'v1') {
-      //     rawVaultTokenHoldings = _.get(contractData, 'balance[0].value', 0);
-      //   } else if (vault.type === 'v2') {
-      //     rawVaultTokenHoldings = _.get(
-      //       contractData,
-      //       'totalAssets[0].value',
-      //       0,
-      //     );
-      //   }
-
-      //   const vaultTokenHoldings = new BigNumber(
-      //     rawVaultTokenHoldings,
-      //   ).dividedBy(10 ** vault.decimals);
-
-      //   return vaultTokenHoldings.toNumber();
-      // })();
-
-      return vaultWithSortingData;
-    });
-
-    // let orderedVaults = _.orderBy(
-    //   vaultsWithSortingData,
-    //   ['userHoldings', 'customOrder', 'type'],
-    //   ['desc', 'asc', 'desc'],
-    // );
-
-    let orderedVaults = _.orderBy(
-      vaultsWithSortingData,
+    const orderedVaultsV1 = _.orderBy(
+      v1VaultsWithSortingData,
       ['customOrder'],
       ['asc'],
     );
 
     // Remove the added fields, that were only used for ordering.
+    let orderedVaults = _.concat(orderedVaultsV2, orderedVaultsV1);
     orderedVaults = _.omit(orderedVaults, [
       'userHoldings',
       'vaultTokenHoldings',
@@ -288,3 +245,22 @@ export const selectOrderedVaults = createSelector(
     return orderedVaults;
   },
 );
+
+function getVaultsWithSortingData(vaults, vaultVersion) {
+  const vaultsWithSortingData = _.map(vaults, (vault) => {
+    const vaultWithSortingData = vault;
+
+    vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
+      const sortAddress = vault.pureEthereum ? ethereumAddress : vault.address;
+      let vaultOrder = _.indexOf(vaultsOrder[vaultVersion], sortAddress);
+      if (vaultOrder === -1) {
+        vaultOrder = 10000000;
+      }
+      return vaultOrder;
+    })();
+
+    return vaultWithSortingData;
+  });
+
+  return vaultsWithSortingData;
+}

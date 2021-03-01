@@ -9,7 +9,7 @@ import {
 } from 'containers/DrizzleProvider/constants';
 
 // import { WEBSOCKET_CONNECTED } from 'middleware/websocket/constants';
-import { VAULTS_LOADED } from './constants';
+import { VAULTS_LOADED, ROUTE_CHANGED } from './constants';
 import { USER_VAULT_STATISTICS_LOADED } from '../Vaults/constants';
 
 const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
@@ -29,6 +29,10 @@ export const initialState = {
   backscratcher: null,
   tokens: [],
   localContracts: [],
+  user: {
+    currentRoute: null,
+    previousRoute: null,
+  },
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -78,10 +82,17 @@ const appReducer = (state = initialState, action) =>
         break;
       case DRIZZLE_INITIALIZED:
         draft.loading.drizzle = false;
+        break;
       // case WEBSOCKET_CONNECTED:
       //   draft.loading.websocket = false;
       //   checkReadyState();
       //   break;
+      case ROUTE_CHANGED:
+        draft.user = {
+          previousRoute: draft.user.currentRoute,
+          currentRoute: action.route,
+        };
+        break;
     }
   });
 

@@ -516,10 +516,6 @@ const Vault = (props) => {
           <TooltipTable>
             <tbody>
               <tr>
-                <td>Deposit limit</td>
-                <td>{truncateUsd(limitUsd)}</td>
-              </tr>
-              <tr>
                 <td>Total assets</td>
                 <td>
                   {truncateToken(totalAssets)} {token.displayName}
@@ -530,6 +526,10 @@ const Vault = (props) => {
                 <td>
                   {truncateToken(limit)} {token.displayName}
                 </td>
+              </tr>
+              <tr>
+                <td />
+                <td>{truncateUsd(limitUsd)}</td>
               </tr>
             </tbody>
           </TooltipTable>

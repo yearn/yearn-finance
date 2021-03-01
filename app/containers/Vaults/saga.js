@@ -29,7 +29,7 @@ const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 const injectEthVaults = (vaults) => {
-  const ethereumString = 'Ethereum';
+  const ethereumString = 'ETH';
   const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
   const v1EthVault = _.cloneDeep(v1WethVault);
   v1EthVault.displayName = ethereumString;

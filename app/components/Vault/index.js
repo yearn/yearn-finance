@@ -4,7 +4,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
+import ColumnListAmplify from 'components/Vault/amplifyColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
@@ -699,7 +699,7 @@ const Vault = (props) => {
 
     if (amplifyVault) {
       vaultTop = (
-        <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
+        <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon
@@ -756,7 +756,7 @@ const Vault = (props) => {
               </LinkWrap>
             </Text>
           </Hidden>
-        </ColumnListBackscratcher>
+        </ColumnListAmplify>
       );
 
       vaultAdditionalInfo = (

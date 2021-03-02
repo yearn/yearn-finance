@@ -255,6 +255,7 @@ const Vault = (props) => {
     multiplier,
     depositLimit,
     alias,
+    emergencyShutdown,
     // statistics,
   } = vault;
 
@@ -898,6 +899,12 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )} */}
+            {emergencyShutdown && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>This vault has been disabled temporarily.</span>
+              </Notice>
+            )}
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer small={!isScreenMd}>{vaultControls}</Footer>

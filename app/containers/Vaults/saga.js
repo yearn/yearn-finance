@@ -224,6 +224,7 @@ function* migrateVault(action) {
     selectTokenAllowance(vaultContract.address, TRUSTED_MIGRATOR_ADDRESS),
   );
   const migrationData = yield select(selectMigrationData);
+  console.log(account);
 
   const vaultMigrationData = migrationData[vaultContract.address];
   const isMigratable = !!vaultMigrationData;

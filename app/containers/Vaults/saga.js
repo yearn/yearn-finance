@@ -29,7 +29,7 @@ const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 const injectEthVaults = (vaults) => {
-  const ethereumString = 'Ethereum';
+  const ethereumString = 'ETH';
   const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
   const v1EthVault = _.cloneDeep(v1WethVault);
   v1EthVault.displayName = ethereumString;
@@ -130,13 +130,26 @@ function* withdrawFromVault(action) {
         },
       );
     } else {
-      yield call(
-        vaultContract.methods.withdrawETH.cacheSend,
-        sharesForWithdrawal,
-        {
+      const { zapContract } = vaultContract;
+      if (zapContract) {
+        let method;
+        if (zapContract.methods.withdrawETH) {
+          method = zapContract.methods.withdrawETH;
+        } else {
+          method = vaultContract.methods.withdraw;
+        }
+        yield call(method.cacheSend, sharesForWithdrawal, {
           from: account,
-        },
-      );
+        });
+      } else {
+        yield call(
+          vaultContract.methods.withdrawETH.cacheSend,
+          sharesForWithdrawal,
+          {
+            from: account,
+          },
+        );
+      }
     }
   } catch (error) {
     console.error(error);
@@ -212,6 +225,7 @@ function* migrateVault(action) {
     selectTokenAllowance(vaultContract.address, TRUSTED_MIGRATOR_ADDRESS),
   );
   const migrationData = yield select(selectMigrationData);
+  console.log(account);
 
   const vaultMigrationData = migrationData[vaultContract.address];
   const isMigratable = !!vaultMigrationData;

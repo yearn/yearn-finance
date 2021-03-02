@@ -28,42 +28,35 @@ $ yarn dev
 ```
 
 ## Testing on mainnet fork
+To test the webapp with a local mainnet fork with some pre-filled tokens you can run:
 
-https://eth-brownie.readthedocs.io/en/stable/install.html
-
-#### Requirements:
-
+```bash
+./run_mainnet_fork.sh
 ```
-python3 (to install pipx)
-python3-pip (to install pipx)
-python3-venv (to install brownie)
-pipx (to install brownie)
-eth-brownie
-```
+
+The webapp will start in DEV mode and will be available at: `http://localhost:3000`
+
+The local RPC client (ganache-cli) will be available at: `http://localhost:8545`
+
 
 **[Important]**:
-
+- SET `WEB3_INFURA_PROJECT_ID` and `ETHERSCAN_TOKEN` variables in the .env file.
 - SET `WEB3_PROVIDER_HTTPS` and `WEB3_PROVIDER_WSS` variables in the .env file with your alchemy key
 - Set `USE_LOCAL_RPC` variable to TRUE on .env file.
 - Change Metamask to Localhost RPC endpoint :)
 
-```sh
-# terminal 1:
-export WEB3_INFURA_PROJECT_ID=your-infura-id
-yarn fork:start
-
-# terminal 2:
-yarn dev
+### Brownie + dockerized ganache-cli
+Install brownie >= 1.13.2
+```bash
+pip install "eth-brownie>=1.13.2"
 ```
 
-#### How to add new tokens
+Connect to your local mainnet-fork:
+```bash
+brownie console
+```
 
-- Open `internals/forknet/supply-tokens.py`
-- Add the desired token like `crvToken = Contract.from_explorer("0xD533a949740bb3306d119CC777fa900bA034cd52")`
-- Go to etherscan and find a whale that has enough balance of that token and
-- Add the whale like `crvWhale = accounts.at("0x4ce799e6ed8d64536b67dd428565d52a531b3640", force=True)`
-- Set the desired amount like `crvToken.transfer(account, "1000 ether", {'from': crvWhale})`
-- Restart or run `yarn fork start`
+
 
 ## Production
 

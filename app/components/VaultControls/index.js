@@ -55,6 +55,7 @@ export default function VaultControls(props) {
     pureEthereum,
     depositLimit,
     zapAddress,
+    emergencyShutdown,
   } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -114,8 +115,13 @@ export default function VaultControls(props) {
     ) {
       return 'Inactive with YIP-56: Buyback and Build';
     }
+
+    if (emergencyShutdown) {
+      return 'Vault deposits temporarily disabled';
+    }
+
     return undefined;
-  }, [depositAmount, totalAssets, depositLimit]);
+  }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   useEffect(() => {
     setDepositAmount(0);

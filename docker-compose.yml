@@ -1,0 +1,33 @@
+version: '3.7'
+
+networks:
+  yearn-finance:
+
+services:
+  yearn-finance-dev:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - WEB3_PROVIDER_HTTPS
+      - WEB3_PROVIDER_WSS
+      - BLOCKNATIVE_DAPP_ID
+      - ETHERSCAN_APIKEY
+      - PORTIS_APIKEY
+      - FORTMATIC_APIKEY
+      - BLOCK_SUBSCRIPTION
+      - USE_LOCAL_RPC=TRUE
+    networks:
+      - yearn-finance
+    restart: always
+
+  yearn-mainnet-fork:
+    image: yearn-mainnet-fork
+    ports:
+      - 8545:8545
+    environment:
+      - WEB3_INFURA_PROJECT_ID
+      - ETHERSCAN_TOKEN
+    networks:
+      - yearn-finance
+    restart: always

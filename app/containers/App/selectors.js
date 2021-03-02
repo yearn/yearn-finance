@@ -35,6 +35,9 @@ export const selectEthBalance = () =>
 export const selectWatchedContractAddresses = () =>
   createSelector(selectApp, (substate) => substate.watchedContractAddresses);
 
+export const selectUser = () =>
+  createSelector(selectApp, (substate) => substate.user);
+
 export const selectLocation = () =>
   createSelector(selectRouter, (routerState) => routerState.location);
 

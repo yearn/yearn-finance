@@ -23,7 +23,7 @@ import {
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
-import { APP_READY, APP_INITIALIZED } from './constants';
+import { APP_READY, APP_INITIALIZED, SPLASH_PAGE_VISITED } from './constants';
 
 function* loadVaultContracts(clear) {
   const vaults = yield select(selectVaults());
@@ -342,10 +342,15 @@ function* accountUpdated() {
   localStorage.setItem('account', account);
 }
 
+function* updateLastSplashVisit() {
+  localStorage.setItem('lastSplashVisit', new Date(Date.now()).toISOString());
+}
+
 export default function* initialize() {
   yield takeLatest(APP_READY, loadVaultContracts);
   yield takeLatest(TX_BROADCASTED, watchTransactions);
   // yield takeLatest(APP_INITIALIZED, connectWebsocket);
   yield takeLatest('ACCOUNT_UPDATED', accountUpdated);
   yield takeLatest(APP_INITIALIZED, startKonamiWatcher);
+  yield takeLatest(SPLASH_PAGE_VISITED, updateLastSplashVisit);
 }

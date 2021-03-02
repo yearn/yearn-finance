@@ -21,3 +21,16 @@ export function appInitialized() {
     type: c.APP_INITIALIZED,
   };
 }
+
+export function routeChanged(route) {
+  return {
+    type: c.ROUTE_CHANGED,
+    route,
+  };
+}
+
+export function splashPageVisited() {
+  return {
+    type: c.SPLASH_PAGE_VISITED,
+  };
+}

@@ -15,7 +15,7 @@ import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { selectContractData, selectEthBalance } from 'containers/App/selectors';
-import { selectMigrationData } from 'containers/Vaults/selectors';
+// import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -277,11 +277,11 @@ const Vault = (props) => {
 
   const vaultIsBackscratcher = vault.address === backscratcherAddress;
 
-  const migrationData = useSelector(selectMigrationData);
-  const vaultMigrationData = migrationData[address];
-  const isMigratable =
-    !!vaultMigrationData &&
-    new BigNumber(_.get(vaultMigrationData, 'balanceOf')).gt(0);
+  // const migrationData = useSelector(selectMigrationData);
+  // const vaultMigrationData = migrationData[address];
+  // const isMigratable =
+  //   !!vaultMigrationData &&
+  //   new BigNumber(_.get(vaultMigrationData, 'balanceOf')).gt(0);
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -888,7 +888,7 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-            {isMigratable && (
+            {/* {isMigratable && (
               <Notice>
                 <NoticeIcon type="info" />
                 <span>
@@ -897,7 +897,7 @@ const Vault = (props) => {
                   one time migration.
                 </span>
               </Notice>
-            )}
+            )} */}
             {backscratcherInfo}
             <Card.Footer className={active && 'active'}>
               <Footer small={!isScreenMd}>{vaultControls}</Footer>

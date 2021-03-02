@@ -121,26 +121,29 @@ const Vaults = (props) => {
 
     const { decimals } = vault;
 
-    const { balanceOf, getPricePerFullShare, pricePerShare } = newVault;
+    let { balanceOf, pricePerShare } = newVault;
+    const { getPricePerFullShare } = newVault;
 
+    balanceOf = _.get(balanceOf, '[0].value') || 0;
+    pricePerShare = _.get(pricePerShare, '[0].value') || 1;
     // Account for backscratcher being non-standard
-    const pricePerFullShare = getPricePerFullShare || 1;
+    const pricePerFullShare = _.get(getPricePerFullShare, '[0].value') || 1;
 
     // Value Deposited
     const v2Vault = vault.type === 'v2' || vault.apiVersion;
     let vaultBalanceOf;
     if (v2Vault) {
       vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value)
+        ? new BigNumber(balanceOf)
             .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerShare[0].value / 10 ** decimals)
+            .multipliedBy(pricePerShare / 10 ** decimals)
             .toNumber()
         : 0;
     } else {
       vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value)
+        ? new BigNumber(balanceOf)
             .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerFullShare[0].value / 10 ** 18)
+            .multipliedBy(pricePerFullShare / 10 ** 18)
             .toNumber()
         : 0;
     }

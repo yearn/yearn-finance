@@ -184,7 +184,7 @@ function* loadVaultContracts(clear) {
 
   function getZapSubscriptions() {
     const zapYveCrvSubscription = {
-      namespace: 'zaps',
+      namespace: 'zap',
       abi: zapYveCrvAbi,
       addresses: [ZAP_YVE_CRV_ADDRESS],
       writeMethods: [

@@ -213,13 +213,7 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const {
-    vault,
-    showDevVaults,
-    active,
-    accordionKey,
-    backscratcherVault,
-  } = props;
+  const { vault, showDevVaults, active, accordionKey, amplifyVault } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -237,7 +231,7 @@ const Vault = (props) => {
     token,
     pureEthereum,
     CRV,
-    multiplier,
+    // multiplier,
     // depositLimit,
     alias,
     // statistics,
@@ -499,7 +493,7 @@ const Vault = (props) => {
   // eslint-disable-next-line no-unused-vars
   let vaultStats;
   let vaultControls;
-  let backscratcherInfo;
+  let vaultAdditionalInfo;
 
   const openContractStatisticsModal = (evt) => {
     evt.preventDefault();
@@ -639,7 +633,7 @@ const Vault = (props) => {
       ? backscratcherAddress
       : tokenContractAddress;
 
-    if (backscratcherVault) {
+    if (amplifyVault) {
       vaultTop = (
         <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
@@ -661,11 +655,22 @@ const Vault = (props) => {
           </IconAndName>
           <Hidden smDown>
             <Text large bold>
-              <AnimatedNumber value={vaultBalanceOf} />
+              {versionTooltip ? (
+                <Tooltip title={versionTooltip} arrow>
+                  <div>
+                    {vault.type} <InfoIcon type="info" />
+                  </div>
+                </Tooltip>
+              ) : (
+                vault.type
+              )}
             </Text>
             <Text large bold>
-              {multiplier}
+              <AnimatedNumber value={vaultBalanceOf} />
             </Text>
+            {/* <Text large bold>
+              {multiplier}
+            </Text> */}
             <Text large bold>
               <Tooltip title={apyTooltip} arrow>
                 <span>
@@ -686,7 +691,7 @@ const Vault = (props) => {
         </ColumnListBackscratcher>
       );
 
-      backscratcherInfo = (
+      vaultAdditionalInfo = (
         <Box my={16} mx={isScreenMd ? 70 : 20}>
           <Text bold fontSize={4} mb={6}>
             Read carefully before use
@@ -824,7 +829,7 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-            {backscratcherInfo}
+            {vaultAdditionalInfo}
             <Card.Footer className={active && 'active'}>
               <Footer small={!isScreenMd}>{vaultControls}</Footer>
             </Card.Footer>

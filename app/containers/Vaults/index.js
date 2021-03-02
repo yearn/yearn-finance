@@ -10,6 +10,7 @@ import {
   selectContractsByTag,
   selectEthBalance,
   selectBackscratcherVault,
+  selectPickleVault,
   selectOrderedVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
@@ -104,9 +105,11 @@ const Vaults = (props) => {
   const walletConnected = wallet.provider && account;
   const orderedVaults = useSelector(selectOrderedVaults);
   const localContracts = useSelector(selectContractsByTag('localContracts'));
-  const backscratcherVault = useSelector(selectBackscratcherVault());
   const allContracts = useSelector(selectAllContracts());
   const ethBalance = useSelector(selectEthBalance());
+
+  const backscratcherVault = useSelector(selectBackscratcherVault());
+  const pickleVault = useSelector(selectPickleVault());
 
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
@@ -189,6 +192,9 @@ const Vaults = (props) => {
     ? get(aliasByVault[backscratcherVault.address], 'name') ||
       backscratcherVault.name
     : 'Backscratcher';
+  const pickleVaultAlias = pickleVault
+    ? get(aliasByVault[pickleVault.address], 'name') || pickleVault.name
+    : 'Pickle';
 
   // Show the vault based on URL path
   const pathArray = history.location.pathname.split('/');
@@ -204,7 +210,7 @@ const Vaults = (props) => {
   }, [orderedVaults]);
 
   let columnHeader;
-  let backscratcherWrapper;
+  let amplifyVaultsWrapper;
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
@@ -217,15 +223,16 @@ const Vaults = (props) => {
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
   } else if (backscratcherVault) {
-    backscratcherWrapper = (
-      <WrapTable center width={1}>
-        <Hidden smDown>{<VaultsHeader backscratcher />}</Hidden>
-
+    amplifyVaultsWrapper = (
+      <WrapTable center width={1} className="amplify-vaults">
+        Amplify vaults
+        <Hidden smDown>{<VaultsHeader amplifyVault />}</Hidden>
         <StyledAccordion defaultActiveKey={backscratcherVault.address}>
-          <BackscratchersWrapper
+          <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
             backscratcherAlias={backscratcherAlias}
+            pickleVaultAlias={pickleVaultAlias}
           />
         </StyledAccordion>
       </WrapTable>
@@ -255,7 +262,7 @@ const Vaults = (props) => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader> */}
         {warning}
-        {backscratcherWrapper}
+        {amplifyVaultsWrapper}
         <WrapTable center width={1}>
           <Hidden smDown>{columnHeader}</Hidden>
           <StyledAccordion
@@ -274,36 +281,50 @@ const Vaults = (props) => {
   );
 };
 
-const BackscratchersWrapper = (props) => {
-  const { showDevVaults, walletConnected, backscratcherAlias } = props;
+const AmplifyWrapper = (props) => {
+  const {
+    showDevVaults,
+    walletConnected,
+    backscratcherAlias,
+    pickleVaultAlias,
+  } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
+  const pickleVault = useSelector(selectPickleVault());
+
+  const amplifyVaults = [backscratcherVault];
+
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
   backscratcherVault.multiplier = multiplierText;
   backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
   backscratcherVault.alias = backscratcherAlias;
+
+  pickleVault.alias = pickleVaultAlias;
+
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (
-      <Vault
-        vault={vault}
-        key={vaultKey}
-        accordionKey={vaultKey}
-        active={currentEventKey === vaultKey}
-        showDevVaults={showDevVaults}
-        backscratcherVault
-      />
+      <Wrapper>
+        <Vault
+          vault={vault}
+          key={vaultKey}
+          accordionKey={vaultKey}
+          active={currentEventKey === vaultKey}
+          showDevVaults={showDevVaults}
+          amplifyVault
+        />
+      </Wrapper>
     );
   };
 
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && backscratcherVault == null) return <LinearProgress />;
   let vaultRows;
-  if (!backscratcherVault) {
+  if (!backscratcherVault || !pickleVault) {
     vaultRows = [];
   } else {
-    vaultRows = _.map([backscratcherVault], renderVault);
+    vaultRows = _.map(amplifyVaults, renderVault);
   }
 
   return <React.Fragment>{vaultRows}</React.Fragment>;

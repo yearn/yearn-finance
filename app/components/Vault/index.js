@@ -710,7 +710,7 @@ const Vault = (props) => {
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <StyledTokenIcon
                 address={tokenContractAddress}
-                icon={token.icon}
+                icon={vault.icon}
               />
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address} title={alias}>

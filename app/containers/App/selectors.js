@@ -195,11 +195,8 @@ export const selectOrderedVaults = createSelector(
   selectVaults(),
   selectContracts('vaults'),
   (vaults, vaultsContractData) => {
-    // Remove non-endorsed v2 vaults
-    const filteredVaults = _.filter(
-      vaults,
-      (vault) => !(vault.type === 'v2' && vault.endorsed === false),
-    );
+    // Remove non-endorsed vaults
+    const filteredVaults = _.filter(vaults, (vault) => vault.endorsed);
 
     const filteredV2Vaults = _.filter(
       filteredVaults,

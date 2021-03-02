@@ -4,10 +4,7 @@ import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
 import { selectPoolData } from '../Cover/selectors';
-import {
-  zapsToVaultAddressMap,
-  PICKLE_VAULT_ADDRESS,
-} from '../Vaults/constants';
+import { zapsToVaultAddressMap, PICKLEJAR_ADDRESS } from '../Vaults/constants';
 
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
@@ -25,13 +22,16 @@ export const selectReady = () =>
 export const selectVaults = () =>
   createSelector(selectApp, (substate) => substate.vaults);
 
+export const selectAmplifyVaults = () =>
+  createSelector(selectApp, (substate) => substate.amplifyVaults);
+
 export const selectBackscratcherVault = () =>
   createSelector(selectApp, (substate) => substate.backscratcher);
 
 export const selectPickleVault = () =>
   createSelector(selectApp, (substate) =>
     substate.amplifyVaults.filter(
-      (vault) => vault.address === PICKLE_VAULT_ADDRESS,
+      (vault) => vault.address === PICKLEJAR_ADDRESS,
     ),
   );
 

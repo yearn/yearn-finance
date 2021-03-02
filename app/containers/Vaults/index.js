@@ -12,6 +12,7 @@ import {
   selectBackscratcherVault,
   selectPickleVault,
   selectOrderedVaults,
+  selectAmplifyVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
@@ -104,6 +105,7 @@ const Vaults = (props) => {
   const account = useAccount();
   const walletConnected = wallet.provider && account;
   const orderedVaults = useSelector(selectOrderedVaults);
+  const amplifyVaults = useSelector(selectAmplifyVaults());
   const localContracts = useSelector(selectContractsByTag('localContracts'));
   const allContracts = useSelector(selectAllContracts());
   const ethBalance = useSelector(selectEthBalance());
@@ -113,67 +115,73 @@ const Vaults = (props) => {
 
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
-  vaultItems = _.map(vaultItems, (vault) => {
-    const vaultContractData = allContracts[vault.address] || {};
-    const newVault = {
-      ...vault,
-      balanceOf: vaultContractData.balanceOf,
-      getPricePerFullShare: vaultContractData.getPricePerFullShare,
-      pricePerShare: vaultContractData.pricePerShare,
-    };
+  function parseVaults(vaults) {
+    return _.map(vaults, (vault) => {
+      const vaultContractData = allContracts[vault.address] || {};
+      const newVault = {
+        ...vault,
+        balanceOf: vaultContractData.balanceOf,
+        getPricePerFullShare: vaultContractData.getPricePerFullShare,
+        pricePerShare: vaultContractData.pricePerShare,
+      };
 
-    const { decimals } = vault;
+      const { decimals } = vault;
 
-    const { balanceOf, getPricePerFullShare, pricePerShare } = newVault;
+      const { balanceOf, getPricePerFullShare, pricePerShare } = newVault;
 
-    // Account for backscratcher being non-standard
-    const pricePerFullShare = getPricePerFullShare || 1;
+      // Account for backscratcher being non-standard
+      const pricePerFullShare = getPricePerFullShare || 1;
 
-    // Value Deposited
-    const v2Vault = vault.type === 'v2' || vault.apiVersion;
-    let vaultBalanceOf;
-    if (v2Vault) {
-      vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value)
-            .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerShare[0].value / 10 ** decimals)
-            .toNumber()
+      // Value Deposited
+      const v2Vault = vault.type === 'v2' || vault.apiVersion;
+      let vaultBalanceOf;
+      if (v2Vault) {
+        vaultBalanceOf = balanceOf
+          ? new BigNumber(balanceOf[0].value)
+              .dividedBy(10 ** decimals)
+              .multipliedBy(pricePerShare[0].value / 10 ** decimals)
+              .toNumber()
+          : 0;
+      } else {
+        vaultBalanceOf = balanceOf
+          ? new BigNumber(balanceOf[0].value)
+              .dividedBy(10 ** decimals)
+              .multipliedBy(pricePerFullShare / 10 ** 18)
+              .toNumber()
+          : 0;
+      }
+      newVault.valueDeposited = vaultBalanceOf || 0;
+
+      // Growth
+      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
+        .times(100)
+        .toNumber();
+
+      // Total Assets
+      newVault.valueTotalAssets = new BigNumber(
+        _.get(newVault, 'tvl.value'),
+      ).toNumber();
+
+      // Available to Deposit
+      const tokenContractAddress = vault.token || vault.CRV;
+      const tokenContractData = allContracts[tokenContractAddress];
+      const tokenBalance = vault.pureEthereum
+        ? ethBalance
+        : _.get(tokenContractData, 'balanceOf[0].value');
+      const tokenBalanceOf = tokenBalance
+        ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber()
         : 0;
-    } else {
-      vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf[0].value)
-            .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerFullShare / 10 ** 18)
-            .toNumber()
-        : 0;
-    }
-    newVault.valueDeposited = vaultBalanceOf || 0;
+      newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
-    // Growth
-    newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
-      .times(100)
-      .toNumber();
+      newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
 
-    // Total Assets
-    newVault.valueTotalAssets = new BigNumber(
-      _.get(newVault, 'tvl.value'),
-    ).toNumber();
+      return newVault;
+    });
+  }
 
-    // Available to Deposit
-    const tokenContractAddress = vault.token || vault.CRV;
-    const tokenContractData = allContracts[tokenContractAddress];
-    const tokenBalance = vault.pureEthereum
-      ? ethBalance
-      : _.get(tokenContractData, 'balanceOf[0].value');
-    const tokenBalanceOf = tokenBalance
-      ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber()
-      : 0;
-    newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
-
-    newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
-
-    return newVault;
-  });
+  vaultItems = parseVaults(vaultItems);
+  const amplifyVaultItems = parseVaults(amplifyVaults);
+  console.log({ amplifyVaultItems });
 
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
 
@@ -221,23 +229,24 @@ const Vaults = (props) => {
   } else if (backscratcherVault) {
     amplifyVaultsWrapper = (
       <WrapTable center width={1} className="amplify-vaults">
-        Amplify vaults
         <Hidden smDown>{<VaultsHeader amplifyVault />}</Hidden>
         <StyledAccordion defaultActiveKey={backscratcherVault.address}>
           <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
+            vaultItems={amplifyVaultItems}
             backscratcherAlias={backscratcherAlias}
             pickleVaultAlias={pickleVaultAlias}
           />
         </StyledAccordion>
       </WrapTable>
     );
+    // NOTE The backscratcher is removed in reducer now
     // remove backscratcher from items
-    items.splice(
-      items.findIndex(({ address }) => address === backscratcherVault.address),
-      1,
-    );
+    // items.splice(
+    //   items.findIndex(({ address }) => address === backscratcherVault.address),
+    //   1,
+    // );
   }
 
   const linkToVault = (accordionKey) => {
@@ -281,17 +290,17 @@ const AmplifyWrapper = (props) => {
   const {
     showDevVaults,
     walletConnected,
+    vaultItems,
     backscratcherAlias,
     pickleVaultAlias,
   } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const pickleVault = useSelector(selectPickleVault());
 
-  const amplifyVaults = [backscratcherVault];
-
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
+  // TODO Check to remove this
   backscratcherVault.multiplier = multiplierText;
   backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
   backscratcherVault.alias = backscratcherAlias;
@@ -315,12 +324,12 @@ const AmplifyWrapper = (props) => {
   };
 
   // Show Linear progress when orderedvaults is empty
-  if (walletConnected && backscratcherVault == null) return <LinearProgress />;
+  if (walletConnected && vaultItems == null) return <LinearProgress />;
   let vaultRows;
-  if (!backscratcherVault || !pickleVault) {
+  if (!vaultItems.length) {
     vaultRows = [];
   } else {
-    vaultRows = _.map(amplifyVaults, renderVault);
+    vaultRows = _.map(vaultItems, renderVault);
   }
 
   return <React.Fragment>{vaultRows}</React.Fragment>;

@@ -54,8 +54,8 @@ const injectEthVaults = (vaults) => {
 
 function* fetchVaults() {
   try {
-    // const url = `https://dev.vaults.finance/all`;
-    const url = `https://vaults.finance/all`;
+    const url = `https://dev.vaults.finance/all`;
+    // const url = `https://vaults.finance/all`;
     const vaults = yield call(request, url);
 
     const vaultsWithEth = injectEthVaults(vaults);

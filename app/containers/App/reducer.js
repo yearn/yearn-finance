@@ -30,6 +30,7 @@ export const initialState = {
   },
   vaults: [],
   amplifyVaults: [],
+  // TODO Remove this
   backscratcher: null,
   tokens: [],
   localContracts: [],
@@ -63,6 +64,7 @@ const appReducer = (state = initialState, action) =>
       case VAULTS_LOADED: {
         draft.loading.vaults = false;
 
+        // TODO remove this
         draft.backscratcher = action.vaults.find(
           (vault) => vault.address === backscratcherAddress,
         );

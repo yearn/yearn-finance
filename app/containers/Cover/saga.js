@@ -60,7 +60,9 @@ function* coverDataLoadedSaga(action) {
     _.each(collaterals, setCollateral);
     const claimPool = getClaimPool(payload.poolData, claimAddress);
     if (claimPool.noData) {
-      console.log(`No Claim Pool Available for ${claimAddress}`);
+      console.error(
+        `No Claim Pool Available for ${protocol.protocolName} - ${claimAddress}`,
+      );
     } else {
       claimTokens[claimAddress] = claimPool;
     }

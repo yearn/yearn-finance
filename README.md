@@ -28,6 +28,7 @@ $ yarn dev
 ```
 
 ## Testing on mainnet fork
+
 To test the webapp with a local mainnet fork with some pre-filled tokens you can run:
 
 ```bash
@@ -38,25 +39,26 @@ The webapp will start in DEV mode and will be available at: `http://localhost:30
 
 The local RPC client (ganache-cli) will be available at: `http://localhost:8545`
 
-
 **[Important]**:
+
 - SET `WEB3_INFURA_PROJECT_ID` and `ETHERSCAN_TOKEN` variables in the .env file.
 - SET `WEB3_PROVIDER_HTTPS` and `WEB3_PROVIDER_WSS` variables in the .env file with your alchemy key
 - Set `USE_LOCAL_RPC` variable to TRUE on .env file.
 - Change Metamask to Localhost RPC endpoint :)
 
 ### Brownie + dockerized ganache-cli
+
 Install brownie >= 1.13.2
+
 ```bash
 pip install "eth-brownie>=1.13.2"
 ```
 
 Connect to your local mainnet-fork:
+
 ```bash
 brownie console
 ```
-
-
 
 ## Production
 

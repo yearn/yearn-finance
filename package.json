@@ -32,7 +32,6 @@
     "start": "npm run start:prod",
     "storybook": "npm run start:storybook",
     "dev": "npm run start:js",
-    "fork:start": "brownie run internals/forknet/supply-tokens.py --network mainnet-fork -i",
     "build": "npm run build:js",
     "setup": "node ./internals/scripts/setup.js",
     "clean": "shjs ./internals/scripts/clean.js",

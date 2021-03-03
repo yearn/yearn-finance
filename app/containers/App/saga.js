@@ -8,6 +8,8 @@ import vaultV2Abi from 'abi/v2Vault.json';
 import v2EthZapAbi from 'abi/v2EthZapAbi.json';
 import erc20Abi from 'abi/erc20.json';
 import zapYveCrvAbi from 'abi/zapYveCrv.json';
+import pickleJarAbi from 'abi/pickleJar.json';
+import masterChefAbi from 'abi/masterChef.json';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -25,6 +27,9 @@ import {
   TRUSTED_MIGRATOR_ADDRESS,
   ZAP_YVE_CRV_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
+  PICKLEJAR_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+  MASTER_CHEFF_POOL_ID,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -250,9 +255,44 @@ function* loadVaultContracts(clear) {
     ],
   };
 
+  const pickleJarSubscription = {
+    namespace: 'pickleJar',
+    abi: pickleJarAbi,
+    addresses: [PICKLEJAR_ADDRESS],
+    readMethods: [
+      {
+        name: 'balanceOf',
+        args: [account],
+      },
+    ],
+    writeMethods: [
+      {
+        name: 'approve',
+      },
+    ],
+  };
+
+  const masterChefSubscription = {
+    namespace: 'masterchef',
+    abi: masterChefAbi,
+    addresses: [MASTER_CHEF_ADDRESS],
+    readMethods: [
+      {
+        name: 'userInfo',
+        args: [MASTER_CHEFF_POOL_ID, account],
+      },
+    ],
+    writeMethods: [
+      {
+        name: 'deposit',
+      },
+    ],
+  };
+
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
   const zapSubscriptions = getZapSubscriptions();
 
+  contracts.push(pickleJarSubscription, masterChefSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);

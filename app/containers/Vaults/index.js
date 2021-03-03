@@ -310,16 +310,14 @@ const AmplifyWrapper = (props) => {
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (
-      <Wrapper>
-        <Vault
-          vault={vault}
-          key={vaultKey}
-          accordionKey={vaultKey}
-          active={currentEventKey === vaultKey}
-          showDevVaults={showDevVaults}
-          amplifyVault
-        />
-      </Wrapper>
+      <Vault
+        vault={vault}
+        key={vaultKey}
+        accordionKey={vaultKey}
+        active={currentEventKey === vaultKey}
+        showDevVaults={showDevVaults}
+        amplifyVault
+      />
     );
   };
 

@@ -102,6 +102,7 @@ export default function VaultControls(props) {
   // const isMigratable = !!migrationData[vaultAddress];
 
   const tokenContract = useContract(token.address);
+  const [selectedPickleTokenType, setSelectedPickleTokenType] = useState('eth');
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
@@ -143,6 +144,7 @@ export default function VaultControls(props) {
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   useEffect(() => {
+    setSelectedPickleTokenType('eth');
     setDepositAmount(0);
     setWithdrawalAmount(0);
     setDepositGweiAmount(0);
@@ -204,7 +206,11 @@ export default function VaultControls(props) {
     ];
     vaultControlsWrapper = (
       <Wrapper>
-        <SelectField value="eth" options={tokenOptions}></SelectField>
+        <SelectField
+          value={selectedPickleTokenType}
+          selectSetter={setSelectedPickleTokenType}
+          options={tokenOptions}
+        ></SelectField>
         <Box
           display="flex"
           flexDirection={isScreenMd ? 'row' : 'column'}
@@ -327,13 +333,14 @@ export default function VaultControls(props) {
   return vaultControlsWrapper;
 }
 
-function SelectField({ value, options }) {
+function SelectField({ value, selectSetter, options }) {
   return (
     <StyledRoundedSelect
       value={value}
+      selectSetter={selectSetter}
       options={options}
       onChange={(evt) => {
-        console.log(evt);
+        selectSetter(evt);
       }}
     />
   );

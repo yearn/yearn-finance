@@ -271,6 +271,8 @@ const Vault = (props) => {
 
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
+  const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
+  const daiV1VaultAddress = '0xACd43E627e64355f1861cEC6d3a6688B31a6F952';
 
   const veCrvContract = useSelector(selectContractData(veCrvAddress));
 
@@ -305,8 +307,15 @@ const Vault = (props) => {
       ? truncateApy(_.get(apy, 'recommended'))
       : ApyErrorDescriptions[apy.description].recommended;
 
-  const grossApy = _.get(apy, 'data.grossApy');
-  const netApy = _.get(apy, 'data.netApy');
+  let grossApy = _.get(apy, 'data.grossApy');
+  let netApy = _.get(apy, 'data.netApy');
+
+  if (address === daiV1VaultAddress) {
+    // Temporary one week sample APY for DAI v1 vault
+    grossApy = apy.data.oneWeekSample;
+    netApy = apy.data.oneWeekSample;
+  }
+
   let apyTooltip = (
     <div>
       <TooltipTable>
@@ -456,9 +465,12 @@ const Vault = (props) => {
     // yfi vault
     apyRecommended = 'N/A';
     apyTooltip = 'Inactive with YIP-56: Buyback and Build';
-  } else if (address === '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3') {
+  } else if (address === usdnVaultAddress) {
     // usdn vault
     apyRecommended = truncateApy(apy.data.netApy);
+  } else if (address === daiV1VaultAddress) {
+    // Temporary one week sample APY for DAI v1 vault
+    apyRecommended = truncateApy(apy.data.oneWeekSample);
   }
 
   const tokenBalanceOf = tokenBalance

@@ -4,7 +4,13 @@ import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
 import { selectPoolData } from '../Cover/selectors';
-import { zapsToVaultAddressMap, PICKLEJAR_ADDRESS } from '../Vaults/constants';
+import {
+  zapsToVaultAddressMap,
+  PICKLEJAR_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+  CRV_ADDRESS,
+} from '../Vaults/constants';
 
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
@@ -74,6 +80,15 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
     ) => {
+      if (contractAddress === ZAP_YVE_CRV_ETH_PICKLE_ADDRESS) {
+        return {
+          type: 'zapPickle',
+          relevantAddresses: [MASTER_CHEF_ADDRESS, CRV_ADDRESS].filter(
+            (val) => !!val,
+          ),
+        };
+      }
+
       const isZap = !!zapsToVaultAddressMap[contractAddress.toLowerCase()];
       if (isZap) {
         const vaultAddress =

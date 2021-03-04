@@ -25,7 +25,7 @@ import trustedMigratorAbi from 'abi/trustedMigrator.json';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import {
   TRUSTED_MIGRATOR_ADDRESS,
-  ZAP_YVE_CRV_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
   PICKLEJAR_ADDRESS,
   MASTER_CHEF_ADDRESS,
@@ -191,7 +191,7 @@ function* loadVaultContracts(clear) {
     const zapYveCrvSubscription = {
       namespace: 'zap',
       abi: zapYveCrvAbi,
-      addresses: [ZAP_YVE_CRV_ADDRESS],
+      addresses: [ZAP_YVE_CRV_ETH_PICKLE_ADDRESS],
       writeMethods: [
         {
           name: 'zapInETH',

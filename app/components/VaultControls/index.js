@@ -1,5 +1,6 @@
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
+import RoundedSelect from 'components/RoundedSelect';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import { withdrawFromVault, depositToVault } from 'containers/Vaults/actions';
 import React, { useState, useEffect, useMemo } from 'react';
@@ -27,6 +28,9 @@ const MaxWrapper = styled.div`
 `;
 
 const StyledRoundedInput = styled(RoundedInput)`
+  width: 100%;
+`;
+const StyledRoundedSelect = styled(RoundedSelect)`
   width: 100%;
 `;
 
@@ -163,7 +167,21 @@ export default function VaultControls(props) {
   let vaultControlsWrapper;
 
   if (vaultIsPickle) {
-    vaultControlsWrapper = <Wrapper>Test buttons here</Wrapper>;
+    const tokenOptions = [
+      {
+        value: 'eth',
+        text: 'ETH',
+      },
+      {
+        value: 'crv',
+        text: 'CRV',
+      },
+    ];
+    vaultControlsWrapper = (
+      <Wrapper>
+        <SelectField value="eth" options={tokenOptions}></SelectField>
+      </Wrapper>
+    );
   } else {
     vaultControlsWrapper = (
       <Wrapper>
@@ -256,6 +274,18 @@ export default function VaultControls(props) {
   }
 
   return vaultControlsWrapper;
+}
+
+function SelectField({ value, options }) {
+  return (
+    <StyledRoundedSelect
+      value={value}
+      options={options}
+      onChange={(evt) => {
+        console.log(evt);
+      }}
+    />
+  );
 }
 
 function AmountField({

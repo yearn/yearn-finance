@@ -777,7 +777,30 @@ const Vault = (props) => {
       if (vaultIsPickle) {
         vaultAdditionalInfo = (
           <Box my={16} mx={isScreenMd ? 70 : 20}>
-            Pickle vault info
+            <Grid container spacing={isScreenMd ? 8 : 0}>
+              <Grid item xs={12} md={6}>
+                <Text large>Deposit your CRV to earn weekly 3Crv rewards</Text>
+                {vaultControls}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Text small>
+                  This vault converts your CRV into yveCRV, earning you a
+                  continuous share of Curve’s trading fees. Every week, these
+                  rewards can be claimed here as 3Crv (Curve’s 3pool LP token).
+                  These rewards can also be restaked into more yveCRV with one
+                  click.
+                  <br />
+                  <br />
+                  This operation is non-reversible: you can only convert CRV
+                  into yveCRV, as any deposited CRV is perpetually staked in
+                  Curve’s voting escrow.
+                  <br />
+                  <br />
+                  If you prefer to earn higher returns on your CRV in an LP
+                  position, deposit into the yveCRV-ETH pJar.
+                </Text>
+              </Grid>
+            </Grid>
           </Box>
         );
       } else {
@@ -931,9 +954,11 @@ const Vault = (props) => {
               </Notice>
             )}
             {vaultAdditionalInfo}
-            <Card.Footer className={active && 'active'}>
-              <Footer small={!isScreenMd}>{vaultControls}</Footer>
-            </Card.Footer>
+            {!vaultIsPickle && (
+              <Card.Footer className={active && 'active'}>
+                <Footer small={!isScreenMd}>{vaultControls}</Footer>
+              </Card.Footer>
+            )}
           </Card.Body>
         </Accordion.Collapse>
       </Card>

@@ -51,6 +51,7 @@ const StyledAccordion = styled(Accordion)`
 `;
 
 const ALIASES_API = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json`;
+const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
 
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
@@ -154,13 +155,20 @@ const Vaults = (props) => {
       .times(100)
       .toNumber();
 
+    // USDN VAULT GROWTH
+    if (vault.address === usdnVaultAddress) {
+      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.data.netApy', 0))
+        .times(100)
+        .toNumber();
+    }
+
     // Total Assets
     newVault.valueTotalAssets = new BigNumber(
       _.get(newVault, 'tvl.value'),
     ).toNumber();
 
     // Available to Deposit
-    const tokenContractAddress = vault.token || vault.CRV;
+    const tokenContractAddress = vault.token.address || vault.CRV;
     const tokenContractData = allContracts[tokenContractAddress];
     const tokenBalance = vault.pureEthereum
       ? ethBalance

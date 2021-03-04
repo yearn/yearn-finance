@@ -17,6 +17,7 @@ import BigNumber from 'bignumber.js';
 import { selectContractData, selectEthBalance } from 'containers/App/selectors';
 import {
   BACKSCRATCHER_ADDRESS,
+  CRV_ADDRESS,
   MASTER_CHEF_ADDRESS,
 } from 'containers/Vaults/constants';
 // import { selectMigrationData } from 'containers/Vaults/selectors';
@@ -263,6 +264,7 @@ const Vault = (props) => {
   const devMode = true;
   const tokenContractAddress = token.address || CRV;
   const ethBalance = useSelector(selectEthBalance());
+  const crvContract = useSelector(selectContractData(CRV_ADDRESS));
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
@@ -711,7 +713,16 @@ const Vault = (props) => {
     if (amplifyVault) {
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       if (vaultIsPickle) {
-        availableToDeposit = 'ETH (320) - SUSHI (500)';
+        const parsedEthBalance = ethBalance
+          ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
+          : '0.00';
+        const parsedCrvBalance =
+          crvContract && crvContract.balanceOf
+            ? new BigNumber(crvContract.balanceOf)
+                .dividedBy(10 ** decimals)
+                .toFixed(2)
+            : '0.00';
+        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
       }
       vaultTop = (
         <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>

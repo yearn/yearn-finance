@@ -155,6 +155,18 @@ const Vaults = (props) => {
       }
       newVault.valueDeposited = vaultBalanceOf || 0;
 
+      const isPickleJar = vault.tags
+        ? !!vault.tags.find((tag) => tag === 'picklejar')
+        : false;
+
+      if (isPickleJar) {
+        const { userInfo } = vaultContractData;
+        balanceOf = _.get(userInfo, '[0].value.amount') || 0;
+
+        newVault.balanceOf = balanceOf;
+        newVault.valueDeposited = balanceOf;
+      }
+
       // Growth
       newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
         .times(100)

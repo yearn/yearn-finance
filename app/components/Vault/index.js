@@ -15,6 +15,10 @@ import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import { selectContractData, selectEthBalance } from 'containers/App/selectors';
+import {
+  BACKSCRATCHER_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+} from 'containers/Vaults/constants';
 // import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
@@ -263,14 +267,14 @@ const Vault = (props) => {
     selectContractData(tokenContractAddress),
   );
 
-  const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
 
   const veCrvContract = useSelector(selectContractData(veCrvAddress));
 
   const backscratcherTotalAssets = veCrvContract.balanceOf;
 
-  const vaultIsBackscratcher = vault.address === backscratcherAddress;
+  const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
+  const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
   // const migrationData = useSelector(selectMigrationData);
   // const vaultMigrationData = migrationData[address];
@@ -286,8 +290,14 @@ const Vault = (props) => {
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const backscratcherVaultName = vaultIsBackscratcher && 'yveCRV';
-  const vaultName = backscratcherVaultName || displayName || name || address;
+  let vaultName;
+  if (vaultIsBackscratcher) {
+    vaultName = 'yveCRV';
+  } else if (vaultIsPickle) {
+    vaultName = 'yveCRV - ETH pJar';
+  } else {
+    vaultName = displayName || name || address;
+  }
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
@@ -695,10 +705,14 @@ const Vault = (props) => {
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
-      ? backscratcherAddress
+      ? BACKSCRATCHER_ADDRESS
       : tokenContractAddress;
 
     if (amplifyVault) {
+      let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
+      if (vaultIsPickle) {
+        availableToDeposit = 'ETH (320) - SUSHI (500)';
+      }
       vaultTop = (
         <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
@@ -751,7 +765,7 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={tokenBalanceOf} />{' '}
+              {availableToDeposit}
               <LinkWrap devMode={devMode} address={tokenAddress}>
                 {tokenSymbol}
               </LinkWrap>
@@ -760,44 +774,52 @@ const Vault = (props) => {
         </ColumnListAmplify>
       );
 
-      vaultAdditionalInfo = (
-        <Box my={16} mx={isScreenMd ? 70 : 20}>
-          <Text bold fontSize={4} mb={6}>
-            Read carefully before use
-          </Text>
-          <Grid container spacing={isScreenMd ? 8 : 0}>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                This vault converts your CRV into yveCRV, earning you a
-                continuous share of Curve fees. The more converted, the greater
-                the rewards. Every week, these can be claimed from the vault as
-                3Crv (Curve’s 3pool LP token).
-              </Text>
+      if (vaultIsPickle) {
+        vaultAdditionalInfo = (
+          <Box my={16} mx={isScreenMd ? 70 : 20}>
+            Pickle vault info
+          </Box>
+        );
+      } else {
+        vaultAdditionalInfo = (
+          <Box my={16} mx={isScreenMd ? 70 : 20}>
+            <Text bold fontSize={4} mb={6}>
+              Read carefully before use
+            </Text>
+            <Grid container spacing={isScreenMd ? 8 : 0}>
+              <Grid item xs={12} md={6}>
+                <Text large>
+                  This vault converts your CRV into yveCRV, earning you a
+                  continuous share of Curve fees. The more converted, the
+                  greater the rewards. Every week, these can be claimed from the
+                  vault as 3Crv (Curve’s 3pool LP token).
+                </Text>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Text large>
+                  The operation is non-reversible: You can only convert CRV into
+                  yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+                  escrow.
+                  <br />
+                  <br />
+                  After depositing join{' '}
+                  <A
+                    href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
+                    target="_blank"
+                  >
+                    WETH/yveCRV-DAO pool
+                  </A>{' '}
+                  for 🍣 rewards and then{' '}
+                  <A href="https://app.pickle.finance/jars" target="_blank">
+                    SLP YVECRV/ETH jar
+                  </A>{' '}
+                  for 🥒 rewards.
+                </Text>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                The operation is non-reversible: You can only convert CRV into
-                yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-                escrow.
-                <br />
-                <br />
-                After depositing join{' '}
-                <A
-                  href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
-                  target="_blank"
-                >
-                  WETH/yveCRV-DAO pool
-                </A>{' '}
-                for 🍣 rewards and then{' '}
-                <A href="https://app.pickle.finance/jars" target="_blank">
-                  SLP YVECRV/ETH jar
-                </A>{' '}
-                for 🥒 rewards.
-              </Text>
-            </Grid>
-          </Grid>
-        </Box>
-      );
+          </Box>
+        );
+      }
     } else {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>

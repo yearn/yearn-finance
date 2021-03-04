@@ -31,10 +31,8 @@ function CoverCards() {
       protocolsWithClaim,
       setProtocolsWithClaim,
     };
-    const claimTokenBalanceOf = _.get(
-      claimTokenContractData,
-      'balanceOf[0].value',
-    );
+    const claimTokenBalanceOf =
+      _.get(claimTokenContractData, 'balanceOf[0].value') || '0';
 
     return (
       expirationTimestamp > currentTime && (
@@ -54,10 +52,8 @@ function CoverCards() {
     const claimTokenContractData = _.find(claimTokens, {
       address: claimAddress,
     });
-    const claimTokenBalanceOf = _.get(
-      claimTokenContractData,
-      'balanceOf[0].value',
-    );
+    const claimTokenBalanceOf =
+      _.get(claimTokenContractData, 'balanceOf[0].value') || '0';
     newProtocol.claimTokenBalanceOf = claimTokenBalanceOf;
     return newProtocol;
   };
@@ -67,7 +63,7 @@ function CoverCards() {
       protocol,
       `coverObjects[${protocol.claimNonce}].tokens`,
     );
-    return claimAddress;
+    return claimAddress && protocol.protocolDisplayName;
   });
 
   const protocolsWithClaimData = _.map(filteredProtocols, injectClaimData);

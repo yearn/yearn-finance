@@ -22,6 +22,7 @@ import {
   TRUSTED_MIGRATOR_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
+  ZAP_PICKLE,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -205,6 +206,45 @@ function* depositToVault(action) {
   }
 }
 
+function* zapPickle(action) {
+  const {
+    zapPickleContract,
+    tokenContract,
+    depositAmount,
+    pureEthereum,
+  } = action.payload;
+
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContract.address, zapPickleContract.address),
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!pureEthereum) {
+      if (!vaultAllowedToSpendToken) {
+        yield call(
+          approveTxSpend,
+          tokenContract,
+          account,
+          zapPickleContract.address,
+        );
+      }
+      yield call(zapPickleContract.methods.zapInCRV.cacheSend, depositAmount, {
+        from: account,
+      });
+    } else {
+      yield call(zapPickleContract.methods.zapInETH.cacheSend, {
+        from: account,
+        value: depositAmount,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function* claimBackscratcherRewards(action) {
   const { vaultContract } = action.payload;
 
@@ -267,6 +307,7 @@ export default function* initialize() {
   yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
+  yield takeLatest(ZAP_PICKLE, zapPickle);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
 }

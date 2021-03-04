@@ -28,6 +28,13 @@ export function depositToVault(payload) {
   };
 }
 
+export function zapPickle(payload) {
+  return {
+    type: c.ZAP_PICKLE,
+    payload,
+  };
+}
+
 export function claimBackscratcherRewards(payload) {
   return {
     type: c.CLAIM_BACKSCRATCHER_REWARDS,

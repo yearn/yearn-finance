@@ -22,5 +22,5 @@ export const zapsToVaultAddressMap = {
 };
 export const AMPLIFY_VAULTS_ADDRESSES = [
   BACKSCRATCHER_ADDRESS,
-  PICKLEJAR_ADDRESS,
+  MASTER_CHEF_ADDRESS,
 ];

@@ -2,7 +2,11 @@ import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
 import RoundedSelect from 'components/RoundedSelect';
 import { useContract } from 'containers/DrizzleProvider/hooks';
-import { withdrawFromVault, depositToVault } from 'containers/Vaults/actions';
+import {
+  withdrawFromVault,
+  depositToVault,
+  zapPickle,
+} from 'containers/Vaults/actions';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
@@ -15,6 +19,8 @@ import BackscratcherClaim from 'components/BackscratcherClaim';
 import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
+  CRV_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
@@ -88,6 +94,10 @@ export default function VaultControls(props) {
   if (zapContract) {
     vaultContract = { ...vaultContract, zapContract };
   }
+  const zapYveCrvEthPickleConctract = useContract(
+    ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  );
+  const crvTokenContract = useContract(CRV_ADDRESS);
   // const migrationData = useSelector(selectMigrationData);
   // const isMigratable = !!migrationData[vaultAddress];
 
@@ -151,6 +161,21 @@ export default function VaultControls(props) {
     );
   };
 
+  const zap = () => {
+    console.log('ZAP PICKLE');
+    const selectedToken = 'CRV'; // TODO DEHARDCODE THIS
+    // const zapPickleContract = useContract(ZAP_YVE_CRV_ETH_PICKLE_ADDRESS);
+    dispatch(
+      zapPickle({
+        zapPickleContract: zapYveCrvEthPickleConctract,
+        tokenContract: crvTokenContract,
+        depositAmount: '1000000000000000000', // TODO DEHARDCODE THIS
+        // depositAmount: depositGweiAmount,
+        pureEthereum: selectedToken === 'ETH',
+      }),
+    );
+  };
+
   const deposit = () => {
     console.log(`Depositing:`, depositGweiAmount);
     dispatch(
@@ -180,6 +205,32 @@ export default function VaultControls(props) {
     vaultControlsWrapper = (
       <Wrapper>
         <SelectField value="eth" options={tokenOptions}></SelectField>
+        <Box
+          display="flex"
+          flexDirection={isScreenMd ? 'row' : 'column'}
+          width={1}
+        >
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            ml={isScreenMd ? '60px' : '0px'}
+          >
+            <ActionButton
+              disabled={!vaultContract || !tokenContract || !!depositsDisabled}
+              handler={zap}
+              text={
+                (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+                pureEthereum > 0
+                  ? 'Deposit'
+                  : 'Approve'
+              }
+              title="Deposit into vault"
+              showTooltip
+              tooltipText={
+                depositsDisabled || 'Connect your wallet to deposit into vault'
+              }
+            />
+          </ActionGroup>
+        </Box>
       </Wrapper>
     );
   } else {

@@ -207,6 +207,7 @@ function* depositToVault(action) {
 }
 
 function* zapPickle(action) {
+  console.log('zapPickle');
   const {
     zapPickleContract,
     tokenContract,
@@ -231,10 +232,12 @@ function* zapPickle(action) {
           zapPickleContract.address,
         );
       }
+      console.log('zapInCRV');
       yield call(zapPickleContract.methods.zapInCRV.cacheSend, depositAmount, {
         from: account,
       });
     } else {
+      console.log('zapInETH');
       yield call(zapPickleContract.methods.zapInETH.cacheSend, {
         from: account,
         value: depositAmount,

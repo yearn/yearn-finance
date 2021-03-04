@@ -53,9 +53,13 @@ const injectEthVaults = (vaults) => {
 };
 
 function* fetchVaults() {
+  const endpoint =
+    process.env.API_ENV === 'development' ||
+    process.env.NODE_ENV === 'development'
+      ? `https://dev.vaults.finance/all`
+      : `https://vaults.finance/all`;
   try {
-    const url = `https://vaults.finance/all`;
-    const vaults = yield call(request, url);
+    const vaults = yield call(request, endpoint);
 
     const vaultsWithEth = injectEthVaults(vaults);
     yield put(vaultsLoaded(vaultsWithEth));

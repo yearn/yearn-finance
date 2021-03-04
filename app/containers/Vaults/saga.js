@@ -53,11 +53,13 @@ const injectEthVaults = (vaults) => {
 };
 
 function* fetchVaults() {
-  const endpoint =
-    process.env.API_ENV === 'development' ||
-    process.env.NODE_ENV === 'development'
-      ? `https://dev.vaults.finance/all`
-      : `https://vaults.finance/all`;
+  // TODO: Re-enable this...
+  // const endpoint =
+  //   process.env.API_ENV === 'development' ||
+  //   process.env.NODE_ENV === 'development'
+  //     ? `https://dev.vaults.finance/all`
+  //     : `https://vaults.finance/all`;
+  const endpoint = 'https://dev.vaults.finance/all';
   try {
     const vaults = yield call(request, endpoint);
 

@@ -11,6 +11,10 @@ import { selectTokenAllowance } from 'containers/App/selectors';
 // import { selectMigrationData } from 'containers/Vaults/selectors';
 import BackscratcherClaim from 'components/BackscratcherClaim';
 // import MigrateVault from 'components/MigrateVault';
+import {
+  BACKSCRATCHER_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+} from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
 const MaxWrapper = styled.div`
@@ -59,8 +63,9 @@ export default function VaultControls(props) {
   } = vault;
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
-  const vaultIsBackscratcher =
-    vault.address === '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
+  const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
+  const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
+
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -155,93 +160,102 @@ export default function VaultControls(props) {
     );
   };
 
-  return (
-    <Wrapper>
-      <Box
-        display="flex"
-        flexDirection={isScreenMd ? 'row' : 'column'}
-        width={1}
-      >
-        <ActionGroup
-          hide={vaultIsBackscratcher}
-          ml={isScreenMd ? '60px' : '0px'}
-        >
-          <Balance amount={vaultBalance} prefix="Vault balance: " />
-          <ButtonGroup width={1} paddingRight={isScreenMd ? '56px' : '0px'}>
-            <Box width={isScreenMd ? '185px' : '100%'}>
-              <AmountField
-                amount={withdrawalAmount}
-                amountSetter={setWithdrawalAmount}
-                gweiAmountSetter={setWithdrawalGweiAmount}
-                maxAmount={vaultBalanceOf}
-                decimals={decimals}
-              />
-            </Box>
-            <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
-              <ActionButton
-                disabled={!vaultContract || !tokenContract}
-                handler={withdraw}
-                text="Withdraw"
-                title="Withdraw from vault"
-                showTooltip
-                tooltipText="Connect your wallet to withdraw from vault"
-              />
-            </Box>
-          </ButtonGroup>
-        </ActionGroup>
+  let vaultControlsWrapper;
 
-        <ActionGroup
-          direction={isScreenMd ? 'row' : 'column'}
-          ml={vaultIsBackscratcher && isScreenMd ? '60px' : '0px'}
+  if (vaultIsPickle) {
+    vaultControlsWrapper = <Wrapper>Test buttons here</Wrapper>;
+  } else {
+    vaultControlsWrapper = (
+      <Wrapper>
+        <Box
+          display="flex"
+          flexDirection={isScreenMd ? 'row' : 'column'}
+          width={1}
         >
-          <Box display="flex" flexDirection="column">
-            <Balance amount={walletBalance} prefix="Your wallet: " />
-            <ButtonGroup width={1}>
+          <ActionGroup
+            hide={vaultIsBackscratcher}
+            ml={isScreenMd ? '60px' : '0px'}
+          >
+            <Balance amount={vaultBalance} prefix="Vault balance: " />
+            <ButtonGroup width={1} paddingRight={isScreenMd ? '56px' : '0px'}>
               <Box width={isScreenMd ? '185px' : '100%'}>
                 <AmountField
-                  amount={depositAmount}
-                  amountSetter={setDepositAmount}
-                  gweiAmountSetter={setDepositGweiAmount}
-                  maxAmount={tokenBalance}
+                  amount={withdrawalAmount}
+                  amountSetter={setWithdrawalAmount}
+                  gweiAmountSetter={setWithdrawalGweiAmount}
+                  maxAmount={vaultBalanceOf}
                   decimals={decimals}
                 />
               </Box>
               <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
                 <ActionButton
-                  disabled={
-                    !vaultContract || !tokenContract || !!depositsDisabled
-                  }
-                  handler={deposit}
-                  text={
-                    (tokenAllowance !== undefined && tokenAllowance !== '0') ||
-                    pureEthereum > 0
-                      ? 'Deposit'
-                      : 'Approve'
-                  }
-                  title="Deposit into vault"
+                  disabled={!vaultContract || !tokenContract}
+                  handler={withdraw}
+                  text="Withdraw"
+                  title="Withdraw from vault"
                   showTooltip
-                  tooltipText={
-                    depositsDisabled ||
-                    'Connect your wallet to deposit into vault'
-                  }
+                  tooltipText="Connect your wallet to withdraw from vault"
                 />
               </Box>
             </ButtonGroup>
-          </Box>
-          {vaultIsBackscratcher && (
-            <Box ml={isScreenMd ? 5 : 0} alignSelf="flex-end" width={1}>
-              <BackscratcherClaim vaultAddress={vaultAddress} />
+          </ActionGroup>
+
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            ml={vaultIsBackscratcher && isScreenMd ? '60px' : '0px'}
+          >
+            <Box display="flex" flexDirection="column">
+              <Balance amount={walletBalance} prefix="Your wallet: " />
+              <ButtonGroup width={1}>
+                <Box width={isScreenMd ? '185px' : '100%'}>
+                  <AmountField
+                    amount={depositAmount}
+                    amountSetter={setDepositAmount}
+                    gweiAmountSetter={setDepositGweiAmount}
+                    maxAmount={tokenBalance}
+                    decimals={decimals}
+                  />
+                </Box>
+                <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                  <ActionButton
+                    disabled={
+                      !vaultContract || !tokenContract || !!depositsDisabled
+                    }
+                    handler={deposit}
+                    text={
+                      (tokenAllowance !== undefined &&
+                        tokenAllowance !== '0') ||
+                      pureEthereum > 0
+                        ? 'Deposit'
+                        : 'Approve'
+                    }
+                    title="Deposit into vault"
+                    showTooltip
+                    tooltipText={
+                      depositsDisabled ||
+                      'Connect your wallet to deposit into vault'
+                    }
+                  />
+                </Box>
+              </ButtonGroup>
             </Box>
-          )}
-          {/* {isMigratable && (
+            {vaultIsBackscratcher && (
+              <Box ml={isScreenMd ? 5 : 0} alignSelf="flex-end" width={1}>
+                <BackscratcherClaim vaultAddress={vaultAddress} />
+              </Box>
+            )}
+            {/* {isMigratable && (
             <Box ml={isScreenMd ? 56 : 0} alignSelf="flex-end" width={1}>
               <MigrateVault vaultAddress={vaultAddress} />
             </Box>
           )} */}
-        </ActionGroup>
-      </Box>
-    </Wrapper>
-  );
+          </ActionGroup>
+        </Box>
+      </Wrapper>
+    );
+  }
+
+  return vaultControlsWrapper;
 }
 
 function AmountField({

@@ -43,7 +43,6 @@ export default function VaultButtons(props) {
   } = vault;
 
   // const web3 = useWeb3();
-  // const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
   const contract = useContract(address);
   const tokenBalanceOf = token.balanceOf;
   const drizzle = useDrizzle();

@@ -855,7 +855,7 @@ const Vault = (props) => {
       if (vaultIsPickle) {
         vaultAdditionalInfo = (
           <Box my={50} mx={isScreenMd ? 50 : 20}>
-            <Grid container spacing={isScreenMd ? 8 : 0}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
               <Grid className="amplify-vault-controls" item xs={12} md={6}>
                 <Text bold fontSize={4} mb={40}>
                   Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP

@@ -278,7 +278,7 @@ export default function VaultControls(props) {
                 />
               </Box>
             </Box>
-            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? 'auto' : 1}>
+            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
               <ActionButton
                 className="action-button"
                 disabled={
@@ -319,7 +319,7 @@ export default function VaultControls(props) {
                 decimals={decimals}
               />
             </Box>
-            <Box ml={5} width={isScreenMd ? 'auto' : 1}>
+            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
               <ActionButton
                 className="action-button"
                 disabled={

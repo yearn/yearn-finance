@@ -17,7 +17,6 @@ const Select = styled.select`
   color: #111111;
   padding: 0px 13px;
   width: 100%;
-  padding-right: 40%;
   box-sizing: border-box;
   border: ${(props) => (props.invalid ? '2px solid red' : '0px')};
   cursor: pointer;

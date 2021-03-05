@@ -78,12 +78,17 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
     ) => {
-      if (contractAddress === ZAP_YVE_CRV_ETH_PICKLE_ADDRESS) {
+      if (
+        contractAddress === ZAP_YVE_CRV_ETH_PICKLE_ADDRESS ||
+        contractAddress === MASTER_CHEF_ADDRESS
+      ) {
         return {
           type: 'zapPickle',
-          relevantAddresses: [MASTER_CHEF_ADDRESS, CRV_ADDRESS].filter(
-            (val) => !!val,
-          ),
+          relevantAddresses: [
+            MASTER_CHEF_ADDRESS,
+            CRV_ADDRESS,
+            PICKLEJAR_ADDRESS,
+          ].filter((val) => !!val),
         };
       }
 

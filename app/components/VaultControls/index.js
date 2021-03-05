@@ -207,18 +207,26 @@ export default function VaultControls(props) {
     );
   };
 
-  let selectedPickleTokenBalance =
-    vaultIsPickle && pickleContractsData ? pickleContractsData.ethBalance : 0;
-
-  const setSelectedPickleTokenBalance = (selectedToken) => {
-    if (selectedToken === 'eth') {
-      console.log({ ethBalance: pickleContractsData.ethBalance });
+  let selectedPickleTokenBalance;
+  if (vaultIsPickle && pickleContractsData) {
+    if (selectedPickleTokenType === 'eth') {
       selectedPickleTokenBalance = pickleContractsData.ethBalance;
-    } else if (selectedToken === 'crv') {
+    } else {
       selectedPickleTokenBalance = pickleContractsData.crvBalance;
-      console.log({ crvBalance: pickleContractsData.crvBalance });
     }
-  };
+  } else {
+    selectedPickleTokenBalance = 0;
+  }
+
+  // const setSelectedPickleTokenBalance = (selectedToken) => {
+  //   if (selectedToken === 'eth') {
+  //     console.log({ ethBalance: pickleContractsData.ethBalance });
+  //     selectedPickleTokenBalance = pickleContractsData.ethBalance;
+  //   } else if (selectedToken === 'crv') {
+  //     selectedPickleTokenBalance = pickleContractsData.crvBalance;
+  //     console.log({ crvBalance: pickleContractsData.crvBalance });
+  //   }
+  // };
 
   let vaultControlsWrapper;
 
@@ -253,7 +261,7 @@ export default function VaultControls(props) {
               value={selectedPickleTokenType}
               selectSetter={setSelectedPickleTokenType}
               options={tokenOptions}
-              onChange={setSelectedPickleTokenBalance}
+              // onChange={setSelectedPickleTokenBalance}
             />
             <Box ml={5}>
               <AmountField
@@ -420,7 +428,9 @@ function SelectField({ value, selectSetter, options, onChange }) {
       options={options}
       onChange={(evt) => {
         selectSetter(evt);
-        onChange(evt);
+        if (onChange) {
+          onChange(evt);
+        }
       }}
     />
   );

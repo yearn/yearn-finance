@@ -105,6 +105,9 @@ export default function VaultControls(props) {
 
   const tokenContract = useContract(token.address);
   const [selectedPickleTokenType, setSelectedPickleTokenType] = useState('eth');
+  const [pickleDepositGweiAmount, setPickleDepositGweiAmount] = useState(0);
+
+  const [pickleDepositAmount, setPickleDepositAmount] = useState(0);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
@@ -148,6 +151,7 @@ export default function VaultControls(props) {
   useEffect(() => {
     setSelectedPickleTokenType('eth');
     setDepositAmount(0);
+    setPickleDepositAmount(0);
     setWithdrawalAmount(0);
     setDepositGweiAmount(0);
     setWithdrawalGweiAmount(0);
@@ -180,12 +184,12 @@ export default function VaultControls(props) {
 
   const depositPickleFarm = () => {
     console.log('DEPOSIT PICKLE IN FARM');
-    console.log({ depositGweiAmount });
+    console.log({ pickleDepositGweiAmount });
     dispatch(
       depositPickleSLPInFarm({
         vaultContract: pickleContractsData.masterChefContract,
         tokenContract: pickleContractsData.pickleJarContract,
-        depositAmount: depositGweiAmount,
+        depositAmount: pickleDepositGweiAmount,
       }),
     );
   };
@@ -284,9 +288,9 @@ export default function VaultControls(props) {
           />
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <AmountField
-              amount={depositAmount}
-              amountSetter={setDepositAmount}
-              gweiAmountSetter={setDepositGweiAmount}
+              amount={pickleDepositAmount}
+              amountSetter={setPickleDepositAmount}
+              gweiAmountSetter={setPickleDepositGweiAmount}
               maxAmount={pickleContractsData.pickleJarBalance}
               decimals={decimals}
             />

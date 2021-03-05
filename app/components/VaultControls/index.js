@@ -35,7 +35,7 @@ const StyledRoundedInput = styled(RoundedInput)`
   width: 100%;
 `;
 const StyledRoundedSelect = styled(RoundedSelect)`
-  width: 100%;
+  width: 150px;
 `;
 
 const ActionGroup = styled(Box)`

@@ -20,6 +20,7 @@ const Select = styled.select`
   padding-right: 40%;
   box-sizing: border-box;
   border: ${(props) => (props.invalid ? '2px solid red' : '0px')};
+  cursor: pointer;
 
   &:disabled {
     cursor: not-allowed;

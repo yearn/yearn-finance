@@ -206,11 +206,11 @@ export default function VaultControls(props) {
   let selectedPickleTokenBalance =
     vaultIsPickle && pickleContractsData ? pickleContractsData.ethBalance : 0;
 
-  const setSelectedPickleTokenBalance = () => {
-    if (selectedPickleTokenType === 'eth') {
+  const setSelectedPickleTokenBalance = (selectedToken) => {
+    if (selectedToken === 'eth') {
       console.log({ ethBalance: pickleContractsData.ethBalance });
       selectedPickleTokenBalance = pickleContractsData.ethBalance;
-    } else if (selectedPickleTokenType === 'crv') {
+    } else if (selectedToken === 'crv') {
       selectedPickleTokenBalance = pickleContractsData.crvBalance;
       console.log({ crvBalance: pickleContractsData.crvBalance });
     }
@@ -233,10 +233,16 @@ export default function VaultControls(props) {
       <Wrapper className="pickle-vault-controls">
         <Box display="flex" flexDirection="column" width={1}>
           {selectedPickleTokenType === 'eth' && (
-            <Balance amount={walletBalance} prefix="Available ETH: " />
+            <Balance
+              amount={pickleContractsData.ethBalance}
+              prefix="Available ETH: "
+            />
           )}
           {selectedPickleTokenType === 'crv' && (
-            <Balance amount={walletBalance} prefix="Available CRV: " />
+            <Balance
+              amount={pickleContractsData.crvBalance}
+              prefix="Available CRV: "
+            />
           )}
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <SelectField

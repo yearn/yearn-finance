@@ -171,8 +171,6 @@ export default function VaultControls(props) {
   };
 
   const zap = () => {
-    console.log('ZAP PICKLE');
-    console.log({ depositGweiAmount });
     dispatch(
       zapPickle({
         zapPickleContract: pickleContractsData.zapPickleContract,
@@ -184,8 +182,6 @@ export default function VaultControls(props) {
   };
 
   const depositPickleFarm = () => {
-    console.log('DEPOSIT PICKLE IN FARM');
-    console.log({ pickleDepositGweiAmount });
     dispatch(
       depositPickleSLPInFarm({
         vaultContract: pickleContractsData.masterChefContract,

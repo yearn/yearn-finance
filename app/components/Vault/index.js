@@ -340,15 +340,12 @@ const Vault = (props) => {
   let pickleContractsData = null;
 
   if (vaultIsPickle) {
-    console.log({ pickleJarContractData });
     const parcedPickleJarBalance =
       pickleJarContractData && pickleJarContractData.balanceOf
         ? new BigNumber(pickleJarContractData.balanceOf)
             .dividedBy(10 ** decimals)
             .toFixed(2)
         : '0.00';
-
-    console.log({ masterChefContractData });
 
     const masterChefBalance = masterChefContractData
       ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
@@ -370,10 +367,6 @@ const Vault = (props) => {
     };
   }
 
-  if (vaultIsPickle) {
-    console.log({ pickleContractsData });
-  }
-
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
@@ -381,7 +374,6 @@ const Vault = (props) => {
   if (vaultIsBackscratcher) {
     vaultName = 'yveCRV';
   } else if (vaultIsPickle) {
-    console.log(vault);
     vaultName = 'yveCRV - ETH pJar';
   } else {
     vaultName = displayName || name || address;

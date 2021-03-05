@@ -6,6 +6,7 @@ import vaultsOrder from 'containers/Vaults/customOrder.json';
 import { selectPoolData } from '../Cover/selectors';
 import {
   zapsToVaultAddressMap,
+  ETHEREUM_ADDRESS,
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   MASTER_CHEF_ADDRESS,
@@ -18,9 +19,6 @@ const selectContractsData = (state) => state.contracts;
 const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
 const selectCover = (state) => state.cover;
-
-// TODO: Add to constants
-const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 
 export const selectReady = () =>
   createSelector(selectApp, (substate) => substate && substate.ready);
@@ -277,7 +275,7 @@ function getVaultsWithSortingData(vaults, vaultVersion) {
     const vaultWithSortingData = vault;
 
     vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
-      const sortAddress = vault.pureEthereum ? ethereumAddress : vault.address;
+      const sortAddress = vault.pureEthereum ? ETHEREUM_ADDRESS : vault.address;
       let vaultOrder = _.indexOf(vaultsOrder[vaultVersion], sortAddress);
       if (vaultOrder === -1) {
         vaultOrder = 10000000;

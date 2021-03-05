@@ -209,7 +209,6 @@ function* depositToVault(action) {
 }
 
 function* zapPickle(action) {
-  console.log('zapPickle');
   const {
     zapPickleContract,
     tokenContract,
@@ -234,12 +233,10 @@ function* zapPickle(action) {
           zapPickleContract.address,
         );
       }
-      console.log('zapInCRV');
       yield call(zapPickleContract.methods.zapInCRV.cacheSend, depositAmount, {
         from: account,
       });
     } else {
-      console.log('zapInETH');
       yield call(zapPickleContract.methods.zapInETH.cacheSend, {
         from: account,
         value: depositAmount,
@@ -251,7 +248,6 @@ function* zapPickle(action) {
 }
 
 function* depositPickleSLPInFarm(action) {
-  console.log('DEPOSIT PICKLE FARM');
   const { vaultContract, tokenContract, depositAmount } = action.payload;
 
   const account = yield select(selectAccount());
@@ -263,10 +259,8 @@ function* depositPickleSLPInFarm(action) {
 
   try {
     if (!vaultAllowedToSpendToken) {
-      console.log('approve');
       yield call(approveTxSpend, tokenContract, account, vaultContract.address);
     }
-    console.log('depositing pickle');
     yield call(
       vaultContract.methods.deposit.cacheSend,
       MASTER_CHEFF_POOL_ID,

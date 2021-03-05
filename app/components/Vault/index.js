@@ -338,15 +338,11 @@ const Vault = (props) => {
 
     console.log({ masterChefContractData });
 
-    // const masterChefBalance =
-    //   masterChefContractData && masterChefContractData.userInfo
-    //     ? new BigNumber(
-    //         _.get(masterChefContractData.userInfo, '[0].value.amount'),
-    //       )
-    //         .dividedBy(10 ** decimals)
-    //         .toFixed(2)
-    //     : '0.00';
-    const masterChefBalance = 0;
+    const masterChefBalance = masterChefContractData
+      ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
+          .dividedBy(10 ** decimals)
+          .toFixed(2)
+      : '0.00';
 
     pickleContractsData = {
       zapPickleContract: zapYveCrvEthPickleConctract,

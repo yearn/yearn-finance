@@ -216,7 +216,6 @@ const Vaults = (props) => {
 
   vaultItems = parseVaults(vaultItems);
   const amplifyVaultItems = parseVaults(amplifyVaults);
-  console.log({ amplifyVaultItems });
 
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
 

@@ -54,6 +54,10 @@ const StyledAccordion = styled(Accordion)`
 
 const ALIASES_API = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json`;
 
+// TODO: Remove UI hacks...
+const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
+const daiV1VaultAddress = '0xACd43E627e64355f1861cEC6d3a6688B31a6F952';
+
 const useSortableData = (items, config = null) => {
   const [sortConfig, setSortConfig] = React.useState(config);
 
@@ -172,13 +176,29 @@ const Vaults = (props) => {
         .times(100)
         .toNumber();
 
+      // USDN VAULT GROWTH
+      if (vault.address === usdnVaultAddress) {
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.data.netApy', 0))
+          .times(100)
+          .toNumber();
+      }
+
+      if (vault.address === daiV1VaultAddress) {
+        // Temporary one week sample APY for DAI v1 vault
+        newVault.valueApy = new BigNumber(
+          _.get(newVault, 'apy.data.oneWeekSample', 0),
+        )
+          .times(100)
+          .toNumber();
+      }
+
       // Total Assets
       newVault.valueTotalAssets = new BigNumber(
         _.get(newVault, 'tvl.value'),
       ).toNumber();
 
       // Available to Deposit
-      const tokenContractAddress = vault.token || vault.CRV;
+      const tokenContractAddress = vault.token.address || vault.CRV;
       const tokenContractData = allContracts[tokenContractAddress];
       const tokenBalance = vault.pureEthereum
         ? ethBalance
@@ -368,9 +388,17 @@ const VaultsWrapper = (props) => {
     );
   };
 
+  // TODO: Remove UI hacks...
+  const pickleJarAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
+  const excludeVaultAddresses = [pickleJarAddress];
+  const vaultsToRender = _.filter(
+    vaultItems,
+    (vault) => !_.includes(excludeVaultAddresses, vault.address),
+  );
+
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && vaultItems == null) return <LinearProgress />;
-  const vaultRows = _.map(vaultItems, renderVault);
+  const vaultRows = _.map(vaultsToRender, renderVault);
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 

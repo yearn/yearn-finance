@@ -23,6 +23,8 @@ import {
   V2_WETH_VAULT_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
   ZAP_PICKLE,
+  DEPOSIT_PICKLE_SLP_IN_FARM,
+  MASTER_CHEFF_POOL_ID,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -248,6 +250,36 @@ function* zapPickle(action) {
   }
 }
 
+function* depositPickleSLPInFarm(action) {
+  console.log('DEPOSIT PICKLE FARM');
+  const { vaultContract, tokenContract, depositAmount } = action.payload;
+
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContract.address, vaultContract.address),
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!vaultAllowedToSpendToken) {
+      console.log('approve');
+      yield call(approveTxSpend, tokenContract, account, vaultContract.address);
+    }
+    console.log('depositing pickle');
+    yield call(
+      vaultContract.methods.deposit.cacheSend,
+      MASTER_CHEFF_POOL_ID,
+      depositAmount,
+      {
+        from: account,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function* claimBackscratcherRewards(action) {
   const { vaultContract } = action.payload;
 
@@ -311,6 +343,7 @@ export default function* initialize() {
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
   yield takeLatest(ZAP_PICKLE, zapPickle);
+  yield takeLatest(DEPOSIT_PICKLE_SLP_IN_FARM, depositPickleSLPInFarm);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
 }

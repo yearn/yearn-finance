@@ -260,7 +260,7 @@ function* loadVaultContracts(clear) {
   };
 
   const pickleJarSubscription = {
-    namespace: 'pickleJar',
+    namespace: 'picklejar',
     abi: pickleJarAbi,
     addresses: [PICKLEJAR_ADDRESS],
     readMethods: [
@@ -268,10 +268,9 @@ function* loadVaultContracts(clear) {
         name: 'balanceOf',
         args: [account],
       },
-    ],
-    writeMethods: [
       {
-        name: 'approve',
+        name: 'allowance',
+        args: [account, MASTER_CHEF_ADDRESS],
       },
     ],
   };
@@ -296,7 +295,8 @@ function* loadVaultContracts(clear) {
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
   const zapSubscriptions = getZapSubscriptions();
 
-  contracts.push(pickleJarSubscription, masterChefSubscription);
+  contracts.push(masterChefSubscription);
+  contracts.push(pickleJarSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);

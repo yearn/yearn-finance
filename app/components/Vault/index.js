@@ -290,6 +290,9 @@ const Vault = (props) => {
   const crvTokenAllowance = useSelector(
     selectTokenAllowance(CRV_ADDRESS, ZAP_YVE_CRV_ETH_PICKLE_ADDRESS),
   );
+  const pickleJarAllowance = useSelector(
+    selectTokenAllowance(PICKLEJAR_ADDRESS, MASTER_CHEF_ADDRESS),
+  );
 
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
 
@@ -325,6 +328,7 @@ const Vault = (props) => {
   let pickleContractsData = null;
 
   if (vaultIsPickle) {
+    console.log({ pickleJarContractData });
     const parcedPickleJarBalance =
       pickleJarContractData && pickleJarContractData.balanceOf
         ? new BigNumber(pickleJarContractData.balanceOf)
@@ -332,12 +336,17 @@ const Vault = (props) => {
             .toFixed(2)
         : '0.00';
 
-    const masterChefBalance =
-      masterChefContractData && masterChefContractData.balanceOf
-        ? new BigNumber(masterChefContractData.balanceOf)
-            .dividedBy(10 ** decimals)
-            .toFixed(2)
-        : '0.00';
+    console.log({ masterChefContractData });
+
+    // const masterChefBalance =
+    //   masterChefContractData && masterChefContractData.userInfo
+    //     ? new BigNumber(
+    //         _.get(masterChefContractData.userInfo, '[0].value.amount'),
+    //       )
+    //         .dividedBy(10 ** decimals)
+    //         .toFixed(2)
+    //     : '0.00';
+    const masterChefBalance = 0;
 
     pickleContractsData = {
       zapPickleContract: zapYveCrvEthPickleConctract,
@@ -345,6 +354,7 @@ const Vault = (props) => {
       masterChefContract,
       crvContract: crvTokenContract,
       pickleJarBalance: parcedPickleJarBalance,
+      pickleJarAllowance,
       pickleMasterChefDeposited: masterChefBalance,
       crvBalance: parsedCrvBalance,
       crvAllowance: crvTokenAllowance,

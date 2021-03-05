@@ -6,6 +6,7 @@ import {
   withdrawFromVault,
   depositToVault,
   zapPickle,
+  depositPickleSLPInFarm,
 } from 'containers/Vaults/actions';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -177,6 +178,18 @@ export default function VaultControls(props) {
     );
   };
 
+  const depositPickleFarm = () => {
+    console.log('DEPOSIT PICKLE IN FARM');
+    console.log({ depositGweiAmount });
+    dispatch(
+      depositPickleSLPInFarm({
+        vaultContract: pickleContractsData.masterChefContract,
+        tokenContract: pickleContractsData.pickleJarContract,
+        depositAmount: depositGweiAmount,
+      }),
+    );
+  };
+
   const deposit = () => {
     console.log(`Depositing:`, depositGweiAmount);
     dispatch(
@@ -247,6 +260,39 @@ export default function VaultControls(props) {
                 (pickleContractsData.crvAllowance !== undefined &&
                   pickleContractsData.crvAllowance !== '0') ||
                 selectedPickleTokenType === 'eth'
+                  ? 'Deposit'
+                  : 'Approve'
+              }
+              title="Deposit into vault"
+              showTooltip
+              tooltipText={
+                depositsDisabled || 'Connect your wallet to deposit into vault'
+              }
+            />
+          </ActionGroup>
+        </Box>
+        <Box
+          display="flex"
+          flexDirection={isScreenMd ? 'row' : 'column'}
+          width={1}
+        >
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            ml={isScreenMd ? '60px' : '0px'}
+          >
+            <AmountField
+              amount={depositAmount}
+              amountSetter={setDepositAmount}
+              gweiAmountSetter={setDepositGweiAmount}
+              maxAmount={pickleContractsData.pickleJarBalance}
+              decimals={decimals}
+            />
+            <ActionButton
+              disabled={!vaultContract || !tokenContract || !!depositsDisabled}
+              handler={depositPickleFarm}
+              text={
+                pickleContractsData.pickleJarAllowance !== undefined &&
+                pickleContractsData.pickleJarAllowance !== '0'
                   ? 'Deposit'
                   : 'Approve'
               }

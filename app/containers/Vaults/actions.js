@@ -35,6 +35,13 @@ export function zapPickle(payload) {
   };
 }
 
+export function depositPickleSLPInFarm(payload) {
+  return {
+    type: c.DEPOSIT_PICKLE_SLP_IN_FARM,
+    payload,
+  };
+}
+
 export function claimBackscratcherRewards(payload) {
   return {
     type: c.CLAIM_BACKSCRATCHER_REWARDS,

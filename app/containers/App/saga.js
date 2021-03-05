@@ -252,6 +252,10 @@ function* loadVaultContracts(clear) {
         name: 'allowance',
         args: [account, backscratcherAddress],
       },
+      {
+        name: 'allowance',
+        args: [account, ZAP_YVE_CRV_ETH_PICKLE_ADDRESS],
+      },
     ],
   };
 

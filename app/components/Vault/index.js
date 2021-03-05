@@ -14,11 +14,18 @@ import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
-import { selectContractData, selectEthBalance } from 'containers/App/selectors';
+import {
+  selectContractData,
+  selectEthBalance,
+  selectTokenAllowance,
+} from 'containers/App/selectors';
+import { useContract } from 'containers/DrizzleProvider/hooks';
 import {
   BACKSCRATCHER_ADDRESS,
   CRV_ADDRESS,
   MASTER_CHEF_ADDRESS,
+  PICKLEJAR_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
 // import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
@@ -264,9 +271,24 @@ const Vault = (props) => {
   const devMode = true;
   const tokenContractAddress = token.address || CRV;
   const ethBalance = useSelector(selectEthBalance());
-  const crvContract = useSelector(selectContractData(CRV_ADDRESS));
+  const crvContractData = useSelector(selectContractData(CRV_ADDRESS));
+  const pickleJarContractData = useSelector(
+    selectContractData(PICKLEJAR_ADDRESS),
+  );
+  const masterChefContractData = useSelector(
+    selectContractData(MASTER_CHEF_ADDRESS),
+  );
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
+  );
+  const zapYveCrvEthPickleConctract = useContract(
+    ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  );
+  const crvTokenContract = useContract(CRV_ADDRESS);
+  const pickleJarContract = useContract(PICKLEJAR_ADDRESS);
+  const masterChefContract = useContract(MASTER_CHEF_ADDRESS);
+  const crvTokenAllowance = useSelector(
+    selectTokenAllowance(CRV_ADDRESS, ZAP_YVE_CRV_ETH_PICKLE_ADDRESS),
   );
 
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
@@ -287,6 +309,51 @@ const Vault = (props) => {
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
     tokenBalance = ethBalance;
+  }
+
+  const parsedEthBalance = ethBalance
+    ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
+    : '0.00';
+
+  const parsedCrvBalance =
+    crvContractData && crvContractData.balanceOf
+      ? new BigNumber(crvContractData.balanceOf)
+          .dividedBy(10 ** decimals)
+          .toFixed(2)
+      : '0.00';
+
+  let pickleContractsData = null;
+
+  if (vaultIsPickle) {
+    const parcedPickleJarBalance =
+      pickleJarContractData && pickleJarContractData.balanceOf
+        ? new BigNumber(pickleJarContractData.balanceOf)
+            .dividedBy(10 ** decimals)
+            .toFixed(2)
+        : '0.00';
+
+    const masterChefBalance =
+      masterChefContractData && masterChefContractData.balanceOf
+        ? new BigNumber(masterChefContractData.balanceOf)
+            .dividedBy(10 ** decimals)
+            .toFixed(2)
+        : '0.00';
+
+    pickleContractsData = {
+      zapPickleContract: zapYveCrvEthPickleConctract,
+      pickleJarContract,
+      masterChefContract,
+      crvContract: crvTokenContract,
+      pickleJarBalance: parcedPickleJarBalance,
+      pickleMasterChefDeposited: masterChefBalance,
+      crvBalance: parsedCrvBalance,
+      crvAllowance: crvTokenAllowance,
+      ethBalance: parsedEthBalance,
+    };
+  }
+
+  if (vaultIsPickle) {
+    console.log({ pickleContractsData });
   }
 
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
@@ -704,6 +771,7 @@ const Vault = (props) => {
         walletBalance={tokenBalanceOf}
         balanceOf={balanceOf}
         tokenBalance={tokenBalance}
+        pickleContractsData={pickleContractsData}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
@@ -713,15 +781,6 @@ const Vault = (props) => {
     if (amplifyVault) {
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       if (vaultIsPickle) {
-        const parsedEthBalance = ethBalance
-          ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
-          : '0.00';
-        const parsedCrvBalance =
-          crvContract && crvContract.balanceOf
-            ? new BigNumber(crvContract.balanceOf)
-                .dividedBy(10 ** decimals)
-                .toFixed(2)
-            : '0.00';
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
       }
       vaultTop = (

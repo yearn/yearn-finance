@@ -789,6 +789,7 @@ const Vault = (props) => {
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
+        vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
       }
       vaultTop = (
         <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>

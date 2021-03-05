@@ -148,6 +148,24 @@ const GlobalStyle = createGlobalStyle`
   border-color: ${(props) => props.theme.surface};
   color: ${(props) => props.theme.onSurface};
   transition: background-color .1s ease-out, border-color .15s ease-out;
+
+  &.amplify-vault {
+    font-size: 17px;
+
+    .vault-asset {
+      background: red;
+    }
+
+    .collapse {
+      display: flex;
+    }
+  }
+  &.pickle-vault {
+    &, &.active, & .card-body {
+      background-color: ${(props) => props.theme.vaultBorderActive};
+      border-color: ${(props) => props.theme.vaultBorderActive};
+    }
+  }
 }
 
 a {

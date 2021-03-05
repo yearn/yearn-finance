@@ -296,6 +296,7 @@ const Vault = (props) => {
   if (vaultIsBackscratcher) {
     vaultName = 'yveCRV';
   } else if (vaultIsPickle) {
+    console.log(vault);
     vaultName = 'yveCRV - ETH pJar';
   } else {
     vaultName = displayName || name || address;
@@ -918,7 +919,12 @@ const Vault = (props) => {
   }
   return (
     <React.Fragment>
-      <Card className={active && 'active'} id={`vault-${accordionKey}`}>
+      <Card
+        className={`${amplifyVault ? 'amplify-vault' : ''} ${
+          active ? 'active' : ''
+        } ${vaultIsPickle ? 'pickle-vault' : ''}`}
+        id={`vault-${accordionKey}`}
+      >
         <Accordion.Toggle
           as={Card.Header}
           variant="link"

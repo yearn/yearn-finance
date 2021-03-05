@@ -230,29 +230,30 @@ export default function VaultControls(props) {
       },
     ];
     vaultControlsWrapper = (
-      <Wrapper>
-        <SelectField
-          value={selectedPickleTokenType}
-          selectSetter={setSelectedPickleTokenType}
-          options={tokenOptions}
-          onChange={setSelectedPickleTokenBalance}
-        ></SelectField>
-        <Box
-          display="flex"
-          flexDirection={isScreenMd ? 'row' : 'column'}
-          width={1}
-        >
-          <ActionGroup
-            direction={isScreenMd ? 'row' : 'column'}
-            ml={isScreenMd ? '60px' : '0px'}
-          >
-            <AmountField
-              amount={depositAmount}
-              amountSetter={setDepositAmount}
-              gweiAmountSetter={setDepositGweiAmount}
-              maxAmount={selectedPickleTokenBalance}
-              decimals={decimals}
-            />
+      <Wrapper className="pickle-vault-controls">
+        <Box display="flex" flexDirection="column" width={1}>
+          {selectedPickleTokenType === 'eth' && (
+            <Balance amount={walletBalance} prefix="Available ETH: " />
+          )}
+          {selectedPickleTokenType === 'crv' && (
+            <Balance amount={walletBalance} prefix="Available CRV: " />
+          )}
+          <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
+            <SelectField
+              value={selectedPickleTokenType}
+              selectSetter={setSelectedPickleTokenType}
+              options={tokenOptions}
+              onChange={setSelectedPickleTokenBalance}
+            ></SelectField>
+            <Box paddingLeft={isScreenMd ? '30px' : '0px'}>
+              <AmountField
+                amount={depositAmount}
+                amountSetter={setDepositAmount}
+                gweiAmountSetter={setDepositGweiAmount}
+                maxAmount={selectedPickleTokenBalance}
+                decimals={decimals}
+              />
+            </Box>
             <ActionButton
               disabled={!vaultContract || !tokenContract || !!depositsDisabled}
               handler={zap}
@@ -270,16 +271,9 @@ export default function VaultControls(props) {
               }
             />
           </ActionGroup>
-        </Box>
-        <Box
-          display="flex"
-          flexDirection={isScreenMd ? 'row' : 'column'}
-          width={1}
-        >
-          <ActionGroup
-            direction={isScreenMd ? 'row' : 'column'}
-            ml={isScreenMd ? '60px' : '0px'}
-          >
+
+          <Balance amount={walletBalance} prefix="Available Pickle LP: " />
+          <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <AmountField
               amount={depositAmount}
               amountSetter={setDepositAmount}

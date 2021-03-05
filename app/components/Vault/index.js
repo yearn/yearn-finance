@@ -855,7 +855,7 @@ const Vault = (props) => {
         vaultAdditionalInfo = (
           <Box my={16} mx={isScreenMd ? 70 : 20}>
             <Grid container spacing={isScreenMd ? 8 : 0}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} mt="50px">
                 <Text large>Deposit your CRV to earn weekly 3Crv rewards</Text>
                 {vaultControls}
               </Grid>

@@ -37,6 +37,7 @@ const StyledRoundedInput = styled(RoundedInput)`
 `;
 const StyledRoundedSelect = styled(RoundedSelect)`
   width: 115px;
+  min-width: 115px;
 `;
 
 const ActionGroup = styled(Box)`
@@ -256,24 +257,30 @@ export default function VaultControls(props) {
               prefix="Available CRV: "
             />
           )}
-          <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
-            <SelectField
-              value={selectedPickleTokenType}
-              selectSetter={setSelectedPickleTokenType}
-              options={tokenOptions}
-              // onChange={setSelectedPickleTokenBalance}
-            />
-            <Box ml={5}>
-              <AmountField
-                amount={depositAmount}
-                amountSetter={setDepositAmount}
-                gweiAmountSetter={setDepositGweiAmount}
-                maxAmount={selectedPickleTokenBalance}
-                decimals={decimals}
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            alignItems="center"
+          >
+            <Box display="flex" direction="row" width={1}>
+              <SelectField
+                value={selectedPickleTokenType}
+                selectSetter={setSelectedPickleTokenType}
+                options={tokenOptions}
+                // onChange={setSelectedPickleTokenBalance}
               />
+              <Box ml={5} width={1}>
+                <AmountField
+                  amount={depositAmount}
+                  amountSetter={setDepositAmount}
+                  gweiAmountSetter={setDepositGweiAmount}
+                  maxAmount={selectedPickleTokenBalance}
+                  decimals={decimals}
+                />
+              </Box>
             </Box>
-            <Box>
+            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? 'auto' : 1}>
               <ActionButton
+                className="action-button"
                 disabled={
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
@@ -299,29 +306,40 @@ export default function VaultControls(props) {
             amount={pickleContractsData.pickleJarBalance}
             prefix="Available Pickle LP: "
           />
-          <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
-            <AmountField
-              amount={pickleDepositAmount}
-              amountSetter={setPickleDepositAmount}
-              gweiAmountSetter={setPickleDepositGweiAmount}
-              maxAmount={pickleContractsData.pickleJarBalance}
-              decimals={decimals}
-            />
-            <ActionButton
-              disabled={!vaultContract || !tokenContract || !!depositsDisabled}
-              handler={depositPickleFarm}
-              text={
-                pickleContractsData.pickleJarAllowance !== undefined &&
-                pickleContractsData.pickleJarAllowance !== '0'
-                  ? 'Deposit'
-                  : 'Approve'
-              }
-              title="Deposit into vault"
-              showTooltip
-              tooltipText={
-                depositsDisabled || 'Connect your wallet to deposit into vault'
-              }
-            />
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            alignItems="center"
+          >
+            <Box width={1}>
+              <AmountField
+                amount={pickleDepositAmount}
+                amountSetter={setPickleDepositAmount}
+                gweiAmountSetter={setPickleDepositGweiAmount}
+                maxAmount={pickleContractsData.pickleJarBalance}
+                decimals={decimals}
+              />
+            </Box>
+            <Box ml={5} width={isScreenMd ? 'auto' : 1}>
+              <ActionButton
+                className="action-button"
+                disabled={
+                  !vaultContract || !tokenContract || !!depositsDisabled
+                }
+                handler={depositPickleFarm}
+                text={
+                  pickleContractsData.pickleJarAllowance !== undefined &&
+                  pickleContractsData.pickleJarAllowance !== '0'
+                    ? 'Deposit'
+                    : 'Approve'
+                }
+                title="Deposit into vault"
+                showTooltip
+                tooltipText={
+                  depositsDisabled ||
+                  'Connect your wallet to deposit into vault'
+                }
+              />
+            </Box>
           </ActionGroup>
         </Box>
       </Wrapper>
@@ -500,6 +518,7 @@ function Balance({ amount, prefix }) {
 
 function ActionButton({
   disabled,
+  className,
   handler,
   title,
   text,
@@ -509,6 +528,7 @@ function ActionButton({
   return (
     <ButtonFilled
       disabled={disabled}
+      className={className}
       onClick={() => handler()}
       color="primary"
       title={title}

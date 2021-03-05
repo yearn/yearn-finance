@@ -8,6 +8,7 @@ export default function ButtonFilled(props) {
   const {
     onClick,
     disabled,
+    className,
     children,
     type,
     title,
@@ -59,6 +60,7 @@ export default function ButtonFilled(props) {
     return (
       <Tooltip title={tooltipText}>
         <ColorButton
+          className={className}
           variant="contained"
           color={color}
           onClick={onClick}
@@ -74,6 +76,7 @@ export default function ButtonFilled(props) {
   }
   return (
     <ColorButton
+      className={className}
       variant="contained"
       title={title}
       color={color}

@@ -153,6 +153,18 @@ const GlobalStyle = createGlobalStyle`
     .amplify-vault-controls {
       background-color: ${(props) => props.theme.vaultBackgroundAlt};
       border-radius: 8px;
+
+      .action-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 0;
+        padding-bottom: 0;
+        letter-spacing: 0.882353px;
+        font-weight: 500;
+        background-color: ${(props) => props.theme.surface};;
+        color: ${(props) => props.theme.onSurface};;
+      }
     }
   }
   &.pickle-vault {

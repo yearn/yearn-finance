@@ -857,7 +857,7 @@ const Vault = (props) => {
           <Box my={50} mx={isScreenMd ? 50 : 20}>
             <Grid container spacing={isScreenMd ? 8 : 0}>
               <Grid className="amplify-vault-controls" item xs={12} md={6}>
-                <Text bold fontSize={4} mb={4}>
+                <Text bold fontSize={4} mb={40}>
                   Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP
                   position
                 </Text>

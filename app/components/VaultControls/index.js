@@ -278,7 +278,10 @@ export default function VaultControls(props) {
             />
           </ActionGroup>
 
-          <Balance amount={walletBalance} prefix="Available Pickle LP: " />
+          <Balance
+            amount={pickleContractsData.pickleJarBalance}
+            prefix="Available Pickle LP: "
+          />
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <AmountField
               amount={depositAmount}

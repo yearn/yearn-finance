@@ -854,28 +854,36 @@ const Vault = (props) => {
 
       if (vaultIsPickle) {
         vaultAdditionalInfo = (
-          <Box my={16} mx={isScreenMd ? 70 : 20}>
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
             <Grid container spacing={isScreenMd ? 8 : 0}>
-              <Grid item xs={12} md={6} mt="50px">
-                <Text large>Deposit your CRV to earn weekly 3Crv rewards</Text>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                <Text bold fontSize={4} mb={4}>
+                  Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP
+                  position
+                </Text>
                 {vaultControls}
               </Grid>
               <Grid item xs={12} md={6}>
                 <Text small>
-                  This vault converts your CRV into yveCRV, earning you a
-                  continuous share of Curve’s trading fees. Every week, these
-                  rewards can be claimed here as 3Crv (Curve’s 3pool LP token).
-                  These rewards can also be restaked into more yveCRV with one
-                  click.
+                  This vault performs a multi-step transaction with your ETHor
+                  CRV which:
                   <br />
                   <br />
-                  This operation is non-reversible: you can only convert CRV
-                  into yveCRV, as any deposited CRV is perpetually staked in
-                  Curve’s voting escrow.
+                  1. Makes a deposit into yveCRV.
+                  <br />
+                  2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for
+                  SUSHI 🍣 rewards.
+                  <br />
+                  3. Deposits this SLP into the yveCRV-ETH pJar on Pickle
+                  Finance for PICKLE 🥒 rewards.
                   <br />
                   <br />
-                  If you prefer to earn higher returns on your CRV in an LP
-                  position, deposit into the yveCRV-ETH pJar.
+                  Note: Remember to stake your Pickle LP manually after the
+                  transaction completes. If you’d like to claim earned PICKLE 🥒
+                  rewards or withdraw yveCRV-ETH SLP, please, use the UI at
+                  <A href="https://app.pickle.finance/farms" target="_blank">
+                    https://app.pickle.finance/farms
+                  </A>
                 </Text>
               </Grid>
             </Grid>

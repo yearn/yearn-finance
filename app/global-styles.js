@@ -150,14 +150,9 @@ const GlobalStyle = createGlobalStyle`
   transition: background-color .1s ease-out, border-color .15s ease-out;
 
   &.amplify-vault {
-    font-size: 17px;
-
-    .vault-asset {
-      background: red;
-    }
-
-    .collapse {
-      display: flex;
+    .amplify-vault-controls {
+      background-color: ${(props) => props.theme.vaultBackgroundAlt};
+      border-radius: 8px;
     }
   }
   &.pickle-vault {

@@ -36,7 +36,7 @@ const StyledRoundedInput = styled(RoundedInput)`
   width: 100%;
 `;
 const StyledRoundedSelect = styled(RoundedSelect)`
-  width: 150px;
+  width: 115px;
 `;
 
 const ActionGroup = styled(Box)`
@@ -234,7 +234,7 @@ export default function VaultControls(props) {
       },
     ];
     vaultControlsWrapper = (
-      <Wrapper className="pickle-vault-controls">
+      <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
           {selectedPickleTokenType === 'eth' && (
             <Balance
@@ -254,8 +254,8 @@ export default function VaultControls(props) {
               selectSetter={setSelectedPickleTokenType}
               options={tokenOptions}
               onChange={setSelectedPickleTokenBalance}
-            ></SelectField>
-            <Box paddingLeft={isScreenMd ? '30px' : '0px'}>
+            />
+            <Box ml={5}>
               <AmountField
                 amount={depositAmount}
                 amountSetter={setDepositAmount}
@@ -264,22 +264,27 @@ export default function VaultControls(props) {
                 decimals={decimals}
               />
             </Box>
-            <ActionButton
-              disabled={!vaultContract || !tokenContract || !!depositsDisabled}
-              handler={zap}
-              text={
-                (pickleContractsData.crvAllowance !== undefined &&
-                  pickleContractsData.crvAllowance !== '0') ||
-                selectedPickleTokenType === 'eth'
-                  ? 'Deposit'
-                  : 'Approve'
-              }
-              title="Deposit into vault"
-              showTooltip
-              tooltipText={
-                depositsDisabled || 'Connect your wallet to deposit into vault'
-              }
-            />
+            <Box>
+              <ActionButton
+                disabled={
+                  !vaultContract || !tokenContract || !!depositsDisabled
+                }
+                handler={zap}
+                text={
+                  (pickleContractsData.crvAllowance !== undefined &&
+                    pickleContractsData.crvAllowance !== '0') ||
+                  selectedPickleTokenType === 'eth'
+                    ? 'Deposit'
+                    : 'Approve'
+                }
+                title="Deposit into vault"
+                showTooltip
+                tooltipText={
+                  depositsDisabled ||
+                  'Connect your wallet to deposit into vault'
+                }
+              />
+            </Box>
           </ActionGroup>
 
           <Balance

@@ -245,7 +245,7 @@ const Vaults = (props) => {
     amplifyVaultsWrapper = (
       <WrapTable center width={1} className="amplify-vaults">
         <Hidden smDown>{<VaultsHeader amplifyVault />}</Hidden>
-        <StyledAccordion defaultActiveKey={backscratcherVault.address}>
+        <StyledAccordion>
           <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}

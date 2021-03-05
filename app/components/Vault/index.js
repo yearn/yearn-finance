@@ -91,6 +91,18 @@ const StyledTokenIcon = styled(TokenIcon)`
   margin-right: 20px;
 `;
 
+const StyledDoubleTokenIcon = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  img:last-child {
+    position: absolute;
+    left: 10px;
+    top: 0;
+  }
+`;
+
 const IconName = styled.div`
   overflow: hidden;
   max-width: 145px;
@@ -787,18 +799,24 @@ const Vault = (props) => {
 
     if (amplifyVault) {
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
+      let styledIcon = (
+        <StyledTokenIcon address={tokenContractAddress} icon={vault.icon} />
+      );
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
         vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+        styledIcon = (
+          <StyledDoubleTokenIcon>
+            <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
+            <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
+          </StyledDoubleTokenIcon>
+        );
       }
       vaultTop = (
         <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address} title={alias}>
-              <StyledTokenIcon
-                address={tokenContractAddress}
-                icon={vault.icon}
-              />
+              {styledIcon}
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">

@@ -367,6 +367,10 @@ const Vault = (props) => {
       crvAllowance: crvTokenAllowance,
       ethBalance: parsedEthBalance,
     };
+
+    console.log({ pickleJarContractData });
+    console.log({ masterChefContractData });
+    console.log({ pickleContractsData });
   }
 
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');

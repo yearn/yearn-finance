@@ -813,11 +813,13 @@ const Vault = (props) => {
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
         vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+        apyRecommended = truncateApy(apy.data.sevenDayFarm);
         versionTooltip = null;
         apyTooltip = null;
         vaultAssetsTooltip = null;
         styledIcon = (
           <StyledDoubleTokenIcon>
+            {/* NOTE CRV/ETH address for token icon */}
             <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
             <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
           </StyledDoubleTokenIcon>

@@ -813,7 +813,6 @@ const Vault = (props) => {
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
         vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
-        versionTooltip = null;
         apyTooltip = null;
         vaultAssetsTooltip = null;
         styledIcon = (

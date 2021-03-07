@@ -8,7 +8,7 @@ const Select = styled.select`
   outline: none;
   background: #ffffff;
   border-radius: 5px;
-  font-family: 'Roboto';
+  font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
   font-weight: 500;
   font-size: 16px;

@@ -813,6 +813,9 @@ const Vault = (props) => {
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
         vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+        versionTooltip = null;
+        apyTooltip = null;
+        vaultAssetsTooltip = null;
         styledIcon = (
           <StyledDoubleTokenIcon>
             <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
@@ -853,11 +856,15 @@ const Vault = (props) => {
               {multiplier}
             </Text> */}
             <Text large bold>
-              <Tooltip title={apyTooltip} arrow>
-                <Help>
-                  <Apy>{apyRecommended}</Apy>
-                </Help>
-              </Tooltip>
+              {apyTooltip ? (
+                <Tooltip title={apyTooltip} arrow>
+                  <Help>
+                    <Apy>{apyRecommended}</Apy>
+                  </Help>
+                </Tooltip>
+              ) : (
+                apyRecommended
+              )}
             </Text>
             <Text large bold>
               {vaultAssetsTooltip ? (
@@ -891,7 +898,7 @@ const Vault = (props) => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Text small>
-                  This vault performs a multi-step transaction with your ETHor
+                  This vault performs a multi-step transaction with your ETH or
                   CRV which:
                   <br />
                   <br />
@@ -906,7 +913,7 @@ const Vault = (props) => {
                   <br />
                   Note: Remember to stake your Pickle LP manually after the
                   transaction completes. If you’d like to claim earned PICKLE 🥒
-                  rewards or withdraw yveCRV-ETH SLP, please, use the UI at
+                  rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
                   <A href="https://app.pickle.finance/farms" target="_blank">
                     https://app.pickle.finance/farms
                   </A>

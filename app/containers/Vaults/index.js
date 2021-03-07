@@ -165,7 +165,7 @@ const Vaults = (props) => {
 
       if (isPickleJar) {
         const { userInfo } = vaultContractData;
-        balanceOf = _.get(userInfo, '[0].value.amount') || 0;
+        balanceOf = _.get(userInfo, 'amount') || 0;
 
         newVault.balanceOf = balanceOf;
         newVault.valueDeposited = balanceOf;

@@ -295,9 +295,8 @@ function* loadVaultContracts(clear) {
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
   const zapSubscriptions = getZapSubscriptions();
 
-  yield put(addContracts([masterChefSubscription], clear));
-
   contracts.push(pickleJarSubscription);
+  contracts.push(masterChefSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);

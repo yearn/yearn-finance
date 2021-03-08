@@ -42,14 +42,18 @@ const customStyles = {
     color: 'black',
     padding: 10,
     height: 46,
-    'min-height': 46,
+    minHeight: 46,
   }),
   control: (provided) => ({
     ...provided,
     color: 'black',
     // none of react-select's styles are passed to <Control />
     height: 46,
-    'min-height': 46,
+    minHeight: 46,
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    paddingTop: 0,
   }),
   singleValue: (provided) => ({ ...provided }),
 };

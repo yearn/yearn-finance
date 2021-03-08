@@ -172,6 +172,17 @@ const GlobalStyle = createGlobalStyle`
           background-color: ${(props) => props.theme.surface};
           color: ${(props) => props.theme.onSurface};
         }
+
+        &.light {
+          background-color: ${(props) => props.theme.white};
+          color: ${(props) => props.theme.vaultBackgroundAlt};
+        }
+
+        &.outline {
+          background-color: transparent;
+          color: ${(props) => props.theme.white};
+          border: 1px solid ${(props) => props.theme.white};
+        }
       }
     }
   }

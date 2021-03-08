@@ -822,8 +822,9 @@ const Vault = (props) => {
           <Text>
             This vault converts your CRV into yveCRV, earning you a continuous
             share of Curve’s trading fees. Every week, these rewards can be
-            claimed here as 3Crv (Curve’s 3pool LP token). These rewards can
-            also be restaked into more yveCRV with one click.
+            claimed here as 3Crv (Curve’s 3pool LP token). These unclaimed
+            rewards can also be staked directly into our 3Crv yVault using the
+            Stake button on the left.
             <br />
             <br />
             This operation is non-reversible: you can only convert CRV into

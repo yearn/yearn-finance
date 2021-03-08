@@ -31,7 +31,7 @@ import {
   PICKLEJAR_ADDRESS,
   MASTER_CHEF_ADDRESS,
   MASTER_CHEFF_POOL_ID,
-  VIPER_ADDRESS,
+  VYPER_ADDRESS,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -193,7 +193,7 @@ function* loadVaultContracts(clear) {
     const zapViperSubscription = {
       namespace: 'zap',
       abi: zapViperAbi,
-      addresses: [VIPER_ADDRESS],
+      addresses: [VYPER_ADDRESS],
       writeMethods: [
         {
           name: 'zap',

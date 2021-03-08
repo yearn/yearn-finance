@@ -8,12 +8,17 @@ import {
   claimBackscratcherRewards,
   restakeBackscratcherRewards,
 } from 'containers/Vaults/actions';
+import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
-import { VIPER_ADDRESS } from 'containers/Vaults/constants';
+import { VYPER_ADDRESS } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
 // import { abbreviateNumber } from 'utils/string';
+
+const StyledRoundedInput = styled(RoundedInput)`
+  width: 100%;
+`;
 
 const weiToUnits = (amount, decimals) =>
   new BigNumber(amount).dividedBy(10 ** decimals).toFixed(2);
@@ -24,7 +29,7 @@ const formatAmount = (amount) =>
 const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
-  const viperContract = useContract(VIPER_ADDRESS);
+  const vyperContract = useContract(VYPER_ADDRESS);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
     return null;
@@ -45,7 +50,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
 
   return (
     <>
-      {true && (
+      {claimable !== 0 && (
         <Box display="flex" flexDirection="column" width={1}>
           <div>Available 3Crv:</div>
           <Box
@@ -54,27 +59,27 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
             alignItems="center"
             width={1}
           >
-            <Box>
-              <RoundedInput
+            <Box width={isScreenMd ? '40%' : 1}>
+              <StyledRoundedInput
                 className="disabled-primary"
                 disabled
                 value={claimable.toFixed(2)}
               />
             </Box>
-            <Box>
+            <Box ml={5} width={isScreenMd ? '30%' : 1}>
               <ButtonFilled
-                className="action-button dark"
+                className="action-button light"
                 onClick={() =>
-                  dispatch(restakeBackscratcherRewards({ viperContract }))
+                  dispatch(restakeBackscratcherRewards({ vyperContract }))
                 }
                 color="primary"
               >
-                Restake
+                Stake
               </ButtonFilled>
             </Box>
-            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
+            <Box ml={5} width={isScreenMd ? '30%' : 1}>
               <ButtonFilled
-                className="action-button dark"
+                className="action-button outline"
                 onClick={() =>
                   dispatch(claimBackscratcherRewards({ vaultContract }))
                 }

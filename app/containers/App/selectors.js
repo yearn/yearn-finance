@@ -11,7 +11,7 @@ import {
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   MASTER_CHEF_ADDRESS,
   CRV_ADDRESS,
-  VIPER_ADDRESS,
+  VYPER_ADDRESS,
   BACKSCRATCHER_ADDRESS,
 } from '../Vaults/constants';
 
@@ -93,7 +93,7 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
           ].filter((val) => !!val),
         };
       }
-      if (contractAddress === VIPER_ADDRESS) {
+      if (contractAddress === VYPER_ADDRESS) {
         return {
           type: 'zap',
           relevantAddresses: [BACKSCRATCHER_ADDRESS].filter((val) => !!val),

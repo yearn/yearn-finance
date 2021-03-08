@@ -287,12 +287,12 @@ function* depositPickleSLPInFarm(action) {
 }
 
 function* restakeBackscratcherRewards(action) {
-  const { viperContract } = action.payload;
+  const { vyperContract } = action.payload;
 
   const account = yield select(selectAccount());
 
   try {
-    yield call(viperContract.methods.zap.cacheSend, {
+    yield call(vyperContract.methods.zap.cacheSend, {
       from: account,
     });
   } catch (error) {

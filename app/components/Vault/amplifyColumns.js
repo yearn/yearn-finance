@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
   display: grid;
   grid-template-columns: ${({ gridTemplate }) =>
-    gridTemplate || '240px 105px 155px 100px 160px 180px 1fr'};
+    gridTemplate || '210px 110px 160px 140px 200px 1fr'};
   width: 100%;
   align-items: center;
   > div {

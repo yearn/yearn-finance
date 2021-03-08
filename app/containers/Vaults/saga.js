@@ -64,7 +64,18 @@ function* fetchVaults() {
   try {
     const vaults = yield call(request, endpoint);
     const vaultsWithEth = injectEthVaults(vaults);
-    yield put(vaultsLoaded(vaultsWithEth));
+
+    // TODO: Remove UI hacks...
+    const masterChefAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
+    const correctedVaults = _.map(vaultsWithEth, (vault) => {
+      const newVault = vault;
+      if (vault.address === masterChefAddress) {
+        newVault.type = 'masterChef';
+      }
+      return newVault;
+    });
+
+    yield put(vaultsLoaded(correctedVaults));
   } catch (err) {
     console.log('Error reading vaults', err);
   }

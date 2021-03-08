@@ -387,17 +387,9 @@ const VaultsWrapper = (props) => {
     );
   };
 
-  // TODO: Remove UI hacks...
-  const pickleJarAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
-  const excludeVaultAddresses = [pickleJarAddress];
-  const vaultsToRender = _.filter(
-    vaultItems,
-    (vault) => !_.includes(excludeVaultAddresses, vault.address),
-  );
-
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && vaultItems == null) return <LinearProgress />;
-  const vaultRows = _.map(vaultsToRender, renderVault);
+  const vaultRows = _.map(vaultItems, renderVault);
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 

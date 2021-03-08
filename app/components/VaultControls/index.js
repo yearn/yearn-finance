@@ -204,27 +204,6 @@ export default function VaultControls(props) {
     );
   };
 
-  let selectedPickleTokenBalance;
-  if (vaultIsPickle && pickleContractsData) {
-    if (selectedPickleTokenType === 'eth') {
-      selectedPickleTokenBalance = pickleContractsData.ethBalance;
-    } else {
-      selectedPickleTokenBalance = pickleContractsData.crvBalance;
-    }
-  } else {
-    selectedPickleTokenBalance = 0;
-  }
-
-  // const setSelectedPickleTokenBalance = (selectedToken) => {
-  //   if (selectedToken === 'eth') {
-  //     console.log({ ethBalance: pickleContractsData.ethBalance });
-  //     selectedPickleTokenBalance = pickleContractsData.ethBalance;
-  //   } else if (selectedToken === 'crv') {
-  //     selectedPickleTokenBalance = pickleContractsData.crvBalance;
-  //     console.log({ crvBalance: pickleContractsData.crvBalance });
-  //   }
-  // };
-
   let vaultControlsWrapper;
 
   if (vaultIsPickle) {
@@ -238,6 +217,13 @@ export default function VaultControls(props) {
         text: 'CRV',
       },
     ];
+
+    let maxAmount = 0;
+    if (selectedPickleTokenType === 'eth') {
+      maxAmount = pickleContractsData.ethBalanceRaw;
+    } else if (selectedPickleTokenType === 'crv') {
+      maxAmount = pickleContractsData.crvBalanceRaw;
+    }
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
@@ -269,7 +255,7 @@ export default function VaultControls(props) {
                   amount={depositAmount}
                   amountSetter={setDepositAmount}
                   gweiAmountSetter={setDepositGweiAmount}
-                  maxAmount={selectedPickleTokenBalance}
+                  maxAmount={maxAmount}
                   decimals={decimals}
                 />
               </Box>
@@ -311,7 +297,7 @@ export default function VaultControls(props) {
                 amount={pickleDepositAmount}
                 amountSetter={setPickleDepositAmount}
                 gweiAmountSetter={setPickleDepositGweiAmount}
-                maxAmount={pickleContractsData.pickleJarBalance}
+                maxAmount={pickleContractsData.pickleJarBalanceRaw}
                 decimals={decimals}
               />
             </Box>

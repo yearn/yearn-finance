@@ -332,22 +332,23 @@ const Vault = (props) => {
     ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
     : '0.00';
 
-  const parsedCrvBalance =
-    crvContractData && crvContractData.balanceOf
-      ? new BigNumber(crvContractData.balanceOf)
-          .dividedBy(10 ** decimals)
-          .toFixed(2)
-      : '0.00';
+  const crvBalanceRaw = crvContractData && crvContractData.balanceOf;
+  const parsedCrvBalance = crvBalanceRaw
+    ? new BigNumber(crvContractData.balanceOf)
+        .dividedBy(10 ** decimals)
+        .toFixed(2)
+    : '0.00';
 
   let pickleContractsData = null;
 
   if (vaultIsPickle) {
-    const parcedPickleJarBalance =
-      pickleJarContractData && pickleJarContractData.balanceOf
-        ? new BigNumber(pickleJarContractData.balanceOf)
-            .dividedBy(10 ** decimals)
-            .toFixed(2)
-        : '0.00';
+    const pickleJarBalanceRaw =
+      pickleJarContractData && pickleJarContractData.balanceOf;
+    const parsedPickleJarBalance = pickleJarBalanceRaw
+      ? new BigNumber(pickleJarContractData.balanceOf)
+          .dividedBy(10 ** decimals)
+          .toFixed(2)
+      : '0.00';
 
     const masterChefBalance = masterChefContractData
       ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
@@ -360,17 +361,16 @@ const Vault = (props) => {
       pickleJarContract,
       masterChefContract,
       crvContract: crvTokenContract,
-      pickleJarBalance: parcedPickleJarBalance,
+      pickleJarBalance: parsedPickleJarBalance,
+      pickleJarBalanceRaw,
       pickleJarAllowance,
       pickleMasterChefDeposited: masterChefBalance,
       crvBalance: parsedCrvBalance,
+      crvBalanceRaw,
       crvAllowance: crvTokenAllowance,
       ethBalance: parsedEthBalance,
+      ethBalanceRaw: ethBalance,
     };
-
-    console.log({ pickleJarContractData });
-    console.log({ masterChefContractData });
-    console.log({ pickleContractsData });
   }
 
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');

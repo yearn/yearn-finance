@@ -549,18 +549,6 @@ const Vault = (props) => {
     }
   }
 
-  if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
-    // yfi vault
-    apyRecommended = 'N/A';
-    apyTooltip = 'Inactive with YIP-56: Buyback and Build';
-  } else if (address === usdnVaultAddress) {
-    // usdn vault
-    apyRecommended = truncateApy(apy.data.netApy);
-  } else if (address === daiV1VaultAddress) {
-    // Temporary one week sample APY for DAI v1 vault
-    apyRecommended = truncateApy(apy.data.oneWeekSample);
-  }
-
   const tokenBalanceOf = tokenBalance
     ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed()
     : '0.00';
@@ -655,6 +643,18 @@ const Vault = (props) => {
     }
   } else {
     vaultAssets = truncateUsd(0);
+  }
+
+  if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
+    // yfi vault
+    apyRecommended = 'N/A';
+    apyTooltip = 'Inactive with YIP-56: Buyback and Build';
+  } else if (address === usdnVaultAddress) {
+    // usdn vault
+    apyRecommended = truncateApy(apy.data.netApy);
+  } else if (address === daiV1VaultAddress) {
+    // Temporary one week sample APY for DAI v1 vault
+    apyRecommended = truncateApy(apy.data.oneWeekSample);
   }
 
   const contractType = getContractType(vault);
@@ -994,11 +994,15 @@ const Vault = (props) => {
             </Text>
 
             <Text large bold>
-              <Tooltip title={apyTooltip} arrow>
-                <Help>
-                  <Apy>{apyRecommended}</Apy>
-                </Help>
-              </Tooltip>
+              {apyTooltip ? (
+                <Tooltip title={apyTooltip} arrow>
+                  <Help>
+                    <Apy>{apyRecommended}</Apy>
+                  </Help>
+                </Tooltip>
+              ) : (
+                <Apy>{apyRecommended}</Apy>
+              )}
             </Text>
 
             <Text large bold>

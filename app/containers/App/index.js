@@ -40,6 +40,13 @@ export default function App() {
     }
   };
   const init = () => {
+    // Reset cache one time to account for for critical web3-batch-call bug
+    const abiCacheFixed = JSON.parse(localStorage.getItem('abiCacheFixed'));
+    if (!abiCacheFixed) {
+      localStorage.removeItem('abiByHash');
+      localStorage.removeItem('abiHashByAddress');
+      localStorage.setItem('abiCacheFixed', true);
+    }
     console.log(`Build: ${process.env.REACT_APP_VERSION}`);
     dispatch(appInitialized());
   };

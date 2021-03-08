@@ -6,7 +6,10 @@ import { useContract } from 'containers/DrizzleProvider/hooks';
 import { selectContractData } from 'containers/App/selectors';
 import { claimBackscratcherRewards } from 'containers/Vaults/actions';
 import ButtonFilled from 'components/ButtonFilled';
-import { abbreviateNumber } from 'utils/string';
+import RoundedInput from 'components/RoundedInput';
+import Box from 'components/Box';
+
+// import { abbreviateNumber } from 'utils/string';
 
 const weiToUnits = (amount, decimals) =>
   new BigNumber(amount).dividedBy(10 ** decimals).toFixed(2);
@@ -14,7 +17,7 @@ const weiToUnits = (amount, decimals) =>
 const formatAmount = (amount) =>
   Number.isNaN(amount) || amount === 'NaN' ? 0 : Number(amount, 10);
 
-const BackscratcherClaim = ({ vaultAddress }) => {
+const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
@@ -38,13 +41,55 @@ const BackscratcherClaim = ({ vaultAddress }) => {
   return (
     <>
       {claimable !== 0 && (
+        <Box display="flex" flexDirection="column" width={1}>
+          <div>Available 3Crv:</div>
+          <Box
+            display="flex"
+            direction={isScreenMd ? 'row' : 'column'}
+            alignItems="center"
+            width={1}
+          >
+            <Box>
+              <RoundedInput
+                className="disabled-primary"
+                disabled
+                value={claimable.toFixed(2)}
+              />
+            </Box>
+            {/* TODO Restake
+          <Box>
+            <ButtonFilled
+              className="action-button dark"
+              onClick={() =>
+                dispatch(reestackeBackscratcherRewards({ vaultContract }))
+              }
+              color="primary"
+            >
+              Restake
+            </ButtonFilled>
+          </Box> */}
+            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
+              <ButtonFilled
+                className="action-button dark"
+                onClick={() =>
+                  dispatch(claimBackscratcherRewards({ vaultContract }))
+                }
+                color="primary"
+              >
+                Claim
+              </ButtonFilled>
+            </Box>
+          </Box>
+        </Box>
+      )}
+      {/* {claimable !== 0 && (
         <ButtonFilled
           onClick={() => dispatch(claimBackscratcherRewards({ vaultContract }))}
           color="primary"
         >
           {`Claim ${abbreviateNumber(claimable)} 3Crv`}
         </ButtonFilled>
-      )}
+      )} */}
     </>
   );
 };

@@ -130,6 +130,7 @@
     "react-intl": "2.8.0",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
+    "react-select": "^4.2.1",
     "react-tsparticles": "1.19.0-alpha.5",
     "react-use": "^15.3.4",
     "recharts": "^1.8.5",

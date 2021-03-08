@@ -105,7 +105,24 @@ export default function VaultControls(props) {
   // const isMigratable = !!migrationData[vaultAddress];
 
   const tokenContract = useContract(token.address);
-  const [selectedPickleTokenType, setSelectedPickleTokenType] = useState('eth');
+
+  const tokenOptions = [
+    {
+      value: 'eth',
+      label: 'ETH',
+      icon:
+        'https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE/logo-128.png',
+    },
+    {
+      value: 'crv',
+      label: 'CRV',
+      icon:
+        'https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/0xD533a949740bb3306d119CC777fa900bA034cd52/logo-128.png',
+    },
+  ];
+  const [selectedPickleTokenType, setSelectedPickleTokenType] = useState(
+    tokenOptions[0],
+  );
   const [pickleDepositGweiAmount, setPickleDepositGweiAmount] = useState(0);
 
   const [pickleDepositAmount, setPickleDepositAmount] = useState(0);
@@ -150,7 +167,7 @@ export default function VaultControls(props) {
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   useEffect(() => {
-    setSelectedPickleTokenType('eth');
+    setSelectedPickleTokenType(tokenOptions[0]);
     setDepositAmount(0);
     setPickleDepositAmount(0);
     setWithdrawalAmount(0);
@@ -176,7 +193,7 @@ export default function VaultControls(props) {
         zapPickleContract: pickleContractsData.zapPickleContract,
         tokenContract: pickleContractsData.crvContract,
         depositAmount: depositGweiAmount,
-        pureEthereum: selectedPickleTokenType === 'eth',
+        pureEthereum: selectedPickleTokenType.value === 'eth',
       }),
     );
   };
@@ -207,33 +224,22 @@ export default function VaultControls(props) {
   let vaultControlsWrapper;
 
   if (vaultIsPickle) {
-    const tokenOptions = [
-      {
-        value: 'eth',
-        text: 'ETH',
-      },
-      {
-        value: 'crv',
-        text: 'CRV',
-      },
-    ];
-
     let maxAmount = 0;
-    if (selectedPickleTokenType === 'eth') {
+    if (selectedPickleTokenType.value === 'eth') {
       maxAmount = pickleContractsData.ethBalanceRaw;
-    } else if (selectedPickleTokenType === 'crv') {
+    } else if (selectedPickleTokenType.value === 'crv') {
       maxAmount = pickleContractsData.crvBalanceRaw;
     }
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
-          {selectedPickleTokenType === 'eth' && (
+          {selectedPickleTokenType.value === 'eth' && (
             <Balance
               amount={pickleContractsData.ethBalance}
               prefix="Available ETH: "
             />
           )}
-          {selectedPickleTokenType === 'crv' && (
+          {selectedPickleTokenType.value === 'crv' && (
             <Balance
               amount={pickleContractsData.crvBalance}
               prefix="Available CRV: "
@@ -245,8 +251,8 @@ export default function VaultControls(props) {
           >
             <Box display="flex" direction="row" width={1}>
               <SelectField
-                value={selectedPickleTokenType}
-                selectSetter={setSelectedPickleTokenType}
+                defaultValue={selectedPickleTokenType}
+                onChange={setSelectedPickleTokenType}
                 options={tokenOptions}
                 // onChange={setSelectedPickleTokenBalance}
               />
@@ -270,7 +276,7 @@ export default function VaultControls(props) {
                 text={
                   (pickleContractsData.crvAllowance !== undefined &&
                     pickleContractsData.crvAllowance !== '0') ||
-                  selectedPickleTokenType === 'eth'
+                  selectedPickleTokenType.value === 'eth'
                     ? 'Deposit'
                     : 'Approve'
                 }
@@ -420,18 +426,12 @@ export default function VaultControls(props) {
   return vaultControlsWrapper;
 }
 
-function SelectField({ value, selectSetter, options, onChange }) {
+function SelectField({ defaultValue, options, onChange }) {
   return (
     <StyledRoundedSelect
-      value={value}
-      selectSetter={selectSetter}
+      defaultValue={defaultValue}
       options={options}
-      onChange={(evt) => {
-        selectSetter(evt);
-        if (onChange) {
-          onChange(evt);
-        }
-      }}
+      onChange={onChange}
     />
   );
 }

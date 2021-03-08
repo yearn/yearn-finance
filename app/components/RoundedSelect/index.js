@@ -1,54 +1,80 @@
 import React from 'react';
 import styled from 'styled-components';
+import Select, { components } from 'react-select';
 
-const Select = styled.select`
-  background: #ffffff;
-  border-radius: 5px;
-  height: 46px;
-  outline: none;
-  background: #ffffff;
-  border-radius: 5px;
-  font-family: ${(props) => props.theme.fontFamily};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 16px;
-  letter-spacing: 0.529412px;
-  color: #111111;
-  padding: 0px 13px;
-  width: 100%;
-  box-sizing: border-box;
-  border: ${(props) => (props.invalid ? '2px solid red' : '0px')};
-  cursor: pointer;
-
-  &:disabled {
-    cursor: not-allowed;
-  }
-`;
+const { Option } = components;
 
 const Wrapper = styled.div`
   position: relative;
-  width: 330px;
+  height: 100%;
 `;
 
+const InlineIcon = styled.img`
+  height: 16px;
+  width: 16px;
+  margin-right: 8px;
+`;
+
+const Line = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const CustomSelectOption = ({ data, ...rest }) => (
+  <Option {...rest}>
+    <Line>
+      <InlineIcon src={data.icon} alt={data.label} />
+      <span>{data.label}</span>
+    </Line>
+  </Option>
+);
+
+const CustomSelectValue = ({ data, ...rest }) => (
+  <Line {...rest}>
+    <InlineIcon src={data.icon} alt={data.label} />
+    <span>{data.label}</span>
+  </Line>
+);
+
+const customStyles = {
+  option: (provided) => ({
+    ...provided,
+    color: 'black',
+    padding: 10,
+    height: 46,
+    minHeight: 46,
+  }),
+  control: (provided) => ({
+    ...provided,
+    color: 'black',
+    // none of react-select's styles are passed to <Control />
+    height: 46,
+    minHeight: 46,
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    paddingTop: 0,
+  }),
+  singleValue: (provided) => ({ ...provided }),
+};
+
 export const RoundedSelect = React.forwardRef((props) => {
-  const { className, onChange, value, options, disabled } = props;
+  const { className, onChange, defaultValue, options, disabled } = props;
 
   return (
     <Wrapper className={className}>
       <Select
-        value={value}
+        styles={customStyles}
+        options={options}
+        isSearchable={false}
+        defaultValue={defaultValue}
+        onChange={onChange}
         disabled={disabled}
-        onChange={(event) => {
-          onChange(event.target.value);
+        components={{
+          Option: CustomSelectOption,
+          SingleValue: CustomSelectValue,
         }}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
-      </Select>
+      />
     </Wrapper>
   );
 });

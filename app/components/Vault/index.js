@@ -843,7 +843,7 @@ const Vault = (props) => {
             <Text large bold>
               {versionTooltip ? (
                 <Tooltip title={versionTooltip} arrow>
-                  <Help>{vault.type}</Help>
+                  <Help>{vaultIsPickle ? 'v1' : vault.type}</Help>
                 </Tooltip>
               ) : (
                 vault.type

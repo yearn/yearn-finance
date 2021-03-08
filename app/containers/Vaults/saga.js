@@ -18,6 +18,7 @@ import {
   WITHDRAW_FROM_VAULT,
   DEPOSIT_TO_VAULT,
   CLAIM_BACKSCRATCHER_REWARDS,
+  RESTAKE_BACKSCRATCHER_REWARDS,
   MIGRATE_VAULT,
   TRUSTED_MIGRATOR_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
@@ -285,6 +286,20 @@ function* depositPickleSLPInFarm(action) {
   }
 }
 
+function* restakeBackscratcherRewards(action) {
+  const { viperContract } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  try {
+    yield call(viperContract.methods.zap.cacheSend, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function* claimBackscratcherRewards(action) {
   const { vaultContract } = action.payload;
 
@@ -349,6 +364,7 @@ export default function* initialize() {
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
   yield takeLatest(ZAP_PICKLE, zapPickle);
   yield takeLatest(DEPOSIT_PICKLE_SLP_IN_FARM, depositPickleSLPInFarm);
+  yield takeLatest(RESTAKE_BACKSCRATCHER_REWARDS, restakeBackscratcherRewards);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
 }

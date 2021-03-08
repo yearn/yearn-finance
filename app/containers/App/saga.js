@@ -10,6 +10,7 @@ import erc20Abi from 'abi/erc20.json';
 import zapYveCrvAbi from 'abi/zapYveCrv.json';
 import pickleJarAbi from 'abi/pickleJar.json';
 import masterChefAbi from 'abi/masterChef.json';
+import zapViperAbi from 'abi/zapViper.json';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -30,6 +31,7 @@ import {
   PICKLEJAR_ADDRESS,
   MASTER_CHEF_ADDRESS,
   MASTER_CHEFF_POOL_ID,
+  VIPER_ADDRESS,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -188,6 +190,16 @@ function* loadVaultContracts(clear) {
   };
 
   function getZapSubscriptions() {
+    const zapViperSubscription = {
+      namespace: 'zap',
+      abi: zapViperAbi,
+      addresses: [VIPER_ADDRESS],
+      writeMethods: [
+        {
+          name: 'zap',
+        },
+      ],
+    };
     const zapYveCrvSubscription = {
       namespace: 'zap',
       abi: zapYveCrvAbi,
@@ -218,7 +230,7 @@ function* loadVaultContracts(clear) {
       ],
     };
 
-    return [zapYveCrvSubscription, eth2ZapSubscription];
+    return [zapViperSubscription, zapYveCrvSubscription, eth2ZapSubscription];
   }
 
   // const localSubscriptions = [

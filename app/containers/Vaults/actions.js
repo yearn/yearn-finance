@@ -42,6 +42,13 @@ export function depositPickleSLPInFarm(payload) {
   };
 }
 
+export function restakeBackscratcherRewards(payload) {
+  return {
+    type: c.RESTAKE_BACKSCRATCHER_REWARDS,
+    payload,
+  };
+}
+
 export function claimBackscratcherRewards(payload) {
   return {
     type: c.CLAIM_BACKSCRATCHER_REWARDS,

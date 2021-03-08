@@ -4,9 +4,13 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import { selectContractData } from 'containers/App/selectors';
-import { claimBackscratcherRewards } from 'containers/Vaults/actions';
+import {
+  claimBackscratcherRewards,
+  restakeBackscratcherRewards,
+} from 'containers/Vaults/actions';
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
+import { VIPER_ADDRESS } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
 // import { abbreviateNumber } from 'utils/string';
@@ -20,6 +24,7 @@ const formatAmount = (amount) =>
 const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
+  const viperContract = useContract(VIPER_ADDRESS);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
     return null;
@@ -40,7 +45,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
 
   return (
     <>
-      {claimable !== 0 && (
+      {true && (
         <Box display="flex" flexDirection="column" width={1}>
           <div>Available 3Crv:</div>
           <Box
@@ -56,18 +61,17 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 value={claimable.toFixed(2)}
               />
             </Box>
-            {/* TODO Restake
-          <Box>
-            <ButtonFilled
-              className="action-button dark"
-              onClick={() =>
-                dispatch(reestackeBackscratcherRewards({ vaultContract }))
-              }
-              color="primary"
-            >
-              Restake
-            </ButtonFilled>
-          </Box> */}
+            <Box>
+              <ButtonFilled
+                className="action-button dark"
+                onClick={() =>
+                  dispatch(restakeBackscratcherRewards({ viperContract }))
+                }
+                color="primary"
+              >
+                Restake
+              </ButtonFilled>
+            </Box>
             <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
               <ButtonFilled
                 className="action-button dark"

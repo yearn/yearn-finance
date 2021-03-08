@@ -4,7 +4,15 @@ import { flattenData } from 'utils/contracts';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import vaultsOrder from 'containers/Vaults/customOrder.json';
 import { selectPoolData } from '../Cover/selectors';
-import { zapsToVaultAddressMap } from '../Vaults/constants';
+import {
+  zapsToVaultAddressMap,
+  ETHEREUM_ADDRESS,
+  PICKLEJAR_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+  CRV_ADDRESS,
+} from '../Vaults/constants';
+
 const selectApp = (state) => state.app;
 const selectRouter = (state) => state.router;
 const selectContractsData = (state) => state.contracts;
@@ -12,17 +20,24 @@ const selectSubscriptionsData = (state) => state.subscriptions;
 const selectConnection = (state) => state.connection;
 const selectCover = (state) => state.cover;
 
-// TODO: Add to constants
-const ethereumAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-
 export const selectReady = () =>
   createSelector(selectApp, (substate) => substate && substate.ready);
 
 export const selectVaults = () =>
   createSelector(selectApp, (substate) => substate.vaults);
 
+export const selectAmplifyVaults = () =>
+  createSelector(selectApp, (substate) => substate.amplifyVaults);
+
 export const selectBackscratcherVault = () =>
   createSelector(selectApp, (substate) => substate.backscratcher);
+
+export const selectPickleVault = () =>
+  createSelector(selectApp, (substate) =>
+    substate.amplifyVaults.filter(
+      (vault) => vault.address === PICKLEJAR_ADDRESS,
+    ),
+  );
 
 export const selectCoverProtocols = () =>
   createSelector(selectCover, (substate) =>
@@ -63,6 +78,20 @@ export const selectRelevantAdressesByContract = (contractAddress) =>
       creamUnderlyingTokensContracts,
       creamCTokensContracts,
     ) => {
+      if (
+        contractAddress === ZAP_YVE_CRV_ETH_PICKLE_ADDRESS ||
+        contractAddress === MASTER_CHEF_ADDRESS
+      ) {
+        return {
+          type: 'zapPickle',
+          relevantAddresses: [
+            MASTER_CHEF_ADDRESS,
+            CRV_ADDRESS,
+            PICKLEJAR_ADDRESS,
+          ].filter((val) => !!val),
+        };
+      }
+
       const isZap = !!zapsToVaultAddressMap[contractAddress.toLowerCase()];
       if (isZap) {
         const vaultAddress =
@@ -251,7 +280,7 @@ function getVaultsWithSortingData(vaults, vaultVersion) {
     const vaultWithSortingData = vault;
 
     vaultWithSortingData.customOrder = (function getVaultTokenHoldings() {
-      const sortAddress = vault.pureEthereum ? ethereumAddress : vault.address;
+      const sortAddress = vault.pureEthereum ? ETHEREUM_ADDRESS : vault.address;
       let vaultOrder = _.indexOf(vaultsOrder[vaultVersion], sortAddress);
       if (vaultOrder === -1) {
         vaultOrder = 10000000;

@@ -4,7 +4,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import ColumnListBackscratcher from 'components/Vault/backscratcherColumns';
+import ColumnListAmplify from 'components/Vault/amplifyColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
@@ -14,7 +14,19 @@ import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
-import { selectContractData, selectEthBalance } from 'containers/App/selectors';
+import {
+  selectContractData,
+  selectEthBalance,
+  selectTokenAllowance,
+} from 'containers/App/selectors';
+import { useContract } from 'containers/DrizzleProvider/hooks';
+import {
+  BACKSCRATCHER_ADDRESS,
+  CRV_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+  PICKLEJAR_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+} from 'containers/Vaults/constants';
 // import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
@@ -77,6 +89,18 @@ const IconAndName = styled.div`
 const StyledTokenIcon = styled(TokenIcon)`
   width: 40px;
   margin-right: 20px;
+`;
+
+const StyledDoubleTokenIcon = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  img:last-child {
+    position: absolute;
+    left: 10px;
+    top: 0;
+  }
 `;
 
 const IconName = styled.div`
@@ -228,13 +252,7 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const {
-    vault,
-    showDevVaults,
-    active,
-    accordionKey,
-    backscratcherVault,
-  } = props;
+  const { vault, showDevVaults, active, accordionKey, amplifyVault } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -252,7 +270,7 @@ const Vault = (props) => {
     token,
     pureEthereum,
     CRV,
-    multiplier,
+    // multiplier,
     depositLimit,
     alias,
     emergencyShutdown,
@@ -265,11 +283,29 @@ const Vault = (props) => {
   const devMode = true;
   const tokenContractAddress = token.address || CRV;
   const ethBalance = useSelector(selectEthBalance());
+  const crvContractData = useSelector(selectContractData(CRV_ADDRESS));
+  const pickleJarContractData = useSelector(
+    selectContractData(PICKLEJAR_ADDRESS),
+  );
+  const masterChefContractData = useSelector(
+    selectContractData(MASTER_CHEF_ADDRESS),
+  );
   const tokenContractData = useSelector(
     selectContractData(tokenContractAddress),
   );
+  const zapYveCrvEthPickleConctract = useContract(
+    ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  );
+  const crvTokenContract = useContract(CRV_ADDRESS);
+  const pickleJarContract = useContract(PICKLEJAR_ADDRESS);
+  const masterChefContract = useContract(MASTER_CHEF_ADDRESS);
+  const crvTokenAllowance = useSelector(
+    selectTokenAllowance(CRV_ADDRESS, ZAP_YVE_CRV_ETH_PICKLE_ADDRESS),
+  );
+  const pickleJarAllowance = useSelector(
+    selectTokenAllowance(PICKLEJAR_ADDRESS, MASTER_CHEF_ADDRESS),
+  );
 
-  const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
   const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
   const daiV1VaultAddress = '0xACd43E627e64355f1861cEC6d3a6688B31a6F952';
@@ -278,7 +314,8 @@ const Vault = (props) => {
 
   const backscratcherTotalAssets = veCrvContract.balanceOf;
 
-  const vaultIsBackscratcher = vault.address === backscratcherAddress;
+  const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
+  const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
   // const migrationData = useSelector(selectMigrationData);
   // const vaultMigrationData = migrationData[address];
@@ -291,11 +328,62 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
+  const parsedEthBalance = ethBalance
+    ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
+    : '0.00';
+
+  const crvBalanceRaw = crvContractData && crvContractData.balanceOf;
+  const parsedCrvBalance = crvBalanceRaw
+    ? new BigNumber(crvContractData.balanceOf)
+        .dividedBy(10 ** decimals)
+        .toFixed(2)
+    : '0.00';
+
+  let pickleContractsData = null;
+
+  if (vaultIsPickle) {
+    const pickleJarBalanceRaw =
+      pickleJarContractData && pickleJarContractData.balanceOf;
+    const parsedPickleJarBalance = pickleJarBalanceRaw
+      ? new BigNumber(pickleJarContractData.balanceOf)
+          .dividedBy(10 ** decimals)
+          .toFixed(2)
+      : '0.00';
+
+    const masterChefBalance = masterChefContractData
+      ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
+          .dividedBy(10 ** decimals)
+          .toFixed(2)
+      : '0.00';
+
+    pickleContractsData = {
+      zapPickleContract: zapYveCrvEthPickleConctract,
+      pickleJarContract,
+      masterChefContract,
+      crvContract: crvTokenContract,
+      pickleJarBalance: parsedPickleJarBalance,
+      pickleJarBalanceRaw,
+      pickleJarAllowance,
+      pickleMasterChefDeposited: masterChefBalance,
+      crvBalance: parsedCrvBalance,
+      crvBalanceRaw,
+      crvAllowance: crvTokenAllowance,
+      ethBalance: parsedEthBalance,
+      ethBalanceRaw: ethBalance,
+    };
+  }
+
   const tokenSymbol = tokenSymbolAlias || _.get(tokenContractData, 'symbol');
   // const tokenName = name || _.get(tokenContractData, 'name');
 
-  const backscratcherVaultName = vaultIsBackscratcher && 'yveCRV';
-  const vaultName = backscratcherVaultName || displayName || name || address;
+  let vaultName;
+  if (vaultIsBackscratcher) {
+    vaultName = 'yveCRV';
+  } else if (vaultIsPickle) {
+    vaultName = 'yveCRV - ETH pJar';
+  } else {
+    vaultName = displayName || name || address;
+  }
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
 
@@ -576,7 +664,7 @@ const Vault = (props) => {
   // eslint-disable-next-line no-unused-vars
   let vaultStats;
   let vaultControls;
-  let backscratcherInfo;
+  let vaultAdditionalInfo;
 
   const openContractStatisticsModal = (evt) => {
     evt.preventDefault();
@@ -710,21 +798,36 @@ const Vault = (props) => {
         walletBalance={tokenBalanceOf}
         balanceOf={balanceOf}
         tokenBalance={tokenBalance}
+        pickleContractsData={pickleContractsData}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
-      ? backscratcherAddress
+      ? BACKSCRATCHER_ADDRESS
       : tokenContractAddress;
 
-    if (backscratcherVault) {
+    if (amplifyVault) {
+      let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
+      let styledIcon = (
+        <StyledTokenIcon address={tokenContractAddress} icon={vault.icon} />
+      );
+      if (vaultIsPickle) {
+        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
+        vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+        apyTooltip = null;
+        vaultAssetsTooltip = null;
+        styledIcon = (
+          <StyledDoubleTokenIcon>
+            {/* NOTE CRV/ETH address for token icon */}
+            <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
+            <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
+          </StyledDoubleTokenIcon>
+        );
+      }
       vaultTop = (
-        <ColumnListBackscratcher gridTemplate={isScreenMd ? null : '190px'}>
+        <ColumnListAmplify gridTemplate={isScreenMd ? null : '190px'}>
           <IconAndName>
             <LinkWrap devMode={devMode} address={address} title={alias}>
-              <StyledTokenIcon
-                address={tokenContractAddress}
-                icon={vault.icon}
-              />
+              {styledIcon}
             </LinkWrap>
             <LinkWrap devMode={devMode} address={address} title={alias}>
               <div tw="flex items-center">
@@ -738,17 +841,30 @@ const Vault = (props) => {
           </IconAndName>
           <Hidden smDown>
             <Text large bold>
+              {versionTooltip ? (
+                <Tooltip title={versionTooltip} arrow>
+                  <Help>{vaultIsPickle ? 'v1' : vault.type}</Help>
+                </Tooltip>
+              ) : (
+                vault.type
+              )}
+            </Text>
+            <Text large bold>
               <AnimatedNumber value={vaultBalanceOf} />
             </Text>
-            <Text large bold>
+            {/* <Text large bold>
               {multiplier}
-            </Text>
+            </Text> */}
             <Text large bold>
-              <Tooltip title={apyTooltip} arrow>
-                <Help>
-                  <Apy>{apyRecommended}</Apy>
-                </Help>
-              </Tooltip>
+              {apyTooltip ? (
+                <Tooltip title={apyTooltip} arrow>
+                  <Help>
+                    <Apy>{apyRecommended}</Apy>
+                  </Help>
+                </Tooltip>
+              ) : (
+                apyRecommended
+              )}
             </Text>
             <Text large bold>
               {vaultAssetsTooltip ? (
@@ -760,53 +876,92 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={tokenBalanceOf} />{' '}
+              {availableToDeposit}
               <LinkWrap devMode={devMode} address={tokenAddress}>
                 {tokenSymbol}
               </LinkWrap>
             </Text>
           </Hidden>
-        </ColumnListBackscratcher>
+        </ColumnListAmplify>
       );
 
-      backscratcherInfo = (
-        <Box my={16} mx={isScreenMd ? 70 : 20}>
-          <Text bold fontSize={4} mb={6}>
-            Read carefully before use
-          </Text>
-          <Grid container spacing={isScreenMd ? 8 : 0}>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                This vault converts your CRV into yveCRV, earning you a
-                continuous share of Curve fees. The more converted, the greater
-                the rewards. Every week, these can be claimed from the vault as
-                3Crv (Curve’s 3pool LP token).
-              </Text>
+      if (vaultIsPickle) {
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                <Text bold fontSize={4} mb={40}>
+                  Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP
+                  position
+                </Text>
+                {vaultControls}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Text small>
+                  This vault performs a multi-step transaction with your ETH or
+                  CRV which:
+                  <br />
+                  <br />
+                  1. Makes a deposit into yveCRV.
+                  <br />
+                  2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for
+                  SUSHI 🍣 rewards.
+                  <br />
+                  3. Deposits this SLP into the yveCRV-ETH pJar on Pickle
+                  Finance for PICKLE 🥒 rewards.
+                  <br />
+                  <br />
+                  Note: Remember to stake your Pickle LP manually after the
+                  transaction completes. If you’d like to claim earned PICKLE 🥒
+                  rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
+                  <A href="https://app.pickle.finance/farms" target="_blank">
+                    https://app.pickle.finance/farms
+                  </A>
+                </Text>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Text large>
-                The operation is non-reversible: You can only convert CRV into
-                yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-                escrow.
-                <br />
-                <br />
-                After depositing join{' '}
-                <A
-                  href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
-                  target="_blank"
-                >
-                  WETH/yveCRV-DAO pool
-                </A>{' '}
-                for 🍣 rewards and then{' '}
-                <A href="https://app.pickle.finance/jars" target="_blank">
-                  SLP YVECRV/ETH jar
-                </A>{' '}
-                for 🥒 rewards.
-              </Text>
+          </Box>
+        );
+      } else {
+        vaultAdditionalInfo = (
+          <Box my={16} mx={isScreenMd ? 70 : 20}>
+            <Text bold fontSize={4} mb={6}>
+              Read carefully before use
+            </Text>
+            <Grid container spacing={isScreenMd ? 8 : 0}>
+              <Grid item xs={12} md={6}>
+                <Text large>
+                  This vault converts your CRV into yveCRV, earning you a
+                  continuous share of Curve fees. The more converted, the
+                  greater the rewards. Every week, these can be claimed from the
+                  vault as 3Crv (Curve’s 3pool LP token).
+                </Text>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Text large>
+                  The operation is non-reversible: You can only convert CRV into
+                  yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+                  escrow.
+                  <br />
+                  <br />
+                  After depositing join{' '}
+                  <A
+                    href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
+                    target="_blank"
+                  >
+                    WETH/yveCRV-DAO pool
+                  </A>{' '}
+                  for 🍣 rewards and then{' '}
+                  <A href="https://app.pickle.finance/jars" target="_blank">
+                    SLP YVECRV/ETH jar
+                  </A>{' '}
+                  for 🥒 rewards.
+                </Text>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      );
+          </Box>
+        );
+      }
     } else {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
@@ -871,7 +1026,12 @@ const Vault = (props) => {
   }
   return (
     <React.Fragment>
-      <Card className={active && 'active'} id={`vault-${accordionKey}`}>
+      <Card
+        className={`${amplifyVault ? 'amplify-vault' : ''} ${
+          active ? 'active' : ''
+        } ${vaultIsPickle ? 'pickle-vault' : ''}`}
+        id={`vault-${accordionKey}`}
+      >
         <Accordion.Toggle
           as={Card.Header}
           variant="link"
@@ -917,10 +1077,12 @@ const Vault = (props) => {
                 <span>This vault has been disabled temporarily.</span>
               </Notice>
             )}
-            {backscratcherInfo}
-            <Card.Footer className={active && 'active'}>
-              <Footer small={!isScreenMd}>{vaultControls}</Footer>
-            </Card.Footer>
+            {vaultAdditionalInfo}
+            {!vaultIsPickle && (
+              <Card.Footer className={active && 'active'}>
+                <Footer small={!isScreenMd}>{vaultControls}</Footer>
+              </Card.Footer>
+            )}
           </Card.Body>
         </Accordion.Collapse>
       </Card>

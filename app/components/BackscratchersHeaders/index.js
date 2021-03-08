@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import BackscratcherColumns from 'components/Vault/backscratcherColumns';
+import AmplifyColumns from 'components/Vault/amplifyColumns';
 
 const ColumnHeader = styled.div`
   margin-bottom: 10px;
@@ -9,15 +9,15 @@ const ColumnHeader = styled.div`
   text-transform: uppercase;
 `;
 
-export default function BackscratcherHeaders() {
+export default function AmplifyHeaders() {
   return (
-    <BackscratcherColumns>
+    <AmplifyColumns>
       <ColumnHeader>Asset</ColumnHeader>
       <ColumnHeader>Deposited</ColumnHeader>
       <ColumnHeader>Multiplier</ColumnHeader>
       <ColumnHeader>Growth</ColumnHeader>
       <ColumnHeader>Total assets</ColumnHeader>
       <ColumnHeader>Available to deposit</ColumnHeader>
-    </BackscratcherColumns>
+    </AmplifyColumns>
   );
 }

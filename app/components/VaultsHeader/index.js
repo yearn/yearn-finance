@@ -4,17 +4,17 @@ import Text from 'components/Text';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const backscratcherGridTemplate = '190px 155px 155px 140px 160px 140px 1fr';
+const amplifyVaultsGridTemplate = '240px 105px 155px 100px 160px 180px 1fr';
 const vaultsGridTemplate = '210px 110px 160px 140px 200px 1fr';
 
 const Underlined = styled.span`
   border-bottom: 1px dotted white;
 `;
 
-const backscratcherColumns = [
+const amplifyVaultColumns = [
   { name: 'Asset' },
+  { name: 'Version' },
   { name: 'Deposited' },
-  { name: 'Multiplier' },
   { name: 'Growth' },
   { name: 'Total Assets' },
   { name: 'Available to deposit' },
@@ -65,15 +65,15 @@ const StyledArrow = styled.div`
 `;
 
 export default function VaultsHeader({
-  backscratcher,
+  amplifyVault,
   requestSort = null,
   sortConfig = null,
 }) {
-  const columns = backscratcher ? backscratcherColumns : vaultColumns;
+  const columns = amplifyVault ? amplifyVaultColumns : vaultColumns;
   return (
     <ColumnList
       gridTemplate={
-        backscratcher ? backscratcherGridTemplate : vaultsGridTemplate
+        amplifyVault ? amplifyVaultsGridTemplate : vaultsGridTemplate
       }
     >
       {columns.map((column) => {

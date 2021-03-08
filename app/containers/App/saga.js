@@ -1,11 +1,16 @@
 import { put, call, takeLatest, take, select, delay } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
+
 import vaultAbi from 'abi/yVault.json';
 import backscratcherAbi from 'abi/backscratcher.json';
 import veCrvAbi from 'abi/veCrv.json';
 import vaultV2Abi from 'abi/v2Vault.json';
 import v2EthZapAbi from 'abi/v2EthZapAbi.json';
 import erc20Abi from 'abi/erc20.json';
+import zapYveCrvAbi from 'abi/zapYveCrv.json';
+import pickleJarAbi from 'abi/pickleJar.json';
+import masterChefAbi from 'abi/masterChef.json';
+
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectVaults } from 'containers/App/selectors';
@@ -15,11 +20,16 @@ import { unlockDevMode } from 'containers/DevMode/actions';
 import { setThemeMode } from 'containers/ThemeProvider/actions';
 import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
+
 import trustedMigratorAbi from 'abi/trustedMigrator.json';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import {
   TRUSTED_MIGRATOR_ADDRESS,
+  ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
+  PICKLEJAR_ADDRESS,
+  MASTER_CHEF_ADDRESS,
+  MASTER_CHEFF_POOL_ID,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -177,6 +187,40 @@ function* loadVaultContracts(clear) {
     };
   };
 
+  function getZapSubscriptions() {
+    const zapYveCrvSubscription = {
+      namespace: 'zap',
+      abi: zapYveCrvAbi,
+      addresses: [ZAP_YVE_CRV_ETH_PICKLE_ADDRESS],
+      writeMethods: [
+        {
+          name: 'zapInETH',
+        },
+        {
+          name: 'zapInCRV',
+        },
+      ],
+    };
+    const eth2ZapSubscription = {
+      namespace: 'zap',
+      abi: v2EthZapAbi,
+      addresses: [V2_ETH_ZAP_ADDRESS],
+      readMethods: [
+        {
+          name: 'weth',
+          args: [],
+        },
+      ],
+      writeMethods: [
+        {
+          name: 'depositETH',
+        },
+      ],
+    };
+
+    return [zapYveCrvSubscription, eth2ZapSubscription];
+  }
+
   // const localSubscriptions = [
   //   {
   //     namespace: 'localContracts',
@@ -208,40 +252,57 @@ function* loadVaultContracts(clear) {
         name: 'allowance',
         args: [account, backscratcherAddress],
       },
+      {
+        name: 'allowance',
+        args: [account, ZAP_YVE_CRV_ETH_PICKLE_ADDRESS],
+      },
+    ],
+  };
+
+  const pickleJarSubscription = {
+    namespace: 'picklejar',
+    abi: pickleJarAbi,
+    addresses: [PICKLEJAR_ADDRESS],
+    readMethods: [
+      {
+        name: 'balanceOf',
+        args: [account],
+      },
+      {
+        name: 'allowance',
+        args: [account, MASTER_CHEF_ADDRESS],
+      },
+    ],
+  };
+
+  const masterChefSubscription = {
+    namespace: 'masterchef',
+    abi: masterChefAbi,
+    addresses: [MASTER_CHEF_ADDRESS],
+    readMethods: [
+      {
+        name: 'userInfo',
+        args: [MASTER_CHEFF_POOL_ID, account],
+      },
+    ],
+    writeMethods: [
+      {
+        name: 'deposit',
+      },
     ],
   };
 
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
-
   const zapSubscriptions = getZapSubscriptions();
 
+  contracts.push(masterChefSubscription);
+  contracts.push(pickleJarSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
   yield put(addContracts(contracts, clear));
   // yield put(addContracts(localSubscriptions, clear));
-}
-
-function getZapSubscriptions() {
-  const eth2ZapSubscription = {
-    namespace: 'zap',
-    abi: v2EthZapAbi,
-    addresses: [V2_ETH_ZAP_ADDRESS],
-    readMethods: [
-      {
-        name: 'weth',
-        args: [],
-      },
-    ],
-    writeMethods: [
-      {
-        name: 'depositETH',
-      },
-    ],
-  };
-
-  return [eth2ZapSubscription];
 }
 
 function getTrustedMigratorSubscriptions(account) {

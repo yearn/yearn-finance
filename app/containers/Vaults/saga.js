@@ -22,6 +22,9 @@ import {
   TRUSTED_MIGRATOR_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
   V2_ETH_ZAP_ADDRESS,
+  ZAP_PICKLE,
+  DEPOSIT_PICKLE_SLP_IN_FARM,
+  MASTER_CHEFF_POOL_ID,
 } from './constants';
 
 // TODO: Do better... never hard-code vault addresses
@@ -60,9 +63,19 @@ function* fetchVaults() {
       : `https://vaults.finance/all`;
   try {
     const vaults = yield call(request, endpoint);
-
     const vaultsWithEth = injectEthVaults(vaults);
-    yield put(vaultsLoaded(vaultsWithEth));
+
+    // TODO: Remove UI hacks...
+    const masterChefAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
+    const correctedVaults = _.map(vaultsWithEth, (vault) => {
+      const newVault = vault;
+      if (vault.address === masterChefAddress) {
+        newVault.type = 'masterChef';
+      }
+      return newVault;
+    });
+
+    yield put(vaultsLoaded(correctedVaults));
   } catch (err) {
     console.log('Error reading vaults', err);
   }
@@ -206,6 +219,72 @@ function* depositToVault(action) {
   }
 }
 
+function* zapPickle(action) {
+  const {
+    zapPickleContract,
+    tokenContract,
+    depositAmount,
+    pureEthereum,
+  } = action.payload;
+
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContract.address, zapPickleContract.address),
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!pureEthereum) {
+      if (!vaultAllowedToSpendToken) {
+        yield call(
+          approveTxSpend,
+          tokenContract,
+          account,
+          zapPickleContract.address,
+        );
+      }
+      yield call(zapPickleContract.methods.zapInCRV.cacheSend, depositAmount, {
+        from: account,
+      });
+    } else {
+      yield call(zapPickleContract.methods.zapInETH.cacheSend, {
+        from: account,
+        value: depositAmount,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function* depositPickleSLPInFarm(action) {
+  const { vaultContract, tokenContract, depositAmount } = action.payload;
+
+  const account = yield select(selectAccount());
+  const tokenAllowance = yield select(
+    selectTokenAllowance(tokenContract.address, vaultContract.address),
+  );
+
+  const vaultAllowedToSpendToken = tokenAllowance > 0;
+
+  try {
+    if (!vaultAllowedToSpendToken) {
+      yield call(approveTxSpend, tokenContract, account, vaultContract.address);
+    }
+    yield call(
+      vaultContract.methods.deposit.cacheSend,
+      MASTER_CHEFF_POOL_ID,
+      depositAmount,
+      {
+        from: account,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function* claimBackscratcherRewards(action) {
   const { vaultContract } = action.payload;
 
@@ -268,6 +347,8 @@ export default function* initialize() {
   yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
+  yield takeLatest(ZAP_PICKLE, zapPickle);
+  yield takeLatest(DEPOSIT_PICKLE_SLP_IN_FARM, depositPickleSLPInFarm);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
 }

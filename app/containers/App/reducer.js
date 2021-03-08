@@ -10,7 +10,10 @@ import {
 
 // import { WEBSOCKET_CONNECTED } from 'middleware/websocket/constants';
 import { VAULTS_LOADED, ROUTE_CHANGED } from './constants';
-import { USER_VAULT_STATISTICS_LOADED } from '../Vaults/constants';
+import {
+  USER_VAULT_STATISTICS_LOADED,
+  AMPLIFY_VAULTS_ADDRESSES,
+} from '../Vaults/constants';
 
 const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
 
@@ -26,6 +29,8 @@ export const initialState = {
     account: true,
   },
   vaults: [],
+  amplifyVaults: [],
+  // TODO Remove this
   backscratcher: null,
   tokens: [],
   localContracts: [],
@@ -59,13 +64,15 @@ const appReducer = (state = initialState, action) =>
       case VAULTS_LOADED: {
         draft.loading.vaults = false;
 
+        // TODO remove this
         draft.backscratcher = action.vaults.find(
           (vault) => vault.address === backscratcherAddress,
         );
 
-        draft.vaults = action.vaults.filter(
-          (vault) => vault.address !== backscratcherAddress,
+        draft.amplifyVaults = action.vaults.filter((vault) =>
+          isAmplifyVault(vault),
         );
+        draft.vaults = action.vaults.filter((vault) => !isAmplifyVault(vault));
         checkReadyState();
         break;
       }
@@ -95,5 +102,12 @@ const appReducer = (state = initialState, action) =>
         break;
     }
   });
+
+function isAmplifyVault(vault) {
+  const found = AMPLIFY_VAULTS_ADDRESSES.find(
+    (address) => vault.address === address,
+  );
+  return !!found;
+}
 
 export default appReducer;

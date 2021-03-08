@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import ButtonFilledRed from 'components/ButtonFilledRed';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 // import { createPermitMessageData } from 'utils/permit';
+import { MASTER_CHEF_ADDRESS } from 'containers/Vaults/constants';
 
 const Wrapper = styled.div`
   display: grid;

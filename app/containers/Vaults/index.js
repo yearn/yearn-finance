@@ -10,7 +10,9 @@ import {
   selectContractsByTag,
   selectEthBalance,
   selectBackscratcherVault,
+  selectPickleVault,
   selectOrderedVaults,
+  selectAmplifyVaults,
 } from 'containers/App/selectors';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
@@ -107,93 +109,113 @@ const Vaults = (props) => {
   const account = useAccount();
   const walletConnected = wallet.provider && account;
   const orderedVaults = useSelector(selectOrderedVaults);
+  const amplifyVaults = useSelector(selectAmplifyVaults());
   const localContracts = useSelector(selectContractsByTag('localContracts'));
-  const backscratcherVault = useSelector(selectBackscratcherVault());
   const allContracts = useSelector(selectAllContracts());
   const ethBalance = useSelector(selectEthBalance());
 
+  const backscratcherVault = useSelector(selectBackscratcherVault());
+  const pickleVault = useSelector(selectPickleVault());
+
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
-  vaultItems = _.map(vaultItems, (vault) => {
-    const vaultContractData = allContracts[vault.address] || {};
-    const newVault = {
-      ...vault,
-      balanceOf: vaultContractData.balanceOf,
-      getPricePerFullShare: vaultContractData.getPricePerFullShare,
-      pricePerShare: vaultContractData.pricePerShare,
-    };
+  function parseVaults(vaults) {
+    return _.map(vaults, (vault) => {
+      const vaultContractData = allContracts[vault.address] || {};
+      const newVault = {
+        ...vault,
+        balanceOf: vaultContractData.balanceOf,
+        getPricePerFullShare: vaultContractData.getPricePerFullShare,
+        pricePerShare: vaultContractData.pricePerShare,
+      };
 
-    const { decimals } = vault;
+      const { decimals } = vault;
 
-    let { balanceOf, pricePerShare } = newVault;
-    const { getPricePerFullShare } = newVault;
+      let { balanceOf, pricePerShare } = newVault;
+      const { getPricePerFullShare } = newVault;
 
-    balanceOf = _.get(balanceOf, '[0].value') || 0;
-    pricePerShare = _.get(pricePerShare, '[0].value') || 1;
-    // Account for backscratcher being non-standard
-    const pricePerFullShare = _.get(getPricePerFullShare, '[0].value') || 1;
+      balanceOf = _.get(balanceOf, '[0].value') || 0;
+      pricePerShare = _.get(pricePerShare, '[0].value') || 1;
+      // Account for backscratcher being non-standard
+      const pricePerFullShare = _.get(getPricePerFullShare, '[0].value') || 1;
 
-    // Value Deposited
-    const v2Vault = vault.type === 'v2' || vault.apiVersion;
-    let vaultBalanceOf;
-    if (v2Vault) {
-      vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf)
-            .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerShare / 10 ** decimals)
-            .toNumber()
-        : 0;
-    } else {
-      vaultBalanceOf = balanceOf
-        ? new BigNumber(balanceOf)
-            .dividedBy(10 ** decimals)
-            .multipliedBy(pricePerFullShare / 10 ** 18)
-            .toNumber()
-        : 0;
-    }
-    newVault.valueDeposited = vaultBalanceOf || 0;
+      // Value Deposited
+      const v2Vault = vault.type === 'v2' || vault.apiVersion;
+      let vaultBalanceOf;
+      if (v2Vault) {
+        vaultBalanceOf = balanceOf
+          ? new BigNumber(balanceOf)
+              .dividedBy(10 ** decimals)
+              .multipliedBy(pricePerShare / 10 ** decimals)
+              .toNumber()
+          : 0;
+      } else {
+        vaultBalanceOf = balanceOf
+          ? new BigNumber(balanceOf)
+              .dividedBy(10 ** decimals)
+              .multipliedBy(pricePerFullShare / 10 ** 18)
+              .toNumber()
+          : 0;
+      }
+      newVault.valueDeposited = vaultBalanceOf || 0;
 
-    // Growth
-    newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
-      .times(100)
-      .toNumber();
+      const isPickleJar = vault.tags
+        ? !!vault.tags.find((tag) => tag === 'picklejar')
+        : false;
 
-    // USDN VAULT GROWTH
-    if (vault.address === usdnVaultAddress) {
-      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.data.netApy', 0))
+      if (isPickleJar) {
+        const { userInfo } = vaultContractData;
+        balanceOf = _.get(userInfo, 'amount') || 0;
+
+        newVault.balanceOf = balanceOf;
+        newVault.valueDeposited = balanceOf;
+      }
+
+      // Growth
+      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
         .times(100)
         .toNumber();
-    }
 
-    if (vault.address === daiV1VaultAddress) {
-      // Temporary one week sample APY for DAI v1 vault
-      newVault.valueApy = new BigNumber(
-        _.get(newVault, 'apy.data.oneWeekSample', 0),
-      )
-        .times(100)
-        .toNumber();
-    }
+      // USDN VAULT GROWTH
+      if (vault.address === usdnVaultAddress) {
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.data.netApy', 0))
+          .times(100)
+          .toNumber();
+      }
 
-    // Total Assets
-    newVault.valueTotalAssets = new BigNumber(
-      _.get(newVault, 'tvl.value'),
-    ).toNumber();
+      if (vault.address === daiV1VaultAddress) {
+        // Temporary one week sample APY for DAI v1 vault
+        newVault.valueApy = new BigNumber(
+          _.get(newVault, 'apy.data.oneWeekSample', 0),
+        )
+          .times(100)
+          .toNumber();
+      }
 
-    // Available to Deposit
-    const tokenContractAddress = vault.token.address || vault.CRV;
-    const tokenContractData = allContracts[tokenContractAddress];
-    const tokenBalance = vault.pureEthereum
-      ? ethBalance
-      : _.get(tokenContractData, 'balanceOf[0].value');
-    const tokenBalanceOf = tokenBalance
-      ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber()
-      : 0;
-    newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
+      // Total Assets
+      newVault.valueTotalAssets = new BigNumber(
+        _.get(newVault, 'tvl.value'),
+      ).toNumber();
 
-    newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
+      // Available to Deposit
+      const tokenContractAddress = vault.token.address || vault.CRV;
+      const tokenContractData = allContracts[tokenContractAddress];
+      const tokenBalance = vault.pureEthereum
+        ? ethBalance
+        : _.get(tokenContractData, 'balanceOf[0].value');
+      const tokenBalanceOf = tokenBalance
+        ? new BigNumber(tokenBalance).dividedBy(10 ** decimals).toNumber()
+        : 0;
+      newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
-    return newVault;
-  });
+      newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
+
+      return newVault;
+    });
+  }
+
+  vaultItems = parseVaults(vaultItems);
+  const amplifyVaultItems = parseVaults(amplifyVaults);
 
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
 
@@ -208,6 +230,9 @@ const Vaults = (props) => {
     ? get(aliasByVault[backscratcherVault.address], 'name') ||
       backscratcherVault.name
     : 'Backscratcher';
+  const pickleVaultAlias = pickleVault
+    ? get(aliasByVault[pickleVault.address], 'name') || pickleVault.name
+    : 'Pickle';
 
   // Show the vault based on URL path
   const pathArray = history.location.pathname.split('/');
@@ -223,7 +248,7 @@ const Vaults = (props) => {
   }, [orderedVaults]);
 
   let columnHeader;
-  let backscratcherWrapper;
+  let amplifyVaultsWrapper;
   if (showDevVaults) {
     columnHeader = <VaultsHeaderDev />;
   } else {
@@ -236,24 +261,26 @@ const Vaults = (props) => {
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
   } else if (backscratcherVault) {
-    backscratcherWrapper = (
-      <WrapTable center width={1}>
-        <Hidden smDown>{<VaultsHeader backscratcher />}</Hidden>
-
-        <StyledAccordion defaultActiveKey={backscratcherVault.address}>
-          <BackscratchersWrapper
+    amplifyVaultsWrapper = (
+      <WrapTable center width={1} className="amplify-vaults">
+        <Hidden smDown>{<VaultsHeader amplifyVault />}</Hidden>
+        <StyledAccordion>
+          <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
+            vaultItems={amplifyVaultItems}
             backscratcherAlias={backscratcherAlias}
+            pickleVaultAlias={pickleVaultAlias}
           />
         </StyledAccordion>
       </WrapTable>
     );
+    // NOTE The backscratcher is removed in reducer now
     // remove backscratcher from items
-    items.splice(
-      items.findIndex(({ address }) => address === backscratcherVault.address),
-      1,
-    );
+    // items.splice(
+    //   items.findIndex(({ address }) => address === backscratcherVault.address),
+    //   1,
+    // );
   }
 
   const linkToVault = (accordionKey) => {
@@ -274,7 +301,7 @@ const Vaults = (props) => {
         <AddVault devVaults={showDevVaults} />
       </DevHeader> */}
         {warning}
-        {backscratcherWrapper}
+        {amplifyVaultsWrapper}
         <WrapTable center width={1}>
           <Hidden smDown>{columnHeader}</Hidden>
           <StyledAccordion
@@ -293,15 +320,27 @@ const Vaults = (props) => {
   );
 };
 
-const BackscratchersWrapper = (props) => {
-  const { showDevVaults, walletConnected, backscratcherAlias } = props;
+const AmplifyWrapper = (props) => {
+  const {
+    showDevVaults,
+    walletConnected,
+    vaultItems,
+    backscratcherAlias,
+    pickleVaultAlias,
+  } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
+  const pickleVault = useSelector(selectPickleVault());
+
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
+  // TODO Check to remove this
   backscratcherVault.multiplier = multiplierText;
   backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
   backscratcherVault.alias = backscratcherAlias;
+
+  pickleVault.alias = pickleVaultAlias;
+
   const renderVault = (vault) => {
     const vaultKey = vault.address;
     return (
@@ -311,18 +350,18 @@ const BackscratchersWrapper = (props) => {
         accordionKey={vaultKey}
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
-        backscratcherVault
+        amplifyVault
       />
     );
   };
 
   // Show Linear progress when orderedvaults is empty
-  if (walletConnected && backscratcherVault == null) return <LinearProgress />;
+  if (walletConnected && vaultItems == null) return <LinearProgress />;
   let vaultRows;
-  if (!backscratcherVault) {
+  if (!vaultItems.length) {
     vaultRows = [];
   } else {
-    vaultRows = _.map([backscratcherVault], renderVault);
+    vaultRows = _.map(vaultItems, renderVault);
   }
 
   return <React.Fragment>{vaultRows}</React.Fragment>;
@@ -348,17 +387,9 @@ const VaultsWrapper = (props) => {
     );
   };
 
-  // TODO: Remove UI hacks...
-  const pickleJarAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
-  const excludeVaultAddresses = [pickleJarAddress];
-  const vaultsToRender = _.filter(
-    vaultItems,
-    (vault) => !_.includes(excludeVaultAddresses, vault.address),
-  );
-
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && vaultItems == null) return <LinearProgress />;
-  const vaultRows = _.map(vaultsToRender, renderVault);
+  const vaultRows = _.map(vaultItems, renderVault);
   return <React.Fragment>{vaultRows}</React.Fragment>;
 };
 

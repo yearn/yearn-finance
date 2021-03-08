@@ -148,6 +148,31 @@ const GlobalStyle = createGlobalStyle`
   border-color: ${(props) => props.theme.surface};
   color: ${(props) => props.theme.onSurface};
   transition: background-color .1s ease-out, border-color .15s ease-out;
+
+  &.amplify-vault {
+    .amplify-vault-controls {
+      background-color: ${(props) => props.theme.vaultBackgroundAlt};
+      border-radius: 8px;
+
+      .action-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 0;
+        padding-bottom: 0;
+        letter-spacing: 0.882353px;
+        font-weight: 500;
+        background-color: ${(props) => props.theme.surface};;
+        color: ${(props) => props.theme.onSurface};;
+      }
+    }
+  }
+  &.pickle-vault {
+    &, &.active, & .card-body {
+      background-color: ${(props) => props.theme.vaultBorderActive};
+      border-color: ${(props) => props.theme.vaultBorderActive};
+    }
+  }
 }
 
 a {

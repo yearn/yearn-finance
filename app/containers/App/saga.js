@@ -295,8 +295,8 @@ function* loadVaultContracts(clear) {
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
   const zapSubscriptions = getZapSubscriptions();
 
-  contracts.push(masterChefSubscription);
   contracts.push(pickleJarSubscription);
+  contracts.push(masterChefSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);

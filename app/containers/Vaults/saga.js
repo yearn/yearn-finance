@@ -287,11 +287,24 @@ function* depositPickleSLPInFarm(action) {
 }
 
 function* restakeBackscratcherRewards(action) {
-  const { vyperContract } = action.payload;
+  const { vyperContract, threeCrvContract } = action.payload;
 
   const account = yield select(selectAccount());
+  const allowance = yield select(
+    selectTokenAllowance(threeCrvContract.address, vyperContract.address),
+  );
+
+  const spendTokenApproved = new BigNumber(allowance).gt(0);
 
   try {
+    if (!spendTokenApproved) {
+      yield call(
+        approveTxSpend,
+        threeCrvContract,
+        account,
+        vyperContract.address,
+      );
+    }
     yield call(vyperContract.methods.zap.cacheSend, {
       from: account,
     });

@@ -32,6 +32,7 @@ import {
   MASTER_CHEF_ADDRESS,
   MASTER_CHEFF_POOL_ID,
   VYPER_ADDRESS,
+  THREECRV_ADDRESS,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -271,6 +272,19 @@ function* loadVaultContracts(clear) {
     ],
   };
 
+  const threeCrvAllowanceSubscription = {
+    namespace: 'tokens',
+    abi: erc20Abi,
+    syncOnce: true,
+    addresses: [THREECRV_ADDRESS],
+    readMethods: [
+      {
+        name: 'allowance',
+        args: [account, VYPER_ADDRESS],
+      },
+    ],
+  };
+
   const pickleJarSubscription = {
     namespace: 'picklejar',
     abi: pickleJarAbi,
@@ -314,6 +328,7 @@ function* loadVaultContracts(clear) {
   contracts.push(...trustedMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
+  contracts.push(threeCrvAllowanceSubscription);
   yield put(addContracts(contracts, clear));
 }
 

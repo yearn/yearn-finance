@@ -11,7 +11,7 @@ import {
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
-import { VYPER_ADDRESS } from 'containers/Vaults/constants';
+import { VYPER_ADDRESS, THREECRV_ADDRESS } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
 // import { abbreviateNumber } from 'utils/string';
@@ -30,6 +30,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
   const vyperContract = useContract(VYPER_ADDRESS);
+  const threeCrvContract = useContract(THREECRV_ADDRESS);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
     return null;
@@ -70,7 +71,12 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
               <ButtonFilled
                 className="action-button light"
                 onClick={() =>
-                  dispatch(restakeBackscratcherRewards({ vyperContract }))
+                  dispatch(
+                    restakeBackscratcherRewards({
+                      vyperContract,
+                      threeCrvContract,
+                    }),
+                  )
                 }
                 color="primary"
               >
@@ -81,7 +87,11 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
               <ButtonFilled
                 className="action-button outline"
                 onClick={() =>
-                  dispatch(claimBackscratcherRewards({ vaultContract }))
+                  dispatch(
+                    claimBackscratcherRewards({
+                      vaultContract,
+                    }),
+                  )
                 }
                 color="primary"
               >

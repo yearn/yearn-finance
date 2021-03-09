@@ -380,7 +380,7 @@ const Vault = (props) => {
   if (vaultIsBackscratcher) {
     vaultName = 'yveCRV';
   } else if (vaultIsPickle) {
-    vaultName = 'yveCRV - ETH pJar';
+    vaultName = 'yveCRV - ETH';
   } else {
     vaultName = displayName || name || address;
   }
@@ -806,15 +806,70 @@ const Vault = (props) => {
       : tokenContractAddress;
 
     if (amplifyVault) {
+      let amplifyVaultTitle;
+      let amplifyVaultDesc;
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       let styledIcon = (
         <StyledTokenIcon address={tokenContractAddress} icon={vault.icon} />
       );
+      if (vaultIsBackscratcher) {
+        amplifyVaultTitle = (
+          <Text bold fontSize={5} mb={20}>
+            Deposit your CRV to earn weekly 3Crv rewards
+          </Text>
+        );
+        amplifyVaultDesc = (
+          <Text>
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve’s trading fees. Every week, these rewards can be
+            claimed here as 3Crv (Curve’s 3pool LP token). These unclaimed
+            rewards can also be staked directly into our 3Crv yVault using the
+            Stake button on the left.
+            <br />
+            <br />
+            This operation is non-reversible: you can only convert CRV into
+            yveCRV, as any deposited CRV is perpetually staked in Curve’s voting
+            escrow.
+            <br />
+            <br />
+            If you prefer to earn higher returns on your CRV in an LP position,
+            deposit into the yveCRV-ETH pJar.
+          </Text>
+        );
+      }
       if (vaultIsPickle) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
         vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
         apyTooltip = null;
         vaultAssetsTooltip = null;
+        amplifyVaultTitle = (
+          <Text bold fontSize={4} mb={40}>
+            Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP position
+          </Text>
+        );
+        amplifyVaultDesc = (
+          <Text>
+            This vault performs a multi-step transaction with your ETH or CRV
+            which:
+            <br />
+            <br />
+            1. Makes a deposit into yveCRV.
+            <br />
+            2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for SUSHI
+            🍣 rewards.
+            <br />
+            3. Deposits this SLP into the yveCRV-ETH pJar on Pickle Finance for
+            PICKLE 🥒 rewards.
+            <br />
+            <br />
+            Note: Remember to stake your Pickle LP manually after the
+            transaction completes. If you’d like to claim earned PICKLE 🥒
+            rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
+            <A href="https://app.pickle.finance/farms" target="_blank">
+              https://app.pickle.finance/farms
+            </A>
+          </Text>
+        );
         styledIcon = (
           <StyledDoubleTokenIcon>
             {/* NOTE CRV/ETH address for token icon */}
@@ -885,83 +940,76 @@ const Vault = (props) => {
         </ColumnListAmplify>
       );
 
-      if (vaultIsPickle) {
-        vaultAdditionalInfo = (
-          <Box my={50} mx={isScreenMd ? 50 : 20}>
-            <Grid container spacing={isScreenMd ? 8 : 5}>
-              <Grid className="amplify-vault-controls" item xs={12} md={6}>
-                <Text bold fontSize={4} mb={40}>
-                  Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP
-                  position
-                </Text>
-                {vaultControls}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Text small>
-                  This vault performs a multi-step transaction with your ETH or
-                  CRV which:
-                  <br />
-                  <br />
-                  1. Makes a deposit into yveCRV.
-                  <br />
-                  2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for
-                  SUSHI 🍣 rewards.
-                  <br />
-                  3. Deposits this SLP into the yveCRV-ETH pJar on Pickle
-                  Finance for PICKLE 🥒 rewards.
-                  <br />
-                  <br />
-                  Note: Remember to stake your Pickle LP manually after the
-                  transaction completes. If you’d like to claim earned PICKLE 🥒
-                  rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
-                  <A href="https://app.pickle.finance/farms" target="_blank">
-                    https://app.pickle.finance/farms
-                  </A>
-                </Text>
-              </Grid>
+      vaultAdditionalInfo = (
+        <Box my={50} mx={isScreenMd ? 50 : 20}>
+          <Grid container spacing={isScreenMd ? 8 : 5}>
+            <Grid className="amplify-vault-controls" item xs={12} md={6}>
+              {amplifyVaultTitle}
+              {vaultControls}
             </Grid>
-          </Box>
-        );
-      } else {
-        vaultAdditionalInfo = (
-          <Box my={16} mx={isScreenMd ? 70 : 20}>
-            <Text bold fontSize={4} mb={6}>
-              Read carefully before use
-            </Text>
-            <Grid container spacing={isScreenMd ? 8 : 0}>
-              <Grid item xs={12} md={6}>
-                <Text large>
-                  This vault converts your CRV into yveCRV, earning you a
-                  continuous share of Curve fees. The more converted, the
-                  greater the rewards. Every week, these can be claimed from the
-                  vault as 3Crv (Curve’s 3pool LP token).
-                </Text>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Text large>
-                  The operation is non-reversible: You can only convert CRV into
-                  yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-                  escrow.
-                  <br />
-                  <br />
-                  After depositing join{' '}
-                  <A
-                    href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
-                    target="_blank"
-                  >
-                    WETH/yveCRV-DAO pool
-                  </A>{' '}
-                  for 🍣 rewards and then{' '}
-                  <A href="https://app.pickle.finance/jars" target="_blank">
-                    SLP YVECRV/ETH jar
-                  </A>{' '}
-                  for 🥒 rewards.
-                </Text>
-              </Grid>
+            <Grid item xs={12} md={6}>
+              {amplifyVaultDesc}
             </Grid>
-          </Box>
-        );
-      }
+          </Grid>
+        </Box>
+      );
+
+      // if (vaultIsPickle) {
+      //   vaultAdditionalInfo = (
+      //     <Box my={50} mx={isScreenMd ? 50 : 20}>
+      //       <Grid container spacing={isScreenMd ? 8 : 5}>
+      //         <Grid className="amplify-vault-controls" item xs={12} md={6}>
+      //           <Text bold fontSize={4} mb={40}>
+      //             {amplifyVaultTitle}
+      //           </Text>
+      //           {vaultControls}
+      //         </Grid>
+      //         <Grid item xs={12} md={6}>
+      //           {amplifyVaultDesc}
+      //         </Grid>
+      //       </Grid>
+      //     </Box>
+      //   );
+      // } else {
+      //   vaultAdditionalInfo = (
+      //     <Box my={16} mx={isScreenMd ? 70 : 20}>
+      //       <Text bold fontSize={4} mb={6}>
+      //         Read carefully before use
+      //       </Text>
+      //       <Grid container spacing={isScreenMd ? 8 : 0}>
+      //         <Grid item xs={12} md={6}>
+      //           <Text large>
+      //             This vault converts your CRV into yveCRV, earning you a
+      //             continuous share of Curve fees. The more converted, the
+      //             greater the rewards. Every week, these can be claimed from the
+      //             vault as 3Crv (Curve’s 3pool LP token).
+      //           </Text>
+      //         </Grid>
+      //         <Grid item xs={12} md={6}>
+      //           <Text large>
+      //             The operation is non-reversible: You can only convert CRV into
+      //             yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
+      //             escrow.
+      //             <br />
+      //             <br />
+      //             After depositing join{' '}
+      //             <A
+      //               href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
+      //               target="_blank"
+      //             >
+      //               WETH/yveCRV-DAO pool
+      //             </A>{' '}
+      //             for 🍣 rewards and then{' '}
+      //             <A href="https://app.pickle.finance/jars" target="_blank">
+      //               SLP YVECRV/ETH jar
+      //             </A>{' '}
+      //             for 🥒 rewards.
+      //           </Text>
+      //         </Grid>
+      //       </Grid>
+      //     </Box>
+      //   );
+      // }
     } else {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
@@ -1082,7 +1130,7 @@ const Vault = (props) => {
               </Notice>
             )}
             {vaultAdditionalInfo}
-            {!vaultIsPickle && (
+            {!amplifyVault && (
               <Card.Footer className={active && 'active'}>
                 <Footer small={!isScreenMd}>{vaultControls}</Footer>
               </Card.Footer>

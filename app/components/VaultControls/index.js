@@ -268,7 +268,7 @@ export default function VaultControls(props) {
             </Box>
             <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
               <ActionButton
-                className="action-button"
+                className="action-button dark"
                 disabled={
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
@@ -309,7 +309,7 @@ export default function VaultControls(props) {
             </Box>
             <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
               <ActionButton
-                className="action-button"
+                className="action-button dark"
                 disabled={
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
@@ -332,6 +332,54 @@ export default function VaultControls(props) {
         </Box>
       </Wrapper>
     );
+  } else if (vaultIsBackscratcher) {
+    vaultControlsWrapper = (
+      <Wrapper>
+        <Box display="flex" flexDirection="column" width={1}>
+          <Balance amount={walletBalance} prefix="Available CRV: " />
+
+          <ActionGroup
+            direction={isScreenMd ? 'row' : 'column'}
+            alignItems="center"
+          >
+            <Box width={1}>
+              <AmountField
+                amount={depositAmount}
+                amountSetter={setDepositAmount}
+                gweiAmountSetter={setDepositGweiAmount}
+                maxAmount={tokenBalance}
+                decimals={decimals}
+              />
+            </Box>
+            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
+              <ActionButton
+                className="action-button dark"
+                disabled={
+                  !vaultContract || !tokenContract || !!depositsDisabled
+                }
+                handler={deposit}
+                text={
+                  (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+                  pureEthereum > 0
+                    ? 'Deposit'
+                    : 'Approve'
+                }
+                title="Deposit into vault"
+                showTooltip
+                tooltipText={
+                  depositsDisabled ||
+                  'Connect your wallet to deposit into vault'
+                }
+              />
+            </Box>
+          </ActionGroup>
+          <BackscratcherClaim
+            isScreenMd={isScreenMd}
+            vaultAddress={vaultAddress}
+          />
+        </Box>
+      </Wrapper>
+    );
   } else {
     vaultControlsWrapper = (
       <Wrapper>
@@ -340,10 +388,7 @@ export default function VaultControls(props) {
           flexDirection={isScreenMd ? 'row' : 'column'}
           width={1}
         >
-          <ActionGroup
-            hide={vaultIsBackscratcher}
-            ml={isScreenMd ? '60px' : '0px'}
-          >
+          <ActionGroup ml={isScreenMd ? '60px' : '0px'}>
             <Balance amount={vaultBalance} prefix="Vault balance: " />
             <ButtonGroup width={1} paddingRight={isScreenMd ? '56px' : '0px'}>
               <Box width={isScreenMd ? '185px' : '100%'}>
@@ -370,7 +415,7 @@ export default function VaultControls(props) {
 
           <ActionGroup
             direction={isScreenMd ? 'row' : 'column'}
-            ml={vaultIsBackscratcher && isScreenMd ? '60px' : '0px'}
+            ml={isScreenMd ? '60px' : '0px'}
           >
             <Box display="flex" flexDirection="column">
               <Balance amount={walletBalance} prefix="Your wallet: " />
@@ -407,11 +452,6 @@ export default function VaultControls(props) {
                 </Box>
               </ButtonGroup>
             </Box>
-            {vaultIsBackscratcher && (
-              <Box ml={isScreenMd ? 5 : 0} alignSelf="flex-end" width={1}>
-                <BackscratcherClaim vaultAddress={vaultAddress} />
-              </Box>
-            )}
             {/* {isMigratable && (
             <Box ml={isScreenMd ? 56 : 0} alignSelf="flex-end" width={1}>
               <MigrateVault vaultAddress={vaultAddress} />

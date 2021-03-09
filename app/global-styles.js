@@ -154,6 +154,11 @@ const GlobalStyle = createGlobalStyle`
       background-color: ${(props) => props.theme.vaultBackgroundAlt};
       border-radius: 8px;
 
+      input:disabled {
+        background: ${(props) => props.theme.primary};
+        color: ${(props) => props.theme.white};
+      }
+
       .action-button {
         display: flex;
         align-items: center;
@@ -162,8 +167,22 @@ const GlobalStyle = createGlobalStyle`
         padding-bottom: 0;
         letter-spacing: 0.882353px;
         font-weight: 500;
-        background-color: ${(props) => props.theme.surface};;
-        color: ${(props) => props.theme.onSurface};;
+
+        &.dark {
+          background-color: ${(props) => props.theme.surface};
+          color: ${(props) => props.theme.onSurface};
+        }
+
+        &.light {
+          background-color: ${(props) => props.theme.white};
+          color: ${(props) => props.theme.vaultBackgroundAlt};
+        }
+
+        &.outline {
+          background-color: transparent;
+          color: ${(props) => props.theme.white};
+          border: 1px solid ${(props) => props.theme.white};
+        }
       }
     }
   }

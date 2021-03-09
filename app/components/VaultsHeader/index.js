@@ -4,7 +4,7 @@ import Text from 'components/Text';
 import styled from 'styled-components';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const amplifyVaultsGridTemplate = '240px 105px 155px 100px 160px 180px 1fr';
+const amplifyVaultsGridTemplate = '210px 110px 160px 140px 200px 1fr';
 const vaultsGridTemplate = '210px 110px 160px 140px 200px 1fr';
 
 const Underlined = styled.span`

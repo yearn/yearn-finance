@@ -20942,10 +20942,10 @@ web-namespaces@^1.0.0:
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.4.tgz"
   integrity sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==
 
-web3-batch-call@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/web3-batch-call/-/web3-batch-call-1.0.12.tgz"
-  integrity sha512-FbTVQLdO+lP5GOkcyOQK1ldbYLm/83a5jNLzvLfv8BBuhNmj0VagBlGC67xV5Nu4uCG49RiYFDVtc5LfUJZ0SA==
+web3-batch-call@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/web3-batch-call/-/web3-batch-call-1.0.13.tgz#f53e4b024b8e2444520bac27c05317d1f1a4bdab"
+  integrity sha512-JTZ8w2y7nnmSwefHb9FIeuKKUnnc+UXFZOhP0Je1qJSG1A0pzYgtzW8J4SSfvKY1SgprBGY7RsF7+y3cX/p+pA==
   dependencies:
     cross-fetch "^3.0.6"
     delay "^4.4.0"

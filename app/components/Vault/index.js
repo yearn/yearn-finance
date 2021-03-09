@@ -378,7 +378,7 @@ const Vault = (props) => {
 
   let vaultName;
   if (vaultIsBackscratcher) {
-    vaultName = 'yveCRV';
+    vaultName = 'CRV';
   } else if (vaultIsPickle) {
     vaultName = 'yveCRV - ETH';
   } else {

@@ -84,6 +84,8 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 }
                 color="primary"
                 disabled={!claimable}
+                showTooltip={!claimable}
+                tooltipText="You don’t have any claimable rewards"
               >
                 Stake
               </ButtonFilled>
@@ -100,6 +102,8 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 }
                 color="primary"
                 disabled={!claimable}
+                showTooltip={!claimable}
+                tooltipText="You don’t have any claimable rewards"
               >
                 Claim
               </ButtonFilled>

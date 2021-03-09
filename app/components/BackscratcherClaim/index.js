@@ -13,6 +13,7 @@ import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
 import { VYPER_ADDRESS, THREECRV_ADDRESS } from 'containers/Vaults/constants';
 import Box from 'components/Box';
+import Text from 'components/Text';
 
 // import { abbreviateNumber } from 'utils/string';
 
@@ -53,6 +54,9 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
     <>
       {claimable !== 0 && (
         <Box display="flex" flexDirection="column" width={1}>
+          <Text bold fontSize={5} mt={50} mb={20}>
+            Claim your reward
+          </Text>
           <div>Available 3Crv:</div>
           <Box
             display="flex"

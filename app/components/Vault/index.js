@@ -814,7 +814,7 @@ const Vault = (props) => {
       );
       if (vaultIsBackscratcher) {
         amplifyVaultTitle = (
-          <Text bold fontSize={5} mb={40}>
+          <Text bold fontSize={5} mb={20}>
             Deposit your CRV to earn weekly 3Crv rewards
           </Text>
         );

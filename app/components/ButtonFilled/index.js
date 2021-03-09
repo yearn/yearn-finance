@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
@@ -16,6 +17,7 @@ export default function ButtonFilled(props) {
     color,
     tooltipText,
     showTooltip,
+    outlined,
   } = props;
   const showDevVaults = useShowDevVaults();
 
@@ -24,7 +26,7 @@ export default function ButtonFilled(props) {
     root: {
       fontSize: '16px',
       fontWeight: 'bold',
-      borderRadius: '7px',
+      border: outlined ? '2px solid #0657F9' : '7px',
       padding: '3px 20px 8px 20px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
@@ -32,18 +34,22 @@ export default function ButtonFilled(props) {
       justifyContent: 'center',
       height: '46px',
       textTransform: showDevVaults ? 'inherit' : 'capitalize',
-      backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
+      backgroundColor:
+        color === 'secondary' ? '#999' : outlined ? '#0A1D3F' : '#006AE3',
       color: color === 'secondary' ? '#333' : '#fff',
       '&:hover': {
-        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
+        backgroundColor:
+          color === 'secondary' ? '#999' : outlined ? '#0A1D3F' : '#006AE3',
       },
       '&:hover.Mui-disabled': {
-        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
+        backgroundColor:
+          color === 'secondary' ? '#999' : outlined ? '#0A1D3F' : '#006AE3',
       },
       textAlign: 'center',
       '&.Mui-disabled': {
         opacity: 0.5,
-        backgroundColor: color === 'secondary' ? '#999' : '#006AE3',
+        backgroundColor:
+          color === 'secondary' ? '#999' : outlined ? '#0A1D3F' : '#006AE3',
         color: color === 'secondary' ? '#333' : '#fff',
         cursor: 'not-allowed',
         pointerEvents: 'auto',
@@ -67,6 +73,7 @@ export default function ButtonFilled(props) {
           onSubmit={onSubmit}
           type={type}
           disabled={disabled}
+          outlined={outlined}
           {...adjustedButtonProps}
         >
           {children}
@@ -84,6 +91,7 @@ export default function ButtonFilled(props) {
       onSubmit={onSubmit}
       type={type}
       disabled={disabled}
+      outlined={outlined}
     >
       {children}
     </ColorButton>

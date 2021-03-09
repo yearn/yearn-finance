@@ -18,23 +18,20 @@ const MigrateVault = ({ vaultAddress }) => {
   if (!vaultContract || !vaultMigrationData) {
     return null;
   }
-  const balance = get(vaultMigrationData, 'balanceOf');
+  // const balance = get(vaultMigrationData, 'balanceOf');
+  // const hasBalance = balance !== '0';
 
   return (
-    <>
-      {balance !== '0' && (
-        <Tooltip title="Migrate your balance from legacy v1 Yearn Vault to the v2 Yearn Vault">
-          <ButtonFilled
-            onClick={() =>
-              dispatch(migrateVault({ vaultContract, trustedMigratorContract }))
-            }
-            color="primary"
-          >
-            Migrate
-          </ButtonFilled>
-        </Tooltip>
-      )}
-    </>
+    <Tooltip title="Migrate your balance to v2 Vault">
+      <ButtonFilled
+        onClick={() =>
+          dispatch(migrateVault({ vaultContract, trustedMigratorContract }))
+        }
+        color="primary"
+      >
+        Migrate all
+      </ButtonFilled>
+    </Tooltip>
   );
 };
 

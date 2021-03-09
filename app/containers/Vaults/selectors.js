@@ -6,18 +6,16 @@ import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 export const selectMigrationData = createSelector(
   selectContractsByTag('trustedMigratorVaults'),
   (trustedMigratorVaults) => {
-    if (!trustedMigratorVaults) {
-      return {};
-    }
-
-    const migrationWhitelistByVault = keyBy(migrationWhitelist, 'vaultFrom');
-    const migrationData = trustedMigratorVaults.map((vault) => ({
-      ...migrationWhitelistByVault[vault.address],
-      ...vault,
+    const trustedMigratorVaultsByAddress = keyBy(
+      trustedMigratorVaults,
+      'address',
+    );
+    const migrationData = migrationWhitelist.map((migration) => ({
+      ...trustedMigratorVaultsByAddress[migration.vaultFrom],
+      ...migration,
     }));
 
     const migrationDataByVault = keyBy(migrationData, 'vaultFrom');
-
     return migrationDataByVault;
   },
 );

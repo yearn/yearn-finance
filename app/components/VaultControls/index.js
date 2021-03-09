@@ -14,9 +14,9 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { selectTokenAllowance } from 'containers/App/selectors';
-// import { selectMigrationData } from 'containers/Vaults/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import BackscratcherClaim from 'components/BackscratcherClaim';
-// import MigrateVault from 'components/MigrateVault';
+import MigrateVault from 'components/MigrateVault';
 import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
@@ -101,8 +101,8 @@ export default function VaultControls(props) {
   if (zapContract) {
     vaultContract = { ...vaultContract, zapContract };
   }
-  // const migrationData = useSelector(selectMigrationData);
-  // const isMigratable = !!migrationData[vaultAddress];
+  const migrationData = useSelector(selectMigrationData);
+  const isMigratable = !!migrationData[vaultAddress];
 
   const tokenContract = useContract(token.address);
 
@@ -452,12 +452,32 @@ export default function VaultControls(props) {
                 </Box>
               </ButtonGroup>
             </Box>
-            {/* {isMigratable && (
-            <Box ml={isScreenMd ? 56 : 0} alignSelf="flex-end" width={1}>
-              <MigrateVault vaultAddress={vaultAddress} />
-            </Box>
-          )} */}
           </ActionGroup>
+        </Box>
+      </Wrapper>
+    );
+  }
+
+  if (isMigratable) {
+    vaultControlsWrapper = (
+      <Wrapper>
+        <Box
+          width={isScreenMd ? '160px' : '100%'}
+          ml={isScreenMd ? '60px' : '0px'}
+        >
+          <MigrateVault vaultAddress={vaultAddress} />
+        </Box>
+        <Box width={isScreenMd ? '160px' : '100%'} ml={5}>
+          <ActionButton
+            className="action-button dark"
+            disabled={!vaultContract || !tokenContract}
+            handler={withdraw}
+            text="Withdraw All"
+            title="Withdraw balance from vault"
+            showTooltip
+            tooltipText="Connect your wallet to withdraw from vault"
+            outlined={1}
+          />
         </Box>
       </Wrapper>
     );
@@ -546,6 +566,7 @@ function ActionButton({
   text,
   tooltipText,
   showTooltip,
+  outlined,
 }) {
   return (
     <ButtonFilled
@@ -556,6 +577,7 @@ function ActionButton({
       title={title}
       tooltipText={tooltipText}
       showTooltip={showTooltip}
+      outlined={outlined}
     >
       {text}
     </ButtonFilled>

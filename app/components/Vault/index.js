@@ -810,7 +810,7 @@ const Vault = (props) => {
       let amplifyVaultDesc;
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       let styledIcon = (
-        <StyledTokenIcon address={tokenContractAddress} icon={vault.icon} />
+        <StyledTokenIcon address={tokenContractAddress} icon={token.icon} />
       );
       if (vaultIsBackscratcher) {
         amplifyVaultTitle = (

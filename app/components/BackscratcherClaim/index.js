@@ -52,7 +52,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
 
   return (
     <>
-      {claimable !== 0 && (
+      {
         <Box display="flex" flexDirection="column" width={1}>
           <Text bold fontSize={5} mt={50} mb={20}>
             Claim your reward
@@ -83,6 +83,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                   )
                 }
                 color="primary"
+                disabled={!claimable}
               >
                 Stake
               </ButtonFilled>
@@ -98,13 +99,14 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                   )
                 }
                 color="primary"
+                disabled={!claimable}
               >
                 Claim
               </ButtonFilled>
             </Box>
           </Box>
         </Box>
-      )}
+      }
       {/* {claimable !== 0 && (
         <ButtonFilled
           onClick={() => dispatch(claimBackscratcherRewards({ vaultContract }))}

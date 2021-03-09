@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Tooltip from '@material-ui/core/Tooltip';
-import { get } from 'lodash';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { migrateVault } from 'containers/Vaults/actions';

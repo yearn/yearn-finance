@@ -27,7 +27,7 @@ import {
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
-// import { selectMigrationData } from 'containers/Vaults/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -317,11 +317,9 @@ const Vault = (props) => {
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
-  // const migrationData = useSelector(selectMigrationData);
-  // const vaultMigrationData = migrationData[address];
-  // const isMigratable =
-  //   !!vaultMigrationData &&
-  //   new BigNumber(_.get(vaultMigrationData, 'balanceOf')).gt(0);
+  const migrationData = useSelector(selectMigrationData);
+  const vaultMigrationData = migrationData[address];
+  const isMigratable = !!vaultMigrationData;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -1113,16 +1111,11 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-            {/* {isMigratable && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>
-                  This vault is eligible for v2 migration. Please click the
-                  migrate button below to continue receiving rewards. This is a
-                  one time migration.
-                </span>
-              </Notice>
-            )} */}
+            {isMigratable && (
+              <Box py={15} px={isScreenMd ? '76px' : '16px'}>
+                <span>{vaultMigrationData.migrationMessage}</span>
+              </Box>
+            )}
             {emergencyShutdown && (
               <Notice>
                 <NoticeIcon type="info" />

@@ -87,8 +87,8 @@ const IconAndName = styled.div`
 `;
 
 const StyledTokenIcon = styled(TokenIcon)`
-  width: 40px;
-  margin-right: 20px;
+  width: 32px;
+  margin-right: 16px;
 `;
 
 const StyledDoubleTokenIcon = styled.div`
@@ -1089,7 +1089,7 @@ const Vault = (props) => {
         >
           {vaultTop}
           {/* {vaultStats} */}
-          <StyledText fontWeight={600} mr={20}>
+          <StyledText fontWeight={700} mr={16}>
             {active ? 'HIDE' : 'SHOW'}
           </StyledText>
         </Accordion.Toggle>

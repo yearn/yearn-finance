@@ -25,7 +25,7 @@ export default function ButtonFilled(props) {
       fontSize: '16px',
       fontWeight: 'bold',
       borderRadius: '7px',
-      padding: '3px 20px 8px 20px',
+      padding: '0 20px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
       direction: 'ltr',

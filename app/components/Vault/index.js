@@ -89,7 +89,9 @@ import Box from 'components/Box';
 const ButtonLinkIcon = styled.a`
   display: flex;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
+  padding-top: 5px;
 
   img {
     margin-right: 10px;
@@ -701,8 +703,8 @@ const Vault = (props) => {
         ml={isScreenMd ? '60px' : '0px'}
       >
         <span>
-          Head to PowerPool and deposit {vaultName} for additional yield in the
-          Yearn Lazy Ape pool.
+          Head to PowerPool and deposit {vault.symbol} for additional yield in
+          the Yearn Lazy Ape pool.
           <br />
           This pool allows you to earn swap fees on top of your yVault yield.
         </span>

@@ -26,6 +26,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 import request from 'utils/request';
+import { ALIASES_API } from 'containers/Vaults/constants';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
@@ -51,8 +52,6 @@ const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
   width: 100%;
 `;
-
-const ALIASES_API = `https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json`;
 
 // TODO: Remove UI hacks...
 const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
@@ -209,6 +208,8 @@ const Vaults = (props) => {
       newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
       newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
+      newVault.tokenAlias =
+        get(aliasByVault[vault.address], 'symbol') || vault.displayName;
 
       return newVault;
     });

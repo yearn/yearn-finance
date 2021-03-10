@@ -7,6 +7,8 @@ export const DEPOSIT_PICKLE_SLP_IN_FARM = 'DEPOSIT_PICKLE_SLP_IN_FARM';
 export const RESTAKE_BACKSCRATCHER_REWARDS = 'RESTAKE_BACKSCRATCHER_REWARDS';
 export const CLAIM_BACKSCRATCHER_REWARDS = 'CLAIM_BACKSCRATCHER_REWARDS';
 export const MIGRATE_VAULT = 'MIGRATE_VAULT';
+export const ALIASES_API =
+  'https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json';
 
 export const ETHEREUM_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 export const TRUSTED_MIGRATOR_ADDRESS =

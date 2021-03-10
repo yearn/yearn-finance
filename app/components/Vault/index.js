@@ -396,7 +396,7 @@ const Vault = (props) => {
 
   let vaultName;
   if (vaultIsBackscratcher) {
-    vaultName = 'yveCRV';
+    vaultName = 'CRV';
   } else if (vaultIsPickle) {
     vaultName = 'yveCRV - ETH';
   } else {
@@ -861,7 +861,7 @@ const Vault = (props) => {
       let amplifyVaultDesc;
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
       let styledIcon = (
-        <StyledTokenIcon address={tokenContractAddress} icon={vault.icon} />
+        <StyledTokenIcon address={tokenContractAddress} icon={token.icon} />
       );
       if (vaultIsBackscratcher) {
         amplifyVaultTitle = (

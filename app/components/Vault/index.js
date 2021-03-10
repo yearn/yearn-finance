@@ -1113,10 +1113,7 @@ const Vault = (props) => {
             )}
             {isMigratable && (
               <Box py={15} px={isScreenMd ? '76px' : '16px'}>
-                <span>
-                  This vault is no longer active. Withdraw funds or migrate your
-                  balance to the v2 YFI yVault to continue earning yield.
-                </span>
+                <span>{vaultMigrationData.migrationMessage}</span>
               </Box>
             )}
             {emergencyShutdown && (

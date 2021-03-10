@@ -273,7 +273,7 @@ a {
   margin-bottom: 0;
   display: flex;
   align-items: center;
-  height: 58px;
+  height: 56px;
   background-color: transparent;
 }
 

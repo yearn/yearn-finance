@@ -1,0 +1,16 @@
+// Add to migrationWhitelist.json when enabled
+
+[
+  {
+    "symbol": "DAI",
+    "token": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "vaultFrom": "0xACd43E627e64355f1861cEC6d3a6688B31a6F952",
+    "vaultTo": "0x19D3364A399d251E894aC732651be8B0E4e85001"
+  },
+  {
+    "symbol": "USDC",
+    "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "vaultFrom": "0x597aD1e0c13Bfe8025993D9e79C69E1c0233522e",
+    "vaultTo": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9"
+  },
+]

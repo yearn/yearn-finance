@@ -27,7 +27,7 @@ import {
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
-// import { selectMigrationData } from 'containers/Vaults/selectors';
+import { selectMigrationData } from 'containers/Vaults/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -87,8 +87,8 @@ const IconAndName = styled.div`
 `;
 
 const StyledTokenIcon = styled(TokenIcon)`
-  width: 40px;
-  margin-right: 20px;
+  width: 32px;
+  margin-right: 16px;
 `;
 
 const StyledDoubleTokenIcon = styled.div`
@@ -317,11 +317,9 @@ const Vault = (props) => {
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
-  // const migrationData = useSelector(selectMigrationData);
-  // const vaultMigrationData = migrationData[address];
-  // const isMigratable =
-  //   !!vaultMigrationData &&
-  //   new BigNumber(_.get(vaultMigrationData, 'balanceOf')).gt(0);
+  const migrationData = useSelector(selectMigrationData);
+  const vaultMigrationData = migrationData[address];
+  const isMigratable = !!vaultMigrationData;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -1091,7 +1089,7 @@ const Vault = (props) => {
         >
           {vaultTop}
           {/* {vaultStats} */}
-          <StyledText fontWeight={600} mr={20}>
+          <StyledText fontWeight={700} mr={16}>
             {active ? 'HIDE' : 'SHOW'}
           </StyledText>
         </Accordion.Toggle>
@@ -1113,16 +1111,11 @@ const Vault = (props) => {
                 </span>
               </Notice>
             )}
-            {/* {isMigratable && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>
-                  This vault is eligible for v2 migration. Please click the
-                  migrate button below to continue receiving rewards. This is a
-                  one time migration.
-                </span>
-              </Notice>
-            )} */}
+            {isMigratable && (
+              <Box py={15} px={isScreenMd ? '76px' : '16px'}>
+                <span>{vaultMigrationData.migrationMessage}</span>
+              </Box>
+            )}
             {emergencyShutdown && (
               <Notice>
                 <NoticeIcon type="info" />

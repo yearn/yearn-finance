@@ -337,7 +337,6 @@ export default function VaultControls(props) {
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
           <Balance amount={walletBalance} prefix="Available CRV: " />
-
           <ActionGroup
             direction={isScreenMd ? 'row' : 'column'}
             alignItems="center"
@@ -388,31 +387,6 @@ export default function VaultControls(props) {
           flexDirection={isScreenMd ? 'row' : 'column'}
           width={1}
         >
-          <ActionGroup ml={isScreenMd ? '60px' : '0px'}>
-            <Balance amount={vaultBalance} prefix="Vault balance: " />
-            <ButtonGroup width={1} paddingRight={isScreenMd ? '56px' : '0px'}>
-              <Box width={isScreenMd ? '185px' : '100%'}>
-                <AmountField
-                  amount={withdrawalAmount}
-                  amountSetter={setWithdrawalAmount}
-                  gweiAmountSetter={setWithdrawalGweiAmount}
-                  maxAmount={vaultBalanceOf}
-                  decimals={decimals}
-                />
-              </Box>
-              <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
-                <ActionButton
-                  disabled={!vaultContract || !tokenContract}
-                  handler={withdraw}
-                  text="Withdraw"
-                  title="Withdraw from vault"
-                  showTooltip
-                  tooltipText="Connect your wallet to withdraw from vault"
-                />
-              </Box>
-            </ButtonGroup>
-          </ActionGroup>
-
           <ActionGroup
             direction={isScreenMd ? 'row' : 'column'}
             ml={isScreenMd ? '60px' : '0px'}
@@ -452,6 +426,32 @@ export default function VaultControls(props) {
                 </Box>
               </ButtonGroup>
             </Box>
+          </ActionGroup>
+
+          <ActionGroup ml={isScreenMd ? '60px' : '0px'}>
+            <Balance amount={vaultBalance} prefix="Vault balance: " />
+            <ButtonGroup width={1} paddingRight={isScreenMd ? '56px' : '0px'}>
+              <Box width={isScreenMd ? '185px' : '100%'}>
+                <AmountField
+                  amount={withdrawalAmount}
+                  amountSetter={setWithdrawalAmount}
+                  gweiAmountSetter={setWithdrawalGweiAmount}
+                  maxAmount={vaultBalanceOf}
+                  decimals={decimals}
+                />
+              </Box>
+              <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                <ActionButton
+                  className="action-button bold outline"
+                  disabled={!vaultContract || !tokenContract}
+                  handler={withdraw}
+                  text="Withdraw"
+                  title="Withdraw from vault"
+                  showTooltip
+                  tooltipText="Connect your wallet to withdraw from vault"
+                />
+              </Box>
+            </ButtonGroup>
           </ActionGroup>
         </Box>
       </Wrapper>

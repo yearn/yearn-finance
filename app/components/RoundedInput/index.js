@@ -9,7 +9,6 @@ const Input = styled.input`
   outline: none;
   background: #ffffff;
   border-radius: 5px;
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;

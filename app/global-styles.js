@@ -149,6 +149,42 @@ const GlobalStyle = createGlobalStyle`
   color: ${(props) => props.theme.onSurface};
   transition: background-color .1s ease-out, border-color .15s ease-out;
 
+  &.vault {
+    .action-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 0;
+      padding-bottom: 0;
+      letter-spacing: 0.88px;
+      font-weight: 500;
+
+      &.bold {
+        font-weight: 700;
+      }
+      &.dark {
+        background-color: ${(props) => props.theme.surface};
+        color: ${(props) => props.theme.onSurface};
+      }
+
+      &.light {
+        background-color: ${(props) => props.theme.white};
+        color: ${(props) => props.theme.vaultBackgroundAlt};
+      }
+
+      &.outline {
+        background-color: transparent;
+        color: ${(props) => props.theme.white};
+        border: 1px solid ${(props) => props.theme.primary};
+        &.bold {
+          border-width: 2px;
+        }
+        &.light {
+          border: 1px solid ${(props) => props.theme.white};
+        }
+      }
+    }
+  }
   &.amplify-vault {
     .amplify-vault-controls {
       background-color: ${(props) => props.theme.vaultBackgroundAlt};
@@ -157,32 +193,6 @@ const GlobalStyle = createGlobalStyle`
       input:disabled {
         background: ${(props) => props.theme.primary};
         color: ${(props) => props.theme.white};
-      }
-
-      .action-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding-top: 0;
-        padding-bottom: 0;
-        letter-spacing: 0.882353px;
-        font-weight: 500;
-
-        &.dark {
-          background-color: ${(props) => props.theme.surface};
-          color: ${(props) => props.theme.onSurface};
-        }
-
-        &.light {
-          background-color: ${(props) => props.theme.white};
-          color: ${(props) => props.theme.vaultBackgroundAlt};
-        }
-
-        &.outline {
-          background-color: transparent;
-          color: ${(props) => props.theme.white};
-          border: 1px solid ${(props) => props.theme.white};
-        }
       }
     }
   }

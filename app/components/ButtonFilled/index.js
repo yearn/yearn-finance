@@ -26,8 +26,9 @@ export default function ButtonFilled(props) {
     root: {
       fontSize: '16px',
       fontWeight: 'bold',
-      border: outlined ? '2px solid #006AE3' : '7px',
-      padding: '3px 20px 8px 20px',
+      padding: '0 20px',
+      border: outlined ? '2px solid #006AE3' : 'inherit',
+      borderRadius: '5px',
       margin: color === 'secondary' ? '0px' : '10px 0px',
       width: '100%',
       direction: 'ltr',

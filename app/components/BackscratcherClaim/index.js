@@ -92,7 +92,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
             </Box>
             <Box ml={5} width={isScreenMd ? '30%' : 1}>
               <ButtonFilled
-                className="action-button outline"
+                className="action-button outline light"
                 onClick={() =>
                   dispatch(
                     claimBackscratcherRewards({

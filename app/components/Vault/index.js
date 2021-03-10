@@ -1077,7 +1077,7 @@ const Vault = (props) => {
   return (
     <React.Fragment>
       <Card
-        className={`${amplifyVault ? 'amplify-vault' : ''} ${
+        className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
           active ? 'active' : ''
         } ${vaultIsPickle ? 'pickle-vault' : ''}`}
         id={`vault-${accordionKey}`}

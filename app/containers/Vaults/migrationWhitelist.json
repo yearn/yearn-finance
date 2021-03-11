@@ -5,5 +5,12 @@
     "vaultFrom": "0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1",
     "vaultTo": "0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 YFI yVault to continue earning yield."
+  },
+  {
+    "symbol": "WETH",
+    "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",
+    "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield. Please be advised that withdrawal fees of 0.5-1% may apply for large migrations."
   }
 ]

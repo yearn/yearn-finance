@@ -1,69 +1,55 @@
 [
-   {
-      "outputs":[
-
-      ],
-      "inputs":[
-
-      ],
-      "stateMutability":"nonpayable",
-      "type":"constructor"
-   },
-   {
-      "name":"zap",
-      "outputs":[
-
-      ],
-      "inputs":[
-
-      ],
-      "stateMutability":"nonpayable",
-      "type":"function",
-      "gas":13629
-   },
-   {
-      "name":"threeCrv",
-      "outputs":[
-         {
-            "type":"address",
-            "name":""
-         }
-      ],
-      "inputs":[
-
-      ],
-      "stateMutability":"view",
-      "type":"function",
-      "gas":1091
-   },
-   {
-      "name":"threeCrvVault",
-      "outputs":[
-         {
-            "type":"address",
-            "name":""
-         }
-      ],
-      "inputs":[
-
-      ],
-      "stateMutability":"view",
-      "type":"function",
-      "gas":1121
-   },
-   {
-      "name":"vecrvVault",
-      "outputs":[
-         {
-            "type":"address",
-            "name":""
-         }
-      ],
-      "inputs":[
-
-      ],
-      "stateMutability":"view",
-      "type":"function",
-      "gas":1151
-   }
+  {
+    "outputs": [],
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "name": "zap",
+    "outputs": [],
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "gas": 13629
+  },
+  {
+    "name": "threeCrv",
+    "outputs": [
+      {
+        "type": "address",
+        "name": ""
+      }
+    ],
+    "inputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "gas": 1091
+  },
+  {
+    "name": "threeCrvVault",
+    "outputs": [
+      {
+        "type": "address",
+        "name": ""
+      }
+    ],
+    "inputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "gas": 1121
+  },
+  {
+    "name": "vecrvVault",
+    "outputs": [
+      {
+        "type": "address",
+        "name": ""
+      }
+    ],
+    "inputs": [],
+    "stateMutability": "view",
+    "type": "function",
+    "gas": 1151
+  }
 ]

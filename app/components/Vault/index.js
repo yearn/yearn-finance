@@ -180,6 +180,11 @@ const StyledText = styled(Text)`
   cursor: pointer;
 `;
 
+const BigChar = styled.span`
+  font-size: 20px;
+  vertical-align: middle;
+`;
+
 const truncateFee = (fee) => {
   if (!fee) {
     return '0%';
@@ -209,6 +214,9 @@ const truncateUsd = (value) => {
   if (!value) {
     return 'N/A';
   }
+  if (value * 1e18 > 2 ** 255) {
+    return '\u221e USD';
+  }
   return usdFormatter.format(value);
 };
 
@@ -222,6 +230,9 @@ const tokenFormatter = new Intl.NumberFormat('en-US', {
 const truncateToken = (value) => {
   if (!value) {
     return 'N/A';
+  }
+  if (value * 1e18 > 2 ** 255) {
+    return '\u221e';
   }
   return tokenFormatter.format(value).slice(1);
 };
@@ -599,6 +610,7 @@ const Vault = (props) => {
         .dividedBy(10 ** decimals)
         .times(vault.tvl.price)
         .toFixed(2);
+      const shouldBeInfinite = new BigNumber(depositLimit).gte(2 ** 255);
       vaultAssetsTooltip = (
         <div>
           <TooltipTable>
@@ -609,16 +621,27 @@ const Vault = (props) => {
                   {truncateToken(totalAssets)} {token.displayName}
                 </td>
               </tr>
-              <tr>
-                <td>Deposit limit</td>
-                <td>
-                  {truncateToken(limit)} {token.displayName}
-                </td>
-              </tr>
-              <tr>
-                <td />
-                <td>{truncateUsd(limitUsd)}</td>
-              </tr>
+              {shouldBeInfinite ? (
+                <tr>
+                  <td>Deposit limit</td>
+                  <td>
+                    <BigChar>&#x221e;</BigChar> {token.displayName}
+                  </td>
+                </tr>
+              ) : (
+                <>
+                  <tr>
+                    <td>Deposit limit</td>
+                    <td>
+                      {truncateToken(limit)} {token.displayName}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td />
+                    <td>{truncateUsd(limitUsd)}</td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </TooltipTable>
         </div>

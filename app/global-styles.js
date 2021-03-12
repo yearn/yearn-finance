@@ -144,12 +144,24 @@ const GlobalStyle = createGlobalStyle`
   margin: 0px 0px;
   margin-bottom: 7px;
   border-radius: 7px;
-  border: 4px solid;
   border-color: ${(props) => props.theme.surface};
   color: ${(props) => props.theme.onSurface};
   transition: background-color .1s ease-out, border-color .15s ease-out;
 
   &.vault {
+    border: 0;
+    &, &.active {
+      background-color: transparent;
+    }
+
+    .card-header, .collapse, .card-body {
+      background-color: ${(props) => props.theme.surface};
+    }
+
+    .collapse {
+      margin-top: 2px;
+    }
+
     .action-button {
       display: flex;
       align-items: center;
@@ -197,9 +209,9 @@ const GlobalStyle = createGlobalStyle`
     }
   }
   &.pickle-vault {
-    &, &.active, & .card-body {
-      background-color: ${(props) => props.theme.vaultBorderActive};
-      border-color: ${(props) => props.theme.vaultBorderActive};
+    .card-header, .collapse, .card-body {
+      background-color: ${(props) => props.theme.primary};
+      border-color: ${(props) => props.theme.primary};
     }
   }
 }
@@ -273,7 +285,7 @@ a {
   margin-bottom: 0;
   display: flex;
   align-items: center;
-  height: 56px;
+  height: 64px;
   background-color: transparent;
 }
 

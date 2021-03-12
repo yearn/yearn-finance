@@ -133,7 +133,7 @@ const Table = styled.table`
 const Footer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: ${({ small }) => (small ? '8px 20px' : '10px 20px')} !important;
+  padding: ${({ small }) => (small ? '8px 20px' : '24px 20px')} !important;
   width: 100%;
 `;
 
@@ -968,7 +968,14 @@ const Vault = (props) => {
               {amplifyVaultTitle}
               {vaultControls}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              container
+              item
+              direction="row"
+              alignItems="center"
+              xs={12}
+              md={6}
+            >
               {amplifyVaultDesc}
             </Grid>
           </Grid>

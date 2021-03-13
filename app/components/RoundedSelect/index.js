@@ -56,6 +56,7 @@ const customStyles = {
     paddingTop: 0,
   }),
   singleValue: (provided) => ({ ...provided }),
+  menuPortal: (styles) => ({ ...styles, zIndex: 999 }),
 };
 
 export const RoundedSelect = React.forwardRef((props) => {
@@ -74,6 +75,7 @@ export const RoundedSelect = React.forwardRef((props) => {
           Option: CustomSelectOption,
           SingleValue: CustomSelectValue,
         }}
+        menuPortalTarget={document.body}
       />
     </Wrapper>
   );

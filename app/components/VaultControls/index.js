@@ -4,6 +4,7 @@ import RoundedSelect from 'components/RoundedSelect';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import {
   withdrawFromVault,
+  withdrawAllFromVault,
   depositToVault,
   zapPickle,
   depositPickleSLPInFarm,
@@ -182,6 +183,15 @@ export default function VaultControls(props) {
         vaultContract,
         withdrawalAmount: withdrawalGweiAmount,
         decimals,
+        pureEthereum,
+      }),
+    );
+  };
+
+  const withdrawAll = () => {
+    dispatch(
+      withdrawAllFromVault({
+        vaultContract,
         pureEthereum,
       }),
     );
@@ -471,7 +481,7 @@ export default function VaultControls(props) {
           <ActionButton
             className="action-button dark"
             disabled={!vaultContract || !tokenContract}
-            handler={withdraw}
+            handler={withdrawAll}
             text="Withdraw All"
             title="Withdraw balance from vault"
             showTooltip

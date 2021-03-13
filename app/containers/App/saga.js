@@ -122,6 +122,9 @@ function* loadVaultContracts(clear) {
         {
           name: 'deposit',
         },
+        {
+          name: 'withdrawAll',
+        },
       ],
     },
     {

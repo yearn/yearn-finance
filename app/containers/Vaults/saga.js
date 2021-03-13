@@ -16,6 +16,7 @@ import { vaultsLoaded, userVaultStatisticsLoaded } from './actions';
 import {
   VAULTS_LOADED,
   WITHDRAW_FROM_VAULT,
+  WITHDRAW_ALL_FROM_VAULT,
   DEPOSIT_TO_VAULT,
   CLAIM_BACKSCRATCHER_REWARDS,
   RESTAKE_BACKSCRATCHER_REWARDS,
@@ -168,6 +169,26 @@ function* withdrawFromVault(action) {
         );
       }
     }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function* withdrawAllFromVault(action) {
+  const { vaultContract } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  try {
+    // if (!pureEthereum) {
+    yield call(vaultContract.methods.withdrawAll.cacheSend, {
+      from: account,
+    });
+    // } else {
+    //   yield call(vaultContract.methods.withdrawAllETH.cacheSend, {
+    //     from: account,
+    //   });
+    // }
   } catch (error) {
     console.error(error);
   }
@@ -374,6 +395,7 @@ export default function* initialize() {
   yield all([take(ACCOUNT_UPDATED), take(VAULTS_LOADED)]);
   yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
+  yield takeLatest(WITHDRAW_ALL_FROM_VAULT, withdrawAllFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);
   yield takeLatest(ZAP_PICKLE, zapPickle);
   yield takeLatest(DEPOSIT_PICKLE_SLP_IN_FARM, depositPickleSLPInFarm);

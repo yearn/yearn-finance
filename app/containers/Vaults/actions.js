@@ -21,6 +21,13 @@ export function withdrawFromVault(payload) {
   };
 }
 
+export function withdrawAllFromVault(payload) {
+  return {
+    type: c.WITHDRAW_ALL_FROM_VAULT,
+    payload,
+  };
+}
+
 export function depositToVault(payload) {
   return {
     type: c.DEPOSIT_TO_VAULT,

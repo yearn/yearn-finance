@@ -131,7 +131,7 @@ export default function VaultControls(props) {
     }));
   supportedTokenOptions.unshift({
     value: token.address,
-    label: token.symbol,
+    label: token.displayName,
     icon: `https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
   });
   const [selectedSellToken, setSelectedSellToken] = useState(
@@ -467,23 +467,23 @@ export default function VaultControls(props) {
                 alignItems="center"
                 width={1}
               >
-                {isZappable && (
-                  <Box
-                    center
-                    mr={isScreenMd ? 5 : 0}
-                    width={isScreenMd ? '185px' : '100%'}
-                    minWidth={185}
-                  >
-                    <SelectField
-                      defaultValue={selectedSellToken}
-                      onChange={(value) => {
-                        setDepositAmount(0);
-                        setSelectedSellToken(value);
-                      }}
-                      options={supportedTokenOptions}
-                    />
-                  </Box>
-                )}
+                <Box
+                  center
+                  mr={isScreenMd ? 5 : 0}
+                  width={isScreenMd ? '185px' : '100%'}
+                  minWidth={185}
+                >
+                  <SelectField
+                    defaultValue={selectedSellToken}
+                    onChange={(value) => {
+                      setDepositAmount(0);
+                      setSelectedSellToken(value);
+                    }}
+                    options={
+                      isZappable ? supportedTokenOptions : selectedSellToken
+                    }
+                  />
+                </Box>
                 <ButtonGroup width={1}>
                   <Box width={isScreenMd ? '185px' : '100%'}>
                     <AmountField

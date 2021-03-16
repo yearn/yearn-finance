@@ -33,7 +33,7 @@ const vaultColumns = [
     name: 'Growth',
     sort: 'valueApy',
     tooltip:
-      'Gross APY (Vault yield, annualized) is displayed below. Most vaults report annualized weekly yield, though a vault will default to monthly if weekly is less reliable. Net APY is shown on hover.',
+      'Net APY (annualized yield after fees) is displayed below. Most vaults report annualized weekly yield, though a vault will default to monthly if weekly is less reliable. Gross APY (total yield before fees) is shown on hover.',
   },
   {
     name: 'Total Assets',

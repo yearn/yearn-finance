@@ -4,15 +4,11 @@ import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import request from 'utils/request';
 import { zapperDataLoaded } from './actions';
 import { INIT_ZAPPER, ZAP_IN, ETH_ADDRESS } from './constants';
-import { selectZapperTokens } from './selectors';
 
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
 
 const isEth = (address) => address === ETH_ADDRESS;
-
-const unitsToWei = (amount, decimals) =>
-  new BigNumber(amount).times(10 ** decimals).toFixed();
 
 const encodeParams = (params) =>
   Object.entries(params)
@@ -61,8 +57,6 @@ function* zapIn(action) {
   } = action.payload;
 
   const ownerAddress = yield select(selectAccount());
-  const zapperTokens = yield select(selectZapperTokens());
-  const sellToken = zapperTokens[sellTokenAddress];
   const isSellTokenEth = isEth(sellTokenAddress);
 
   try {
@@ -104,7 +98,7 @@ function* zapIn(action) {
         gasPrice,
         poolAddress,
         sellTokenAddress,
-        sellAmount: unitsToWei(sellAmount, sellToken.decimals),
+        sellAmount,
         ownerAddress,
       }),
     );

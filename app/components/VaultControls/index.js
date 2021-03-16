@@ -123,12 +123,13 @@ export default function VaultControls(props) {
   const isZappable = !!zapperVaultData;
   const isSupportedToken = ({ address, hide }) =>
     address !== token.address && !hide && !!zapperTokens[address];
-  const isSameEthWeth = ({ label }) =>
-    vaultAddress === V2_WETH_VAULT_ADDRESS &&
-    (label === 'ETH' || label === 'WETH');
+  const isSameToken = ({ label, address }) =>
+    (vaultAddress === V2_WETH_VAULT_ADDRESS &&
+      (label === 'ETH' || label === 'WETH')) ||
+    address === token.address.toLowerCase();
   const supportedTokenOptions = Object.values(zapperBalances)
     .filter(isSupportedToken)
-    .filter((option) => !isSameEthWeth(option))
+    .filter((option) => !isSameToken(option))
     .map(({ address, label, img }) => ({
       value: address,
       label,
@@ -281,7 +282,7 @@ export default function VaultControls(props) {
         web3,
         poolAddress: zapperVaultData.address,
         sellTokenAddress: sellToken.address,
-        sellAmount: depositAmount,
+        sellAmount: depositGweiAmount,
         slippagePercentage: DEFAULT_SLIPPAGE,
       }),
     );

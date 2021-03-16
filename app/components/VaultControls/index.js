@@ -30,6 +30,7 @@ import MigrateVault from 'components/MigrateVault';
 import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
+  V2_WETH_VAULT_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 
@@ -122,8 +123,12 @@ export default function VaultControls(props) {
   const isZappable = !!zapperVaultData;
   const isSupportedToken = ({ address, hide }) =>
     address !== token.address && !hide && !!zapperTokens[address];
+  const isSameEthWeth = ({ label }) =>
+    vaultAddress === V2_WETH_VAULT_ADDRESS &&
+    (label === 'ETH' || label === 'WETH');
   const supportedTokenOptions = Object.values(zapperBalances)
     .filter(isSupportedToken)
+    .filter((option) => !isSameEthWeth(option))
     .map(({ address, label, img }) => ({
       value: address,
       label,
@@ -131,7 +136,7 @@ export default function VaultControls(props) {
     }));
   supportedTokenOptions.unshift({
     value: token.address,
-    label: token.displayName,
+    label: pureEthereum ? 'ETH' : token.displayName,
     icon: `https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
   });
   const [selectedSellToken, setSelectedSellToken] = useState(
@@ -480,7 +485,7 @@ export default function VaultControls(props) {
                       setSelectedSellToken(value);
                     }}
                     options={
-                      isZappable ? supportedTokenOptions : selectedSellToken
+                      isZappable ? supportedTokenOptions : [selectedSellToken]
                     }
                   />
                 </Box>

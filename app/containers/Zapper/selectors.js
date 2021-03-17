@@ -10,3 +10,6 @@ export const selectZapperVaults = () =>
 
 export const selectZapperBalances = () =>
   createSelector(selectZapper, (substate) => substate.balances);
+
+export const selectZapperError = () =>
+  createSelector(selectZapper, (substate) => substate.error);

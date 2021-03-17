@@ -22,6 +22,7 @@ import {
   selectZapperVaults,
   selectZapperTokens,
   selectZapperBalances,
+  selectZapperError,
 } from 'containers/Zapper/selectors';
 import { zapIn } from 'containers/Zapper/actions';
 import { DEFAULT_SLIPPAGE } from 'containers/Zapper/constants';
@@ -33,6 +34,7 @@ import {
   V2_WETH_VAULT_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
+import Text from 'components/Text';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -64,6 +66,10 @@ const ButtonGroup = styled(Box)`
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
+`;
+
+const StyledErrorMessage = styled(Text)`
+  color: ${(props) => props.theme.blocksRed};
 `;
 
 const getNormalizedAmount = (amount, decimals) =>
@@ -119,6 +125,7 @@ export default function VaultControls(props) {
   const zapperVaults = useSelector(selectZapperVaults());
   const zapperTokens = useSelector(selectZapperTokens());
   const zapperBalances = useSelector(selectZapperBalances());
+  const zapperError = useSelector(selectZapperError());
   const zapperVaultData = zapperVaults[vaultAddress.toLowerCase()];
   const isZappable = !!zapperVaultData;
   const isSupportedToken = ({ address, hide }) =>
@@ -195,7 +202,10 @@ export default function VaultControls(props) {
 
   const depositsDisabled = useMemo(() => {
     if (vault.type === 'v2') {
-      if (totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)) {
+      if (
+        !willZapIn &&
+        totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)
+      ) {
         return 'Vault deposit limit reached.';
       }
     } else if (
@@ -530,6 +540,10 @@ export default function VaultControls(props) {
                   </Box>
                 </ButtonGroup>
               </Box>
+              {zapperError &&
+                zapperError.poolAddress === vaultAddress.toLowerCase() && (
+                  <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
+                )}
             </Box>
           </ActionGroup>
 

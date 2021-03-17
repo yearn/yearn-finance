@@ -2,7 +2,7 @@ import { takeLatest, select, put, call } from 'redux-saga/effects';
 import BigNumber from 'bignumber.js';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import request from 'utils/request';
-import { zapperDataLoaded } from './actions';
+import { zapperDataLoaded, zapInError } from './actions';
 import { INIT_ZAPPER, ZAP_IN, ETH_ADDRESS } from './constants';
 
 const ZAPPER_API = 'https://api.zapper.fi/v1';
@@ -105,6 +105,9 @@ function* zapIn(action) {
     yield call(web3.eth.sendTransaction, zapInTransaction);
   } catch (error) {
     console.log('Zap Failed', error);
+    yield put(
+      zapInError({ message: `Zap Failed. ${error.message}`, poolAddress }),
+    );
   }
 }
 

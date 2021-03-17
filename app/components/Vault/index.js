@@ -1154,9 +1154,10 @@ const Vault = (props) => {
             {isZappable && !isMigratable && (
               <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                 <span>
-                  Deposit the underlying asset directly or zap in using any
-                  token in your wallet. Please be aware that for zaps, we use a
-                  default slippage limit of 1%.
+                  Deposit the underlying vault asset directly or zap in using
+                  almost any token in your wallet. Please be aware that for
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail.
                 </span>
               </Box>
             )}

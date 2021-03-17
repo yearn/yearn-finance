@@ -2,6 +2,7 @@ import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
 import RoundedSelect from 'components/RoundedSelect';
 import { useContract } from 'containers/DrizzleProvider/hooks';
+import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import {
   withdrawFromVault,
   withdrawAllFromVault,
@@ -13,16 +14,27 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+import { first } from 'lodash';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { selectTokenAllowance } from 'containers/App/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
+import {
+  selectZapperVaults,
+  selectZapperTokens,
+  selectZapperBalances,
+  selectZapperError,
+} from 'containers/Zapper/selectors';
+import { zapIn } from 'containers/Zapper/actions';
+import { DEFAULT_SLIPPAGE } from 'containers/Zapper/constants';
 import BackscratcherClaim from 'components/BackscratcherClaim';
 import MigrateVault from 'components/MigrateVault';
 import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
+  V2_WETH_VAULT_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
+import Text from 'components/Text';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -37,8 +49,7 @@ const StyledRoundedInput = styled(RoundedInput)`
   width: 100%;
 `;
 const StyledRoundedSelect = styled(RoundedSelect)`
-  width: 115px;
-  min-width: 115px;
+  width: 100%;
 `;
 
 const ActionGroup = styled(Box)`
@@ -55,6 +66,10 @@ const ButtonGroup = styled(Box)`
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
+`;
+
+const StyledErrorMessage = styled(Text)`
+  color: ${(props) => props.theme.blocksRed};
 `;
 
 const getNormalizedAmount = (amount, decimals) =>
@@ -105,6 +120,43 @@ export default function VaultControls(props) {
   const migrationData = useSelector(selectMigrationData);
   const isMigratable = !!migrationData[vaultAddress];
 
+  // ----- ZAPPER
+  const web3 = useWeb3();
+  const zapperVaults = useSelector(selectZapperVaults());
+  const zapperTokens = useSelector(selectZapperTokens());
+  const zapperBalances = useSelector(selectZapperBalances());
+  const zapperError = useSelector(selectZapperError());
+  const zapperVaultData = zapperVaults[vaultAddress.toLowerCase()];
+  const isZappable = !!zapperVaultData;
+  const isSupportedToken = ({ address, hide }) =>
+    address !== token.address && !hide && !!zapperTokens[address];
+  const isSameToken = ({ label, address }) =>
+    (vaultAddress === V2_WETH_VAULT_ADDRESS &&
+      (label === 'ETH' || label === 'WETH')) ||
+    address === token.address.toLowerCase();
+  const supportedTokenOptions = Object.values(zapperBalances)
+    .filter(isSupportedToken)
+    .filter((option) => !isSameToken(option))
+    .map(({ address, label, img }) => ({
+      value: address,
+      label,
+      icon: `https://zapper.fi/images/${img}`,
+    }));
+  supportedTokenOptions.unshift({
+    value: token.address,
+    label: pureEthereum ? 'ETH' : token.displayName,
+    icon: `https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
+  });
+  const [selectedSellToken, setSelectedSellToken] = useState(
+    first(supportedTokenOptions),
+  );
+  const sellToken = zapperBalances[selectedSellToken.value];
+
+  const willZapIn =
+    selectedSellToken && selectedSellToken.value !== token.address;
+
+  // ------
+
   const tokenContract = useContract(token.address);
 
   const tokenOptions = [
@@ -150,7 +202,10 @@ export default function VaultControls(props) {
 
   const depositsDisabled = useMemo(() => {
     if (vault.type === 'v2') {
-      if (totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)) {
+      if (
+        !willZapIn &&
+        totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)
+      ) {
         return 'Vault deposit limit reached.';
       }
     } else if (
@@ -231,6 +286,18 @@ export default function VaultControls(props) {
     );
   };
 
+  const zapperZap = () => {
+    dispatch(
+      zapIn({
+        web3,
+        poolAddress: zapperVaultData.address,
+        sellTokenAddress: sellToken.address,
+        sellAmount: depositGweiAmount,
+        slippagePercentage: DEFAULT_SLIPPAGE,
+      }),
+    );
+  };
+
   let vaultControlsWrapper;
 
   if (vaultIsPickle) {
@@ -260,12 +327,14 @@ export default function VaultControls(props) {
             alignItems="center"
           >
             <Box display="flex" direction="row" width={1}>
-              <SelectField
-                defaultValue={selectedPickleTokenType}
-                onChange={setSelectedPickleTokenType}
-                options={tokenOptions}
-                // onChange={setSelectedPickleTokenBalance}
-              />
+              <Box width={115} minWidth={115}>
+                <SelectField
+                  defaultValue={selectedPickleTokenType}
+                  onChange={setSelectedPickleTokenType}
+                  options={tokenOptions}
+                  // onChange={setSelectedPickleTokenBalance}
+                />
+              </Box>
               <Box ml={5} width={1}>
                 <AmountField
                   amount={depositAmount}
@@ -402,39 +471,79 @@ export default function VaultControls(props) {
             ml={isScreenMd ? '60px' : '0px'}
           >
             <Box display="flex" flexDirection="column">
-              <Balance amount={walletBalance} prefix="Your wallet: " />
-              <ButtonGroup width={1}>
-                <Box width={isScreenMd ? '185px' : '100%'}>
-                  <AmountField
-                    amount={depositAmount}
-                    amountSetter={setDepositAmount}
-                    gweiAmountSetter={setDepositGweiAmount}
-                    maxAmount={tokenBalance}
-                    decimals={decimals}
-                  />
-                </Box>
-                <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
-                  <ActionButton
-                    disabled={
-                      !vaultContract || !tokenContract || !!depositsDisabled
-                    }
-                    handler={deposit}
-                    text={
-                      (tokenAllowance !== undefined &&
-                        tokenAllowance !== '0') ||
-                      pureEthereum > 0
-                        ? 'Deposit'
-                        : 'Approve'
-                    }
-                    title="Deposit into vault"
-                    showTooltip
-                    tooltipText={
-                      depositsDisabled ||
-                      'Connect your wallet to deposit into vault'
+              <Balance
+                amount={
+                  isZappable && sellToken ? sellToken.balance : walletBalance
+                }
+                prefix="Available: "
+              />
+              <Box
+                display="flex"
+                flexDirection={isScreenMd ? 'row' : 'column'}
+                alignItems="center"
+                width={1}
+              >
+                <Box
+                  center
+                  mr={isScreenMd ? 5 : 0}
+                  width={isScreenMd ? '185px' : '100%'}
+                  minWidth={185}
+                >
+                  <SelectField
+                    defaultValue={selectedSellToken}
+                    onChange={(value) => {
+                      setDepositAmount(0);
+                      setSelectedSellToken(value);
+                    }}
+                    options={
+                      isZappable ? supportedTokenOptions : [selectedSellToken]
                     }
                   />
                 </Box>
-              </ButtonGroup>
+                <ButtonGroup width={1}>
+                  <Box width={isScreenMd ? '185px' : '100%'}>
+                    <AmountField
+                      amount={depositAmount}
+                      amountSetter={setDepositAmount}
+                      gweiAmountSetter={setDepositGweiAmount}
+                      maxAmount={
+                        isZappable && sellToken
+                          ? sellToken.balanceRaw
+                          : tokenBalance
+                      }
+                      decimals={
+                        isZappable && sellToken ? sellToken.decimals : decimals
+                      }
+                    />
+                  </Box>
+                  <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                    <ActionButton
+                      disabled={
+                        !vaultContract || !tokenContract || !!depositsDisabled
+                      }
+                      handler={() => (willZapIn ? zapperZap() : deposit())}
+                      text={
+                        (tokenAllowance !== undefined &&
+                          tokenAllowance !== '0') ||
+                        pureEthereum > 0 ||
+                        willZapIn
+                          ? 'Deposit'
+                          : 'Approve'
+                      }
+                      title="Deposit into vault"
+                      showTooltip
+                      tooltipText={
+                        depositsDisabled ||
+                        'Connect your wallet to deposit into vault'
+                      }
+                    />
+                  </Box>
+                </ButtonGroup>
+              </Box>
+              {zapperError &&
+                zapperError.poolAddress === vaultAddress.toLowerCase() && (
+                  <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
+                )}
             </Box>
           </ActionGroup>
 

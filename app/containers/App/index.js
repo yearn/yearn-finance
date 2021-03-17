@@ -5,9 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import Main from 'containers/Main/Loadable';
 import { useInjectSaga } from 'utils/injectSaga';
+import { useInjectReducer } from 'utils/injectReducer';
 import { useWeb3, useNotify } from 'containers/ConnectionProvider/hooks';
 import { useDrizzle } from 'containers/DrizzleProvider/hooks';
 import vaultsSaga from 'containers/Vaults/saga';
+import zapperSaga from 'containers/Zapper/saga';
+import zapperReducer from 'containers/Zapper/reducer';
+import { initializeZapper } from 'containers/Zapper/actions';
 import GlobalStyle from '../../global-styles';
 import saga from './saga';
 import { selectReady, selectUser } from './selectors';
@@ -24,6 +28,8 @@ const seenUpdatedSplashSeen = () =>
   new Date(updates.lastSplashPageUpdate);
 
 export default function App() {
+  useInjectReducer({ key: 'zapper', reducer: zapperReducer });
+  useInjectSaga({ key: 'zapper', saga: zapperSaga });
   useInjectSaga({ key: 'vaults', saga: vaultsSaga });
   useInjectSaga({ key: 'app', saga });
   const web3 = useWeb3();
@@ -37,6 +43,7 @@ export default function App() {
   const appReadyChanged = () => {
     if (ready) {
       dispatch(appReady(web3, drizzle, notify));
+      dispatch(initializeZapper());
     }
   };
   const init = () => {

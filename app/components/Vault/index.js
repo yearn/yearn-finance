@@ -28,6 +28,7 @@ import {
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
+import { selectZapperVaults } from 'containers/Zapper/selectors';
 import { getContractType } from 'utils/contracts';
 import TokenIcon from 'components/TokenIcon';
 import Icon from 'components/Icon';
@@ -331,6 +332,10 @@ const Vault = (props) => {
   const migrationData = useSelector(selectMigrationData);
   const vaultMigrationData = migrationData[address];
   const isMigratable = !!vaultMigrationData;
+
+  const zapperVaults = useSelector(selectZapperVaults());
+  const zapperVaultData = zapperVaults[address.toLowerCase()];
+  const isZappable = !!zapperVaultData;
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -1142,8 +1147,18 @@ const Vault = (props) => {
               </Notice>
             )}
             {isMigratable && (
-              <Box py={15} px={isScreenMd ? '76px' : '16px'}>
+              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                 <span>{vaultMigrationData.migrationMessage}</span>
+              </Box>
+            )}
+            {isZappable && !isMigratable && (
+              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+                <span>
+                  Deposit the underlying vault asset directly or zap in using
+                  almost any token in your wallet. Please be aware that for
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail.
+                </span>
               </Box>
             )}
             {emergencyShutdown && (

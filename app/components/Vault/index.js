@@ -9,11 +9,15 @@ import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
+import ButtonFilled from 'components/ButtonFilled';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
+
+import LazyApeLogo from 'images/lazy-ape-logo.svg';
+
 import {
   selectContractData,
   selectEthBalance,
@@ -26,6 +30,7 @@ import {
   MASTER_CHEF_ADDRESS,
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
+  LAZY_APE_ADDRESSES,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -81,6 +86,21 @@ import Box from 'components/Box';
 //   'totalWithdrawals',
 //   'depositedAmount',
 // ];
+
+const ButtonLinkIcon = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding-top: 5px;
+
+  img {
+    margin-right: 10px;
+  }
+  span {
+    text-decoration: none;
+  }
+`;
 
 const IconAndName = styled.div`
   display: flex;
@@ -698,6 +718,38 @@ const Vault = (props) => {
     openModal('contractStatistics', { vault });
   };
 
+  let lazyApeButton;
+  if (LAZY_APE_ADDRESSES.find((a) => a === vault.address)) {
+    lazyApeButton = (
+      <Box
+        display="flex"
+        flexDirection="column"
+        width={1}
+        mt={8}
+        ml={isScreenMd ? '60px' : '0px'}
+      >
+        <span>
+          Head to PowerPool and deposit {vault.tokenAlias} for additional yield
+          in the Yearn Lazy Ape pool.
+          <br />
+          This pool allows you to earn swap fees on top of your yVault yield.
+        </span>
+        <Box mt={20} width="240px">
+          <ButtonFilled color="primary">
+            <ButtonLinkIcon
+              className="wrapper"
+              href="https://powerindex.io/#/mainnet/0x9ba60ba98413a60db4c651d4afe5c937bbd8044b/supply"
+              target="_blank"
+            >
+              <img src={LazyApeLogo} alt="LazyApe" width="32" />
+              <span>Join lazy ape</span>
+            </ButtonLinkIcon>
+          </ButtonFilled>
+        </Box>
+      </Box>
+    );
+  }
+
   if (showDevVaults) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -815,6 +867,7 @@ const Vault = (props) => {
     //       : defaultZeroUserVaultStatisticsEarnings}
     //   </ColumnList>
     // );
+
     vaultControls = (
       <VaultControls
         vault={vault}
@@ -986,63 +1039,6 @@ const Vault = (props) => {
           </Grid>
         </Box>
       );
-
-      // if (vaultIsPickle) {
-      //   vaultAdditionalInfo = (
-      //     <Box my={50} mx={isScreenMd ? 50 : 20}>
-      //       <Grid container spacing={isScreenMd ? 8 : 5}>
-      //         <Grid className="amplify-vault-controls" item xs={12} md={6}>
-      //           <Text bold fontSize={4} mb={40}>
-      //             {amplifyVaultTitle}
-      //           </Text>
-      //           {vaultControls}
-      //         </Grid>
-      //         <Grid item xs={12} md={6}>
-      //           {amplifyVaultDesc}
-      //         </Grid>
-      //       </Grid>
-      //     </Box>
-      //   );
-      // } else {
-      //   vaultAdditionalInfo = (
-      //     <Box my={16} mx={isScreenMd ? 70 : 20}>
-      //       <Text bold fontSize={4} mb={6}>
-      //         Read carefully before use
-      //       </Text>
-      //       <Grid container spacing={isScreenMd ? 8 : 0}>
-      //         <Grid item xs={12} md={6}>
-      //           <Text large>
-      //             This vault converts your CRV into yveCRV, earning you a
-      //             continuous share of Curve fees. The more converted, the
-      //             greater the rewards. Every week, these can be claimed from the
-      //             vault as 3Crv (Curve’s 3pool LP token).
-      //           </Text>
-      //         </Grid>
-      //         <Grid item xs={12} md={6}>
-      //           <Text large>
-      //             The operation is non-reversible: You can only convert CRV into
-      //             yveCRV, as the CRV is perpetually staked in Curve{"'"}s voting
-      //             escrow.
-      //             <br />
-      //             <br />
-      //             After depositing join{' '}
-      //             <A
-      //               href="https://app.sushiswap.fi/token/0xc5bddf9843308380375a611c18b50fb9341f502a"
-      //               target="_blank"
-      //             >
-      //               WETH/yveCRV-DAO pool
-      //             </A>{' '}
-      //             for 🍣 rewards and then{' '}
-      //             <A href="https://app.pickle.finance/jars" target="_blank">
-      //               SLP YVECRV/ETH jar
-      //             </A>{' '}
-      //             for 🥒 rewards.
-      //           </Text>
-      //         </Grid>
-      //       </Grid>
-      //     </Box>
-      //   );
-      // }
     } else {
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
@@ -1170,7 +1166,10 @@ const Vault = (props) => {
             {vaultAdditionalInfo}
             {!amplifyVault && (
               <Card.Footer className={active && 'active'}>
-                <Footer small={!isScreenMd}>{vaultControls}</Footer>
+                <Footer small={!isScreenMd}>
+                  {vaultControls}
+                  {lazyApeButton}
+                </Footer>
               </Card.Footer>
             )}
           </Card.Body>

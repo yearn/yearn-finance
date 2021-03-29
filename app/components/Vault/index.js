@@ -264,6 +264,10 @@ const ApyErrorDescriptions = {
     tooltip:
       'This vault was just added or recently updated its strategy. APY data will be displayed after the first four harvests.',
   },
+  'http error': {
+    recommended: 'N/A',
+    tooltip: 'Encoutered API error',
+  },
 };
 
 const LinkWrap = (props) => {
@@ -427,7 +431,7 @@ const Vault = (props) => {
   let apyRecommended =
     apyType !== 'error'
       ? truncateApy(_.get(apy, 'recommended'))
-      : ApyErrorDescriptions[apy.description].recommended;
+      : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
 
   let grossApy = _.get(apy, 'data.grossApy');
   let netApy = _.get(apy, 'data.netApy');
@@ -455,7 +459,7 @@ const Vault = (props) => {
     </div>
   );
   if (apyType === 'error') {
-    apyTooltip = ApyErrorDescriptions[apy.description].tooltip;
+    apyTooltip = _.get(ApyErrorDescriptions, `[${apy.description}].tooltip`);
   } else if (vaultIsBackscratcher) {
     const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
     apyTooltip = (

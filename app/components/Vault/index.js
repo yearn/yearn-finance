@@ -264,6 +264,10 @@ const Vault = (props) => {
     emergencyShutdown,
   } = vault;
 
+  if (vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab') {
+    vault.emergencyShutdown = true;
+  }
+
   const { openModal } = useModal();
   const isScreenMd = useMediaQuery('(min-width:960px)');
 

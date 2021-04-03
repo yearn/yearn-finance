@@ -99,11 +99,6 @@ export default function VaultControls(props) {
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
-  const WETH_V2_ADDRESS = '0xa9fE4601811213c340e850ea305481afF02f5b28';
-  const YFI_V2_ADDRESS = '0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1';
-  const withdrawDisabled =
-    vault.address === WETH_V2_ADDRESS || vault.address === YFI_V2_ADDRESS;
-
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -567,9 +562,7 @@ export default function VaultControls(props) {
               <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
                 <ActionButton
                   className="action-button bold outline"
-                  disabled={
-                    !vaultContract || !tokenContract || withdrawDisabled
-                  }
+                  disabled={!vaultContract || !tokenContract}
                   handler={withdraw}
                   text="Withdraw"
                   title="Withdraw from vault"

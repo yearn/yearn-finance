@@ -353,11 +353,6 @@ const Vault = (props) => {
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
 
-  const WETH_V2_ADDRESS = '0xa9fE4601811213c340e850ea305481afF02f5b28';
-  const YFI_V2_ADDRESS = '0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1';
-  const withdrawDisabled =
-    vault.address === WETH_V2_ADDRESS || vault.address === YFI_V2_ADDRESS;
-
   const migrationData = useSelector(selectMigrationData);
   const vaultMigrationData = migrationData[address];
   const isMigratable = !!vaultMigrationData;
@@ -698,11 +693,6 @@ const Vault = (props) => {
     }
   } else {
     vaultAssets = truncateUsd(0);
-  }
-
-  if (withdrawDisabled) {
-    apyRecommended = 'N/A';
-    apyTooltip = 'Inactive';
   }
 
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {

@@ -16,7 +16,7 @@
 ## Setup
 
 ```
-cp .env.sample to .env
+cp .env.sample .env
 ```
 
 And then populate .env with your endpoints

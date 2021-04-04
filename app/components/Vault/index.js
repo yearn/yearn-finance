@@ -366,6 +366,21 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
+  const vaultBalanceDecimalNumbersCount = (function () {
+    switch (token.symbol) {
+      case 'YFI':
+        return 3;
+      default:
+        return 2;
+    }
+  })();
+
+  const vaultBalanceFormatter = (v) =>
+    v.toLocaleString('en', {
+      minimumFractionDigits: vaultBalanceDecimalNumbersCount,
+      maximumFractionDigits: vaultBalanceDecimalNumbersCount,
+    });
+
   const parsedEthBalance = ethBalance
     ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
     : '0.00';
@@ -597,18 +612,20 @@ const Vault = (props) => {
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(pricePerShare / 10 ** decimals)
-          .toFixed()
+          .toFixed(vaultBalanceDecimalNumbersCount)
       : '0.00';
   } else if (vaultIsBackscratcher) {
     vaultBalanceOf = balanceOf
-      ? new BigNumber(balanceOf).dividedBy(10 ** decimals).toFixed()
+      ? new BigNumber(balanceOf)
+          .dividedBy(10 ** decimals)
+          .toFixed(vaultBalanceDecimalNumbersCount)
       : '0.00';
   } else {
     vaultBalanceOf = balanceOf
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(getPricePerFullShare / 10 ** 18)
-          .toFixed()
+          .toFixed(vaultBalanceDecimalNumbersCount)
       : '0.00';
   }
 
@@ -988,7 +1005,10 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={vaultBalanceOf} />
+              <AnimatedNumber
+                value={vaultBalanceOf}
+                formatter={vaultBalanceFormatter}
+              />
             </Text>
             {/* <Text large bold>
               {multiplier}
@@ -1071,7 +1091,10 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={vaultBalanceOf} />
+              <AnimatedNumber
+                value={vaultBalanceOf}
+                formatter={vaultBalanceFormatter}
+              />
             </Text>
 
             <Text large bold>

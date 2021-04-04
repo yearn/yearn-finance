@@ -366,14 +366,14 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
-  const vaultBalanceDecimalNumbersCount = function () {
-    switch ('asdf') {
+  const vaultBalanceDecimalNumbersCount = (() => {
+    switch (token.symbol) {
       case 'YFI':
         return 3;
       default:
         return 2;
     }
-  };
+  })();
 
   const vaultBalanceFormatter = (v) =>
     v.toLocaleString('en', {

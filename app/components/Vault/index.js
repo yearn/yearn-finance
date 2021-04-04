@@ -366,7 +366,7 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
-  const vaultBalanceDecimalNumbersCount = (() => {
+  const vaultBalanceDecimalPlacesCount = (() => {
     switch (token.symbol) {
       case 'YFI':
         return 3;
@@ -377,8 +377,8 @@ const Vault = (props) => {
 
   const vaultBalanceFormatter = (v) =>
     v.toLocaleString('en', {
-      minimumFractionDigits: vaultBalanceDecimalNumbersCount,
-      maximumFractionDigits: vaultBalanceDecimalNumbersCount,
+      minimumFractionDigits: vaultBalanceDecimalPlacesCount,
+      maximumFractionDigits: vaultBalanceDecimalPlacesCount,
     });
 
   const parsedEthBalance = ethBalance
@@ -612,20 +612,20 @@ const Vault = (props) => {
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(pricePerShare / 10 ** decimals)
-          .toFixed(vaultBalanceDecimalNumbersCount)
+          .toFixed(vaultBalanceDecimalPlacesCount)
       : '0.00';
   } else if (vaultIsBackscratcher) {
     vaultBalanceOf = balanceOf
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
-          .toFixed(vaultBalanceDecimalNumbersCount)
+          .toFixed(vaultBalanceDecimalPlacesCount)
       : '0.00';
   } else {
     vaultBalanceOf = balanceOf
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(getPricePerFullShare / 10 ** 18)
-          .toFixed(vaultBalanceDecimalNumbersCount)
+          .toFixed(vaultBalanceDecimalPlacesCount)
       : '0.00';
   }
 
@@ -899,6 +899,7 @@ const Vault = (props) => {
         balanceOf={balanceOf}
         tokenBalance={tokenBalance}
         pickleContractsData={pickleContractsData}
+        balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher

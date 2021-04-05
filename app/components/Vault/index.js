@@ -1137,6 +1137,15 @@ const Vault = (props) => {
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
+            {['crvUSDN'].includes(vaultName) && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  50% of USDN CRV harvest is locked to boost yield. APY
+                  displayed reflects this.
+                </span>
+              </Notice>
+            )}
             {isMigratable && (
               <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                 <span>{vaultMigrationData.migrationMessage}</span>

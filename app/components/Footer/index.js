@@ -14,16 +14,13 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 40px;
-  @media (max-width: 1030px) {
-    display: none;
-  }
 `;
 
 const FooterInner = styled.div`
   margin-top: 56px;
   margin-bottom: 56px;
   width: 90%;
-  min-width: 1030px;
+  min-width: 640px;
   max-width: 1200px;
 `;
 
@@ -52,12 +49,23 @@ const Top = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 24px;
+    margin-bottom: 24px;
+  }
 `;
 
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 40px;
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 24px;
+  }
 `;
 
 const InvertedLogo = styled.img`
@@ -79,17 +87,17 @@ function Footer() {
             <a href="https://twitter.com/iearnfinance" target="_blank">
               <Logo src={TwitterLogo} alt="" />
             </a>
-            <a href="https://medium.com/iearn" target="_blank">
-              <InvertedLogo src={MediumLogo} alt="" />
-            </a>
-            <a href="https://discord.com/invite/6PNv2nF/" target="_blank">
-              <InvertedLogo src={DiscordLogo} alt="" />
-            </a>
             <a
               href="https://github.com/yearn/yearn-finance.git"
               target="_blank"
             >
               <Logo src={GithubLogo} alt="" />
+            </a>
+            <a href="https://discord.com/invite/6PNv2nF/" target="_blank">
+              <InvertedLogo src={DiscordLogo} alt="" />
+            </a>
+            <a href="https://medium.com/iearn" target="_blank">
+              <InvertedLogo src={MediumLogo} alt="" />
             </a>
           </TopRight>
         </Top>

@@ -903,7 +903,7 @@ const Vault = (props) => {
         );
         amplifyVaultDesc = (
           <Text>
-            This vault converts your CRV into yveCRV, earning you a continuous
+            This vault converts your CRV into yveCRV at a 1:1 ratio, earning you a continuous
             share of Curve’s trading fees. Every week, these rewards can be
             claimed here as 3Crv (Curve’s 3pool LP token). These unclaimed
             rewards can also be staked directly into our 3Crv yVault using the

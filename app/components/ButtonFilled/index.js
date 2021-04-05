@@ -15,8 +15,10 @@ export default function ButtonFilled(props) {
     title,
     onSubmit,
     color,
-    tooltipText,
-    showTooltip,
+    disabledTooltipText,
+    enabledTooltipText,
+    showTooltipWhenDisabled,
+    showTooltipWhenEnabled,
     outlined,
   } = props;
   const showDevVaults = useShowDevVaults();
@@ -58,14 +60,18 @@ export default function ButtonFilled(props) {
     },
   }))(Button);
 
-  if (disabled && showTooltip) {
+  if (
+    (disabled && showTooltipWhenDisabled) ||
+    (!disabled && showTooltipWhenEnabled)
+  ) {
     const adjustedButtonProps = {
       disabled,
       component: disabled ? 'div' : undefined,
       onClick: disabled ? undefined : onClick,
     };
+    const tooltipTitle = disabled ? disabledTooltipText : enabledTooltipText;
     return (
-      <Tooltip title={tooltipText}>
+      <Tooltip title={tooltipTitle}>
         <ColorButton
           className={className}
           variant="contained"

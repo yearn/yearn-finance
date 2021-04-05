@@ -200,6 +200,9 @@ export default function VaultControls(props) {
     totalAssets,
   ]);
 
+  const approvalExplainer =
+    'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
+
   const depositsDisabled = useMemo(() => {
     if (vault.type === 'v2') {
       if (
@@ -307,6 +310,13 @@ export default function VaultControls(props) {
     } else if (selectedPickleTokenType.value === 'crv') {
       maxAmount = pickleContractsData.crvBalanceRaw;
     }
+    const depositHasBeenApproved =
+      (pickleContractsData.crvAllowance !== undefined &&
+        pickleContractsData.crvAllowance !== '0') ||
+      selectedPickleTokenType.value === 'eth';
+    const pickleJarDepositHasBeenApproved =
+      pickleContractsData.pickleJarAllowance !== undefined &&
+      pickleContractsData.pickleJarAllowance !== '0';
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
@@ -352,19 +362,15 @@ export default function VaultControls(props) {
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
                 handler={zap}
-                text={
-                  (pickleContractsData.crvAllowance !== undefined &&
-                    pickleContractsData.crvAllowance !== '0') ||
-                  selectedPickleTokenType.value === 'eth'
-                    ? 'Deposit'
-                    : 'Approve'
-                }
+                text={depositHasBeenApproved ? 'Deposit' : 'Approve'}
                 title="Deposit into vault"
-                showTooltip
-                tooltipText={
+                showTooltipWhenDisabled
+                disabledTooltipText={
                   depositsDisabled ||
                   'Connect your wallet to deposit into vault'
                 }
+                showTooltipWhenEnabled={!depositHasBeenApproved}
+                enabledTooltipText={approvalExplainer}
               />
             </Box>
           </ActionGroup>
@@ -393,18 +399,15 @@ export default function VaultControls(props) {
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
                 handler={depositPickleFarm}
-                text={
-                  pickleContractsData.pickleJarAllowance !== undefined &&
-                  pickleContractsData.pickleJarAllowance !== '0'
-                    ? 'Deposit'
-                    : 'Approve'
-                }
+                text={pickleJarDepositHasBeenApproved ? 'Deposit' : 'Approve'}
                 title="Deposit into vault"
-                showTooltip
-                tooltipText={
+                showTooltipWhenDisabled
+                disabledTooltipText={
                   depositsDisabled ||
                   'Connect your wallet to deposit into vault'
                 }
+                showTooltipWhenEnabled={!pickleJarDepositHasBeenApproved}
+                enabledTooltipText={approvalExplainer}
               />
             </Box>
           </ActionGroup>
@@ -412,6 +415,9 @@ export default function VaultControls(props) {
       </Wrapper>
     );
   } else if (vaultIsBackscratcher) {
+    const depositHasBeenApproved =
+      (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+      pureEthereum > 0;
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
@@ -436,18 +442,15 @@ export default function VaultControls(props) {
                   !vaultContract || !tokenContract || !!depositsDisabled
                 }
                 handler={deposit}
-                text={
-                  (tokenAllowance !== undefined && tokenAllowance !== '0') ||
-                  pureEthereum > 0
-                    ? 'Deposit'
-                    : 'Approve'
-                }
+                text={depositHasBeenApproved ? 'Deposit' : 'Approve'}
                 title="Deposit into vault"
-                showTooltip
-                tooltipText={
+                showTooltipWhenDisabled
+                disabledTooltipText={
                   depositsDisabled ||
                   'Connect your wallet to deposit into vault'
                 }
+                showTooltipWhenEnabled={!depositHasBeenApproved}
+                enabledTooltipText={approvalExplainer}
               />
             </Box>
           </ActionGroup>
@@ -459,6 +462,10 @@ export default function VaultControls(props) {
       </Wrapper>
     );
   } else {
+    const depositHasBeenApproved =
+      (tokenAllowance !== undefined && tokenAllowance !== '0') ||
+      pureEthereum > 0 ||
+      willZapIn;
     vaultControlsWrapper = (
       <Wrapper>
         <Box
@@ -522,20 +529,15 @@ export default function VaultControls(props) {
                         !vaultContract || !tokenContract || !!depositsDisabled
                       }
                       handler={() => (willZapIn ? zapperZap() : deposit())}
-                      text={
-                        (tokenAllowance !== undefined &&
-                          tokenAllowance !== '0') ||
-                        pureEthereum > 0 ||
-                        willZapIn
-                          ? 'Deposit'
-                          : 'Approve'
-                      }
+                      text={depositHasBeenApproved ? 'Deposit' : 'Approve'}
                       title="Deposit into vault"
-                      showTooltip
-                      tooltipText={
+                      showTooltipWhenDisabled
+                      disabledTooltipText={
                         depositsDisabled ||
                         'Connect your wallet to deposit into vault'
                       }
+                      showTooltipWhenEnabled={!depositHasBeenApproved}
+                      enabledTooltipText={approvalExplainer}
                     />
                   </Box>
                 </ButtonGroup>
@@ -566,8 +568,8 @@ export default function VaultControls(props) {
                   handler={withdraw}
                   text="Withdraw"
                   title="Withdraw from vault"
-                  showTooltip
-                  tooltipText="Connect your wallet to withdraw from vault"
+                  showTooltipWhenDisabled
+                  disabledTooltipText="Connect your wallet to withdraw from vault"
                 />
               </Box>
             </ButtonGroup>
@@ -593,8 +595,8 @@ export default function VaultControls(props) {
             handler={withdrawAll}
             text="Withdraw All"
             title="Withdraw balance from vault"
-            showTooltip
-            tooltipText="Connect your wallet to withdraw from vault"
+            showTooltipWhenDisabled
+            disabledTooltipText="Connect your wallet to withdraw from vault"
             outlined={1}
           />
         </Box>
@@ -683,8 +685,10 @@ function ActionButton({
   handler,
   title,
   text,
-  tooltipText,
-  showTooltip,
+  disabledTooltipText,
+  enabledTooltipText,
+  showTooltipWhenDisabled,
+  showTooltipWhenEnabled,
   outlined,
 }) {
   return (
@@ -694,9 +698,11 @@ function ActionButton({
       onClick={() => handler()}
       color="primary"
       title={title}
-      tooltipText={tooltipText}
-      showTooltip={showTooltip}
+      disabledTooltipText={disabledTooltipText}
+      showTooltipWhenDisabled={showTooltipWhenDisabled}
       outlined={outlined}
+      showTooltipWhenEnabled={showTooltipWhenEnabled}
+      enabledTooltipText={enabledTooltipText}
     >
       {text}
     </ButtonFilled>

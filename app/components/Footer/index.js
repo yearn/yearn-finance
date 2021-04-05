@@ -65,6 +65,7 @@ const Bottom = styled.div`
     flex-direction: column;
     align-items: center;
     grid-gap: 24px;
+    margin-top: 0px;
   }
 `;
 

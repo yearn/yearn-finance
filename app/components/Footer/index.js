@@ -14,12 +14,17 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 40px;
+  @media (max-width: 1030px) {
+    display: none;
+  }
 `;
 
 const FooterInner = styled.div`
   margin-top: 56px;
   margin-bottom: 56px;
-  width: 1200px;
+  width: 90%;
+  min-width: 1030px;
+  max-width: 1200px;
 `;
 
 const TopLeft = styled.div``;

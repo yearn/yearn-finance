@@ -77,7 +77,12 @@ function* fetchVaults() {
       return newVault;
     });
 
-    yield put(vaultsLoaded(correctedVaults));
+    const filteredVaults = _.filter(
+      correctedVaults,
+      (vault) => vault.address !== '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a',
+    );
+
+    yield put(vaultsLoaded(filteredVaults));
   } catch (err) {
     console.log('Error reading vaults', err);
   }

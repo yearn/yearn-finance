@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
+import blacklist from 'containers/Vaults/blacklist.json';
 import { approveTxSpend } from 'utils/contracts';
 import request from 'utils/request';
 import { APP_INITIALIZED } from 'containers/App/constants';
@@ -79,7 +80,7 @@ function* fetchVaults() {
 
     const filteredVaults = _.filter(
       correctedVaults,
-      (vault) => vault.address !== '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a',
+      (vault) => _.includes(blacklist, vault.address) === false,
     );
 
     yield put(vaultsLoaded(filteredVaults));

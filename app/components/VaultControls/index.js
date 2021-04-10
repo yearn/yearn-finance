@@ -208,6 +208,12 @@ export default function VaultControls(props) {
       ) {
         return 'Vault deposit limit reached.';
       }
+      // fix: disable deposit button if value is 0
+      // note: resolves issue #252 from iearn-finance repo
+      // this issue only affects v2 & is mis-ticketed as v1 (iearn-finance)
+      if (depositGweiAmount <= 0) {
+        return 'Value must be greater than 0.';
+      }
     } else if (
       vault.type === 'v1' &&
       vault.address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1'

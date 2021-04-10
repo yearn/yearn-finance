@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { keyBy } from 'lodash';
-import { ZAPPER_DATA_LOADED, ZAP_IN_ERROR } from './constants';
+import { ZAPPER_DATA_LOADED, ZAP_IN_ERROR, ZAP_OUT_ERROR } from './constants';
 
 export const initialState = {
   tokens: {},
@@ -20,6 +20,10 @@ const zapperReducer = (state = initialState, action) =>
         break;
       }
       case ZAP_IN_ERROR: {
+        draft.error = action.payload;
+        break;
+      }
+      case ZAP_OUT_ERROR: {
         draft.error = action.payload;
         break;
       }

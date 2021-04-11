@@ -1157,7 +1157,9 @@ const Vault = (props) => {
                   Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
-                  zaps with low-liquidity tokens may fail.
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault's underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.
                 </span>
               </Box>
             )}

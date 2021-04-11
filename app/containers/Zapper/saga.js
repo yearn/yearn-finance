@@ -1,12 +1,10 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects';
 import BigNumber from 'bignumber.js';
-import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import request from 'utils/request';
+import { selectAccount } from 'containers/ConnectionProvider/selectors';
+import { selectContractData } from 'containers/App/selectors';
 import { zapperDataLoaded, zapInError, zapOutError } from './actions';
 import { INIT_ZAPPER, ZAP_IN, ETH_ADDRESS, ZAP_OUT } from './constants';
-import {
-  selectContractData,
-} from 'containers/App/selectors';
 
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
@@ -122,14 +120,12 @@ function* zapOut(action) {
     withdrawalAmount,
     decimals,
     selectedWithdrawToken,
-    pureEthereum,
   } = action.payload;
 
   const ownerAddress = yield select(selectAccount());
   const vaultContractData = yield select(
     selectContractData(vaultContract.address),
   );
-
 
   const v2Vault = _.get(vaultContractData, 'pricePerShare');
   let sharesForWithdrawal;
@@ -192,7 +188,7 @@ function* zapOut(action) {
   } catch (error) {
     console.log('Zap Failed', error);
     yield put(
-      zapOutError({ message: `Zap Failed. ${error.message}`, poolAddress }),
+      zapOutError({ message: `Zap Failed. ${error.message}`, vaultContract }),
     );
   }
 }

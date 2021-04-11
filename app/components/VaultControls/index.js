@@ -184,7 +184,15 @@ export default function VaultControls(props) {
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
   const [depositGweiAmount, setDepositGweiAmount] = useState(0);
   const zapperImgUrl = 'https://zapper.fi/images/';
-  let tmpWithdrawTokens = [
+
+  const tmpWithdrawTokens = [];
+  [
+    {
+      label: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      icon: `${zapperImgUrl}ETH-icon.png`,
+      value: 'ETH',
+    },
     {
       label: 'DAI',
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -209,21 +217,18 @@ export default function VaultControls(props) {
       icon: `${zapperImgUrl}WBTC-icon.png`,
       value: 'WBTC',
     },
-  ];
+  ].map((t) => {
+    if (t.label !== vault.displayName) {
+      tmpWithdrawTokens.push(t);
+    }
+    return t;
+  });
 
-  if (vault.displayName !== 'ETH') {
-    tmpWithdrawTokens.unshift({
-      label: 'ETH',
-      address: '0x0000000000000000000000000000000000000000',
-      icon: `${zapperImgUrl}ETH-icon.png`,
-      value: 'ETH',
-    });
-  }
   tmpWithdrawTokens.unshift({
     label: vault.displayName,
-    address: '0x0000000000000000000000000000000000000000',
+    address: vault.token.address,
     isVault: true,
-    icon: vault.icon,
+    icon: vault.token.icon,
     value: vault.displayName,
   });
   const withdrawTokens = tmpWithdrawTokens;
@@ -283,7 +288,7 @@ export default function VaultControls(props) {
     console.log(`Withdrawing:`, withdrawalGweiAmount);
     if (
       selectedWithdrawToken.address.toLowerCase() ===
-      vault.address.toLowerCase()
+      vault.token.address.toLowerCase()
     ) {
       dispatch(
         withdrawFromVault({
@@ -627,8 +632,8 @@ export default function VaultControls(props) {
               <Box
                 center
                 mr={isScreenMd ? 5 : 0}
-                width={isScreenMd ? '130px' : '100%'}
-                minWidth={130}
+                width={isScreenMd ? '150px' : '100%'}
+                minWidth={150}
                 ml={5}
               >
                 <SelectField

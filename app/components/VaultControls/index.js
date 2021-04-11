@@ -24,7 +24,7 @@ import {
   selectZapperBalances,
   selectZapperError,
 } from 'containers/Zapper/selectors';
-import { zapIn } from 'containers/Zapper/actions';
+import { zapIn, zapOut } from 'containers/Zapper/actions';
 import { DEFAULT_SLIPPAGE } from 'containers/Zapper/constants';
 import BackscratcherClaim from 'components/BackscratcherClaim';
 import MigrateVault from 'components/MigrateVault';
@@ -183,6 +183,59 @@ export default function VaultControls(props) {
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
   const [depositGweiAmount, setDepositGweiAmount] = useState(0);
+  const zapperImgUrl = 'https://zapper.fi/images/';
+
+  const tmpWithdrawTokens = [];
+  [
+    {
+      label: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      icon: `${zapperImgUrl}ETH-icon.png`,
+      value: 'ETH',
+    },
+    {
+      label: 'DAI',
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      icon: `${zapperImgUrl}DAI-icon.png`,
+      value: 'DAI',
+    },
+    {
+      label: 'USDC',
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      icon: `${zapperImgUrl}USDC-icon.png`,
+      value: 'USDC',
+    },
+    {
+      label: 'USDT',
+      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      icon: `${zapperImgUrl}USDT-icon.png`,
+      value: 'USDT',
+    },
+    {
+      label: 'WBTC',
+      address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+      icon: `${zapperImgUrl}WBTC-icon.png`,
+      value: 'WBTC',
+    },
+  ].map((t) => {
+    if (t.label !== vault.displayName) {
+      tmpWithdrawTokens.push(t);
+    }
+    return t;
+  });
+
+  tmpWithdrawTokens.unshift({
+    label: vault.displayName,
+    address: vault.token.address,
+    isVault: true,
+    icon: vault.token.icon,
+    value: vault.displayName,
+  });
+  const withdrawTokens = tmpWithdrawTokens;
+
+  const [selectedWithdrawToken, setSelectedWithdrawToken] = useState(
+    withdrawTokens[0],
+  );
 
   const tokenContractAddress =
     (tokenContract && tokenContract.address) || '0x0';
@@ -239,14 +292,31 @@ export default function VaultControls(props) {
 
   const withdraw = () => {
     console.log(`Withdrawing:`, withdrawalGweiAmount);
-    dispatch(
-      withdrawFromVault({
-        vaultContract,
-        withdrawalAmount: withdrawalGweiAmount,
-        decimals,
-        pureEthereum,
-      }),
-    );
+    if (
+      selectedWithdrawToken.address.toLowerCase() ===
+      vault.token.address.toLowerCase()
+    ) {
+      dispatch(
+        withdrawFromVault({
+          vaultContract,
+          withdrawalAmount: withdrawalGweiAmount,
+          decimals,
+          pureEthereum,
+        }),
+      );
+    } else {
+      dispatch(
+        zapOut({
+          web3,
+          slippagePercentage: DEFAULT_SLIPPAGE,
+          vaultContract,
+          withdrawalAmount: withdrawalGweiAmount,
+          decimals,
+          selectedWithdrawToken,
+          pureEthereum,
+        }),
+      );
+    }
   };
 
   const withdrawAll = () => {
@@ -565,7 +635,28 @@ export default function VaultControls(props) {
                   decimals={decimals}
                 />
               </Box>
-              <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+              <Box
+                center
+                mr={isScreenMd ? 5 : 0}
+                width={isScreenMd ? '150px' : '100%'}
+                minWidth={150}
+                ml={5}
+              >
+                <SelectField
+                  defaultValue={withdrawTokens[0]}
+                  value={selectedWithdrawToken}
+                  options={withdrawTokens}
+                  onChange={(newValue) => {
+                    setSelectedWithdrawToken(newValue);
+                    console.log(
+                      'selectedWithdrawToken',
+                      selectedWithdrawToken,
+                      newValue,
+                    );
+                  }}
+                />
+              </Box>
+              <Box width={isScreenMd ? '130px' : '100%'}>
                 <ActionButton
                   className="action-button bold outline"
                   disabled={!vaultContract || !tokenContract}

@@ -369,9 +369,7 @@ const Vault = (props) => {
   // const tokenName = name || _.get(tokenContractData, 'name');
 
   let vaultName;
-  if (vaultIsBackscratcher) {
-    vaultName = 'CRV';
-  } else if (vaultIsPickle) {
+  if (vaultIsPickle) {
     vaultName = 'yveCRV - ETH';
   } else {
     vaultName = displayName || name || address;

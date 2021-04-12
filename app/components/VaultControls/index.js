@@ -626,6 +626,7 @@ export default function VaultControls(props) {
                 )}
             </Box>
           </ActionGroup>
+
           <ActionGroup
             ml={isScreenMd ? '60px' : '0px'}
             direction={isScreenMd ? 'row' : 'column'}

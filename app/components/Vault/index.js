@@ -30,6 +30,7 @@ import {
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   LAZY_APE_ADDRESSES,
+  YVBOOST_ADDRESS,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -90,7 +91,7 @@ const IconName = styled.div`
 
 const A = styled.a`
   display: inline-grid;
-  text-decoration: underline;
+  text-decoration: none;
 `;
 
 const Td = styled.td`
@@ -309,6 +310,7 @@ const Vault = (props) => {
 
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
+  const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
 
   const migrationData = useSelector(selectMigrationData);
   const vaultMigrationData = migrationData[address];
@@ -828,21 +830,40 @@ const Vault = (props) => {
         );
         amplifyVaultDesc = (
           <Text>
-            This vault converts your CRV into yveCRV at a 1:1 ratio, earning you
-            a continuous share of Curve’s trading fees. Every week, these
-            rewards can be claimed here as 3Crv (Curve’s 3pool LP token). These
-            unclaimed rewards can also be staked directly into our 3Crv yVault
-            using the Stake button on the left.
+            <b>Note:</b> yveCRV was replaced with more powerful yvBOOST vault.
+            Consider yvBOOST instead of using "Restake" button every week.
+            <br />
+            <br />
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve’s trading fees. Every week, these rewards can be
+            claimed here as 3Crv (Curve’s 3pool LP token). These rewards can
+            also be restaked into more yveCRV with one click.
             <br />
             <br />
             This operation is non-reversible: you can only convert CRV into
             yveCRV, as any deposited CRV is perpetually staked in Curve’s voting
             escrow.
-            <br />
-            <br />
-            If you prefer to earn higher returns on your CRV in an LP position,
-            deposit into the yveCRV-ETH pJar.
           </Text>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                {amplifyVaultDesc}
+              </Grid>
+            </Grid>
+          </Box>
         );
       }
       if (vaultIsPickle) {
@@ -852,30 +873,7 @@ const Vault = (props) => {
         vaultAssetsTooltip = null;
         amplifyVaultTitle = (
           <Text bold fontSize={4} mb={40}>
-            Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP position
-          </Text>
-        );
-        amplifyVaultDesc = (
-          <Text>
-            This vault performs a multi-step transaction with your ETH or CRV
-            which:
-            <br />
-            <br />
-            1. Makes a deposit into yveCRV.
-            <br />
-            2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for SUSHI
-            🍣 rewards.
-            <br />
-            3. Deposits this SLP into the yveCRV-ETH pJar on Pickle Finance for
-            PICKLE 🥒 rewards.
-            <br />
-            <br />
-            Note: Remember to stake your Pickle LP manually after the
-            transaction completes. If you’d like to claim earned PICKLE 🥒
-            rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
-            <A href="https://app.pickle.finance/farms" target="_blank">
-              https://app.pickle.finance/farms
-            </A>
+            Migrate your yveCRV-ETH LP into yvBOOST-ETH LP
           </Text>
         );
         styledIcon = (
@@ -884,6 +882,52 @@ const Vault = (props) => {
             <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
             <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
           </StyledDoubleTokenIcon>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid item xs={12} md={12}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+            </Grid>
+          </Box>
+        );
+      }
+      if (vaultIsYvBoost) {
+        amplifyVaultTitle = (
+          <Text bold fontSize={4} mb={40}>
+            Deposit yveCRV or zap in any token to earn compounding 3Crv rewards
+          </Text>
+        );
+        amplifyVaultDesc = (
+          <Text>
+            This vault holds yveCRV tokens, which grant you a continuous share
+            of Curve’s trading fees. Every week, these rewards can be claimed as
+            3Crv (Curve’s 3pool LP token). This vault automatically harvests
+            these 3Crv rewards and sells them for more yveCRV, compounding your
+            returns over time.
+          </Text>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                {amplifyVaultDesc}
+              </Grid>
+            </Grid>
+          </Box>
         );
       }
       vaultTop = (
@@ -946,27 +990,6 @@ const Vault = (props) => {
             </Text>
           </Hidden>
         </ColumnListAmplify>
-      );
-
-      vaultAdditionalInfo = (
-        <Box my={50} mx={isScreenMd ? 50 : 20}>
-          <Grid container spacing={isScreenMd ? 8 : 5}>
-            <Grid className="amplify-vault-controls" item xs={12} md={6}>
-              {amplifyVaultTitle}
-              {vaultControls}
-            </Grid>
-            <Grid
-              container
-              item
-              direction="row"
-              alignItems="center"
-              xs={12}
-              md={6}
-            >
-              {amplifyVaultDesc}
-            </Grid>
-          </Grid>
-        </Box>
       );
     } else {
       vaultTop = (

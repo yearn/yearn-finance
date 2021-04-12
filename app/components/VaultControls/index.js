@@ -1,6 +1,7 @@
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
 import RoundedSelect from 'components/RoundedSelect';
+import Grid from '@material-ui/core/Grid';
 import { useContract } from 'containers/DrizzleProvider/hooks';
 import { useWeb3 } from 'containers/ConnectionProvider/hooks';
 import {
@@ -32,9 +33,11 @@ import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
+  YVBOOST_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 import Text from 'components/Text';
+import Label from 'components/Label';
 
 const MaxWrapper = styled.div`
   cursor: pointer;
@@ -43,6 +46,11 @@ const MaxWrapper = styled.div`
   color: initial;
   position: relative;
   top: -2px;
+`;
+
+const PickleControl = styled.div`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const StyledRoundedInput = styled(RoundedInput)`
@@ -99,6 +107,7 @@ export default function VaultControls(props) {
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
+  const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
 
   let vaultBalanceOf;
   if (v2Vault) {
@@ -387,107 +396,77 @@ export default function VaultControls(props) {
     } else if (selectedPickleTokenType.value === 'crv') {
       maxAmount = pickleContractsData.crvBalanceRaw;
     }
-    const depositHasBeenApproved =
-      (pickleContractsData.crvAllowance !== undefined &&
-        pickleContractsData.crvAllowance !== '0') ||
-      selectedPickleTokenType.value === 'eth';
-    const pickleJarDepositHasBeenApproved =
-      pickleContractsData.pickleJarAllowance !== undefined &&
-      pickleContractsData.pickleJarAllowance !== '0';
+    const pickleDescriptions = [
+      {
+        main: '1. You have to unstake your LP Tokens',
+        sub: 'Available Pickle SLP: ',
+      },
+      {
+        main:
+          '2. Then approve and migrate from yveCRV-ETH LP into yvBOOST-ETH LP to enjoy 🍣 and 🥒 rewards',
+        sub: 'Available SLP: ',
+      },
+      {
+        main:
+          '3. Last step! After the previous transaction completes, approve and stake your Pickle LPs using the box below',
+        sub: 'Available Pickle SLP: ',
+      },
+    ];
+    const pickleNote =
+      'Note: If you want to claim PICKLE 🥒 rewards or withdraw yout yvBOOST-ETH SLP, please, use UI at';
+    const pickleNoteLink = 'https://app.pickle.finance/farms';
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
-          {selectedPickleTokenType.value === 'eth' && (
-            <Balance
-              amount={pickleContractsData.ethBalance}
-              prefix="Available ETH: "
-            />
-          )}
-          {selectedPickleTokenType.value === 'crv' && (
-            <Balance
-              amount={pickleContractsData.crvBalance}
-              prefix="Available CRV: "
-            />
-          )}
-          <ActionGroup
-            direction={isScreenMd ? 'row' : 'column'}
-            alignItems="center"
-          >
-            <Box display="flex" direction="row" width={1}>
-              <Box width={115} minWidth={115}>
-                <SelectField
-                  defaultValue={selectedPickleTokenType}
-                  onChange={setSelectedPickleTokenType}
-                  options={tokenOptions}
-                  // onChange={setSelectedPickleTokenBalance}
-                />
-              </Box>
-              <Box ml={5} width={1}>
-                <AmountField
-                  amount={depositAmount}
-                  amountSetter={setDepositAmount}
-                  gweiAmountSetter={setDepositGweiAmount}
-                  maxAmount={maxAmount}
-                  decimals={decimals}
-                />
-              </Box>
-            </Box>
-            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
-              <ActionButton
-                className="action-button dark"
-                disabled={
-                  !vaultContract || !tokenContract || !!depositsDisabled
-                }
-                handler={zap}
-                text={depositHasBeenApproved ? 'Deposit' : 'Approve'}
-                title="Deposit into vault"
-                showTooltipWhenDisabled
-                disabledTooltipText={
-                  depositsDisabled ||
-                  'Connect your wallet to deposit into vault'
-                }
-                showTooltipWhenEnabled={!depositHasBeenApproved}
-                enabledTooltipText={approvalExplainer}
-              />
-            </Box>
-          </ActionGroup>
-
-          <Balance
-            amount={pickleContractsData.pickleJarBalance}
-            prefix="Available Pickle LP: "
-          />
-          <ActionGroup
-            direction={isScreenMd ? 'row' : 'column'}
-            alignItems="center"
-          >
-            <Box width={1}>
-              <AmountField
-                amount={pickleDepositAmount}
-                amountSetter={setPickleDepositAmount}
-                gweiAmountSetter={setPickleDepositGweiAmount}
-                maxAmount={pickleContractsData.pickleJarBalanceRaw}
-                decimals={decimals}
-              />
-            </Box>
-            <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
-              <ActionButton
-                className="action-button dark"
-                disabled={
-                  !vaultContract || !tokenContract || !!depositsDisabled
-                }
-                handler={depositPickleFarm}
-                text={pickleJarDepositHasBeenApproved ? 'Deposit' : 'Approve'}
-                title="Deposit into vault"
-                showTooltipWhenDisabled
-                disabledTooltipText={
-                  depositsDisabled ||
-                  'Connect your wallet to deposit into vault'
-                }
-                showTooltipWhenEnabled={!pickleJarDepositHasBeenApproved}
-                enabledTooltipText={approvalExplainer}
-              />
-            </Box>
-          </ActionGroup>
+          {pickleDescriptions.map((description) => (
+            <>
+              <Label fontSize={16}>{description.main}</Label>
+              <PickleControl>
+                <Grid xs={12} md={6}>
+                  <Balance amount={walletBalance} prefix={description.sub} />
+                  <ActionGroup
+                    direction={isScreenMd ? 'row' : 'column'}
+                    alignItems="center"
+                  >
+                    <Box width={1}>
+                      <AmountField
+                        amount={pickleDepositAmount}
+                        amountSetter={setPickleDepositAmount}
+                        gweiAmountSetter={setPickleDepositGweiAmount}
+                        maxAmount={pickleContractsData.pickleJarBalanceRaw}
+                        decimals={decimals}
+                        placeholder={'Amount'}
+                      />
+                    </Box>
+                    <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
+                      <ActionButton
+                        className="action-button"
+                        disabled={
+                          !vaultContract || !tokenContract || !!depositsDisabled
+                        }
+                        handler={depositPickleFarm}
+                        text={
+                          pickleContractsData.pickleJarAllowance !==
+                            undefined &&
+                          pickleContractsData.pickleJarAllowance !== '0'
+                            ? 'Deposit'
+                            : 'Approve'
+                        }
+                        title="Deposit into vault"
+                        showTooltip
+                        tooltipText={
+                          depositsDisabled ||
+                          'Connect your wallet to deposit into vault'
+                        }
+                      />
+                    </Box>
+                  </ActionGroup>
+                </Grid>
+              </PickleControl>
+            </>
+          ))}
+          <Label fontSize={16}> {pickleNote} </Label>
+          <a href={pickleNoteLink}> {pickleNoteLink} </a>
         </Box>
       </Wrapper>
     );
@@ -510,6 +489,7 @@ export default function VaultControls(props) {
                 gweiAmountSetter={setDepositGweiAmount}
                 maxAmount={tokenBalance}
                 decimals={decimals}
+                placeholder="Amount"
               />
             </Box>
             <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
@@ -535,6 +515,91 @@ export default function VaultControls(props) {
             isScreenMd={isScreenMd}
             vaultAddress={vaultAddress}
           />
+        </Box>
+      </Wrapper>
+    );
+  } else if (vaultIsYvBoost) {
+    vaultControlsWrapper = (
+      <Wrapper>
+        <Box display="flex" flexDirection="column" width={1}>
+          <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
+            <Box display="flex" flexDirection="column">
+              <Balance
+                amount={
+                  isZappable && sellToken ? sellToken.balance : walletBalance
+                }
+                prefix={`Available ${selectedSellToken.label}: `}
+              />
+              <Box
+                display="flex"
+                flexDirection={isScreenMd ? 'row' : 'column'}
+                alignItems="center"
+                width={1}
+              >
+                <Box
+                  center
+                  mr={isScreenMd ? 5 : 0}
+                  width={isScreenMd ? '179px' : '100%'}
+                  minWidth={179}
+                >
+                  <SelectField
+                    defaultValue={selectedSellToken}
+                    onChange={(value) => {
+                      setDepositAmount(0);
+                      setSelectedSellToken(value);
+                    }}
+                    flexGrow={1}
+                    options={
+                      isZappable ? supportedTokenOptions : [selectedSellToken]
+                    }
+                  />
+                </Box>
+                <ButtonGroup width={1}>
+                  <Box width={isScreenMd ? '185px' : '100%'}>
+                    <AmountField
+                      amount={depositAmount}
+                      amountSetter={setDepositAmount}
+                      gweiAmountSetter={setDepositGweiAmount}
+                      maxAmount={
+                        isZappable && sellToken
+                          ? sellToken.balanceRaw
+                          : tokenBalance
+                      }
+                      decimals={
+                        isZappable && sellToken ? sellToken.decimals : decimals
+                      }
+                    />
+                  </Box>
+                  <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                    <ActionButton
+                      disabled={
+                        !vaultContract || !tokenContract || !!depositsDisabled
+                      }
+                      handler={() => (willZapIn ? zapperZap() : deposit())}
+                      text={
+                        (tokenAllowance !== undefined &&
+                          tokenAllowance !== '0') ||
+                        pureEthereum > 0 ||
+                        willZapIn
+                          ? 'Deposit'
+                          : 'Approve'
+                      }
+                      title="Deposit into vault"
+                      showTooltip
+                      tooltipText={
+                        depositsDisabled ||
+                        'Connect your wallet to deposit into vault'
+                      }
+                    />
+                  </Box>
+                </ButtonGroup>
+              </Box>
+              {zapperError &&
+                zapperError.poolAddress === vaultAddress.toLowerCase() && (
+                  <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
+                )}
+            </Box>
+          </ActionGroup>
         </Box>
       </Wrapper>
     );
@@ -744,6 +809,7 @@ function AmountField({
   gweiAmountSetter,
   maxAmount,
   decimals,
+  placeholder,
 }) {
   return (
     <StyledRoundedInput
@@ -756,6 +822,7 @@ function AmountField({
           decimals={decimals}
         />
       }
+      placeholder={placeholder}
       onChange={(evt) => {
         amountSetter(evt.target.value);
 

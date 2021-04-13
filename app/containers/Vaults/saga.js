@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
+import blacklist from 'containers/Vaults/blacklist.json';
 import { approveTxSpend } from 'utils/contracts';
 import request from 'utils/request';
 import { APP_INITIALIZED } from 'containers/App/constants';
@@ -77,7 +78,12 @@ function* fetchVaults() {
       return newVault;
     });
 
-    yield put(vaultsLoaded(correctedVaults));
+    const filteredVaults = _.filter(
+      correctedVaults,
+      (vault) => _.includes(blacklist, vault.address) === false,
+    );
+
+    yield put(vaultsLoaded(filteredVaults));
   } catch (err) {
     console.log('Error reading vaults', err);
   }

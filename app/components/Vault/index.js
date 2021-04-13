@@ -366,14 +366,7 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
-  const vaultBalanceDecimalPlacesCount = (() => {
-    switch (token.symbol) {
-      case 'YFI':
-        return 3;
-      default:
-        return 2;
-    }
-  })();
+  const vaultBalanceDecimalPlacesCount = 4;
 
   const vaultBalanceFormatter = (v) =>
     v.toLocaleString('en', {
@@ -612,20 +605,18 @@ const Vault = (props) => {
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(pricePerShare / 10 ** decimals)
-          .toFixed(vaultBalanceDecimalPlacesCount)
+          .toFixed()
       : '0.00';
   } else if (vaultIsBackscratcher) {
     vaultBalanceOf = balanceOf
-      ? new BigNumber(balanceOf)
-          .dividedBy(10 ** decimals)
-          .toFixed(vaultBalanceDecimalPlacesCount)
+      ? new BigNumber(balanceOf).dividedBy(10 ** decimals).toFixed()
       : '0.00';
   } else {
     vaultBalanceOf = balanceOf
       ? new BigNumber(balanceOf)
           .dividedBy(10 ** decimals)
           .multipliedBy(getPricePerFullShare / 10 ** 18)
-          .toFixed(vaultBalanceDecimalPlacesCount)
+          .toFixed()
       : '0.00';
   }
 

@@ -12,6 +12,7 @@ import vaultsSaga from 'containers/Vaults/saga';
 import zapperSaga from 'containers/Zapper/saga';
 import zapperReducer from 'containers/Zapper/reducer';
 import { initializeZapper } from 'containers/Zapper/actions';
+import Footer from 'components/Footer';
 import GlobalStyle from '../../global-styles';
 import saga from './saga';
 import { selectReady, selectUser } from './selectors';
@@ -78,6 +79,7 @@ export default function App() {
       <canvas id="matrix" />
       <GlobalStyle />
       <Main />
+      <Footer />
     </div>
   );
 }

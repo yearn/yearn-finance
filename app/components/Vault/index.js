@@ -415,9 +415,7 @@ const Vault = (props) => {
   // const tokenName = name || _.get(tokenContractData, 'name');
 
   let vaultName;
-  if (vaultIsBackscratcher) {
-    vaultName = 'CRV';
-  } else if (vaultIsPickle) {
+  if (vaultIsPickle) {
     vaultName = 'yveCRV - ETH';
   } else {
     vaultName = displayName || name || address;
@@ -903,11 +901,11 @@ const Vault = (props) => {
         );
         amplifyVaultDesc = (
           <Text>
-            This vault converts your CRV into yveCRV, earning you a continuous
-            share of Curve’s trading fees. Every week, these rewards can be
-            claimed here as 3Crv (Curve’s 3pool LP token). These unclaimed
-            rewards can also be staked directly into our 3Crv yVault using the
-            Stake button on the left.
+            This vault converts your CRV into yveCRV at a 1:1 ratio, earning you
+            a continuous share of Curve’s trading fees. Every week, these
+            rewards can be claimed here as 3Crv (Curve’s 3pool LP token). These
+            unclaimed rewards can also be staked directly into our 3Crv yVault
+            using the Stake button on the left.
             <br />
             <br />
             This operation is non-reversible: you can only convert CRV into
@@ -1137,6 +1135,15 @@ const Vault = (props) => {
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
+            {['crvUSDN'].includes(vaultName) && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  50% of USDN CRV harvest is locked to boost yield. APY
+                  displayed reflects this.
+                </span>
+              </Notice>
+            )}
             {isMigratable && (
               <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                 <span>{vaultMigrationData.migrationMessage}</span>
@@ -1145,10 +1152,12 @@ const Vault = (props) => {
             {isZappable && !isMigratable && (
               <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                 <span>
-                  Deposit the underlying vault asset directly or zap in using
+                  {`Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
-                  zaps with low-liquidity tokens may fail.
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault's underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
                 </span>
               </Box>
             )}

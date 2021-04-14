@@ -83,6 +83,7 @@ export default function VaultControls(props) {
     balanceOf,
     tokenBalance,
     pickleContractsData,
+    balanceDecimalPlacesCount,
   } = props;
   const {
     address: vaultAddress,
@@ -552,6 +553,7 @@ export default function VaultControls(props) {
                   isZappable && sellToken ? sellToken.balance : walletBalance
                 }
                 prefix="Available: "
+                decimalPlaces={balanceDecimalPlacesCount}
               />
               <Box
                 display="flex"
@@ -622,14 +624,17 @@ export default function VaultControls(props) {
                 )}
             </Box>
           </ActionGroup>
-
           <ActionGroup
             ml={isScreenMd ? '60px' : '0px'}
             direction={isScreenMd ? 'row' : 'column'}
           >
             <Box display="flex" flexDirection="column">
               <Box>
-                <Balance amount={vaultBalance} prefix="Vault balance: " />
+                <Balance
+                  amount={vaultBalance}
+                  prefix="Vault balance: "
+                  decimalPlaces={balanceDecimalPlacesCount}
+                />
               </Box>
               <Box
                 display="flex"
@@ -783,11 +788,11 @@ function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
   );
 }
 
-function Balance({ amount, prefix }) {
+function Balance({ amount, prefix, decimalPlaces = 2 }) {
   return (
     <div>
       {prefix}
-      {new BigNumber(amount).toFixed(2)}
+      {new BigNumber(amount).toFixed(decimalPlaces)}
     </div>
   );
 }

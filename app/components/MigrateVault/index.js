@@ -25,8 +25,8 @@ const MigrateVault = ({ vaultAddress }) => {
         }
         color="primary"
         disabled={!vaultContract || !trustedMigratorContract}
-        tooltipText="Connect your wallet to migrate vault"
-        showTooltip
+        disabledTooltipText="Connect your wallet to migrate vault"
+        showTooltipWhenDisabled
       >
         Migrate all
       </ButtonFilled>

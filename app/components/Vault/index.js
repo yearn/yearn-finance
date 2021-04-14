@@ -320,6 +320,14 @@ const Vault = (props) => {
     tokenBalance = ethBalance;
   }
 
+  const vaultBalanceDecimalPlacesCount = 4;
+
+  const vaultBalanceFormatter = (v) =>
+    v.toLocaleString('en', {
+      minimumFractionDigits: vaultBalanceDecimalPlacesCount,
+      maximumFractionDigits: vaultBalanceDecimalPlacesCount,
+    });
+
   const parsedEthBalance = ethBalance
     ? new BigNumber(ethBalance).dividedBy(10 ** decimals).toFixed(2)
     : '0.00';
@@ -787,6 +795,7 @@ const Vault = (props) => {
         balanceOf={balanceOf}
         tokenBalance={tokenBalance}
         pickleContractsData={pickleContractsData}
+        balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
@@ -893,7 +902,10 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={vaultBalanceOf} />
+              <AnimatedNumber
+                value={vaultBalanceOf}
+                formatter={vaultBalanceFormatter}
+              />
             </Text>
             <Text large bold>
               {apyTooltip ? (
@@ -973,7 +985,10 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={vaultBalanceOf} />
+              <AnimatedNumber
+                value={vaultBalanceOf}
+                formatter={vaultBalanceFormatter}
+              />
             </Text>
 
             <Text large bold>

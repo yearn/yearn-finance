@@ -41,52 +41,6 @@ import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
 
-// import tw from 'twin.macro';
-
-// const formatVaultStatistic = stat => {
-//   switch (stat) {
-//     // depositedAmount: "0"
-//     //         depositedShares: "0"
-//     //         earnings: "1534851627416"
-//     //         totalDeposits: "285159143497674298"
-//     //         totalTransferredIn: "0"
-//     //         totalTransferredOut: "0"
-//     //         totalWithdrawals: "285160678349301714"
-
-//     case 'depositedAmount': {
-//       return 'Available to withdraw';
-//     }
-//     case 'depositedShares': {
-//       return 'Deposited Shares';
-//     }
-//     case 'totalDeposits': {
-//       return 'Total Deposits';
-//     }
-//     case 'totalTransferredIn': {
-//       return 'Total Transferred In';
-//     }
-//     case 'totalTransferredOut': {
-//       return 'Total Transferred Out';
-//     }
-//     case 'totalWithdrawals': {
-//       return 'Total Withdrawals';
-//     }
-//     case 'earnings': {
-//       return 'Historical Earnings';
-//     }
-//     default: {
-//       return '';
-//     }
-//   }
-// };
-
-// const statisticsToShow = [
-//   'earnings',
-//   'totalDeposits',
-//   'totalWithdrawals',
-//   'depositedAmount',
-// ];
-
 const ButtonLinkIcon = styled.a`
   display: flex;
   align-items: center;
@@ -612,12 +566,6 @@ const Vault = (props) => {
       : '0.00';
   }
 
-  // let vaultAssets = vaultIsBackscratcher
-  //   ? backscratcherTotalAssets
-  //   : balance || totalAssets;
-  // vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
-  // vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
-
   let vaultAssets;
   let vaultAssetsTooltip;
   if (vaultIsBackscratcher) {
@@ -705,7 +653,7 @@ const Vault = (props) => {
   } else if (address === daiV1VaultAddress) {
     // FIXME: Temporary one week sample APY for DAI v1 vault
     apyRecommended = truncateApy(apy.data.oneWeekSample);
-  } else if (address === "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6") {
+  } else if (address === '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6') {
     // FIXME: crvSBTC v1 is going into migration
     apyRecommended = 'N/A';
   }
@@ -830,51 +778,6 @@ const Vault = (props) => {
       </ColumnListDev>
     );
   } else {
-    // const formattedUserVaultStatistics =
-    //   statistics &&
-    //   Object.keys(statistics)
-    //     .filter(statistic => statisticsToShow.find(show => show === statistic))
-    //     .map(statistic => {
-    //       const formattedValue = new BigNumber(statistics[statistic])
-    //         .dividedBy(10 ** decimals)
-    //         .toFixed(8);
-
-    //       return {
-    //         name: formatVaultStatistic(statistic),
-    //         value: formattedValue > 0 ? formattedValue : 0,
-    //       };
-    //     });
-
-    // const formattedUserVaultStatisticsEarnings =
-    //   statistics &&
-    //   formattedUserVaultStatistics.map(earning => (
-    //     <div key={earning.name}>
-    //       <p tw="font-sans font-bold text-lg text-white">{earning.value}</p>
-    //       <p tw="font-sans font-medium text-sm opacity-50">{earning.name}</p>
-    //     </div>
-    //   ));
-
-    // const defaultZeroUserVaultStatisticsEarnings = statisticsToShow.map(
-    //   statistic => (
-    //     <div key={statistic}>
-    //       <p tw="font-sans font-bold text-lg text-white">0</p>
-    //       <p tw="font-sans font-medium text-sm opacity-50">
-    //         {formatVaultStatistic(statistic)}
-    //       </p>
-    //     </div>
-    //   ),
-    // );
-    // vaultBottom = (
-    //   <ColumnList css={[tw`py-6`]}>
-    //     <div>
-    //       <p tw="font-sans font-bold text-xl text-white">Earnings: </p>
-    //     </div>
-    //     {statistics
-    //       ? formattedUserVaultStatisticsEarnings
-    //       : defaultZeroUserVaultStatisticsEarnings}
-    //   </ColumnList>
-    // );
-
     vaultControls = (
       <VaultControls
         vault={vault}
@@ -993,9 +896,6 @@ const Vault = (props) => {
             <Text large bold>
               <AnimatedNumber value={vaultBalanceOf} />
             </Text>
-            {/* <Text large bold>
-              {multiplier}
-            </Text> */}
             <Text large bold>
               {apyTooltip ? (
                 <Tooltip title={apyTooltip} arrow>
@@ -1159,10 +1059,11 @@ const Vault = (props) => {
                 <span>
                   Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
-                  zaps, we use a default slippage limit of 1% and attempting
-                  zaps with low-liquidity tokens may fail. Withdrawals return
-                  the vault's underlying token or zap out into one of five
-                  supported assets: ETH, WBTC, DAI, USDC, or USDT.
+                  zaps, we use a default slippage limit of 1&percnt; and
+                  attempting zaps with low-liquidity tokens may fail.
+                  Withdrawals return the vault&apos;s underlying token or zap
+                  out into one of five supported assets: ETH, WBTC, DAI, USDC,
+                  or USDT.
                 </span>
               </Box>
             )}

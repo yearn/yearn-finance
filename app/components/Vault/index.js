@@ -696,15 +696,18 @@ const Vault = (props) => {
   }
 
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
-    // yfi vault
+    // FIXME: yfi vault
     apyRecommended = 'N/A';
     apyTooltip = 'Inactive with YIP-56: Buyback and Build';
   } else if (address === usdnVaultAddress) {
-    // usdn vault
+    // FIXME: usdn vault
     apyRecommended = truncateApy(apy.data.netApy);
   } else if (address === daiV1VaultAddress) {
-    // Temporary one week sample APY for DAI v1 vault
+    // FIXME: Temporary one week sample APY for DAI v1 vault
     apyRecommended = truncateApy(apy.data.oneWeekSample);
+  } else if (address === "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6") {
+    // FIXME: crvSBTC v1 is going into migration
+    apyRecommended = 'N/A';
   }
 
   const contractType = getContractType(vault);

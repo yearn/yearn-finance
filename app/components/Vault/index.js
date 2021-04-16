@@ -656,6 +656,7 @@ const Vault = (props) => {
   } else if (address === '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6') {
     // FIXME: crvSBTC v1 is going into migration
     apyRecommended = 'N/A';
+    apyTooltip = '';
   }
 
   const contractType = getContractType(vault);
@@ -1059,11 +1060,10 @@ const Vault = (props) => {
                 <span>
                   Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
-                  zaps, we use a default slippage limit of 1&percnt; and
-                  attempting zaps with low-liquidity tokens may fail.
-                  Withdrawals return the vault&apos;s underlying token or zap
-                  out into one of five supported assets: ETH, WBTC, DAI, USDC,
-                  or USDT.
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault&apos;s underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.
                 </span>
               </Box>
             )}

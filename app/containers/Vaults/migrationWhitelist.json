@@ -14,6 +14,13 @@
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Migrate your balance to the v2 Curve HBTC Pool yVault to continue earning boosted yield."
   },
   {
+    "symbol": "crvSBTC",
+    "token": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
+    "vaultFrom": "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6",
+    "vaultTo": "0x8414Db07a7F743dEbaFb402070AB01a4E0d2E45e",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sBTC Pool yVault to continue earning yield."
+  },
+  {
     "symbol": "WETH",
     "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",

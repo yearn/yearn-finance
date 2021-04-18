@@ -649,6 +649,12 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(0);
   }
 
+  // FIXME: migration vaults
+  const retired = [
+    '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
+    '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
+  ];
+
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
     // FIXME: yfi vault
     apyRecommended = 'N/A';
@@ -659,8 +665,7 @@ const Vault = (props) => {
   } else if (address === daiV1VaultAddress) {
     // FIXME: Temporary one week sample APY for DAI v1 vault
     apyRecommended = truncateApy(apy.data.oneWeekSample);
-  } else if (address === '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6') {
-    // FIXME: crvSBTC v1 is going into migration
+  } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = '';
   }

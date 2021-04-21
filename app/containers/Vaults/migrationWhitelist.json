@@ -32,6 +32,13 @@
     "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",
     "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield. Please be advised that withdrawal fees of 0.5-1% may apply for large migrations."
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield."
+  },
+  {
+    "symbol": "crvSAAVE",
+    "token": "0x02d341CcB60fAaf662bC0554d13778015d1b285C",
+    "vaultFrom": "0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1",
+    "vaultTo": "0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sAave Pool yVault to continue earning yield."
   }
 ]

@@ -653,6 +653,9 @@ const Vault = (props) => {
   const retired = [
     '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
     '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
+    '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
+    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
+    '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
   ];
 
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
@@ -667,7 +670,7 @@ const Vault = (props) => {
     apyRecommended = truncateApy(apy.data.oneWeekSample);
   } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = '';
+    apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
   }
 
   const contractType = getContractType(vault);

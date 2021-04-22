@@ -15,9 +15,8 @@ import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
-
+import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
-
 import {
   selectContractData,
   selectEthBalance,
@@ -40,6 +39,10 @@ import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
+
+const migrationVaultsFrom = migrationWhitelist.map((v) =>
+  v.vaultFrom.toLowerCase(),
+);
 
 const ButtonLinkIcon = styled.a`
   display: flex;
@@ -1035,78 +1038,82 @@ const Vault = (props) => {
     }
   }
   return (
-    <React.Fragment>
-      <Card
-        className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
-          active ? 'active' : ''
-        } ${vaultIsPickle ? 'pickle-vault' : ''}`}
-        id={`vault-${accordionKey}`}
-      >
-        <Accordion.Toggle
-          as={Card.Header}
-          variant="link"
-          eventKey={accordionKey}
+    ((vault.balanceOf > 0 &&
+      migrationVaultsFrom.includes(vault.address.toLowerCase())) ||
+      !migrationVaultsFrom.includes(vault.address.toLowerCase())) && (
+      <React.Fragment>
+        <Card
+          className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
+            active ? 'active' : ''
+          } ${vaultIsPickle ? 'pickle-vault' : ''}`}
+          id={`vault-${accordionKey}`}
         >
-          {vaultTop}
-          {/* {vaultStats} */}
-          <StyledText fontWeight={700} mr={16}>
-            {active ? 'HIDE' : 'SHOW'}
-          </StyledText>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={accordionKey}>
-          <Card.Body>
-            {vaultBottom}
-            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+          <Accordion.Toggle
+            as={Card.Header}
+            variant="link"
+            eventKey={accordionKey}
+          >
+            {vaultTop}
+            {/* {vaultStats} */}
+            <StyledText fontWeight={700} mr={16}>
+              {active ? 'HIDE' : 'SHOW'}
+            </StyledText>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={accordionKey}>
+            <Card.Body>
+              {vaultBottom}
+              {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
                 <Notice>
                   <NoticeIcon type="info" />
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
-            {['crvUSDN'].includes(vaultName) && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>
-                  50% of USDN CRV harvest is locked to boost yield. APY
-                  displayed reflects this.
-                </span>
-              </Notice>
-            )}
-            {isMigratable && (
-              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                <span>{vaultMigrationData.migrationMessage}</span>
-              </Box>
-            )}
-            {isZappable && !isMigratable && (
-              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                <span>
-                  {`Deposit the underlying vault asset directly or zap in using
+              {['crvUSDN'].includes(vaultName) && (
+                <Notice>
+                  <NoticeIcon type="info" />
+                  <span>
+                    50% of USDN CRV harvest is locked to boost yield. APY
+                    displayed reflects this.
+                  </span>
+                </Notice>
+              )}
+              {isMigratable && (
+                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+                  <span>{vaultMigrationData.migrationMessage}</span>
+                </Box>
+              )}
+              {isZappable && !isMigratable && (
+                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+                  <span>
+                    {`Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
                   zaps with low-liquidity tokens may fail. Withdrawals return
                   the vault's underlying token or zap out into one of five
                   supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
-                </span>
-              </Box>
-            )}
-            {emergencyShutdown && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>This vault has been disabled temporarily.</span>
-              </Notice>
-            )}
-            {vaultAdditionalInfo}
-            {!amplifyVault && (
-              <Card.Footer className={active && 'active'}>
-                <Footer small={!isScreenMd}>
-                  {vaultControls}
-                  {lazyApeButton}
-                </Footer>
-              </Card.Footer>
-            )}
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    </React.Fragment>
+                  </span>
+                </Box>
+              )}
+              {emergencyShutdown && (
+                <Notice>
+                  <NoticeIcon type="info" />
+                  <span>This vault has been disabled temporarily.</span>
+                </Notice>
+              )}
+              {vaultAdditionalInfo}
+              {!amplifyVault && (
+                <Card.Footer className={active && 'active'}>
+                  <Footer small={!isScreenMd}>
+                    {vaultControls}
+                    {lazyApeButton}
+                  </Footer>
+                </Card.Footer>
+              )}
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </React.Fragment>
+    )
   );
 };
 Vault.whyDidYouRender = false;

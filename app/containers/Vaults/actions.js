@@ -69,3 +69,10 @@ export function migrateVault(payload) {
     payload,
   };
 }
+
+export function exitOldPickleGauge(payload) {
+  return {
+    type: c.EXIT_OLD_PICKLE,
+    payload,
+  };
+}

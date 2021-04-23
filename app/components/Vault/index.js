@@ -17,6 +17,8 @@ import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
+import PickleGaugeAbi from 'abi/pickleGauge.json';
+import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
 import {
   selectContractData,
   selectEthBalance,
@@ -31,6 +33,8 @@ import {
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   LAZY_APE_ADDRESSES,
   YVBOOST_ADDRESS,
+  PICKLE_GAUGE_ADDRESS,
+  OLD_PICKLE_GAUGE_ADDRESS,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -246,7 +250,16 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const { vault, showDevVaults, active, accordionKey, amplifyVault } = props;
+  const {
+    vault,
+    showDevVaults,
+    active,
+    accordionKey,
+    amplifyVault,
+    account,
+    walletConnected,
+    web3,
+  } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -268,7 +281,6 @@ const Vault = (props) => {
     depositLimit,
     alias,
     emergencyShutdown,
-    // statistics,
   } = vault;
 
   const { openModal } = useModal();
@@ -320,6 +332,91 @@ const Vault = (props) => {
   const zapperVaultData = zapperVaults[address.toLowerCase()];
   const isZappable = !!zapperVaultData;
 
+  const [userInfoYvBoostEth, setUserInfoYvBoostEth] = React.useState(0);
+  const [oldPickleGaugeBalance, setOldPickleGaugeBalance] = React.useState(0);
+  const [
+    apyYvBoostEthRecommended,
+    setApyYvBoostEthRecommended,
+  ] = React.useState(0);
+  const [
+    vaultAssetsYvBoostEth,
+    setVaultAssetsYvBoostEthRecommended,
+  ] = React.useState(0);
+
+  React.useEffect(() => {
+    const getOldGaugeBalance = async () => {
+      if (!vault.isYVBoost && vaultIsPickle && account) {
+        const oldPickleGaugeContract = new web3.eth.Contract(
+          OldPickleGaugeAbi,
+          OLD_PICKLE_GAUGE_ADDRESS,
+        );
+        try {
+          const r = await oldPickleGaugeContract.methods
+            .balanceOf(account)
+            .call();
+          setOldPickleGaugeBalance(r);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    const getUserInfo = async () => {
+      if (vault.isYVBoost && account) {
+        const pickleGaugeContract = new web3.eth.Contract(
+          PickleGaugeAbi,
+          PICKLE_GAUGE_ADDRESS,
+        );
+        try {
+          const r = await pickleGaugeContract.methods.balanceOf(account).call();
+          setUserInfoYvBoostEth(r);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    const getYvBoostEthAPY = async () => {
+      if (vault.isYVBoost) {
+        try {
+          const resp = await fetch(
+            'https://api.pickle-jar.info/protocol/jar/yv-eth/performance',
+          );
+          const apy = await resp.json();
+          if (apy && apy.thirtyDayFarm) {
+            const amount = `${apy.thirtyDayFarm.toFixed(2)}%`;
+            setApyYvBoostEthRecommended(amount);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    const getYvBoostEthAssets = async () => {
+      if (vault.isYVBoost && masterChefContract && masterChefContract.methods) {
+        try {
+          const resp = await fetch(
+            'https://api.pickle-jar.info/protocol/value',
+          );
+          const apy = await resp.json();
+          if (apy && apy['yvboost-eth']) {
+            const apyRounded = parseInt(apy['yvboost-eth']);
+            const amount = apyRounded.toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              maximumFractionDigits: 0,
+            });
+            setVaultAssetsYvBoostEthRecommended(amount);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getYvBoostEthAssets();
+    getUserInfo();
+    getYvBoostEthAPY();
+    getOldGaugeBalance();
+  });
+
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
     tokenBalance = ethBalance;
@@ -346,7 +443,7 @@ const Vault = (props) => {
 
   let pickleContractsData = null;
 
-  if (vaultIsPickle) {
+  if (vaultIsPickle || vault.isYVBoost) {
     const pickleJarBalanceRaw =
       pickleJarContractData && pickleJarContractData.balanceOf;
     const parsedPickleJarBalance = pickleJarBalanceRaw
@@ -355,10 +452,11 @@ const Vault = (props) => {
           .toFixed(2)
       : '0.00';
 
+    const masterChefBalanceRaw = masterChefContractData
+      ? _.get(masterChefContractData, 'userInfo.amount')
+      : '0.00';
     const masterChefBalance = masterChefContractData
-      ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
-          .dividedBy(10 ** decimals)
-          .toFixed(2)
+      ? new BigNumber(masterChefBalanceRaw).dividedBy(10 ** decimals).toFixed(2)
       : '0.00';
 
     pickleContractsData = {
@@ -370,8 +468,10 @@ const Vault = (props) => {
       pickleJarBalanceRaw,
       pickleJarAllowance,
       pickleMasterChefDeposited: masterChefBalance,
+      pickleMasterChefDepositedRaw: masterChefBalanceRaw,
       crvBalance: parsedCrvBalance,
       crvBalanceRaw,
+      decimals,
       crvAllowance: crvTokenAllowance,
       ethBalance: parsedEthBalance,
       ethBalanceRaw: ethBalance,
@@ -382,7 +482,7 @@ const Vault = (props) => {
   // const tokenName = name || _.get(tokenContractData, 'name');
 
   let vaultName;
-  if (vaultIsPickle) {
+  if (vaultIsPickle && !vault.vaultIsYvBoost) {
     vaultName = 'yveCRV - ETH';
   } else {
     vaultName = displayName || name || address;
@@ -576,6 +676,17 @@ const Vault = (props) => {
           .toFixed()
       : '0.00';
   }
+
+  if (userInfoYvBoostEth) {
+    vaultBalanceOf = userInfoYvBoostEth
+      ? new BigNumber(userInfoYvBoostEth).dividedBy(10 ** decimals).toFixed()
+      : '0.00';
+  }
+  // let vaultAssets = vaultIsBackscratcher
+  //   ? backscratcherTotalAssets
+  //   : balance || totalAssets;
+  // vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
+  // vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
   let vaultAssets;
   let vaultAssetsTooltip;
@@ -809,6 +920,9 @@ const Vault = (props) => {
         tokenBalance={tokenBalance}
         pickleContractsData={pickleContractsData}
         balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
+        account={account}
+        walletConnected={walletConnected}
+        oldPickleGaugeBalance={oldPickleGaugeBalance}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
@@ -866,9 +980,73 @@ const Vault = (props) => {
           </Box>
         );
       }
-      if (vaultIsPickle) {
+      if (vault.isYVBoost) {
+        apyTooltip = null;
+        vaultAssetsTooltip = null;
+        apyRecommended = apyYvBoostEthRecommended;
+        vaultAssets = vaultAssetsYvBoostEth;
+        //        vaultBalanceOf = 200000330;
+        amplifyVaultTitle = (
+          <Text bold fontSize={4} mb={40}>
+            Zap in to earn compounding yield on a yvBOOST-ETH LP position
+          </Text>
+        );
+        styledIcon = (
+          <StyledDoubleTokenIcon>
+            {/* NOTE CRV/ETH address for token icon */}
+            <StyledTokenIcon address="0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a" />
+            <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
+          </StyledDoubleTokenIcon>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid item xs={12} md={6} className="amplify-vault-controls">
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                <p>
+                  This vault performs a multi-step transaction with any asset
+                  which:
+                </p>
+                <ol>
+                  <li>1. Makes a deposit into yvBOOST. </li>
+                  <li>
+                    2. Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
+                    for SUSHI 🍣 rewards.{' '}
+                  </li>
+                  <li>
+                    3. Deposits this SLP into the yvBOOST-ETH pJar on Pickle
+                    Finance for PICKLE 🥒 rewards.
+                  </li>
+                </ol>
+                <p>
+                  Note: Remember to stake your Pickle LP manually after the
+                  transaction completes. If you’d like to claim earned PICKLE 🥒
+                  rewards or withdraw yvBOOST-ETH SLP, please, use the UI at
+                  https://app.pickle.finance/farms
+                </p>{' '}
+              </Grid>
+            </Grid>
+          </Box>
+        );
+      }
+      if (vaultIsPickle && !vault.isYVBoost) {
         availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
-        vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+        const useOldGauge =
+          pickleContractsData.pickleMasterChefDeposited < oldPickleGaugeBalance;
+        vaultBalanceOf = useOldGauge
+          ? oldPickleGaugeBalance
+          : pickleContractsData.pickleMasterChefDeposited;
+        // TODOoooo
         apyTooltip = null;
         vaultAssetsTooltip = null;
         amplifyVaultTitle = (
@@ -1068,7 +1246,7 @@ const Vault = (props) => {
         <Card
           className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
             active ? 'active' : ''
-          } ${vaultIsPickle ? 'pickle-vault' : ''}`}
+          } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
           id={`vault-${accordionKey}`}
         >
           <Accordion.Toggle

@@ -1,4 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {
+  useWeb3,
+  useWallet,
+  useAccount,
+} from 'containers/ConnectionProvider/hooks';
 import styled from 'styled-components';
 import { keyBy, get } from 'lodash';
 import Hidden from '@material-ui/core/Hidden';
@@ -20,7 +25,6 @@ import { useShowDevVaults } from 'containers/Vaults/hooks';
 // import VaultsNavLinks from 'components/VaultsNavLinks';
 // import AddVault from 'components/AddVault';
 import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
@@ -257,7 +261,24 @@ const Vaults = (props) => {
       <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />
     );
   }
-
+  let yboostLPVault = {};
+  amplifyVaultItems.map((v) => {
+    if (v.symbol === 'yvBOOST') {
+      yboostLPVault = v;
+      yboostLPVault = {
+        ...yboostLPVault,
+        ...{
+          type: 'v1',
+          displayName: 'yvBOOST - ETH LP',
+          isYVBoost: true,
+          symbol: 'yvBOOST-ETH',
+          address: '0xc695f73c1862e050059367B2E64489E66c525983',
+        },
+      };
+    }
+    return v;
+  });
+  amplifyVaultItems.push(yboostLPVault);
   let warning;
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
@@ -269,6 +290,7 @@ const Vaults = (props) => {
           <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
+            account={account}
             vaultItems={amplifyVaultItems}
             backscratcherAlias={backscratcherAlias}
             pickleVaultAlias={pickleVaultAlias}
@@ -328,9 +350,11 @@ const AmplifyWrapper = (props) => {
     vaultItems,
     backscratcherAlias,
     pickleVaultAlias,
+    account,
   } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const pickleVault = useSelector(selectPickleVault());
+  const web3 = useWeb3();
 
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
@@ -352,6 +376,9 @@ const AmplifyWrapper = (props) => {
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
         amplifyVault
+        walletConnected={walletConnected}
+        account={account}
+        web3={web3}
       />
     );
   };
@@ -371,6 +398,7 @@ const AmplifyWrapper = (props) => {
 const VaultsWrapper = (props) => {
   const { showDevVaults, walletConnected, vaultItems } = props;
   const currentEventKey = useContext(AccordionContext);
+  const web3 = useWeb3();
 
   const renderVault = (vault) => {
     let vaultKey = vault.address;
@@ -384,6 +412,7 @@ const VaultsWrapper = (props) => {
         accordionKey={vaultKey}
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
+        web3={web3}
       />
     );
   };

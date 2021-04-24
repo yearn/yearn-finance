@@ -657,6 +657,7 @@ const Vault = (props) => {
     '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
     '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
     '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
+    '0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675', // crvPBTC v1
     '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
     '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
   ];

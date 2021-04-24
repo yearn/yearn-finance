@@ -338,10 +338,7 @@ const Vault = (props) => {
     apyYvBoostEthRecommended,
     setApyYvBoostEthRecommended,
   ] = React.useState(0);
-  const [
-    vaultAssetsYvBoostEth,
-    setVaultAssetsYvBoostEthRecommended,
-  ] = React.useState(0);
+  const [vaultAssetsYvBoostEth, setVaultAssetsYvBoostEth] = React.useState(0);
 
   React.useEffect(() => {
     const getOldGaugeBalance = async () => {
@@ -360,6 +357,10 @@ const Vault = (props) => {
         }
       }
     };
+    getOldGaugeBalance();
+  }, [oldPickleGaugeBalance]);
+
+  React.useEffect(() => {
     const getUserInfo = async () => {
       if (vault.isYVBoost && account) {
         const pickleGaugeContract = new web3.eth.Contract(
@@ -374,6 +375,10 @@ const Vault = (props) => {
         }
       }
     };
+    getUserInfo();
+  }, [userInfoYvBoostEth]);
+
+  React.useEffect(() => {
     const getYvBoostEthAPY = async () => {
       if (vault.isYVBoost) {
         try {
@@ -390,6 +395,10 @@ const Vault = (props) => {
         }
       }
     };
+    getYvBoostEthAPY();
+  }, [apyYvBoostEthRecommended]);
+
+  React.useEffect(() => {
     const getYvBoostEthAssets = async () => {
       if (vault.isYVBoost && masterChefContract && masterChefContract.methods) {
         try {
@@ -404,7 +413,7 @@ const Vault = (props) => {
               currency: 'USD',
               maximumFractionDigits: 0,
             });
-            setVaultAssetsYvBoostEthRecommended(amount);
+            setVaultAssetsYvBoostEth(amount);
           }
         } catch (error) {
           console.log(error);
@@ -412,10 +421,7 @@ const Vault = (props) => {
       }
     };
     getYvBoostEthAssets();
-    getUserInfo();
-    getYvBoostEthAPY();
-    getOldGaugeBalance();
-  });
+  }, [vaultAssetsYvBoostEth]);
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {

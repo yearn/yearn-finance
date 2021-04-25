@@ -37,7 +37,7 @@ import {
   MASTER_CHEF_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
   YVBOOST_ADDRESS,
-  ZAP_YVECRV_ETH_LP_ADDRESS,
+  YVBOOST_ETH_PJAR,
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
 } from 'containers/Vaults/constants';
@@ -352,7 +352,7 @@ export default function VaultControls(props) {
       if (pickleContractsData && pickleContractsData.pickleJarContract) {
         try {
           const ap = await pickleContractsData.pickleJarContract.methods
-            .allowance(account, ZAP_YVECRV_ETH_LP_ADDRESS)
+            .allowance(account, YVBOOST_ETH_PJAR)
             .call();
           setYvBOOSTPickleJarAllowance(ap);
         } catch (error) {
@@ -363,7 +363,7 @@ export default function VaultControls(props) {
         try {
           const yvBoostETHContract = new web3.eth.Contract(
             PickleJarAbi2,
-            ZAP_YVECRV_ETH_LP_ADDRESS,
+            YVBOOST_ETH_PJAR,
           );
           const r = await yvBoostETHContract.methods.balanceOf(account).call();
           const a = await yvBoostETHContract.methods
@@ -387,7 +387,7 @@ export default function VaultControls(props) {
   const migratePickleGaugeCall = async () => {
     const zapPickleMigrateContract = new web3.eth.Contract(
       ZapPickleMigrateAbi,
-      ZAP_YVECRV_ETH_LP_ADDRESS,
+      YVBOOST_ETH_PJAR,
     );
     dispatch(
       migratePickleGauge({
@@ -467,7 +467,7 @@ export default function VaultControls(props) {
   const depositPickleFarm = () => {
     const yvBoostETHContract = new web3.eth.Contract(
       PickleJarAbi2,
-      ZAP_YVECRV_ETH_LP_ADDRESS,
+      YVBOOST_ETH_PJAR,
     );
     const pickleGaugeContract = new web3.eth.Contract(
       PickleGaugeAbi,
@@ -521,7 +521,7 @@ export default function VaultControls(props) {
     if (address) {
       const payload = {
         web3,
-        poolAddress: ZAP_YVECRV_ETH_LP_ADDRESS.toLowerCase(),
+        poolAddress: YVBOOST_ETH_PJAR.toLowerCase(),
         sellTokenAddress: address,
         sellAmount: depositGweiAmount,
         slippagePercentage: DEFAULT_SLIPPAGE,

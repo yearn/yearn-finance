@@ -5,7 +5,7 @@ import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { MAX_UINT256 } from 'containers/Cover/constants';
 import {
-  ZAP_YVECRV_ETH_LP_ADDRESS,
+  YVBOOST_ETH_PJAR,
   PICKLEJAR_ADDRESS,
 } from 'containers/Vaults/constants';
 import { zapperDataLoaded, zapInError, zapOutError } from './actions';
@@ -100,10 +100,7 @@ function* migratePickleGauge(action) {
     //  pSUSHI yveCRV Vault (v2) / ETH pricePerToken}
     picklePrices.map((pp) => {
       // PICKLEJAR_ADDRESS
-      if (
-        pp.address.toLowerCase() ===
-        ZAP_YVECRV_ETH_LP_ADDRESS.toLocaleLowerCase()
-      ) {
+      if (pp.address.toLowerCase() === YVBOOST_ETH_PJAR.toLocaleLowerCase()) {
         lpyveCRVVaultv2 = pp;
       } else if (
         pp.address.toLowerCase() === PICKLEJAR_ADDRESS.toLocaleLowerCase()

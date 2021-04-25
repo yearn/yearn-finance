@@ -35,7 +35,7 @@ import {
   VYPER_ADDRESS,
   THREECRV_ADDRESS,
   YVBOOST_ADDRESS,
-  ZAP_YVECRV_ETH_LP_ADDRESS,
+  YVBOOST_ETH_PJAR,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -311,7 +311,7 @@ function* loadVaultContracts(clear) {
     namespace: 'picklejar2',
     abi: pickleJarAbi2,
     tags: ['pickle2'],
-    addresses: [ZAP_YVECRV_ETH_LP_ADDRESS],
+    addresses: [YVBOOST_ETH_PJAR],
     readMethods: [
       {
         name: 'balanceOf',

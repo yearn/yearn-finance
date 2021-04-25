@@ -28,13 +28,6 @@
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Migrate your balance to the v2 Curve HBTC Pool yVault to continue earning boosted yield."
   },
   {
-    "symbol": "WBTC",
-    "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
-    "vaultFrom": "0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5",
-    "vaultTo": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 WBTC yVault to continue earning yield."
-  },
-  {
     "symbol": "WETH",
     "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",

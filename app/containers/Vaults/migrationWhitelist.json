@@ -42,6 +42,13 @@
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sAave Pool yVault to continue earning yield."
   },
   {
+    "symbol": "crvOBTC",
+    "token": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
+    "vaultFrom": "0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797",
+    "vaultTo": "0xe9Dc63083c464d6EDcCFf23444fF3CFc6886f6FB",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve oBTC Pool yVault to continue earning yield."
+  },
+  {
     "symbol": "crvPBTC",
     "token": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
     "vaultFrom": "0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675",

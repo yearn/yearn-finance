@@ -661,6 +661,7 @@ const Vault = (props) => {
     '0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675', // crvPBTC v1
     '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
     '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
+    '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
   ];
 
   if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {

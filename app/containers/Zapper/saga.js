@@ -84,7 +84,7 @@ function* migratePickleGauge(action) {
   let lpyveCRVDAO = {};
   try {
     // yield call(oldPickleGaugeContract.methods.exit().send, { from: account });
-    if (allowance === 0) {
+    if (allowance === 0 || allowance == 0 || !allowance) {
       yield call(
         tokenContract.methods.approve(
           zapPickleMigrateContract._address,

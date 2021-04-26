@@ -269,7 +269,7 @@ const Vaults = (props) => {
         ...yboostLPVault,
         ...{
           type: 'v1',
-          displayName: 'yvBOOST - ETH LP',
+          displayName: 'yvBOOST - ETH',
           isYVBoost: true,
           symbol: 'yvBOOST-ETH',
           address: '0xc695f73c1862e050059367B2E64489E66c525983',

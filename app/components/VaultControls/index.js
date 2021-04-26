@@ -40,6 +40,7 @@ import {
   YVBOOST_ETH_PJAR,
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
+  ZAP_MIGRATE_PICKLE_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -207,8 +208,13 @@ export default function VaultControls(props) {
   const [pickleUnstakeAmount, setPickleUnstakeAmount] = useState(0);
 
   const [pickleDepositGweiAmount, setPickleDepositGweiAmount] = useState(0);
-
   const [pickleDepositAmount, setPickleDepositAmount] = useState(0);
+
+  const [oldPickleDepositGweiAmount, setOldPickleDepositGweiAmount] = useState(
+    0,
+  );
+  const [oldPickleDepositAmount, setOldPickleDepositAmount] = useState(0);
+
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
@@ -338,9 +344,7 @@ export default function VaultControls(props) {
     setDepositGweiAmount(0);
     setWithdrawalGweiAmount(0);
   }, [walletBalance, vaultBalance]);
-  useEffect(() => {
-    0xbd17b1ce622d73bd438b9e658aca5996dc394b0d;
-  });
+
   const [yvBOOSTBalance, setYvBOOSTBalance] = useState(0);
   const [
     yvBOOSTPickleGaugeAllowance,
@@ -349,32 +353,44 @@ export default function VaultControls(props) {
   const [yvBOOSTPickleJarAllowance, setYvBOOSTPickleJarAllowance] = useState(0);
   useEffect(() => {
     const getBalance = async () => {
-      if (pickleContractsData && pickleContractsData.pickleJarContract) {
+      if (
+        pickleContractsData &&
+        pickleContractsData.pickleJarContract &&
+        account
+      ) {
         try {
           const ap = await pickleContractsData.pickleJarContract.methods
-            .allowance(account, YVBOOST_ETH_PJAR)
+            .allowance(account, ZAP_MIGRATE_PICKLE_ADDRESS)
             .call();
           setYvBOOSTPickleJarAllowance(ap);
         } catch (error) {
           console.log(error);
         }
       }
-      if (vault.isYVBoost) {
+      if (vaultIsYvBoost && tokenContract && vault && vault.address) {
         try {
-          const yvBoostETHContract = new web3.eth.Contract(
-            PickleJarAbi2,
-            YVBOOST_ETH_PJAR,
-          );
-          const r = await yvBoostETHContract.methods.balanceOf(account).call();
-          const a = await yvBoostETHContract.methods
-            .allowance(account, PICKLE_GAUGE_ADDRESS)
+          const apv = await tokenContract.methods
+            .allowance(account, vault.address)
             .call();
-
-          setYvBOOSTBalance(r);
-          setYvBOOSTPickleGaugeAllowance(a);
+          vault.hasAllowance = true;
         } catch (error) {
           console.log(error);
         }
+      }
+      try {
+        const yvBoostETHContract = new web3.eth.Contract(
+          PickleJarAbi2,
+          YVBOOST_ETH_PJAR,
+        );
+        const r = await yvBoostETHContract.methods.balanceOf(account).call();
+        const a = await yvBoostETHContract.methods
+          .allowance(account, PICKLE_GAUGE_ADDRESS)
+          .call();
+
+        setYvBOOSTBalance(r);
+        setYvBOOSTPickleGaugeAllowance(a);
+      } catch (error) {
+        console.log(error);
       }
     };
     try {
@@ -382,18 +398,19 @@ export default function VaultControls(props) {
     } catch (error) {
       console.log(error);
     }
-  }, [yvBOOSTBalance]);
+  });
 
   const migratePickleGaugeCall = async () => {
     const zapPickleMigrateContract = new web3.eth.Contract(
       ZapPickleMigrateAbi,
-      YVBOOST_ETH_PJAR,
+      ZAP_MIGRATE_PICKLE_ADDRESS,
     );
     dispatch(
       migratePickleGauge({
-        pickleDepositAmount,
+        pickleDepositAmount: oldPickleDepositGweiAmount,
         zapPickleMigrateContract,
         tokenContract: pickleContractsData.pickleJarContract,
+        allowance: yvBOOSTPickleJarAllowance,
       }),
     );
   };
@@ -493,6 +510,7 @@ export default function VaultControls(props) {
         depositAmount: depositGweiAmount,
         decimals,
         pureEthereum,
+        hasAllowance: vault.hasAllowance,
       }),
     );
   };
@@ -554,7 +572,10 @@ export default function VaultControls(props) {
         buttonFunction: useOldPickleGauge
           ? exitOldPickleGaugeCall
           : unstakeMasterChef,
-        useOldPickleGauge,
+        buttonDisable:
+          pickleUnstakeGweiAmount >
+          pickleContractsData.pickleMasterChefDepositedRaw,
+        disableAmountField: true,
       },
       {
         balance: walletBalance,
@@ -563,22 +584,26 @@ export default function VaultControls(props) {
         sub: 'Available SLP: ',
         buttonLabel: yvBOOSTPickleJarAllowance > 0 ? 'Migrate' : 'Approve',
         maxAmount: new BigNumber(walletBalance).times(10 ** 18),
-        amount: pickleDepositAmount,
-        amountSetter: setPickleDepositAmount,
-        gweiAmountSetter: setPickleDepositGweiAmount,
+        amount: oldPickleDepositAmount,
+        amountSetter: setOldPickleDepositAmount,
+        gweiAmountSetter: setOldPickleDepositGweiAmount,
         buttonFunction: migratePickleGaugeCall,
+        buttonDisable:
+          oldPickleDepositGweiAmount >
+          new BigNumber(walletBalance).times(10 ** 18),
       },
       {
-        balance: 0,
+        balance: new BigNumber(yvBOOSTBalance).dividedBy(10 ** 18).toFixed(2),
         main:
           '3. Last step! After the previous transaction completes, approve and stake your Pickle LPs using the box below',
         sub: 'Available Pickle SLP: ',
         buttonLabel: yvBOOSTPickleGaugeAllowance > 0 ? 'Stake' : 'Approve',
-        maxAmount: customWalletBalance,
+        maxAmount: yvBOOSTBalance,
         amount: pickleDepositAmount,
         amountSetter: setPickleDepositAmount,
         gweiAmountSetter: setPickleDepositGweiAmount,
         buttonFunction: depositPickleFarm,
+        buttonDisable: pickleDepositGweiAmount > yvBOOSTBalance,
       },
     ];
     const pickleNote =
@@ -600,27 +625,26 @@ export default function VaultControls(props) {
                     direction={isScreenMd ? 'row' : 'column'}
                     alignItems="center"
                   >
-                    {description.useOldPickleGauge ? null : (
-                      <Box width={1}>
-                        <AmountField
-                          amount={description.amount}
-                          amountSetter={description.amountSetter}
-                          gweiAmountSetter={description.gweiAmountSetter}
-                          maxAmount={description.maxAmount}
-                          decimals={decimals}
-                          placeholder="Amount"
-                        />
-                      </Box>
-                    )}
+                    <Box width={1}>
+                      <AmountField
+                        disabled={description.disableAmountField}
+                        amount={
+                          description.disableAmountField
+                            ? new BigNumber(description.maxAmount).dividedBy(
+                                10 ** 18,
+                              )
+                            : description.amount
+                        }
+                        amountSetter={description.amountSetter}
+                        gweiAmountSetter={description.gweiAmountSetter}
+                        maxAmount={description.maxAmount}
+                        decimals={decimals}
+                        placeholder="Amount"
+                      />
+                    </Box>
                     <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
                       <ActionButton
-                        className="action-button dark"
-                        disabled={
-                          description &&
-                          description.amount > 0 &&
-                          new BigNumber(description.amount).times(10 ** 18) >
-                            new BigNumber(description.maxAmount)
-                        }
+                        disabled={description.buttonDisable}
                         handler={description.buttonFunction}
                         text={description.buttonLabel}
                         title={description.buttonLabel}
@@ -646,25 +670,21 @@ export default function VaultControls(props) {
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
-            <Box display="flex" flexDirection="column">
-              <Balance
-                amount={sellToken ? sellToken.balance : walletBalance}
-                prefix={`Available ${
-                  selectedSellToken ? selectedSellToken.label : sellToken.symbol
-                }: `}
-              />
-              <Box
-                display="flex"
-                flexDirection={isScreenMd ? 'row' : 'column'}
-                alignItems="center"
-                width={1}
-              >
-                <Box
-                  center
-                  mr={isScreenMd ? 5 : 0}
-                  width={isScreenMd ? '179px' : '100%'}
-                  minWidth={179}
-                >
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={12}>
+                <Box>
+                  <Balance
+                    amount={sellToken ? sellToken.balance : walletBalance}
+                    prefix={`Available ${
+                      selectedSellToken
+                        ? selectedSellToken.label
+                        : sellToken.symbol
+                    }: `}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <Box>
                   <SelectField
                     defaultValue={selectedSellToken}
                     onChange={(value) => {
@@ -675,8 +695,10 @@ export default function VaultControls(props) {
                     options={supportedTokenOptions}
                   />
                 </Box>
-                <ButtonGroup width={1}>
-                  <Box width={isScreenMd ? '185px' : '100%'}>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <ButtonGroup width={1} style={{ imarginTop: '' }}>
+                  <Box>
                     <AmountField
                       amount={depositAmount}
                       amountSetter={setDepositAmount}
@@ -687,10 +709,17 @@ export default function VaultControls(props) {
                       decimals={sellToken ? sellToken.decimals : decimals}
                     />
                   </Box>
-                  <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                </ButtonGroup>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <ButtonGroup width={1} style={{ imarginTop: '' }}>
+                  <Box>
                     <ActionButton
                       className="action-button dark"
-                      disabled={!!depositsDisabled}
+                      disabled={
+                        depositGweiAmount >
+                        (sellToken ? sellToken.balanceRaw : tokenBalance)
+                      }
                       handler={() => zapperZapYvBoostEthLP()}
                       text={
                         (tokenAllowance !== undefined &&
@@ -705,16 +734,18 @@ export default function VaultControls(props) {
                         'Connect your wallet to deposit into vault'
                       }
                     />
+                    {zapperError &&
+                      zapperError.poolAddress ===
+                        vaultAddress.toLowerCase() && (
+                        <StyledErrorMessage>
+                          {zapperError.message}
+                        </StyledErrorMessage>
+                      )}{' '}
                   </Box>
                 </ButtonGroup>
-              </Box>
-              {zapperError &&
-                zapperError.poolAddress === vaultAddress.toLowerCase() && (
-                  <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
-                )}
-            </Box>
+              </Grid>
+            </Grid>
           </ActionGroup>
-
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <Grid container spacing={1}>
               <Grid item xs={12} md={9}>
@@ -873,10 +904,7 @@ export default function VaultControls(props) {
                       }
                       handler={() => (willZapIn ? zapperZap() : deposit())}
                       text={
-                        (tokenAllowance !== undefined &&
-                          tokenAllowance !== '0') ||
-                        pureEthereum > 0 ||
-                        willZapIn
+                        vault.hasAllowance || pureEthereum > 0 || willZapIn
                           ? 'Deposit'
                           : 'Approve'
                       }
@@ -1158,6 +1186,7 @@ function AmountField({
   maxAmount,
   decimals,
   placeholder,
+  disabled,
 }) {
   return (
     <StyledRoundedInput
@@ -1171,6 +1200,7 @@ function AmountField({
         />
       }
       placeholder={placeholder}
+      disabled={disabled}
       onChange={(evt) => {
         amountSetter(evt.target.value);
 

@@ -28,11 +28,8 @@ import {
   V2_ETH_ZAP_ADDRESS,
   ZAP_PICKLE,
   DEPOSIT_PICKLE_SLP_IN_FARM,
-  MASTER_CHEFF_POOL_ID,
   EXIT_OLD_PICKLE,
-  MIGRATE_PICKLE_GAUGE,
 } from './constants';
-import DrizzleContract from '../../drizzle/store/DrizzleContract';
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -221,6 +218,7 @@ function* depositToVault(action) {
     tokenContract,
     depositAmount,
     pureEthereum,
+    hasAllowance,
   } = action.payload;
 
   const account = yield select(selectAccount());
@@ -228,7 +226,7 @@ function* depositToVault(action) {
     selectTokenAllowance(tokenContract.address, vaultContract.address),
   );
 
-  const vaultAllowedToSpendToken = tokenAllowance > 0;
+  const vaultAllowedToSpendToken = tokenAllowance > 0 || hasAllowance;
 
   try {
     if (!pureEthereum) {

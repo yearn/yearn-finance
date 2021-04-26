@@ -490,6 +490,9 @@ const Vault = (props) => {
   let vaultName;
   if (vaultIsPickle && !vault.vaultIsYvBoost) {
     vaultName = 'yveCRV - ETH';
+  }
+  if (vault.isYVBoost) {
+    vaultName = 'yvBOOST - ETH';
   } else {
     vaultName = displayName || name || address;
   }

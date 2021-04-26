@@ -75,6 +75,7 @@ function* migratePickleGauge(action) {
     pickleDepositAmount,
     zapPickleMigrateContract,
     tokenContract,
+    allowance,
   } = action.payload;
   const account = yield select(selectAccount());
 
@@ -83,14 +84,15 @@ function* migratePickleGauge(action) {
   let lpyveCRVDAO = {};
   try {
     // yield call(oldPickleGaugeContract.methods.exit().send, { from: account });
-    yield call(
-      tokenContract.methods.approve(
-        zapPickleMigrateContract._address,
-        MAX_UINT256,
-      ).send,
-      { from: account },
-    );
-
+    if (allowance === 0) {
+      yield call(
+        tokenContract.methods.approve(
+          zapPickleMigrateContract._address,
+          MAX_UINT256,
+        ).send,
+        { from: account },
+      );
+    }
     const picklePrices = yield call(
       request,
       getZapperApi('/vault-stats/pickle', {}),
@@ -110,8 +112,11 @@ function* migratePickleGauge(action) {
       return pp;
     });
     const minPTokens =
-      (pickleDepositAmount * lpyveCRVDAO.pricePerToken) /
+      (new BigNumber(pickleDepositAmount).dividedBy(10 ** 18) *
+        lpyveCRVDAO.pricePerToken) /
       lpyveCRVVaultv2.pricePerToken;
+    console.log('minPTokens', minPTokens);
+    console.log('minPTokens depositamout', pickleDepositAmount);
     yield call(
       zapPickleMigrateContract.methods.Migrate(
         pickleDepositAmount,

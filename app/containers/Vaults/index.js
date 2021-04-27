@@ -292,7 +292,6 @@ const Vaults = (props) => {
           isYVBoost: true,
           symbol: 'yvBOOST-ETH',
           address: '0xc695f73c1862e050059367B2E64489E66c525983',
-          accountBalance: yvBOOSTBalance,
         },
       };
     }

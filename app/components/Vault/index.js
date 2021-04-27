@@ -383,7 +383,7 @@ const Vault = (props) => {
       if (vault.isYVBoost) {
         try {
           const resp = await fetch(
-            'https://api.pickle-jar.info/protocol/jar/yv-eth/performance',
+            'https://api.pickle-jar.info/protocol/jar/yvboost-eth/performance',
           );
           const apy = await resp.json();
           if (apy && apy.thirtyDayFarm) {

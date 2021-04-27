@@ -19,6 +19,7 @@ import {
   selectOrderedVaults,
   selectAmplifyVaults,
 } from 'containers/App/selectors';
+import PickleJarAbi2 from 'abi/pickleJar2.json';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
@@ -30,7 +31,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 import request from 'utils/request';
-import { ALIASES_API } from 'containers/Vaults/constants';
+import { ALIASES_API, YVBOOST_ETH_PJAR } from 'containers/Vaults/constants';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
@@ -261,6 +262,24 @@ const Vaults = (props) => {
       <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />
     );
   }
+  const [yvBOOSTBalance, setYvBOOSTBalance] = useState(0);
+  const web3 = useWeb3();
+
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        const yvBoostETHContract = new web3.eth.Contract(
+          PickleJarAbi2,
+          YVBOOST_ETH_PJAR,
+        );
+        const r = await yvBoostETHContract.methods.balanceOf(account).call();
+        setYvBOOSTBalance(r);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBalance();
+  }, []);
   let yboostLPVault = {};
   amplifyVaultItems.map((v) => {
     if (v.symbol === 'yvBOOST') {
@@ -268,16 +287,20 @@ const Vaults = (props) => {
       yboostLPVault = {
         ...yboostLPVault,
         ...{
-          type: 'v1',
+          type: 'v2',
           displayName: 'yvBOOST - ETH',
           isYVBoost: true,
           symbol: 'yvBOOST-ETH',
           address: '0xc695f73c1862e050059367B2E64489E66c525983',
+          accountBalance: yvBOOSTBalance,
         },
       };
     }
     return v;
   });
+  const tmpVault = amplifyVaultItems[1];
+  amplifyVaultItems[1] = amplifyVaultItems[2];
+  amplifyVaultItems[2] = tmpVault;
   amplifyVaultItems.push(yboostLPVault);
   let warning;
   if (showDevVaults) {
@@ -367,6 +390,9 @@ const AmplifyWrapper = (props) => {
   pickleVault.alias = pickleVaultAlias;
 
   const renderVault = (vault) => {
+    if (vault.displayName === 'SLP') {
+      vault.displayName = 'yveCRV-ETH';
+    }
     const vaultKey = vault.address;
     return (
       <Vault

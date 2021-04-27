@@ -87,7 +87,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 showTooltipWhenDisabled
                 disabledTooltipText="You don’t have any claimable rewards"
               >
-                Stake
+                Restake
               </ButtonFilled>
             </Box>
             <Box ml={5} width={isScreenMd ? '30%' : 1}>

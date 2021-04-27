@@ -427,7 +427,9 @@ const Vault = (props) => {
   if (pureEthereum) {
     tokenBalance = ethBalance;
   }
-
+  if (vault.isYVBoost) {
+    tokenBalance = vault.accountBalance;
+  }
   const vaultBalanceDecimalPlacesCount = 4;
 
   const vaultBalanceFormatter = (v) =>

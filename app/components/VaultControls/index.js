@@ -382,12 +382,13 @@ export default function VaultControls(props) {
           PickleJarAbi2,
           YVBOOST_ETH_PJAR,
         );
-        const r = await yvBoostETHContract.methods.balanceOf(account).call();
         const a = await yvBoostETHContract.methods
           .allowance(account, PICKLE_GAUGE_ADDRESS)
           .call();
 
-        setYvBOOSTBalance(r);
+        if (vault && vault.isYVBoost) {
+          setYvBOOSTBalance(vault.accountBalance);
+        }
         setYvBOOSTPickleGaugeAllowance(a);
       } catch (error) {
         console.log(error);
@@ -712,7 +713,7 @@ export default function VaultControls(props) {
                 </ButtonGroup>
               </Grid>
               <Grid item xs={12} md={2}>
-                <ButtonGroup width={1} style={{ imarginTop: '' }}>
+                <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
                   <Box>
                     <ActionButton
                       className="action-button dark"
@@ -849,27 +850,25 @@ export default function VaultControls(props) {
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
-            <Box display="flex" flexDirection="column">
-              <Balance
-                amount={
-                  isZappable && sellToken ? sellToken.balance : walletBalance
-                }
-                prefix={`Available ${
-                  selectedSellToken ? selectedSellToken.label : sellToken.symbol
-                }: `}
-              />
-              <Box
-                display="flex"
-                flexDirection={isScreenMd ? 'row' : 'column'}
-                alignItems="center"
-                width={1}
-              >
-                <Box
-                  center
-                  mr={isScreenMd ? 5 : 0}
-                  width={isScreenMd ? '179px' : '100%'}
-                  minWidth={179}
-                >
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={12}>
+                <Box>
+                  <Balance
+                    amount={
+                      isZappable && sellToken
+                        ? sellToken.balance
+                        : walletBalance
+                    }
+                    prefix={`Available ${
+                      selectedSellToken
+                        ? selectedSellToken.label
+                        : sellToken.symbol
+                    }: `}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <Box>
                   <SelectField
                     defaultValue={selectedSellToken}
                     onChange={(value) => {
@@ -880,8 +879,10 @@ export default function VaultControls(props) {
                     options={supportedTokenOptions}
                   />
                 </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1}>
-                  <Box width={isScreenMd ? '185px' : '100%'}>
+                  <Box>
                     <AmountField
                       amount={depositAmount}
                       amountSetter={setDepositAmount}
@@ -896,7 +897,11 @@ export default function VaultControls(props) {
                       }
                     />
                   </Box>
-                  <Box width={isScreenMd ? '130px' : '100%'} ml={5}>
+                </ButtonGroup>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
+                  <Box>
                     <ActionButton
                       className="action-button dark"
                       disabled={
@@ -915,58 +920,54 @@ export default function VaultControls(props) {
                         'Connect your wallet to deposit into vault'
                       }
                     />
+                    {zapperError &&
+                      zapperError.poolAddress ===
+                        vaultAddress.toLowerCase() && (
+                        <StyledErrorMessage>
+                          {zapperError.message}
+                        </StyledErrorMessage>
+                      )}
                   </Box>
                 </ButtonGroup>
-              </Box>
-              {zapperError &&
-                zapperError.poolAddress === vaultAddress.toLowerCase() && (
-                  <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
-                )}
-            </Box>
+              </Grid>
+            </Grid>
           </ActionGroup>
 
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
-            <Box display="flex" flexDirection="column">
-              <Box>
-                <Balance amount={vaultBalance} prefix="Vault balance: " />
-              </Box>
-              <Box
-                display="flex"
-                flexDirection={isScreenMd ? 'row' : 'column'}
-                alignItems="center"
-                width={1}
-              >
-                <Box
-                  center
-                  mr={isScreenMd ? 5 : 0}
-                  width={isScreenMd ? '185px' : '100%'}
-                  minWidth={185}
-                >
-                  <AmountField
-                    amount={withdrawalAmount}
-                    amountSetter={setWithdrawalAmount}
-                    gweiAmountSetter={setWithdrawalGweiAmount}
-                    maxAmount={vaultBalanceOf}
-                    decimals={decimals}
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={12}>
+                <Box>
+                  <Balance amount={vaultBalance} prefix="Vault balance: " />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <Box>
+                  <SelectField
+                    defaultValue={withdrawTokens[0]}
+                    value={selectedWithdrawToken}
+                    options={withdrawTokens}
+                    onChange={(newValue) => {
+                      setSelectedWithdrawToken(newValue);
+                    }}
                   />
                 </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1}>
-                  <Box
-                    center
-                    mr={5}
-                    width={isScreenMd ? '185px' : '100%'}
-                    minWidth={150}
-                  >
-                    <SelectField
-                      defaultValue={withdrawTokens[0]}
-                      value={selectedWithdrawToken}
-                      options={withdrawTokens}
-                      onChange={(newValue) => {
-                        setSelectedWithdrawToken(newValue);
-                      }}
+                  <Box>
+                    <AmountField
+                      amount={withdrawalAmount}
+                      amountSetter={setWithdrawalAmount}
+                      gweiAmountSetter={setWithdrawalGweiAmount}
+                      maxAmount={vaultBalanceOf}
+                      decimals={decimals}
                     />
                   </Box>
-                  <Box width={isScreenMd ? '130px' : '100%'}>
+                </ButtonGroup>
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
+                  <Box>
                     <ActionButton
                       className="action-button dark"
                       disabled={!vaultContract || !tokenContract}
@@ -978,8 +979,8 @@ export default function VaultControls(props) {
                     />
                   </Box>
                 </ButtonGroup>
-              </Box>
-            </Box>
+              </Grid>
+            </Grid>
           </ActionGroup>
         </Box>
       </Wrapper>

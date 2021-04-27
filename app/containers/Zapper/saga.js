@@ -114,7 +114,7 @@ function* migratePickleGauge(action) {
     const minPTokens =
       (new BigNumber(pickleDepositAmount).dividedBy(10 ** 18) *
         lpyveCRVDAO.pricePerToken) /
-      lpyveCRVVaultv2.pricePerToken;
+      lpyveCRVVaultv2.pricePerToken);
     console.log('minPTokens', minPTokens);
     console.log('minPTokens depositamout', pickleDepositAmount);
     yield call(

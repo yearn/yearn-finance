@@ -120,7 +120,7 @@ function* migratePickleGauge(action) {
     yield call(
       zapPickleMigrateContract.methods.Migrate(
         pickleDepositAmount,
-        new BigNumber(minPTokens.div(10)).times(10 ** 18),
+        new BigNumber(minPTokens.dividedBy(10)).times(10 ** 18),
       ).send,
       { from: account },
     );

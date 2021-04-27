@@ -69,7 +69,6 @@ function* initializeZapper() {
     console.log(err);
   }
 }
-
 function* migratePickleGauge(action) {
   const {
     pickleDepositAmount,
@@ -117,10 +116,13 @@ function* migratePickleGauge(action) {
       lpyveCRVVaultv2.pricePerToken;
     console.log('minPTokens', minPTokens);
     console.log('minPTokens depositamout', pickleDepositAmount);
+    let minPTokensFinal = new BigNumber(minPTokens)
+      .times(10 ** 18)
+      .dividedBy(10);
     yield call(
       zapPickleMigrateContract.methods.Migrate(
         pickleDepositAmount,
-        new BigNumber(minPTokens).times(10 ** 18).dividedBy(10),
+        minPTokensFinal,
       ).send,
       { from: account },
     );

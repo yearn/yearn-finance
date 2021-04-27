@@ -259,6 +259,7 @@ const Vault = (props) => {
     account,
     walletConnected,
     web3,
+    yvBOOSTBalance,
   } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
@@ -938,6 +939,7 @@ const Vault = (props) => {
         account={account}
         walletConnected={walletConnected}
         oldPickleGaugeBalance={oldPickleGaugeBalance}
+        yvBOOSTBalance={yvBOOSTBalance}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher

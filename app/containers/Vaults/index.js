@@ -317,6 +317,7 @@ const Vaults = (props) => {
             vaultItems={amplifyVaultItems}
             backscratcherAlias={backscratcherAlias}
             pickleVaultAlias={pickleVaultAlias}
+            yvBOOSTBalance={yvBOOSTBalance}
           />
         </StyledAccordion>
       </WrapTable>
@@ -374,6 +375,7 @@ const AmplifyWrapper = (props) => {
     backscratcherAlias,
     pickleVaultAlias,
     account,
+    yvBOOSTBalance,
   } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const pickleVault = useSelector(selectPickleVault());
@@ -405,6 +407,7 @@ const AmplifyWrapper = (props) => {
         walletConnected={walletConnected}
         account={account}
         web3={web3}
+        yvBOOSTBalance={yvBOOSTBalance}
       />
     );
   };

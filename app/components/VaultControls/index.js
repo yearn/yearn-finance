@@ -103,6 +103,7 @@ export default function VaultControls(props) {
     balanceDecimalPlacesCount,
     account,
     oldPickleGaugeBalance,
+    yvBOOSTBalance,
   } = props;
   const {
     address: vaultAddress,
@@ -345,7 +346,6 @@ export default function VaultControls(props) {
     setWithdrawalGweiAmount(0);
   }, [walletBalance, vaultBalance]);
 
-  const [yvBOOSTBalance, setYvBOOSTBalance] = useState(0);
   const [
     yvBOOSTPickleGaugeAllowance,
     setYvBOOSTPickleGaugeAllowance,
@@ -386,9 +386,6 @@ export default function VaultControls(props) {
           .allowance(account, PICKLE_GAUGE_ADDRESS)
           .call();
 
-        if (vault && vault.isYVBoost) {
-          setYvBOOSTBalance(vault.accountBalance);
-        }
         setYvBOOSTPickleGaugeAllowance(a);
       } catch (error) {
         console.log(error);

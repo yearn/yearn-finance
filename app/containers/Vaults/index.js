@@ -394,7 +394,7 @@ const AmplifyWrapper = (props) => {
   const renderVault = (vault) => {
     if (vault.displayName === 'SLP') {
       // eslint-disable-next-line no-param-reassign
-      vault.displayName = 'yveCRV-ETH';
+      vault.displayName = 'yveCRV - ETH';
     }
     const vaultKey = vault.address;
     return (

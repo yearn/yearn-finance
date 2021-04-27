@@ -111,13 +111,16 @@ function* migratePickleGauge(action) {
       }
       return pp;
     });
-    const minPTokens = pickleDepositAmount.dividedBy(10);
+    const minPTokens =
+      (new BigNumber(pickleDepositAmount).dividedBy(10 ** 18) *
+        lpyveCRVDAO.pricePerToken) /
+      lpyveCRVVaultv2.pricePerToken;
     console.log('minPTokens', minPTokens);
     console.log('minPTokens depositamout', pickleDepositAmount);
     yield call(
       zapPickleMigrateContract.methods.Migrate(
         pickleDepositAmount,
-        minPTokens,
+        new BigNumber(minPTokens).times(10 ** 18).dividedBy(10),
       ).send,
       { from: account },
     );

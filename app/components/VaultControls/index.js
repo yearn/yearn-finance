@@ -9,7 +9,6 @@ import {
   withdrawFromVault,
   withdrawAllFromVault,
   depositToVault,
-  zapPickle,
   depositPickleSLPInFarm,
   exitOldPickleGauge,
 } from 'containers/Vaults/actions';
@@ -23,7 +22,6 @@ import { selectTokenAllowance } from 'containers/App/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import {
   selectZapperVaults,
-  selectZapperPickleVaults,
   selectZapperTokens,
   selectZapperBalances,
   selectZapperError,
@@ -115,15 +113,12 @@ export default function VaultControls(props) {
     zapAddress,
     emergencyShutdown,
   } = vault;
-  let yvBoostContract = null;
+  const yvBoostContract = useContract(vaultAddress);
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
   const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
-  if (vaultIsYvBoost) {
-    yvBoostContract = useContract(vaultAddress);
-  }
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -169,6 +164,7 @@ export default function VaultControls(props) {
     }));
   supportedTokenOptions.unshift({
     value: token.address,
+    // eslint-disable-next-line no-nested-ternary
     label: pureEthereum
       ? 'ETH'
       : token.displayName
@@ -187,24 +183,6 @@ export default function VaultControls(props) {
   // ------
 
   const tokenContract = useContract(token.address);
-
-  const tokenOptions = [
-    {
-      value: 'eth',
-      label: 'ETH',
-      icon:
-        'https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE/logo-128.png',
-    },
-    {
-      value: 'crv',
-      label: 'CRV',
-      icon:
-        'https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/0xD533a949740bb3306d119CC777fa900bA034cd52/logo-128.png',
-    },
-  ];
-  const [selectedPickleTokenType, setSelectedPickleTokenType] = useState(
-    tokenOptions[0],
-  );
   const [pickleUnstakeGweiAmount, setPickleUnstakeGweiAmount] = useState(0);
   const [pickleUnstakeAmount, setPickleUnstakeAmount] = useState(0);
 
@@ -317,7 +295,6 @@ export default function VaultControls(props) {
       // note: resolves issue #252 from iearn-finance repo
       // this issue only affects v2 & is mis-ticketed as v1 (iearn-finance)
       if (depositGweiAmount <= 0) {
-        console.log('gwei amount', vault.symbol);
         return 'Value must be greater than 0.';
       }
     } else if (
@@ -338,7 +315,6 @@ export default function VaultControls(props) {
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   useEffect(() => {
-    setSelectedPickleTokenType(tokenOptions[0]);
     setDepositAmount(0);
     setPickleDepositAmount(0);
     setWithdrawalAmount(0);
@@ -363,18 +339,16 @@ export default function VaultControls(props) {
             .allowance(account, ZAP_MIGRATE_PICKLE_ADDRESS)
             .call();
           setYvBOOSTPickleJarAllowance(ap);
-        } catch (error) {
-          console.log(error);
+        } catch {
+          // no worries
         }
       }
       if (vaultIsYvBoost && tokenContract && vault && vault.address) {
         try {
-          const apv = await tokenContract.methods
-            .allowance(account, vault.address)
-            .call();
+          await tokenContract.methods.allowance(account, vault.address).call();
           vault.hasAllowance = true;
-        } catch (error) {
-          console.log(error);
+        } catch {
+          // no worries
         }
       }
       try {
@@ -382,20 +356,16 @@ export default function VaultControls(props) {
           PickleJarAbi2,
           YVBOOST_ETH_PJAR,
         );
-        const a = await yvBoostETHContract.methods
+        const allowance = await yvBoostETHContract.methods
           .allowance(account, PICKLE_GAUGE_ADDRESS)
           .call();
 
-        setYvBOOSTPickleGaugeAllowance(a);
-      } catch (error) {
-        console.log(error);
+        setYvBOOSTPickleGaugeAllowance(allowance);
+      } catch {
+        // no worries
       }
     };
-    try {
-      getBalance();
-    } catch (error) {
-      console.log(error);
-    }
+    getBalance();
   });
 
   const migratePickleGaugeCall = async () => {
@@ -468,17 +438,6 @@ export default function VaultControls(props) {
     );
   };
 
-  const zap = () => {
-    dispatch(
-      zapPickle({
-        zapPickleContract: pickleContractsData.zapPickleContract,
-        tokenContract: pickleContractsData.crvContract,
-        depositAmount: depositGweiAmount,
-        pureEthereum: selectedPickleTokenType.value === 'eth',
-      }),
-    );
-  };
-
   const depositPickleFarm = () => {
     const yvBoostETHContract = new web3.eth.Contract(
       PickleJarAbi2,
@@ -526,19 +485,19 @@ export default function VaultControls(props) {
   };
 
   const zapperZapYvBoostEthLP = () => {
-    let address = null;
+    let addr = null;
     if (sellToken && sellToken.address) {
-      address = sellToken.address;
+      addr = sellToken.address;
     } else if (selectedSellToken && selectedSellToken.address) {
-      address = selectedSellToken.address;
+      addr = selectedSellToken.address;
     } else if (token && token.address) {
-      address = token.address;
+      addr = token.address;
     }
-    if (address) {
+    if (addr) {
       const payload = {
         web3,
         poolAddress: YVBOOST_ETH_PJAR.toLowerCase(),
-        sellTokenAddress: address,
+        sellTokenAddress: addr,
         sellAmount: depositGweiAmount,
         slippagePercentage: DEFAULT_SLIPPAGE,
         protocol: 'pickle',
@@ -550,12 +509,12 @@ export default function VaultControls(props) {
   let vaultControlsWrapper;
 
   if (vaultIsPickle && !vault.isYVBoost) {
-    let stakedMaxAmount = 0;
-    stakedMaxAmount = pickleContractsData.pickleMasterChefDepositedRaw;
-    const customWalletBalance =
-      walletBalance > oldPickleGaugeBalance
-        ? walletBalance
-        : oldPickleGaugeBalance;
+    // let stakedMaxAmount = 0;
+    // stakedMaxAmount = pickleContractsData.pickleMasterChefDepositedRaw;
+    // const customWalletBalance =
+    //   walletBalance > oldPickleGaugeBalance
+    //     ? walletBalance
+    //     : oldPickleGaugeBalance;
     const useOldPickleGauge = walletBalance < oldPickleGaugeBalance;
     let pickleMaxAmount = 0;
     let pickleBalance = 0;

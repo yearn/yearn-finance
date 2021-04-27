@@ -83,9 +83,10 @@ function* migratePickleGauge(action) {
   let lpyveCRVDAO = {};
   try {
     // yield call(oldPickleGaugeContract.methods.exit().send, { from: account });
-    if (allowance === 0 || allowance == 0 || !allowance) {
+    if (allowance === 0 || allowance === 0 || !allowance) {
       yield call(
         tokenContract.methods.approve(
+          // eslint-disable-next-line no-underscore-dangle
           zapPickleMigrateContract._address,
           MAX_UINT256,
         ).send,
@@ -116,7 +117,7 @@ function* migratePickleGauge(action) {
       lpyveCRVVaultv2.pricePerToken;
     console.log('minPTokens', minPTokens);
     console.log('minPTokens depositamout', pickleDepositAmount);
-    let minPTokensFinal = new BigNumber(minPTokens)
+    const minPTokensFinal = new BigNumber(minPTokens)
       .times(10 ** 18)
       .dividedBy(10);
     yield call(
@@ -204,7 +205,10 @@ function* zapOut(action) {
     withdrawalAmount,
     decimals,
     selectedWithdrawToken,
+    protocol,
   } = action.payload;
+
+  const zapProtocol = protocol || 'yearn';
 
   const ownerAddress = yield select(selectAccount());
   const vaultContractData = yield select(

@@ -325,6 +325,7 @@ function* depositPickleSLPInFarm(action) {
   try {
     if (!vaultAllowedToSpendToken) {
       yield call(
+        // eslint-disable-next-line no-underscore-dangle
         tokenContract.methods.approve(vaultContract._address, MAX_UINT256).send,
         { from: account },
       );

@@ -298,6 +298,7 @@ const Vaults = (props) => {
     return v;
   });
   const tmpVault = amplifyVaultItems[1];
+  // eslint-disable-next-line prefer-destructuring
   amplifyVaultItems[1] = amplifyVaultItems[2];
   amplifyVaultItems[2] = tmpVault;
   amplifyVaultItems.push(yboostLPVault);
@@ -392,6 +393,7 @@ const AmplifyWrapper = (props) => {
 
   const renderVault = (vault) => {
     if (vault.displayName === 'SLP') {
+      // eslint-disable-next-line no-param-reassign
       vault.displayName = 'yveCRV-ETH';
     }
     const vaultKey = vault.address;

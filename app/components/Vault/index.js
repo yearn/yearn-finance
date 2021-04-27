@@ -194,7 +194,7 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
 });
 
 const truncateUsd = (value) => {
-  if (!value) {
+  if (!value && value !== 0) {
     return 'N/A';
   }
   if (value * 1e18 > 2 ** 255) {
@@ -338,8 +338,10 @@ const Vault = (props) => {
   const [
     apyYvBoostEthRecommended,
     setApyYvBoostEthRecommended,
-  ] = React.useState(0);
-  const [vaultAssetsYvBoostEth, setVaultAssetsYvBoostEth] = React.useState(0);
+  ] = React.useState('NEW ✨');
+  const [vaultAssetsYvBoostEth, setVaultAssetsYvBoostEth] = React.useState(
+    truncateUsd(0),
+  );
 
   React.useEffect(() => {
     const getOldGaugeBalance = async () => {
@@ -401,20 +403,15 @@ const Vault = (props) => {
 
   React.useEffect(() => {
     const getYvBoostEthAssets = async () => {
-      if (vault.isYVBoost && masterChefContract && masterChefContract.methods) {
+      if (vault.isYVBoost) {
         try {
           const resp = await fetch(
             'https://api.pickle-jar.info/protocol/value',
           );
-          const apy = await resp.json();
-          if (apy && apy['yvboost-eth']) {
-            const apyRounded = parseInt(apy['yvboost-eth']);
-            const amount = apyRounded.toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              maximumFractionDigits: 0,
-            });
-            setVaultAssetsYvBoostEth(amount);
+          const asset = await resp.json();
+          if (asset && asset['yvboost-eth']) {
+            const assetRounded = parseInt(asset['yvboost-eth'], 10);
+            setVaultAssetsYvBoostEth(truncateUsd(assetRounded));
           }
         } catch (error) {
           console.log(error);
@@ -962,7 +959,8 @@ const Vault = (props) => {
         amplifyVaultDesc = (
           <Text>
             <b>Note:</b> yveCRV was replaced with more powerful yvBOOST vault.
-            Consider yvBOOST instead of using "Restake" button every week.
+            Consider yvBOOST instead of using &quot;Restake&quot; button every
+            week.
             <br />
             <br />
             This vault converts your CRV into yveCRV, earning you a continuous
@@ -1035,21 +1033,26 @@ const Vault = (props) => {
                   which:
                 </p>
                 <ol>
-                  <li>1. Makes a deposit into yvBOOST. </li>
+                  <li>1. Makes a deposit into yvBOOST.</li>
                   <li>
-                    2. Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
-                    for SUSHI 🍣 rewards.{' '}
+                    {`2. Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
+                    for SUSHI 🍣 rewards.`}
                   </li>
                   <li>
-                    3. Deposits this SLP into the yvBOOST-ETH pJar on Pickle
-                    Finance for PICKLE 🥒 rewards.
+                    {`3. Deposits this SLP into the yvBOOST-ETH pJar on Pickle
+                    Finance for PICKLE 🥒 rewards.`}
                   </li>
                 </ol>
                 <p>
-                  Note: Remember to stake your Pickle LP manually after the
-                  transaction completes. If you’d like to claim earned PICKLE 🥒
-                  rewards or withdraw yvBOOST-ETH SLP, please, use the UI at
-                  https://app.pickle.finance/farms
+                  <span>
+                    {`Note: Remember to stake your Pickle LP manually after the
+                    transaction completes. If you’d like to claim earned PICKLE
+                    🥒 rewards or withdraw yvBOOST-ETH SLP, please, use the UI
+                    at `}
+                  </span>
+                  <a href="https://app.pickle.finance/farms">
+                    app.pickle.finance/farms
+                  </a>
                 </p>{' '}
               </Grid>
             </Grid>
@@ -1102,13 +1105,23 @@ const Vault = (props) => {
           </Text>
         );
         amplifyVaultDesc = (
-          <Text>
-            This vault holds yveCRV tokens, which grant you a continuous share
+          <>
+            <Text>
+              {`This vault holds yveCRV tokens, which grant you a continuous share
             of Curve’s trading fees. Every week, these rewards can be claimed as
             3Crv (Curve’s 3pool LP token). This vault automatically harvests
             these 3Crv rewards and sells them for more yveCRV, compounding your
-            returns over time.
-          </Text>
+            returns over time.`}
+            </Text>
+            <Text>
+              {`Deposit the underlying vault asset directly or zap in using
+                  almost any token in your wallet. Please be aware that for
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault's underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
+            </Text>
+          </>
         );
         vaultAdditionalInfo = (
           <Box my={50} mx={isScreenMd ? 50 : 20}>
@@ -1306,7 +1319,7 @@ const Vault = (props) => {
                   <span>{vaultMigrationData.migrationMessage}</span>
                 </Box>
               )}
-              {isZappable && !isMigratable && (
+              {isZappable && !vaultIsYvBoost && !isMigratable && (
                 <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                   <span>
                     {`Deposit the underlying vault asset directly or zap in using

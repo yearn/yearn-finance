@@ -560,13 +560,22 @@ export default function VaultControls(props) {
         ? walletBalance
         : oldPickleGaugeBalance;
     const useOldPickleGauge = walletBalance < oldPickleGaugeBalance;
+    let pickleMaxAmount = 0;
+    let pickleBalance = 0;
+    if (
+      pickleContractsData &&
+      pickleContractsData.pickleMasterChefDepositedRaw
+    ) {
+      pickleMaxAmount = pickleContractsData.pickleMasterChefDepositedRaw;
+      pickleBalance = pickleContractsData.pickleMasterChefDeposited;
+    }
     const pickleDescriptions = [
       {
-        balance: pickleContractsData.pickleMasterChefDeposited,
+        balance: pickleBalance,
         main: '1. You have to unstake your LP Tokens',
         sub: 'Available Pickle SLP: ',
         buttonLabel: 'Unstake',
-        maxAmount: pickleContractsData.pickleMasterChefDepositedRaw,
+        maxAmount: pickleMaxAmount,
         amount: pickleUnstakeAmount,
         amountSetter: setPickleUnstakeAmount,
         gweiAmountSetter: setPickleUnstakeGweiAmount,

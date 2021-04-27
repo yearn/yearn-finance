@@ -69,6 +69,7 @@ export const RoundedInput = React.forwardRef((props, ref) => {
         spellCheck="false"
         value={value}
         disabled={disabled}
+        className={disabled ? 'disabled-primary' : null}
         placeholder={placeholder}
         onChange={(event) => {
           const input = event.target.value;

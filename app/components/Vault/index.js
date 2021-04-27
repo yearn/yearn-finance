@@ -948,6 +948,9 @@ const Vault = (props) => {
       let amplifyVaultTitle;
       let amplifyVaultDesc;
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
+      if (vault.isYVBoost) {
+        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
+      }
       let styledIcon = (
         <StyledTokenIcon address={tokenContractAddress} icon={token.icon} />
       );
@@ -1055,7 +1058,13 @@ const Vault = (props) => {
         );
       }
       if (vaultIsPickle && !vault.isYVBoost) {
-        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
+        availableToDeposit =
+          pickleContractsData &&
+          pickleContractsData.pickleMasterChefDeposited &&
+          !Number.isNaN(pickleContractsData.pickleMasterChefDeposited) &&
+          pickleContractsData.pickleMasterChefDeposited !== 'NaN'
+            ? pickleContractsData.pickleMasterChefDeposited
+            : '0.00';
         const useOldGauge =
           pickleContractsData.pickleMasterChefDeposited < oldPickleGaugeBalance;
         vaultBalanceOf = useOldGauge

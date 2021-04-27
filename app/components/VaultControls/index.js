@@ -573,7 +573,7 @@ export default function VaultControls(props) {
       {
         balance: pickleBalance,
         main: '1. You have to unstake your LP Tokens',
-        sub: 'Available Pickle SLP: ',
+        sub: 'Available Pickle SLP',
         buttonLabel: 'Unstake',
         maxAmount: pickleMaxAmount,
         amount: pickleUnstakeAmount,
@@ -584,8 +584,11 @@ export default function VaultControls(props) {
           : unstakeMasterChef,
         buttonDisable:
           pickleUnstakeGweiAmount >
-          pickleContractsData.pickleMasterChefDepositedRaw,
+            pickleContractsData.pickleMasterChefDepositedRaw ||
+          pickleBalance === 0 ||
+          pickleBalance === '0',
         disableAmountField: true,
+        hideBalance: true,
       },
       {
         balance: walletBalance,
@@ -630,6 +633,7 @@ export default function VaultControls(props) {
                   <Balance
                     amount={description.balance}
                     prefix={description.sub}
+                    hideBalance={description.hideBalance}
                   />
                   <ActionGroup
                     direction={isScreenMd ? 'row' : 'column'}
@@ -650,6 +654,7 @@ export default function VaultControls(props) {
                         maxAmount={description.maxAmount}
                         decimals={decimals}
                         placeholder="Amount"
+                        hideMaxButton={description.hideBalance}
                       />
                     </Box>
                     <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
@@ -1187,17 +1192,20 @@ function AmountField({
   decimals,
   placeholder,
   disabled,
+  hideMaxButton,
 }) {
   return (
     <StyledRoundedInput
       value={amount}
       right={
-        <MaxButton
-          maxAmount={maxAmount}
-          amountSetter={amountSetter}
-          gweiAmountSetter={gweiAmountSetter}
-          decimals={decimals}
-        />
+        hideMaxButton ? null : (
+          <MaxButton
+            maxAmount={maxAmount}
+            amountSetter={amountSetter}
+            gweiAmountSetter={gweiAmountSetter}
+            decimals={decimals}
+          />
+        )
       }
       placeholder={placeholder}
       disabled={disabled}
@@ -1236,11 +1244,11 @@ function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
   );
 }
 
-function Balance({ amount, prefix, decimalPlaces = 2 }) {
+function Balance({ amount, prefix, decimalPlaces = 2, hideBalance }) {
   return (
     <div>
       {prefix}
-      {new BigNumber(amount).toFixed(decimalPlaces)}
+      {hideBalance ? null : new BigNumber(amount).toFixed(decimalPlaces)}
     </div>
   );
 }

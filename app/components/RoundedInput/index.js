@@ -55,9 +55,9 @@ export const RoundedInput = React.forwardRef((props, ref) => {
     right,
     maxValue,
     placeholder,
+    disabledStyle,
   } = props;
   const invalid = !isValidValue(value, maxValue);
-
   return (
     <Wrapper className={className}>
       <Input
@@ -69,7 +69,7 @@ export const RoundedInput = React.forwardRef((props, ref) => {
         spellCheck="false"
         value={value}
         disabled={disabled}
-        className={disabled ? 'disabled-primary' : null}
+        style={disabledStyle}
         placeholder={placeholder}
         onChange={(event) => {
           const input = event.target.value;

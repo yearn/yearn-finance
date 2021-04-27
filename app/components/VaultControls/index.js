@@ -589,6 +589,10 @@ export default function VaultControls(props) {
           pickleBalance === '0',
         disableAmountField: true,
         hideBalance: true,
+        disabledStyle: {
+          background: '#1d265f',
+          color: 'white',
+        },
       },
       {
         balance: walletBalance,
@@ -655,6 +659,7 @@ export default function VaultControls(props) {
                         decimals={decimals}
                         placeholder="Amount"
                         hideMaxButton={description.hideBalance}
+                        disabledStyle={description.disabledStyle}
                       />
                     </Box>
                     <Box ml={isScreenMd ? 5 : 0} width={isScreenMd ? '30%' : 1}>
@@ -1193,10 +1198,12 @@ function AmountField({
   placeholder,
   disabled,
   hideMaxButton,
+  disabledStyle,
 }) {
   return (
     <StyledRoundedInput
       value={amount}
+      disabledStyle={disabledStyle}
       right={
         hideMaxButton ? null : (
           <MaxButton

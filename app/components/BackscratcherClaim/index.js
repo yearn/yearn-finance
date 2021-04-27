@@ -34,7 +34,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const threeCrvContract = useContract(THREECRV_ADDRESS);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
-    return null;
+    //return null;
   }
   const index = get(vaultContractData, 'index');
   const supplyIndex = get(vaultContractData, 'supplyIndex');

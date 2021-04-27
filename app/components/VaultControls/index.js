@@ -706,7 +706,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <ButtonGroup width={1} style={{ imarginTop: '' }}>
                   <Box>
                     <AmountField
@@ -721,44 +721,41 @@ export default function VaultControls(props) {
                   </Box>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
-                  <Box>
-                    <ActionButton
-                      className="action-button dark"
-                      disabled={
-                        depositGweiAmount >
-                        (sellToken ? sellToken.balanceRaw : tokenBalance)
-                      }
-                      handler={() => zapperZapYvBoostEthLP()}
-                      text={
-                        (tokenAllowance !== undefined &&
-                          tokenAllowance !== '0') ||
-                        pureEthereum > 0 ||
-                        'Deposit'
-                      }
-                      title="Deposit into vault"
-                      showTooltip
-                      tooltipText={
-                        depositsDisabled ||
-                        'Connect your wallet to deposit into vault'
-                      }
-                    />
-                    {zapperError &&
-                      zapperError.poolAddress ===
-                        vaultAddress.toLowerCase() && (
-                        <StyledErrorMessage>
-                          {zapperError.message}
-                        </StyledErrorMessage>
-                      )}{' '}
-                  </Box>
+                  <ActionButton
+                    className="action-button dark"
+                    disabled={
+                      depositGweiAmount >
+                      (sellToken ? sellToken.balanceRaw : tokenBalance)
+                    }
+                    handler={() => zapperZapYvBoostEthLP()}
+                    text={
+                      (tokenAllowance !== undefined &&
+                        tokenAllowance !== '0') ||
+                      pureEthereum > 0 ||
+                      'Deposit'
+                    }
+                    title="Deposit into vault"
+                    showTooltip
+                    tooltipText={
+                      depositsDisabled ||
+                      'Connect your wallet to deposit into vault'
+                    }
+                  />
+                  {zapperError &&
+                    zapperError.poolAddress === vaultAddress.toLowerCase() && (
+                      <StyledErrorMessage>
+                        {zapperError.message}
+                      </StyledErrorMessage>
+                    )}{' '}
                 </ButtonGroup>
               </Grid>
             </Grid>
           </ActionGroup>
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <Grid container spacing={1}>
-              <Grid item xs={12} md={9}>
+              <Grid item xs={12} md={8}>
                 <Box>
                   <Balance
                     amount={new BigNumber(yvBOOSTBalance)
@@ -777,28 +774,26 @@ export default function VaultControls(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1} style={{ marginTop: '15px' }}>
-                  <Box>
-                    <ActionButton
-                      className="action-button dark"
-                      disabled={yvBOOSTBalance === 0}
-                      handler={() => depositPickleFarm()}
-                      text={
-                        !yvBOOSTPickleGaugeAllowance ||
-                        yvBOOSTPickleGaugeAllowance === 0 ||
-                        yvBOOSTPickleGaugeAllowance === '0'
-                          ? 'Approve'
-                          : 'Deposit'
-                      }
-                      title="Deposit into vault"
-                      showTooltip
-                      tooltipText={
-                        depositsDisabled ||
-                        'Connect your wallet to deposit into vault'
-                      }
-                    />
-                  </Box>
+                  <ActionButton
+                    className="action-button dark"
+                    disabled={yvBOOSTBalance === 0}
+                    handler={() => depositPickleFarm()}
+                    text={
+                      !yvBOOSTPickleGaugeAllowance ||
+                      yvBOOSTPickleGaugeAllowance === 0 ||
+                      yvBOOSTPickleGaugeAllowance === '0'
+                        ? 'Approve'
+                        : 'Deposit'
+                    }
+                    title="Deposit into vault"
+                    showTooltip
+                    tooltipText={
+                      depositsDisabled ||
+                      'Connect your wallet to deposit into vault'
+                    }
+                  />
                 </ButtonGroup>
               </Grid>
             </Grid>
@@ -857,7 +852,7 @@ export default function VaultControls(props) {
   } else if (vaultIsYvBoost) {
     vaultControlsWrapper = (
       <Wrapper>
-        <Box display="flex" flexDirection="column" width={1}>
+        <Box display="flex" flexDirection="column">
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <Grid container spacing={1}>
               <Grid item xs={12} md={12}>
@@ -889,7 +884,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <ButtonGroup width={1}>
                   <Box>
                     <AmountField
@@ -908,35 +903,32 @@ export default function VaultControls(props) {
                   </Box>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
-                  <Box>
-                    <ActionButton
-                      className="action-button dark"
-                      disabled={
-                        !yvBoostContract || !tokenContract || !!depositsDisabled
-                      }
-                      handler={() => (willZapIn ? zapperZap() : deposit())}
-                      text={
-                        vault.hasAllowance || pureEthereum > 0 || willZapIn
-                          ? 'Deposit'
-                          : 'Approve'
-                      }
-                      title="Deposit into vault"
-                      showTooltip
-                      tooltipText={
-                        depositsDisabled ||
-                        'Connect your wallet to deposit into vault'
-                      }
-                    />
-                    {zapperError &&
-                      zapperError.poolAddress ===
-                        vaultAddress.toLowerCase() && (
-                        <StyledErrorMessage>
-                          {zapperError.message}
-                        </StyledErrorMessage>
-                      )}
-                  </Box>
+                  <ActionButton
+                    className="action-button dark"
+                    disabled={
+                      !yvBoostContract || !tokenContract || !!depositsDisabled
+                    }
+                    handler={() => (willZapIn ? zapperZap() : deposit())}
+                    text={
+                      vault.hasAllowance || pureEthereum > 0 || willZapIn
+                        ? 'Deposit'
+                        : 'Approve'
+                    }
+                    title="Deposit into vault"
+                    showTooltip
+                    tooltipText={
+                      depositsDisabled ||
+                      'Connect your wallet to deposit into vault'
+                    }
+                  />
+                  {zapperError &&
+                    zapperError.poolAddress === vaultAddress.toLowerCase() && (
+                      <StyledErrorMessage>
+                        {zapperError.message}
+                      </StyledErrorMessage>
+                    )}
                 </ButtonGroup>
               </Grid>
             </Grid>
@@ -961,7 +953,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <ButtonGroup width={1}>
                   <Box>
                     <AmountField
@@ -974,19 +966,17 @@ export default function VaultControls(props) {
                   </Box>
                 </ButtonGroup>
               </Grid>
-              <Grid item xs={12} md={2}>
+              <Grid item xs={12} md={4}>
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
-                  <Box>
-                    <ActionButton
-                      className="action-button dark"
-                      disabled={!vaultContract || !tokenContract}
-                      handler={withdraw}
-                      text="Withdraw"
-                      title="Withdraw from vault"
-                      showTooltip
-                      tooltipText="Connect your wallet to withdraw from vault"
-                    />
-                  </Box>
+                  <ActionButton
+                    className="action-button dark"
+                    disabled={!vaultContract || !tokenContract}
+                    handler={withdraw}
+                    text="Withdraw"
+                    title="Withdraw from vault"
+                    showTooltip
+                    tooltipText="Connect your wallet to withdraw from vault"
+                  />
                 </ButtonGroup>
               </Grid>
             </Grid>

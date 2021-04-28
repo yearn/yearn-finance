@@ -236,7 +236,7 @@ function* zapOut(action) {
       }),
     );
     const gasPrice = new BigNumber(gasPrices.fast).times(10 ** 9);
-
+    const zapProtocol = 'yearn';
     const approvalState = yield call(
       request,
       getZapperApi(`/zap-out/${zapProtocol}/approval-state`, {

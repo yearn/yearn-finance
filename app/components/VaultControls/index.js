@@ -345,8 +345,13 @@ export default function VaultControls(props) {
       }
       if (vaultIsYvBoost && tokenContract && vault && vault.address) {
         try {
-          await tokenContract.methods.allowance(account, vault.address).call();
-          vault.hasAllowance = true;
+          const ha = await tokenContract.methods
+            .allowance(account, vault.address)
+            .call();
+
+          if (ha && ha > 0) {
+            vault.hasAllowance = true;
+          }
         } catch {
           // no worries
         }

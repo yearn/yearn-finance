@@ -585,7 +585,7 @@ export default function VaultControls(props) {
       },
     ];
     const pickleNote =
-      'Note: If you want to claim PICKLE 🥒 rewards or withdraw yout yvBOOST-ETH SLP, please, use UI at';
+      'Note: If you want to claim PICKLE 🥒 rewards or withdraw your yvBOOST-ETH SLP, please, use UI at';
     const pickleNoteLink = 'https://app.pickle.finance/farms';
     vaultControlsWrapper = (
       <Wrapper>

@@ -8,6 +8,9 @@ export const selectZapperTokens = () =>
 export const selectZapperVaults = () =>
   createSelector(selectZapper, (substate) => substate.vaults);
 
+export const selectZapperPickleVaults = () =>
+  createSelector(selectZapper, (substate) => substate.pickleVaults);
+
 export const selectZapperBalances = () =>
   createSelector(selectZapper, (substate) => substate.balances);
 

@@ -34,7 +34,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const threeCrvContract = useContract(THREECRV_ADDRESS);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
-    return null;
+    // return null;
   }
   const index = get(vaultContractData, 'index');
   const supplyIndex = get(vaultContractData, 'supplyIndex');
@@ -87,7 +87,7 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 showTooltipWhenDisabled
                 disabledTooltipText="You don’t have any claimable rewards"
               >
-                Stake
+                Restake
               </ButtonFilled>
             </Box>
             <Box ml={5} width={isScreenMd ? '30%' : 1}>

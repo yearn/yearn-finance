@@ -13,6 +13,7 @@ import {
   selectTokenAllowance,
   selectContractData,
 } from 'containers/App/selectors';
+import { MAX_UINT256 } from 'containers/Cover/constants';
 import { vaultsLoaded, userVaultStatisticsLoaded } from './actions';
 import {
   VAULTS_LOADED,
@@ -27,9 +28,8 @@ import {
   V2_ETH_ZAP_ADDRESS,
   ZAP_PICKLE,
   DEPOSIT_PICKLE_SLP_IN_FARM,
-  MASTER_CHEFF_POOL_ID,
+  EXIT_OLD_PICKLE,
 } from './constants';
-
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -119,6 +119,7 @@ function* withdrawFromVault(action) {
     withdrawalAmount,
     decimals,
     pureEthereum,
+    unstakePickle,
   } = action.payload;
 
   const account = yield select(selectAccount());
@@ -146,13 +147,24 @@ function* withdrawFromVault(action) {
 
   try {
     if (!pureEthereum) {
-      yield call(
-        vaultContract.methods.withdraw.cacheSend,
-        sharesForWithdrawal,
-        {
-          from: account,
-        },
-      );
+      if (unstakePickle) {
+        yield call(
+          vaultContract.methods.withdraw.cacheSend,
+          26,
+          withdrawalAmount,
+          {
+            from: account,
+          },
+        );
+      } else {
+        yield call(
+          vaultContract.methods.withdraw.cacheSend,
+          sharesForWithdrawal,
+          {
+            from: account,
+          },
+        );
+      }
     } else {
       const { zapContract } = vaultContract;
       if (zapContract) {
@@ -206,6 +218,7 @@ function* depositToVault(action) {
     tokenContract,
     depositAmount,
     pureEthereum,
+    hasAllowance,
   } = action.payload;
 
   const account = yield select(selectAccount());
@@ -213,7 +226,7 @@ function* depositToVault(action) {
     selectTokenAllowance(tokenContract.address, vaultContract.address),
   );
 
-  const vaultAllowedToSpendToken = tokenAllowance > 0;
+  const vaultAllowedToSpendToken = tokenAllowance > 0 || hasAllowance;
 
   try {
     if (!pureEthereum) {
@@ -286,28 +299,40 @@ function* zapPickle(action) {
   }
 }
 
-function* depositPickleSLPInFarm(action) {
-  const { vaultContract, tokenContract, depositAmount } = action.payload;
+function* exitOldPickleGauge(action) {
+  const { oldPickleGaugeContract } = action.payload;
 
   const account = yield select(selectAccount());
-  const tokenAllowance = yield select(
-    selectTokenAllowance(tokenContract.address, vaultContract.address),
-  );
+  try {
+    yield call(oldPickleGaugeContract.methods.exit().send, { from: account });
+  } catch (error) {
+    console.error('failed exit', error);
+  }
+}
 
-  const vaultAllowedToSpendToken = tokenAllowance > 0;
+function* depositPickleSLPInFarm(action) {
+  const {
+    vaultContract,
+    tokenContract,
+    depositAmount,
+    allowance,
+  } = action.payload;
+
+  const account = yield select(selectAccount());
+
+  const vaultAllowedToSpendToken = allowance > 0;
 
   try {
     if (!vaultAllowedToSpendToken) {
-      yield call(approveTxSpend, tokenContract, account, vaultContract.address);
+      yield call(
+        // eslint-disable-next-line no-underscore-dangle
+        tokenContract.methods.approve(vaultContract._address, MAX_UINT256).send,
+        { from: account },
+      );
     }
-    yield call(
-      vaultContract.methods.deposit.cacheSend,
-      MASTER_CHEFF_POOL_ID,
-      depositAmount,
-      {
-        from: account,
-      },
-    );
+    yield call(vaultContract.methods.deposit(depositAmount).send, {
+      from: account,
+    });
   } catch (error) {
     console.error(error);
   }
@@ -408,4 +433,5 @@ export default function* initialize() {
   yield takeLatest(RESTAKE_BACKSCRATCHER_REWARDS, restakeBackscratcherRewards);
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
+  yield takeLatest(EXIT_OLD_PICKLE, exitOldPickleGauge);
 }

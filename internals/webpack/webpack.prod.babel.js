@@ -32,7 +32,7 @@ module.exports = require('./webpack.base.babel')({
             comparisons: false,
           },
           parse: {},
-          mangle: true,
+          mangle: false,
           output: {
             comments: false,
             ascii_only: true,

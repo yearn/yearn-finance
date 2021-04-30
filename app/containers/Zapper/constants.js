@@ -4,6 +4,7 @@ export const ZAP_IN = 'ZAP_IN';
 export const ZAP_OUT = 'ZAP_OUT';
 export const ZAP_IN_ERROR = 'ZAP_IN_ERROR';
 export const ZAP_OUT_ERROR = 'ZAP_OUT_ERROR';
+export const MIGRATE_PICKLE_GAUGE = 'MIGRATE_PICKLE_GAUGE';
 
 export const ETH_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const DEFAULT_SLIPPAGE = '0.01';

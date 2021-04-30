@@ -17,6 +17,8 @@ import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
+import PickleGaugeAbi from 'abi/pickleGauge.json';
+import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
 import {
   selectContractData,
   selectEthBalance,
@@ -30,6 +32,9 @@ import {
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
   LAZY_APE_ADDRESSES,
+  YVBOOST_ADDRESS,
+  PICKLE_GAUGE_ADDRESS,
+  OLD_PICKLE_GAUGE_ADDRESS,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -90,7 +95,7 @@ const IconName = styled.div`
 
 const A = styled.a`
   display: inline-grid;
-  text-decoration: underline;
+  text-decoration: none;
 `;
 
 const Td = styled.td`
@@ -189,7 +194,7 @@ const usdFormatter = new Intl.NumberFormat('en-US', {
 });
 
 const truncateUsd = (value) => {
-  if (!value) {
+  if (!value && value !== 0) {
     return 'N/A';
   }
   if (value * 1e18 > 2 ** 255) {
@@ -245,7 +250,17 @@ const LinkWrap = (props) => {
 };
 
 const Vault = (props) => {
-  const { vault, showDevVaults, active, accordionKey, amplifyVault } = props;
+  const {
+    vault,
+    showDevVaults,
+    active,
+    accordionKey,
+    amplifyVault,
+    account,
+    walletConnected,
+    web3,
+    yvBOOSTBalance,
+  } = props;
   const vaultContractData = useSelector(selectContractData(vault.address));
   _.merge(vault, vaultContractData);
   const {
@@ -267,7 +282,6 @@ const Vault = (props) => {
     depositLimit,
     alias,
     emergencyShutdown,
-    // statistics,
   } = vault;
 
   const { openModal } = useModal();
@@ -309,6 +323,7 @@ const Vault = (props) => {
 
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
+  const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
 
   const migrationData = useSelector(selectMigrationData);
   const vaultMigrationData = migrationData[address];
@@ -318,11 +333,98 @@ const Vault = (props) => {
   const zapperVaultData = zapperVaults[address.toLowerCase()];
   const isZappable = !!zapperVaultData;
 
+  const [userInfoYvBoostEth, setUserInfoYvBoostEth] = React.useState(0);
+  const [oldPickleGaugeBalance, setOldPickleGaugeBalance] = React.useState(0);
+  const [
+    apyYvBoostEthRecommended,
+    setApyYvBoostEthRecommended,
+  ] = React.useState('NEW ✨');
+  const [vaultAssetsYvBoostEth, setVaultAssetsYvBoostEth] = React.useState(
+    truncateUsd(0),
+  );
+
+  React.useEffect(() => {
+    const getOldGaugeBalance = async () => {
+      if (!vault.isYVBoost && vaultIsPickle && account) {
+        const oldPickleGaugeContract = new web3.eth.Contract(
+          OldPickleGaugeAbi,
+          OLD_PICKLE_GAUGE_ADDRESS,
+        );
+        try {
+          const r = await oldPickleGaugeContract.methods
+            .balanceOf(account)
+            .call();
+          setOldPickleGaugeBalance(r);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getOldGaugeBalance();
+  }, [oldPickleGaugeBalance]);
+
+  React.useEffect(() => {
+    const getUserInfo = async () => {
+      if (vault.isYVBoost && account) {
+        const pickleGaugeContract = new web3.eth.Contract(
+          PickleGaugeAbi,
+          PICKLE_GAUGE_ADDRESS,
+        );
+        try {
+          const r = await pickleGaugeContract.methods.balanceOf(account).call();
+          setUserInfoYvBoostEth(r);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getUserInfo();
+  }, [userInfoYvBoostEth]);
+
+  React.useEffect(() => {
+    const getYvBoostEthAPY = async () => {
+      if (vault.isYVBoost) {
+        try {
+          const resp = await fetch(
+            'https://api.pickle-jar.info/protocol/jar/yvboost-eth/performance',
+          );
+          const apy = await resp.json();
+          if (apy && apy.thirtyDayFarm) {
+            const amount = `${apy.thirtyDayFarm.toFixed(2)}%`;
+            setApyYvBoostEthRecommended(amount);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getYvBoostEthAPY();
+  }, [apyYvBoostEthRecommended]);
+
+  React.useEffect(() => {
+    const getYvBoostEthAssets = async () => {
+      if (vault.isYVBoost) {
+        try {
+          const resp = await fetch(
+            'https://api.pickle-jar.info/protocol/value',
+          );
+          const asset = await resp.json();
+          if (asset && asset['yvboost-eth']) {
+            const assetRounded = parseInt(asset['yvboost-eth'], 10);
+            setVaultAssetsYvBoostEth(truncateUsd(assetRounded));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getYvBoostEthAssets();
+  }, [vaultAssetsYvBoostEth]);
+
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
     tokenBalance = ethBalance;
   }
-
   const vaultBalanceDecimalPlacesCount = 4;
 
   const vaultBalanceFormatter = (v) =>
@@ -344,7 +446,7 @@ const Vault = (props) => {
 
   let pickleContractsData = null;
 
-  if (vaultIsPickle) {
+  if (vaultIsPickle || vault.isYVBoost) {
     const pickleJarBalanceRaw =
       pickleJarContractData && pickleJarContractData.balanceOf;
     const parsedPickleJarBalance = pickleJarBalanceRaw
@@ -353,10 +455,11 @@ const Vault = (props) => {
           .toFixed(2)
       : '0.00';
 
+    const masterChefBalanceRaw = masterChefContractData
+      ? _.get(masterChefContractData, 'userInfo.amount')
+      : '0.00';
     const masterChefBalance = masterChefContractData
-      ? new BigNumber(_.get(masterChefContractData, 'userInfo.amount'))
-          .dividedBy(10 ** decimals)
-          .toFixed(2)
+      ? new BigNumber(masterChefBalanceRaw).dividedBy(10 ** decimals).toFixed(2)
       : '0.00';
 
     pickleContractsData = {
@@ -368,8 +471,10 @@ const Vault = (props) => {
       pickleJarBalanceRaw,
       pickleJarAllowance,
       pickleMasterChefDeposited: masterChefBalance,
+      pickleMasterChefDepositedRaw: masterChefBalanceRaw,
       crvBalance: parsedCrvBalance,
       crvBalanceRaw,
+      decimals,
       crvAllowance: crvTokenAllowance,
       ethBalance: parsedEthBalance,
       ethBalanceRaw: ethBalance,
@@ -380,8 +485,11 @@ const Vault = (props) => {
   // const tokenName = name || _.get(tokenContractData, 'name');
 
   let vaultName;
-  if (vaultIsPickle) {
+  if (vaultIsPickle && !vault.vaultIsYvBoost) {
     vaultName = 'yveCRV - ETH';
+  }
+  if (vault.isYVBoost) {
+    vaultName = 'yvBOOST - ETH';
   } else {
     vaultName = displayName || name || address;
   }
@@ -574,6 +682,17 @@ const Vault = (props) => {
           .toFixed()
       : '0.00';
   }
+
+  if (userInfoYvBoostEth) {
+    vaultBalanceOf = userInfoYvBoostEth
+      ? new BigNumber(userInfoYvBoostEth).dividedBy(10 ** decimals).toFixed()
+      : '0.00';
+  }
+  // let vaultAssets = vaultIsBackscratcher
+  //   ? backscratcherTotalAssets
+  //   : balance || totalAssets;
+  // vaultAssets = new BigNumber(vaultAssets).dividedBy(10 ** decimals).toFixed(0);
+  // vaultAssets = vaultAssets === 'NaN' ? '-' : abbreviateNumber(vaultAssets);
 
   let vaultAssets;
   let vaultAssetsTooltip;
@@ -811,6 +930,10 @@ const Vault = (props) => {
         tokenBalance={tokenBalance}
         pickleContractsData={pickleContractsData}
         balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
+        account={account}
+        walletConnected={walletConnected}
+        oldPickleGaugeBalance={oldPickleGaugeBalance}
+        yvBOOSTBalance={yvBOOSTBalance}
       />
     );
     const tokenIconAddress = vaultIsBackscratcher
@@ -821,6 +944,9 @@ const Vault = (props) => {
       let amplifyVaultTitle;
       let amplifyVaultDesc;
       let availableToDeposit = <AnimatedNumber value={tokenBalanceOf} />;
+      if (vault.isYVBoost) {
+        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
+      }
       let styledIcon = (
         <StyledTokenIcon address={tokenContractAddress} icon={token.icon} />
       );
@@ -832,54 +958,126 @@ const Vault = (props) => {
         );
         amplifyVaultDesc = (
           <Text>
-            This vault converts your CRV into yveCRV at a 1:1 ratio, earning you
-            a continuous share of Curve’s trading fees. Every week, these
-            rewards can be claimed here as 3Crv (Curve’s 3pool LP token). These
-            unclaimed rewards can also be staked directly into our 3Crv yVault
-            using the Stake button on the left.
+            <b>Note:</b> yveCRV was replaced with more powerful yvBOOST vault.
+            Consider yvBOOST instead of using &quot;Restake&quot; button every
+            week.
+            <br />
+            <br />
+            This vault converts your CRV into yveCRV, earning you a continuous
+            share of Curve’s trading fees. Every week, these rewards can be
+            claimed here as 3Crv (Curve’s 3pool LP token). These rewards can
+            also be restaked into more yveCRV with one click.
             <br />
             <br />
             This operation is non-reversible: you can only convert CRV into
             yveCRV, as any deposited CRV is perpetually staked in Curve’s voting
             escrow.
-            <br />
-            <br />
-            If you prefer to earn higher returns on your CRV in an LP position,
-            deposit into the yveCRV-ETH pJar.
           </Text>
         );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                {amplifyVaultDesc}
+              </Grid>
+            </Grid>
+          </Box>
+        );
       }
-      if (vaultIsPickle) {
-        availableToDeposit = `${parsedEthBalance} ETH - ${parsedCrvBalance} CRV`;
-        vaultBalanceOf = pickleContractsData.pickleMasterChefDeposited;
+      if (vault.isYVBoost) {
+        apyTooltip = null;
+        vaultAssetsTooltip = null;
+        apyRecommended = apyYvBoostEthRecommended;
+        vaultAssets = vaultAssetsYvBoostEth;
+        //        vaultBalanceOf = 200000330;
+        amplifyVaultTitle = (
+          <Text bold fontSize={4} mb={40}>
+            Zap in to earn compounding yield on a yvBOOST-ETH LP position
+          </Text>
+        );
+        styledIcon = (
+          <StyledDoubleTokenIcon>
+            {/* NOTE CRV/ETH address for token icon */}
+            <StyledTokenIcon address="0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a" />
+            <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
+          </StyledDoubleTokenIcon>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid item xs={12} md={6} className="amplify-vault-controls">
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                <p>
+                  This vault performs a multi-step transaction with any asset
+                  which:
+                </p>
+                <ol>
+                  <li>1. Makes a deposit into yvBOOST.</li>
+                  <li>
+                    {`2. Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
+                    for SUSHI 🍣 rewards.`}
+                  </li>
+                  <li>
+                    {`3. Deposits this SLP into the yvBOOST-ETH pJar on Pickle
+                    Finance for PICKLE 🥒 rewards.`}
+                  </li>
+                </ol>
+                <p>
+                  <span>
+                    {`Note: Remember to stake your Pickle LP manually after the
+                    transaction completes. If you’d like to claim earned PICKLE
+                    🥒 rewards or withdraw yvBOOST-ETH SLP, please, use the UI
+                    at `}
+                  </span>
+                  <a href="https://app.pickle.finance/farms">
+                    app.pickle.finance/farms
+                  </a>
+                </p>{' '}
+              </Grid>
+            </Grid>
+          </Box>
+        );
+      }
+      if (vaultIsPickle && !vault.isYVBoost) {
+        availableToDeposit =
+          pickleContractsData &&
+          pickleContractsData.pickleMasterChefDeposited &&
+          !Number.isNaN(pickleContractsData.pickleMasterChefDeposited) &&
+          pickleContractsData.pickleMasterChefDeposited !== 'NaN'
+            ? pickleContractsData.pickleMasterChefDeposited
+            : '0.00';
+        const useOldGauge =
+          pickleContractsData.pickleMasterChefDeposited < oldPickleGaugeBalance;
+        vaultBalanceOf = useOldGauge
+          ? oldPickleGaugeBalance
+          : pickleContractsData.pickleMasterChefDeposited;
+        // TODOoooo
         apyTooltip = null;
         vaultAssetsTooltip = null;
         amplifyVaultTitle = (
           <Text bold fontSize={4} mb={40}>
-            Zap CRV or ETH to earn compounding yield on a yveCRV-ETH LP position
-          </Text>
-        );
-        amplifyVaultDesc = (
-          <Text>
-            This vault performs a multi-step transaction with your ETH or CRV
-            which:
-            <br />
-            <br />
-            1. Makes a deposit into yveCRV.
-            <br />
-            2. Stakes this yveCRV in the yveCRV-ETH SLP on SushiSwap for SUSHI
-            🍣 rewards.
-            <br />
-            3. Deposits this SLP into the yveCRV-ETH pJar on Pickle Finance for
-            PICKLE 🥒 rewards.
-            <br />
-            <br />
-            Note: Remember to stake your Pickle LP manually after the
-            transaction completes. If you’d like to claim earned PICKLE 🥒
-            rewards or withdraw yveCRV-ETH SLP, please use the UI at{' '}
-            <A href="https://app.pickle.finance/farms" target="_blank">
-              https://app.pickle.finance/farms
-            </A>
+            Migrate your yveCRV-ETH LP into yvBOOST-ETH LP
           </Text>
         );
         styledIcon = (
@@ -888,6 +1086,62 @@ const Vault = (props) => {
             <StyledTokenIcon address="0xc5bDdf9843308380375a611c18B50Fb9341f502A" />
             <StyledTokenIcon address="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" />
           </StyledDoubleTokenIcon>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid item xs={12} md={12}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+            </Grid>
+          </Box>
+        );
+      }
+      if (vaultIsYvBoost) {
+        amplifyVaultTitle = (
+          <Text bold fontSize={4} mb={40}>
+            Deposit yveCRV or zap in any token to earn compounding 3Crv rewards
+          </Text>
+        );
+        amplifyVaultDesc = (
+          <>
+            <Text>
+              {`This vault holds yveCRV tokens, which grant you a continuous share
+            of Curve’s trading fees. Every week, these rewards can be claimed as
+            3Crv (Curve’s 3pool LP token). This vault automatically harvests
+            these 3Crv rewards and sells them for more yveCRV, compounding your
+            returns over time.`}
+            </Text>
+            <Text>
+              {`Deposit the underlying vault asset directly or zap in using
+                  almost any token in your wallet. Please be aware that for
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault's underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
+            </Text>
+          </>
+        );
+        vaultAdditionalInfo = (
+          <Box my={50} mx={isScreenMd ? 50 : 20}>
+            <Grid container spacing={isScreenMd ? 8 : 5}>
+              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+                {amplifyVaultTitle}
+                {vaultControls}
+              </Grid>
+              <Grid
+                container
+                item
+                direction="row"
+                alignItems="center"
+                xs={12}
+                md={6}
+              >
+                {amplifyVaultDesc}
+              </Grid>
+            </Grid>
+          </Box>
         );
       }
       vaultTop = (
@@ -950,27 +1204,6 @@ const Vault = (props) => {
             </Text>
           </Hidden>
         </ColumnListAmplify>
-      );
-
-      vaultAdditionalInfo = (
-        <Box my={50} mx={isScreenMd ? 50 : 20}>
-          <Grid container spacing={isScreenMd ? 8 : 5}>
-            <Grid className="amplify-vault-controls" item xs={12} md={6}>
-              {amplifyVaultTitle}
-              {vaultControls}
-            </Grid>
-            <Grid
-              container
-              item
-              direction="row"
-              alignItems="center"
-              xs={12}
-              md={6}
-            >
-              {amplifyVaultDesc}
-            </Grid>
-          </Grid>
-        </Box>
       );
     } else {
       vaultTop = (
@@ -1049,7 +1282,7 @@ const Vault = (props) => {
         <Card
           className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
             active ? 'active' : ''
-          } ${vaultIsPickle ? 'pickle-vault' : ''}`}
+          } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
           id={`vault-${accordionKey}`}
         >
           <Accordion.Toggle
@@ -1086,7 +1319,7 @@ const Vault = (props) => {
                   <span>{vaultMigrationData.migrationMessage}</span>
                 </Box>
               )}
-              {isZappable && !isMigratable && (
+              {isZappable && !vaultIsYvBoost && !isMigratable && (
                 <Box py={24} px={isScreenMd ? '76px' : '16px'}>
                   <span>
                     {`Deposit the underlying vault asset directly or zap in using

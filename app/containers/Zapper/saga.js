@@ -3,9 +3,19 @@ import BigNumber from 'bignumber.js';
 import request from 'utils/request';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectContractData } from 'containers/App/selectors';
+import { MAX_UINT256 } from 'containers/Cover/constants';
+import {
+  YVBOOST_ETH_PJAR,
+  PICKLEJAR_ADDRESS,
+} from 'containers/Vaults/constants';
 import { zapperDataLoaded, zapInError, zapOutError } from './actions';
-import { INIT_ZAPPER, ZAP_IN, ETH_ADDRESS, ZAP_OUT } from './constants';
-
+import {
+  INIT_ZAPPER,
+  ZAP_IN,
+  ETH_ADDRESS,
+  ZAP_OUT,
+  MIGRATE_PICKLE_GAUGE,
+} from './constants';
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
 
@@ -32,7 +42,14 @@ function* initializeZapper() {
 
   try {
     const tokens = yield call(request, getZapperApi('/prices'));
-    const vaults = yield call(request, getZapperApi('/vault-stats/yearn'));
+    const yvaults = yield call(request, getZapperApi('/vault-stats/yearn'));
+    const pickleVaults = yield call(
+      request,
+      getZapperApi('/vault-stats/pickle', {
+        addresses: [account],
+      }),
+    );
+    const vaults = yvaults.concat(pickleVaults);
     const balances = yield call(
       request,
       getZapperApi('/balances/tokens', {
@@ -41,10 +58,77 @@ function* initializeZapper() {
     );
 
     yield put(
-      zapperDataLoaded({ tokens, vaults, balances: balances[account] }),
+      zapperDataLoaded({
+        tokens,
+        vaults,
+        balances: balances[account],
+        pickleVaults,
+      }),
     );
   } catch (err) {
     console.log(err);
+  }
+}
+function* migratePickleGauge(action) {
+  const {
+    pickleDepositAmount,
+    zapPickleMigrateContract,
+    tokenContract,
+    allowance,
+  } = action.payload;
+  const account = yield select(selectAccount());
+
+  // https://api.zapper.fi/v1/vault-stats/pickle?api_key=5d1237c2-3840-4733-8e92-c5a58fe81b88
+  let lpyveCRVVaultv2 = {};
+  let lpyveCRVDAO = {};
+  try {
+    // yield call(oldPickleGaugeContract.methods.exit().send, { from: account });
+    if (allowance === 0 || allowance === 0 || !allowance) {
+      yield call(
+        tokenContract.methods.approve(
+          // eslint-disable-next-line no-underscore-dangle
+          zapPickleMigrateContract._address,
+          MAX_UINT256,
+        ).send,
+        { from: account },
+      );
+    }
+    const picklePrices = yield call(
+      request,
+      getZapperApi('/vault-stats/pickle', {}),
+    );
+    //    incomingLP={quantity of pSUSHI ETH / yveCRV-DAO tokens sent by user}
+    // minPTokens={(quantity of pSUSHI ETH / yveCRV-DAO tokens sent by user * pSUSHI ETH / yveCRV-DAO pricePerToken) /
+    //  pSUSHI yveCRV Vault (v2) / ETH pricePerToken}
+    picklePrices.map((pp) => {
+      // PICKLEJAR_ADDRESS
+      if (pp.address.toLowerCase() === YVBOOST_ETH_PJAR.toLocaleLowerCase()) {
+        lpyveCRVVaultv2 = pp;
+      } else if (
+        pp.address.toLowerCase() === PICKLEJAR_ADDRESS.toLocaleLowerCase()
+      ) {
+        lpyveCRVDAO = pp;
+      }
+      return pp;
+    });
+    const minPTokens =
+      (new BigNumber(pickleDepositAmount).dividedBy(10 ** 18) *
+        lpyveCRVDAO.pricePerToken) /
+      lpyveCRVVaultv2.pricePerToken;
+    console.log('minPTokens', minPTokens);
+    console.log('minPTokens depositamout', pickleDepositAmount);
+    const minPTokensFinal = new BigNumber(minPTokens)
+      .times(10 ** 18)
+      .dividedBy(10);
+    yield call(
+      zapPickleMigrateContract.methods.Migrate(
+        pickleDepositAmount,
+        minPTokensFinal,
+      ).send,
+      { from: account },
+    );
+  } catch (error) {
+    console.error('failed exit', error);
   }
 }
 
@@ -54,8 +138,10 @@ function* zapIn(action) {
     poolAddress,
     sellTokenAddress,
     sellAmount,
-    slippagePercentage,
+    protocol,
   } = action.payload;
+
+  const zapProtocol = protocol || 'yearn';
 
   const ownerAddress = yield select(selectAccount());
   const isSellTokenEth = isEth(sellTokenAddress);
@@ -73,7 +159,7 @@ function* zapIn(action) {
     if (!isSellTokenEth) {
       const approvalState = yield call(
         request,
-        getZapperApi('/zap-in/yearn/approval-state', {
+        getZapperApi(`/zap-in/${zapProtocol}/approval-state`, {
           sellTokenAddress,
           ownerAddress,
         }),
@@ -82,7 +168,7 @@ function* zapIn(action) {
       if (!approvalState.isApproved) {
         const approvalTransaction = yield call(
           request,
-          getZapperApi('/zap-in/yearn/approval-transaction', {
+          getZapperApi(`/zap-in/${zapProtocol}/approval-transaction`, {
             gasPrice,
             sellTokenAddress,
             ownerAddress,
@@ -94,8 +180,8 @@ function* zapIn(action) {
 
     const zapInTransaction = yield call(
       request,
-      getZapperApi('/zap-in/yearn/transaction', {
-        slippagePercentage,
+      getZapperApi(`/zap-in/${zapProtocol}/transaction`, {
+        slippagePercentage: 0.3,
         gasPrice,
         poolAddress,
         sellTokenAddress,
@@ -105,7 +191,6 @@ function* zapIn(action) {
     );
     yield call(web3.eth.sendTransaction, zapInTransaction);
   } catch (error) {
-    console.log('Zap Failed', error);
     yield put(
       zapInError({ message: `Zap Failed. ${error.message}`, poolAddress }),
     );
@@ -120,7 +205,10 @@ function* zapOut(action) {
     withdrawalAmount,
     decimals,
     selectedWithdrawToken,
+    protocol,
   } = action.payload;
+
+  const zapProtocol = protocol || 'yearn';
 
   const ownerAddress = yield select(selectAccount());
   const vaultContractData = yield select(
@@ -155,7 +243,7 @@ function* zapOut(action) {
 
     const approvalState = yield call(
       request,
-      getZapperApi('/zap-out/yearn/approval-state', {
+      getZapperApi(`/zap-out/${zapProtocol}/approval-state`, {
         sellTokenAddress: vaultContract.address.toLowerCase(),
         ownerAddress,
       }),
@@ -164,7 +252,7 @@ function* zapOut(action) {
     if (!approvalState.isApproved) {
       const approvalTransaction = yield call(
         request,
-        getZapperApi('/zap-out/yearn/approval-transaction', {
+        getZapperApi(`/zap-out/${zapProtocol}/approval-transaction`, {
           gasPrice,
           sellTokenAddress: vaultContract.address.toLowerCase(),
           ownerAddress,
@@ -175,7 +263,7 @@ function* zapOut(action) {
 
     const zapOutTransaction = yield call(
       request,
-      getZapperApi('/zap-out/yearn/transaction', {
+      getZapperApi(`/zap-out/${zapProtocol}/transaction`, {
         slippagePercentage,
         gasPrice,
         poolAddress: vaultContract.address.toLowerCase(),
@@ -197,4 +285,5 @@ export default function* rootSaga() {
   yield takeLatest(INIT_ZAPPER, initializeZapper);
   yield takeLatest(ZAP_IN, zapIn);
   yield takeLatest(ZAP_OUT, zapOut);
+  yield takeLatest(MIGRATE_PICKLE_GAUGE, migratePickleGauge);
 }

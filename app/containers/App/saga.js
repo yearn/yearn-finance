@@ -9,6 +9,7 @@ import v2EthZapAbi from 'abi/v2EthZapAbi.json';
 import erc20Abi from 'abi/erc20.json';
 import zapYveCrvAbi from 'abi/zapYveCrv.json';
 import pickleJarAbi from 'abi/pickleJar.json';
+import pickleJarAbi2 from 'abi/pickleJar2.json';
 import masterChefAbi from 'abi/masterChef.json';
 import zapViperAbi from 'abi/zapViper.json';
 
@@ -33,6 +34,8 @@ import {
   MASTER_CHEFF_POOL_ID,
   VYPER_ADDRESS,
   THREECRV_ADDRESS,
+  YVBOOST_ADDRESS,
+  YVBOOST_ETH_PJAR,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -53,7 +56,7 @@ function* loadVaultContracts(clear) {
   const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
   const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
-
+  v2VaultAddresses.push(YVBOOST_ADDRESS);
   const contracts = [
     {
       namespace: 'veCrv',
@@ -304,6 +307,23 @@ function* loadVaultContracts(clear) {
     ],
   };
 
+  const pickleJar2Subscription = {
+    namespace: 'picklejar2',
+    abi: pickleJarAbi2,
+    tags: ['pickle2'],
+    addresses: [YVBOOST_ETH_PJAR],
+    readMethods: [
+      {
+        name: 'balanceOf',
+        args: [account],
+      },
+      {
+        name: 'allowance',
+        args: [account, MASTER_CHEF_ADDRESS],
+      },
+    ],
+  };
+
   const masterChefSubscription = {
     namespace: 'masterchef',
     abi: masterChefAbi,
@@ -325,6 +345,7 @@ function* loadVaultContracts(clear) {
   const zapSubscriptions = getZapSubscriptions();
 
   contracts.push(pickleJarSubscription);
+  contracts.push(pickleJar2Subscription);
   contracts.push(masterChefSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);

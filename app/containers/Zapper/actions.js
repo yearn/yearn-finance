@@ -5,6 +5,7 @@ import {
   ZAP_IN_ERROR,
   ZAP_OUT_ERROR,
   ZAP_OUT,
+  MIGRATE_PICKLE_GAUGE,
 } from './constants';
 
 export function initializeZapper() {
@@ -44,6 +45,13 @@ export function zapInError(payload) {
 export function zapOutError(payload) {
   return {
     type: ZAP_OUT_ERROR,
+    payload,
+  };
+}
+
+export function migratePickleGauge(payload) {
+  return {
+    type: MIGRATE_PICKLE_GAUGE,
     payload,
   };
 }

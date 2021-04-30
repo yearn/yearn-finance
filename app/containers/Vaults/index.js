@@ -1,4 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {
+  useWeb3,
+  useWallet,
+  useAccount,
+} from 'containers/ConnectionProvider/hooks';
 import styled from 'styled-components';
 import { keyBy, get } from 'lodash';
 import Hidden from '@material-ui/core/Hidden';
@@ -14,19 +19,19 @@ import {
   selectOrderedVaults,
   selectAmplifyVaults,
 } from 'containers/App/selectors';
+import PickleJarAbi2 from 'abi/pickleJar2.json';
 import { useSelector } from 'react-redux';
 import Vault from 'components/Vault';
 import { useShowDevVaults } from 'containers/Vaults/hooks';
 // import VaultsNavLinks from 'components/VaultsNavLinks';
 // import AddVault from 'components/AddVault';
 import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useWallet, useAccount } from 'containers/ConnectionProvider/hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 import request from 'utils/request';
-import { ALIASES_API } from 'containers/Vaults/constants';
+import { ALIASES_API, YVBOOST_ETH_PJAR } from 'containers/Vaults/constants';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
@@ -257,7 +262,46 @@ const Vaults = (props) => {
       <VaultsHeader requestSort={requestSort} sortConfig={sortConfig} />
     );
   }
+  const [yvBOOSTBalance, setYvBOOSTBalance] = useState(0);
+  const web3 = useWeb3();
 
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        const yvBoostETHContract = new web3.eth.Contract(
+          PickleJarAbi2,
+          YVBOOST_ETH_PJAR,
+        );
+        const r = await yvBoostETHContract.methods.balanceOf(account).call();
+        setYvBOOSTBalance(r);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getBalance();
+  }, []);
+  let yboostLPVault = {};
+  amplifyVaultItems.map((v) => {
+    if (v.symbol === 'yvBOOST') {
+      yboostLPVault = v;
+      yboostLPVault = {
+        ...yboostLPVault,
+        ...{
+          type: 'v2',
+          displayName: 'yvBOOST - ETH',
+          isYVBoost: true,
+          symbol: 'yvBOOST-ETH',
+          address: '0xc695f73c1862e050059367B2E64489E66c525983',
+        },
+      };
+    }
+    return v;
+  });
+  const tmpVault = amplifyVaultItems[1];
+  // eslint-disable-next-line prefer-destructuring
+  amplifyVaultItems[1] = amplifyVaultItems[2];
+  amplifyVaultItems[2] = tmpVault;
+  amplifyVaultItems.push(yboostLPVault);
   let warning;
   if (showDevVaults) {
     warning = <Warning>Experimental vaults. Use at your own risk.</Warning>;
@@ -269,9 +313,11 @@ const Vaults = (props) => {
           <AmplifyWrapper
             showDevVaults={showDevVaults}
             walletConnected={walletConnected}
+            account={account}
             vaultItems={amplifyVaultItems}
             backscratcherAlias={backscratcherAlias}
             pickleVaultAlias={pickleVaultAlias}
+            yvBOOSTBalance={yvBOOSTBalance}
           />
         </StyledAccordion>
       </WrapTable>
@@ -328,9 +374,12 @@ const AmplifyWrapper = (props) => {
     vaultItems,
     backscratcherAlias,
     pickleVaultAlias,
+    account,
+    yvBOOSTBalance,
   } = props;
   const backscratcherVault = useSelector(selectBackscratcherVault());
   const pickleVault = useSelector(selectPickleVault());
+  const web3 = useWeb3();
 
   const currentEventKey = useContext(AccordionContext);
   const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
@@ -343,6 +392,10 @@ const AmplifyWrapper = (props) => {
   pickleVault.alias = pickleVaultAlias;
 
   const renderVault = (vault) => {
+    if (vault.displayName === 'SLP') {
+      // eslint-disable-next-line no-param-reassign
+      vault.displayName = 'yveCRV - ETH';
+    }
     const vaultKey = vault.address;
     return (
       <Vault
@@ -352,6 +405,10 @@ const AmplifyWrapper = (props) => {
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
         amplifyVault
+        walletConnected={walletConnected}
+        account={account}
+        web3={web3}
+        yvBOOSTBalance={yvBOOSTBalance}
       />
     );
   };
@@ -371,6 +428,7 @@ const AmplifyWrapper = (props) => {
 const VaultsWrapper = (props) => {
   const { showDevVaults, walletConnected, vaultItems } = props;
   const currentEventKey = useContext(AccordionContext);
+  const web3 = useWeb3();
 
   const renderVault = (vault) => {
     let vaultKey = vault.address;
@@ -384,6 +442,7 @@ const VaultsWrapper = (props) => {
         accordionKey={vaultKey}
         active={currentEventKey === vaultKey}
         showDevVaults={showDevVaults}
+        web3={web3}
       />
     );
   };

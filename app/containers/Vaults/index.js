@@ -215,8 +215,7 @@ const Vaults = (props) => {
       newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
       newVault.tokenAlias =
         get(aliasByVault[vault.address], 'symbol') || vault.displayName;
-
-      return newVault;
+      return Object(newVault);
     });
   }
 

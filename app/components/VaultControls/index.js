@@ -39,6 +39,8 @@ import {
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
   ZAP_MIGRATE_PICKLE_ADDRESS,
+  YALINK_VAULT_ADDRESS,
+  LINK_VAULT_ADDRESS,
 } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -119,6 +121,10 @@ export default function VaultControls(props) {
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
   const vaultIsPickle = vault.address === MASTER_CHEF_ADDRESS;
   const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
+  const hideZapOut = [
+    YALINK_VAULT_ADDRESS.toLocaleLowerCase(),
+    LINK_VAULT_ADDRESS.toLocaleLowerCase(),
+  ].includes(vault.address.toLowerCase());
   let vaultBalanceOf;
   if (v2Vault) {
     vaultBalanceOf = new BigNumber(balanceOf)
@@ -238,7 +244,13 @@ export default function VaultControls(props) {
     }
     return t;
   });
-
+  const currentVaultToken = {
+    label: vault.displayName,
+    address: vault.token.address,
+    isVault: true,
+    icon: vault.token.icon,
+    value: vault.displayName,
+  };
   if (vault.displayName === 'yvBOOST') {
     tmpWithdrawTokens.unshift({
       label: 'yveCRV',
@@ -249,15 +261,9 @@ export default function VaultControls(props) {
       value: vault.displayName,
     });
   } else {
-    tmpWithdrawTokens.unshift({
-      label: vault.displayName,
-      address: vault.token.address,
-      isVault: true,
-      icon: vault.token.icon,
-      value: vault.displayName,
-    });
+    tmpWithdrawTokens.unshift(currentVaultToken);
   }
-  const withdrawTokens = tmpWithdrawTokens;
+  const withdrawTokens = hideZapOut ? [currentVaultToken] : tmpWithdrawTokens;
 
   const [selectedWithdrawToken, setSelectedWithdrawToken] = useState(
     withdrawTokens[0],

@@ -402,10 +402,10 @@ export default function VaultControls(props) {
 
     dispatch(exitOldPickleGauge({ oldPickleGaugeContract }));
   };
-  const unstakeMasterChef = () => {
+  const unstakeMasterChef = (maxAmount) => {
     const unstakeParams = {
       vaultContract: pickleContractsData.masterChefContract,
-      withdrawalAmount: pickleUnstakeGweiAmount,
+      withdrawalAmount: maxAmount,
       decimals: pickleContractsData.decimals,
       pureEthereum,
       unstakePickle: true,
@@ -548,7 +548,9 @@ export default function VaultControls(props) {
         gweiAmountSetter: setPickleUnstakeGweiAmount,
         buttonFunction: useOldPickleGauge
           ? exitOldPickleGaugeCall
-          : unstakeMasterChef,
+          : () => {
+              unstakeMasterChef(pickleMaxAmount);
+            },
         buttonDisable:
           pickleUnstakeGweiAmount >
             pickleContractsData.pickleMasterChefDepositedRaw ||

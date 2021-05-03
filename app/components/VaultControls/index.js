@@ -405,7 +405,7 @@ export default function VaultControls(props) {
   const unstakeMasterChef = (maxAmount) => {
     const unstakeParams = {
       vaultContract: pickleContractsData.masterChefContract,
-      withdrawalAmount: maxAmount,
+      withdrawalAmount: BigNumber(maxAmount),
       decimals: pickleContractsData.decimals,
       pureEthereum,
       unstakePickle: true,

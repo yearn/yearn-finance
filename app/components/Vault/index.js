@@ -800,6 +800,7 @@ const Vault = (props) => {
     apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
   } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
     apyRecommended = 'NEW ✨';
+    apyTooltip = 'This vault was just added or recently updated its strategy.';
   }
 
   const contractType = getContractType(vault);

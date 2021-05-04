@@ -389,8 +389,8 @@ const Vault = (props) => {
             'https://api.pickle-jar.info/protocol/jar/yvboost-eth/performance',
           );
           const apy = await resp.json();
-          if (apy && apy.oneDayFarm) {
-            const amount = `${apy.oneDayFarm.toFixed(2)}%`;
+          if (apy && apy.sevenDayFarm) {
+            const amount = `${apy.sevenDayFarm.toFixed(2)}%`;
             setApyYvBoostEthRecommended(amount);
           }
         } catch (error) {

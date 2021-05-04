@@ -797,6 +797,8 @@ const Vault = (props) => {
   } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
+  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
+    apyRecommended = 'NEW ✨';
   }
 
   const contractType = getContractType(vault);

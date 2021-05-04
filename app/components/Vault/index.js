@@ -789,18 +789,15 @@ const Vault = (props) => {
     // FIXME: yfi vault
     apyRecommended = 'N/A';
     apyTooltip = 'Inactive with YIP-56: Buyback and Build';
-  } else if (address === usdnVaultAddress) {
-    // FIXME: usdn vault
-    apyRecommended = truncateApy(apy.data.netApy);
-  } else if (address === daiV1VaultAddress) {
-    // FIXME: Temporary one week sample APY for DAI v1 vault
-    apyRecommended = truncateApy(apy.data.oneWeekSample);
   } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
   } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
     apyRecommended = 'NEW ✨';
     apyTooltip = 'This vault was just added or recently updated its strategy.';
+  } else if (address === '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d') {
+    apyRecommended = 'N/A';
+    apyTooltip = 'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
   }
 
   const contractType = getContractType(vault);

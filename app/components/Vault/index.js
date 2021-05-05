@@ -801,7 +801,8 @@ const Vault = (props) => {
       'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
   } else if (retiredv1.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 'This vault is no longer active and its strategy is unwinding. Large withdrawals may incur a 0.5-1% withdrawal fee, though withdrawal fee will be removed once the strategy fully unwinds.';
+    apyTooltip = 
+      'This vault is no longer active and its strategy is unwinding. Withdrawals will incur a 1% withdrawal fee during this process.';
   } else if (retiredv2.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = 'This vault is no longer active. Please withdraw any funds.';

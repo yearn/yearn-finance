@@ -193,13 +193,13 @@ function* withdrawFromVault(action) {
 }
 
 function* withdrawAllFromVault(action) {
-  const { vaultContract } = action.payload;
+  const { vaultContract, balanceOf } = action.payload;
 
   const account = yield select(selectAccount());
 
   try {
     // if (!pureEthereum) {
-    yield call(vaultContract.methods.withdrawAll.cacheSend, {
+    yield call(vaultContract.methods.withdraw.cacheSend, balanceOf, {
       from: account,
     });
     // } else {

@@ -445,6 +445,7 @@ export default function VaultControls(props) {
       withdrawAllFromVault({
         vaultContract,
         pureEthereum,
+        isVaultV2: vault.type === 'v2',
       }),
     );
   };

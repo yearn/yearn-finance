@@ -15,6 +15,7 @@ import {
   ETH_ADDRESS,
   ZAP_OUT,
   MIGRATE_PICKLE_GAUGE,
+  DEFAULT_SLIPPAGE,
 } from './constants';
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
@@ -181,7 +182,7 @@ function* zapIn(action) {
     const zapInTransaction = yield call(
       request,
       getZapperApi(`/zap-in/${zapProtocol}/transaction`, {
-        slippagePercentage: 0.3,
+        slippagePercentage: DEFAULT_SLIPPAGE,
         gasPrice,
         poolAddress,
         sellTokenAddress,
@@ -200,7 +201,6 @@ function* zapIn(action) {
 function* zapOut(action) {
   const {
     web3,
-    slippagePercentage,
     vaultContract,
     withdrawalAmount,
     decimals,
@@ -264,7 +264,7 @@ function* zapOut(action) {
     const zapOutTransaction = yield call(
       request,
       getZapperApi(`/zap-out/${zapProtocol}/transaction`, {
-        slippagePercentage,
+        slippagePercentage: DEFAULT_SLIPPAGE,
         gasPrice,
         poolAddress: vaultContract.address.toLowerCase(),
         toTokenAddress: selectedWithdrawToken.address.toLowerCase(),

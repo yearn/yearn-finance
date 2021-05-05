@@ -314,8 +314,6 @@ const Vault = (props) => {
   );
 
   const veCrvAddress = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2';
-  const usdnVaultAddress = '0xFe39Ce91437C76178665D64d7a2694B0f6f17fE3';
-  const daiV1VaultAddress = '0xACd43E627e64355f1861cEC6d3a6688B31a6F952';
 
   const veCrvContract = useSelector(selectContractData(veCrvAddress));
 
@@ -504,14 +502,8 @@ const Vault = (props) => {
       ? truncateApy(_.get(apy, 'recommended'))
       : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
 
-  let grossApy = _.get(apy, 'data.grossApy');
-  let netApy = _.get(apy, 'data.netApy');
-
-  if (address === daiV1VaultAddress) {
-    // Temporary one week sample APY for DAI v1 vault
-    grossApy = apy.data.oneWeekSample;
-    netApy = apy.data.oneWeekSample;
-  }
+  const grossApy = _.get(apy, 'data.grossApy');
+  const netApy = _.get(apy, 'data.netApy');
 
   let apyTooltip = (
     <div>
@@ -797,7 +789,8 @@ const Vault = (props) => {
     apyTooltip = 'This vault was just added or recently updated its strategy.';
   } else if (address === '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d') {
     apyRecommended = 'N/A';
-    apyTooltip = 'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
+    apyTooltip =
+      'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
   }
 
   const contractType = getContractType(vault);

@@ -771,8 +771,8 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(0);
   }
 
-  // FIXME: migration vaults
-  const retired = [
+  // Vaults that we're migrating to a new versions. Hide them so only current holders can see them.
+  const migrating = [
     '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
     '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
     '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
@@ -782,23 +782,38 @@ const Vault = (props) => {
     '0x07FB4756f67bD46B748b16119E802F1f880fb2CC', // crvTBTC v1
     '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
     '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
+    '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1', // YFI v1
     '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
   ];
 
-  if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
-    // FIXME: yfi vault
+  // These are our retired v1 vaults, shutting down but not migrating
+  const retiredv1 = [
+    '0x29E240CFD7946BA20895a7a02eDb25C210f9f324', // aLINK v1
+    '0x881b06da56BB5675c54E4Ed311c21E54C5025298', // LINK v1
+  ];
+
+  // These are our retired v2 vaults, shutting down but not migrating
+  const retiredv2 = [
+    '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
+  ];
+
+  if (migrating.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 'Inactive with YIP-56: Buyback and Build';
-  } else if (retired.includes(address)) {
-    apyRecommended = 'N/A';
-    apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
-  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
+    apyTooltip = 'Please migrate funds to our new vault to continue earning yield.';
+  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') { // hardcoded for new WBTC v2
     apyRecommended = 'NEW ✨';
     apyTooltip = 'This vault was just added or recently updated its strategy.';
-  } else if (address === '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d') {
+  } else if (vaultIsPickle) {
     apyRecommended = 'N/A';
     apyTooltip = 'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
+  } else if (retiredv1.includes(address)) {
+    apyRecommended = 'N/A';
+    apyTooltip = 'This vault is no longer active and its strategy is unwinding. Large withdrawals may incur a 0.5-1% withdrawal fee, though withdrawal fee will be removed once the strategy fully unwinds.';
+  } else if (retiredv2.includes(address)) {
+    apyRecommended = 'N/A';
+    apyTooltip = 'This vault is no longer active. Please withdraw any funds.';
   }
+
 
   const contractType = getContractType(vault);
 

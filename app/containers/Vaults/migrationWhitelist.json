@@ -68,5 +68,12 @@
     "vaultFrom": "0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675",
     "vaultTo": "0x3c5DF3077BcF800640B5DAE8c91106575a4826E6",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve pBTC Pool yVault to continue earning yield."
+  },
+  {
+    "symbol": "WBTC",
+    "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "vaultFrom": "0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5",
+    "vaultTo": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 WBTC yVault to continue earning yield."
   }
 ]

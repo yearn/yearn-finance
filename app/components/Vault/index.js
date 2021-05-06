@@ -46,7 +46,7 @@ import Text from 'components/Text';
 import Box from 'components/Box';
 
 
-  // Vaults that we only want to show to current holders
+  // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
   const vaultsToHide = [
     '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
     '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
@@ -64,7 +64,7 @@ import Box from 'components/Box';
     '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
   ];
 
-  // Vaults that we're migrating to a new versions. Hide them so only current holders can see them.
+  // Vaults that we're migrating to a new version.
   const migrating = [
     '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
     '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
@@ -79,13 +79,13 @@ import Box from 'components/Box';
     '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
   ];
 
-  // These are our retired v1 vaults, shutting down but not migrating
+  // These are our retired v1 vaults, shutting down but not migrating.
   const retiredv1 = [
     '0x29E240CFD7946BA20895a7a02eDb25C210f9f324', // aLINK v1
     '0x881b06da56BB5675c54E4Ed311c21E54C5025298', // LINK v1
   ];
 
-  // These are our retired v2 vaults, shutting down but not migrating
+  // These are our retired v2 vaults, shutting down but not migrating.
   const retiredv2 = [
     '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
   ];

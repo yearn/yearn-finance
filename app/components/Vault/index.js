@@ -770,9 +770,7 @@ const Vault = (props) => {
     '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
   ];
 
-  const hackedOrToBeAbsolutelyRemoved = [
-    '0xeb231ca94f718daf8ef8e7333b0d690fab9c59d8bc91bc20b5515c77eaff947e', // hacked cySUSD
-  ];
+  const hackedOrToBeAbsolutelyRemoved = [];
 
   // Vaults that we're migrating to a new version.
   const migrating = migrationWhitelist.map((v) => v.vaultFrom);

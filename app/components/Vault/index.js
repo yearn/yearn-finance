@@ -45,25 +45,6 @@ import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
 
-
-  // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
-  const vaultsToHide = [
-    '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
-    '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
-    '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
-    '0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797', // crvOBTC v1
-    '0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675', // crvPBTC v1
-    '0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D', // crvBBTC v1
-    '0x07FB4756f67bD46B748b16119E802F1f880fb2CC', // crvTBTC v1
-    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
-    '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
-    '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1', // YFI v1
-    '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
-    '0x29E240CFD7946BA20895a7a02eDb25C210f9f324', // aLINK v1
-    '0x881b06da56BB5675c54E4Ed311c21E54C5025298', // LINK v1
-    '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
-  ];
-
 const ButtonLinkIcon = styled.a`
   display: flex;
   align-items: center;
@@ -778,21 +759,6 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(0);
   }
 
-  // Vaults that we're migrating to a new version.
-  const migrating = [
-    '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
-    '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
-    '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
-    '0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797', // crvOBTC v1
-    '0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675', // crvPBTC v1
-    '0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D', // crvBBTC v1
-    '0x07FB4756f67bD46B748b16119E802F1f880fb2CC', // crvTBTC v1
-    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
-    '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
-    '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1', // YFI v1
-    '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
-  ];
-
   // These are our retired v1 vaults, shutting down but not migrating.
   const retiredv1 = [
     '0x29E240CFD7946BA20895a7a02eDb25C210f9f324', // aLINK v1
@@ -804,10 +770,24 @@ const Vault = (props) => {
     '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
   ];
 
+  const hackedOrToBeAbsolutelyRemoved = [
+    '0xeb231ca94f718daf8ef8e7333b0d690fab9c59d8bc91bc20b5515c77eaff947e', // hacked cySUSD
+  ];
+
+  // Vaults that we're migrating to a new version.
+  const migrating = migrationWhitelist.map((v) => v.vaultFrom);
+
+  // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
+  let vaultsToHide = migrating.map((v) => v.toLowerCase());
+  vaultsToHide = vaultsToHide
+    .concat(retiredv1.map((v) => v.toLocaleLowerCase()))
+    .concat(retiredv2.map((v) => v.toLocaleLowerCase()));
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 'Please migrate funds to our new vault to continue earning yield.';
-  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') { // hardcoded for new WBTC v2
+    apyTooltip =
+      'Please migrate funds to our new vault to continue earning yield.';
+  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
+    // hardcoded for new WBTC v2
     apyRecommended = 'NEW ✨';
     apyTooltip = 'This vault was just added or recently updated its strategy.';
   } else if (vaultIsPickle) {
@@ -816,7 +796,7 @@ const Vault = (props) => {
       'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
   } else if (retiredv1.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 
+    apyTooltip =
       'This vault is no longer active and its strategy is unwinding. Withdrawals will incur a 1% withdrawal fee during this process.';
   } else if (retiredv2.includes(address)) {
     apyRecommended = 'N/A';
@@ -1298,84 +1278,83 @@ const Vault = (props) => {
       );
     }
   }
-  return (
-    ((vault.balanceOf > 0 &&
-      vaultsToHide.includes(vault.address.toLowerCase())) ||
-      !vaultsToHide.includes(vault.address.toLowerCase())) && (
-      <React.Fragment>
-        <Card
-          className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
-            active ? 'active' : ''
-          } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
-          id={`vault-${accordionKey}`}
+
+  return (!vaultsToHide.includes(vault.address.toLowerCase()) ||
+    vaultBalanceOf > 0) &&
+    !hackedOrToBeAbsolutelyRemoved.includes(vault.address.toLowerCase()) ? (
+    <React.Fragment>
+      <Card
+        className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
+          active ? 'active' : ''
+        } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
+        id={`vault-${accordionKey}`}
+      >
+        <Accordion.Toggle
+          as={Card.Header}
+          variant="link"
+          eventKey={accordionKey}
         >
-          <Accordion.Toggle
-            as={Card.Header}
-            variant="link"
-            eventKey={accordionKey}
-          >
-            {vaultTop}
-            {/* {vaultStats} */}
-            <StyledText fontWeight={700} mr={16}>
-              {active ? 'HIDE' : 'SHOW'}
-            </StyledText>
-          </Accordion.Toggle>
-          <Accordion.Collapse eventKey={accordionKey}>
-            <Card.Body>
-              {vaultBottom}
-              {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+          {vaultTop}
+          {/* {vaultStats} */}
+          <StyledText fontWeight={700} mr={16}>
+            {active ? 'HIDE' : 'SHOW'}
+          </StyledText>
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey={accordionKey}>
+          <Card.Body>
+            {vaultBottom}
+            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
                 <Notice>
                   <NoticeIcon type="info" />
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
-              {['crvUSDN'].includes(vaultName) && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>
-                    50% of USDN CRV harvest is locked to boost yield. APY
-                    displayed reflects this.
-                  </span>
-                </Notice>
-              )}
-              {isMigratable && (
-                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                  <span>{vaultMigrationData.migrationMessage}</span>
-                </Box>
-              )}
-              {isZappable && !vaultIsYvBoost && !isMigratable && (
-                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                  <span>
-                    {`Deposit the underlying vault asset directly or zap in using
+            {['crvUSDN'].includes(vaultName) && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>
+                  50% of USDN CRV harvest is locked to boost yield. APY
+                  displayed reflects this.
+                </span>
+              </Notice>
+            )}
+            {isMigratable && (
+              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+                <span>{vaultMigrationData.migrationMessage}</span>
+              </Box>
+            )}
+            {isZappable && !vaultIsYvBoost && !isMigratable && (
+              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+                <span>
+                  {`Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
                   zaps with low-liquidity tokens may fail. Withdrawals return
                   the vault's underlying token or zap out into one of five
                   supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
-                  </span>
-                </Box>
-              )}
-              {emergencyShutdown && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>This vault has been disabled temporarily.</span>
-                </Notice>
-              )}
-              {vaultAdditionalInfo}
-              {!amplifyVault && (
-                <Card.Footer className={active && 'active'}>
-                  <Footer small={!isScreenMd}>
-                    {vaultControls}
-                    {lazyApeButton}
-                  </Footer>
-                </Card.Footer>
-              )}
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </React.Fragment>
-    )
-  );
+                </span>
+              </Box>
+            )}
+            {emergencyShutdown && (
+              <Notice>
+                <NoticeIcon type="info" />
+                <span>This vault has been disabled temporarily.</span>
+              </Notice>
+            )}
+            {vaultAdditionalInfo}
+            {!amplifyVault && (
+              <Card.Footer className={active && 'active'}>
+                <Footer small={!isScreenMd}>
+                  {vaultControls}
+                  {lazyApeButton}
+                </Footer>
+              </Card.Footer>
+            )}
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+    </React.Fragment>
+  ) : null;
 };
 Vault.whyDidYouRender = false;
 export default Vault;

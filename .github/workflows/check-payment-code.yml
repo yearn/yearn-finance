@@ -1,0 +1,14 @@
+name: 'check-payment-code-in-diff'
+on: [push]
+
+jobs:
+  test_something:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: patcito/check-keywords-in-diff@v0.2.63
+        with:
+          branch: develop
+          notify_issue: true
+          title: payment related code
+          token: ${{ secrets.GITHUB_TOKEN }}

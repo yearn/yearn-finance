@@ -16,8 +16,7 @@ import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
-import retiredv1Json from 'containers/Vaults/retiredv1Whitelist.json';
-import retiredv2Json from 'containers/Vaults/retiredv2Whitelist.json';
+import retiredJson from 'containers/Vaults/retiredWhitelist.json';
 import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
@@ -762,11 +761,8 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(0);
   }
 
-  // These are our retired v1 vaults, shutting down but not migrating.
-  const retiredv1 = retiredv1Json.map((v) => v.address);
-
-  // These are our retired v2 vaults, shutting down but not migrating.
-  const retiredv2 = retiredv2Json.map((v) => v.address);
+  // These are our retired vaults, shutting down but not migrating.
+  const retired = retiredJson.map((v) => v.address);
 
   // These are emergency vaults that needs to be hidden immediatly
   // because of bug or hack regardless of balance
@@ -777,19 +773,15 @@ const Vault = (props) => {
   // Vaults that we're migrating to a new version.
   const migrating = migrationWhitelist.map((v) => v.vaultFrom);
   const migratingTooltips = {};
-  const retiredv1Tooltips = {};
-  const retiredv2Tooltips = {};
+  const retiredTooltips = {};
   migrationWhitelist.forEach((v) => {
     migratingTooltips[v.vaultFrom] = v.apyTooltip;
   });
-  retiredv1Json.forEach((v) => {
-    retiredv1Tooltips[v.vaultFrom] = v.apyTooltip;
-  });
-  retiredv2Json.forEach((v) => {
-    retiredv2Tooltips[v.vaultFrom] = v.apyTooltip;
+  retiredJson.forEach((v) => {
+    retiredTooltips[v.vaultFrom] = v.apyTooltip;
   });
   // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
-  const vaultsToHide = migrating.concat(retiredv1).concat(retiredv2);
+  const vaultsToHide = migrating.concat(retired);
 
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';
@@ -802,12 +794,12 @@ const Vault = (props) => {
     apyRecommended = 'N/A';
     apyTooltip =
       'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
-  } else if (retiredv1.includes(address)) {
+  } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = retiredv1Tooltips[address];
-  } else if (retiredv2.includes(address)) {
+    apyTooltip = retiredTooltips[address];
+  } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = retiredv1Tooltips[address];
+    apyTooltip = retiredTooltips[address];
   }
 
   const contractType = getContractType(vault);

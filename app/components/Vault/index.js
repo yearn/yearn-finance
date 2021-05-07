@@ -797,9 +797,6 @@ const Vault = (props) => {
   } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = retiredTooltips[address];
-  } else if (retired.includes(address)) {
-    apyRecommended = 'N/A';
-    apyTooltip = retiredTooltips[address];
   }
 
   const contractType = getContractType(vault);
@@ -1277,82 +1274,109 @@ const Vault = (props) => {
       );
     }
   }
+  const showCrvUSDN = ['crvUSDN'].includes(vaultName);
+  let crvUSDNNotice = null;
+  if (showCrvUSDN) {
+    crvUSDNNotice = (
+      <Notice>
+        <NoticeIcon type="info" />
+        <span>
+          50% of USDN CRV harvest is locked to boost yield. APY displayed
+          reflects this.
+        </span>
+      </Notice>
+    );
+  }
+  let migratableBox = null;
+  if (isMigratable) {
+    migratableBox = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <span>{vaultMigrationData.migrationMessage}</span>
+      </Box>
+    );
+  }
 
-  return (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
-    !hackedOrToBeAbsolutelyRemoved.includes(vault.address) ? (
-    <React.Fragment>
-      <Card
-        className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
-          active ? 'active' : ''
-        } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
-        id={`vault-${accordionKey}`}
-      >
-        <Accordion.Toggle
-          as={Card.Header}
-          variant="link"
-          eventKey={accordionKey}
-        >
-          {vaultTop}
-          {/* {vaultStats} */}
-          <StyledText fontWeight={700} mr={16}>
-            {active ? 'HIDE' : 'SHOW'}
-          </StyledText>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={accordionKey}>
-          <Card.Body>
-            {vaultBottom}
-            {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>Your tokens can be safely withdrawn, now</span>
-                </Notice>
-              )} */}
-            {['crvUSDN'].includes(vaultName) && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>
-                  50% of USDN CRV harvest is locked to boost yield. APY
-                  displayed reflects this.
-                </span>
-              </Notice>
-            )}
-            {isMigratable && (
-              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                <span>{vaultMigrationData.migrationMessage}</span>
-              </Box>
-            )}
-            {isZappable && !vaultIsYvBoost && !isMigratable && (
-              <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                <span>
-                  {`Deposit the underlying vault asset directly or zap in using
+  let zapBox = null;
+  const showZapBox = isZappable && !vaultIsYvBoost && !isMigratable;
+  if (showZapBox) {
+    zapBox = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <span>
+          {`Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
                   zaps with low-liquidity tokens may fail. Withdrawals return
                   the vault's underlying token or zap out into one of five
                   supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
-                </span>
-              </Box>
-            )}
-            {emergencyShutdown && (
-              <Notice>
-                <NoticeIcon type="info" />
-                <span>This vault has been disabled temporarily.</span>
-              </Notice>
-            )}
-            {vaultAdditionalInfo}
-            {!amplifyVault && (
-              <Card.Footer className={active && 'active'}>
-                <Footer small={!isScreenMd}>
-                  {vaultControls}
-                  {lazyApeButton}
-                </Footer>
-              </Card.Footer>
-            )}
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    </React.Fragment>
-  ) : null;
+        </span>
+      </Box>
+    );
+  }
+  let emergencyShutdownNotice = null;
+  if (emergencyShutdown) {
+    emergencyShutdownNotice = (
+      <Notice>
+        <NoticeIcon type="info" />
+        <span>This vault has been disabled temporarily.</span>
+      </Notice>
+    );
+  }
+  let amplifyVaultCard = null;
+  if (!amplifyVault)
+    amplifyVaultCard = (
+      <Card.Footer className={active && 'active'}>
+        <Footer small={!isScreenMd}>
+          {vaultControls}
+          {lazyApeButton}
+        </Footer>
+      </Card.Footer>
+    );
+  const showVaults =
+    (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
+    !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
+  let finalVaults = null;
+  if (showVaults) {
+    finalVaults = (
+      <React.Fragment>
+        <Card
+          className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
+            active ? 'active' : ''
+          } ${vault.isYVBoost ? 'pickle-vault' : ''}`}
+          id={`vault-${accordionKey}`}
+        >
+          <Accordion.Toggle
+            as={Card.Header}
+            variant="link"
+            eventKey={accordionKey}
+          >
+            {vaultTop}
+            {/* {vaultStats} */}
+            <StyledText fontWeight={700} mr={16}>
+              {active ? 'HIDE' : 'SHOW'}
+            </StyledText>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={accordionKey}>
+            <Card.Body>
+              {vaultBottom}
+              {/* {['DAI', 'WETH', 'Ethereum'].includes(vaultName) && !v2Vault && (
+                <Notice>
+                  <NoticeIcon type="info" />
+                  <span>Your tokens can be safely withdrawn, now</span>
+                </Notice>
+              )} */}
+              {crvUSDNNotice}
+              {migratableBox}
+              {zapBox}
+              {emergencyShutdownNotice}
+              {vaultAdditionalInfo}
+              {amplifyVaultCard}
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </React.Fragment>
+    );
+  }
+  return finalVaults;
 };
 Vault.whyDidYouRender = false;
 export default Vault;

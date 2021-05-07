@@ -1312,6 +1312,7 @@ const Vault = (props) => {
       </Box>
     );
   }
+
   let emergencyShutdownNotice = null;
   if (emergencyShutdown) {
     emergencyShutdownNotice = (

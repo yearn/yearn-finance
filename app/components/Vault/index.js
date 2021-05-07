@@ -16,6 +16,9 @@ import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import retiredv1Json from 'containers/Vaults/retiredv1Whitelist.json';
+import retiredv2Json from 'containers/Vaults/retiredv2Whitelist.json';
+import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
@@ -760,30 +763,37 @@ const Vault = (props) => {
   }
 
   // These are our retired v1 vaults, shutting down but not migrating.
-  const retiredv1 = [
-    '0x29E240CFD7946BA20895a7a02eDb25C210f9f324', // aLINK v1
-    '0x881b06da56BB5675c54E4Ed311c21E54C5025298', // LINK v1
-  ];
+  const retiredv1 = retiredv1Json.map((v) => v.address);
 
   // These are our retired v2 vaults, shutting down but not migrating.
-  const retiredv2 = [
-    '0xe11ba472F74869176652C35D30dB89854b5ae84D', // HEGIC v2
-  ];
+  const retiredv2 = retiredv2Json.map((v) => v.address);
 
-  const hackedOrToBeAbsolutelyRemoved = [];
+  // These are emergency vaults that needs to be hidden immediatly
+  // because of bug or hack regardless of balance
+  const hackedOrToBeAbsolutelyRemoved = hackedOrToBeAbsolutelyRemovedJson.map(
+    (v) => v.address,
+  );
 
   // Vaults that we're migrating to a new version.
   const migrating = migrationWhitelist.map((v) => v.vaultFrom);
-
+  const migratingTooltips = {};
+  const retiredv1Tooltips = {};
+  const retiredv2Tooltips = {};
+  migrationWhitelist.forEach((v) => {
+    migratingTooltips[v.vaultFrom] = v.apyTooltip;
+  });
+  retiredv1Json.forEach((v) => {
+    retiredv1Tooltips[v.vaultFrom] = v.apyTooltip;
+  });
+  retiredv2Json.forEach((v) => {
+    retiredv2Tooltips[v.vaultFrom] = v.apyTooltip;
+  });
   // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
-  let vaultsToHide = migrating.map((v) => v.toLowerCase());
-  vaultsToHide = vaultsToHide
-    .concat(retiredv1.map((v) => v.toLocaleLowerCase()))
-    .concat(retiredv2.map((v) => v.toLocaleLowerCase()));
+  const vaultsToHide = migrating.concat(retiredv1).concat(retiredv2);
+
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip =
-      'Please migrate funds to our new vault to continue earning yield.';
+    apyTooltip = migratingTooltips[address];
   } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
     // hardcoded for new WBTC v2
     apyRecommended = 'NEW ✨';
@@ -794,11 +804,10 @@ const Vault = (props) => {
       'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
   } else if (retiredv1.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip =
-      'This vault is no longer active and its strategy is unwinding. Withdrawals will incur a 1% withdrawal fee during this process.';
+    apyTooltip = retiredv1Tooltips[address];
   } else if (retiredv2.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 'This vault is no longer active. Please withdraw any funds.';
+    apyTooltip = retiredv1Tooltips[address];
   }
 
   const contractType = getContractType(vault);
@@ -1277,9 +1286,8 @@ const Vault = (props) => {
     }
   }
 
-  return (!vaultsToHide.includes(vault.address.toLowerCase()) ||
-    vaultBalanceOf > 0) &&
-    !hackedOrToBeAbsolutelyRemoved.includes(vault.address.toLowerCase()) ? (
+  return (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
+    !hackedOrToBeAbsolutelyRemoved.includes(vault.address) ? (
     <React.Fragment>
       <Card
         className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${

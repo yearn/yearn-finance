@@ -4,6 +4,7 @@
     "token": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
     "vaultFrom": "0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1",
     "vaultTo": "0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 YFI yVault to continue earning yield."
   },
   {
@@ -11,6 +12,7 @@
     "token": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
     "vaultFrom": "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6",
     "vaultTo": "0x8414Db07a7F743dEbaFb402070AB01a4E0d2E45e",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sBTC Pool yVault to continue earning yield."
   },
   {
@@ -18,6 +20,7 @@
     "token": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
     "vaultFrom": "0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765",
     "vaultTo": "0x7047F90229a057C13BF847C0744D646CFb6c9E1A",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve renBTC Pool yVault to continue earning yield."
   },
   {
@@ -25,6 +28,7 @@
     "token": "0xb19059ebb43466C323583928285a49f558E572Fd",
     "vaultFrom": "0x46AFc2dfBd1ea0c0760CAD8262A5838e803A37e5",
     "vaultTo": "0x625b7DF2fa8aBe21B0A976736CDa4775523aeD1E",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Migrate your balance to the v2 Curve HBTC Pool yVault to continue earning boosted yield."
   },
   {
@@ -32,6 +36,7 @@
     "token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",
     "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield."
   },
   {
@@ -39,6 +44,7 @@
     "token": "0x02d341CcB60fAaf662bC0554d13778015d1b285C",
     "vaultFrom": "0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1",
     "vaultTo": "0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sAave Pool yVault to continue earning yield."
   },
   {
@@ -46,6 +52,7 @@
     "token": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
     "vaultFrom": "0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797",
     "vaultTo": "0xe9Dc63083c464d6EDcCFf23444fF3CFc6886f6FB",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve oBTC Pool yVault to continue earning yield."
   },
   {
@@ -53,6 +60,7 @@
     "token": "0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd",
     "vaultFrom": "0x07FB4756f67bD46B748b16119E802F1f880fb2CC",
     "vaultTo": "0x23D3D0f1c697247d5e0a9efB37d8b0ED0C464f7f",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve tBTC Pool yVault to continue earning yield."
   },
   {
@@ -60,6 +68,7 @@
     "token": "0x410e3E86ef427e30B9235497143881f717d93c2A",
     "vaultFrom": "0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D",
     "vaultTo": "0x8fA3A9ecd9EFb07A8CE90A6eb014CF3c0E3B32Ef",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve BBTC Pool yVault to continue earning yield."
   },
   {
@@ -67,6 +76,7 @@
     "token": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
     "vaultFrom": "0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675",
     "vaultTo": "0x3c5DF3077BcF800640B5DAE8c91106575a4826E6",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve pBTC Pool yVault to continue earning yield."
   },
   {
@@ -74,6 +84,15 @@
     "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
     "vaultFrom": "0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5",
     "vaultTo": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 WBTC yVault to continue earning yield."
+  },
+  {
+    "symbol": "ETH",
+    "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "vaultFrom": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 WBTC yVault to continue earning yield."
   }
 ]

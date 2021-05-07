@@ -16,6 +16,8 @@ import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
 import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import retiredJson from 'containers/Vaults/retiredWhitelist.json';
+import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
 import LazyApeLogo from 'images/lazy-ape-logo.svg';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
@@ -44,10 +46,6 @@ import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
-
-const migrationVaultsFrom = migrationWhitelist.map((v) =>
-  v.vaultFrom.toLowerCase(),
-);
 
 const ButtonLinkIcon = styled.a`
   display: flex;
@@ -763,34 +761,42 @@ const Vault = (props) => {
     vaultAssets = truncateUsd(0);
   }
 
-  // FIXME: migration vaults
-  const retired = [
-    '0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6', // crvSBTC v1
-    '0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765', // crvRENBTC v1
-    '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1', // crvSAAVE v1
-    '0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797', // crvOBTC v1
-    '0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675', // crvPBTC v1
-    '0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D', // crvBBTC v1
-    '0x07FB4756f67bD46B748b16119E802F1f880fb2CC', // crvTBTC v1
-    '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // ETH v1
-    '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7', // WETH v1
-    '0xcB550A6D4C8e3517A939BC79d0c7093eb7cF56B5', // WBTC v2
-  ];
+  // These are our retired vaults, shutting down but not migrating.
+  const retired = retiredJson.map((v) => v.address);
 
-  if (address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1') {
-    // FIXME: yfi vault
+  // These are emergency vaults that needs to be hidden immediatly
+  // because of bug or hack regardless of balance
+  const hackedOrToBeAbsolutelyRemoved = hackedOrToBeAbsolutelyRemovedJson.map(
+    (v) => v.address,
+  );
+
+  // Vaults that we're migrating to a new version.
+  const migrating = migrationWhitelist.map((v) => v.vaultFrom);
+  const migratingTooltips = {};
+  const retiredTooltips = {};
+  migrationWhitelist.forEach((v) => {
+    migratingTooltips[v.vaultFrom] = v.apyTooltip;
+  });
+  retiredJson.forEach((v) => {
+    retiredTooltips[v.vaultFrom] = v.apyTooltip;
+  });
+  // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
+  const vaultsToHide = migrating.concat(retired);
+
+  if (migrating.includes(address)) {
     apyRecommended = 'N/A';
-    apyTooltip = 'Inactive with YIP-56: Buyback and Build';
-  } else if (retired.includes(address)) {
-    apyRecommended = 'N/A';
-    apyTooltip = 'Please migrate funds to v2 to continue earning yield.';
+    apyTooltip = migratingTooltips[address];
   } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
+    // hardcoded for new WBTC v2
     apyRecommended = 'NEW ✨';
     apyTooltip = 'This vault was just added or recently updated its strategy.';
-  } else if (address === '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d') {
+  } else if (vaultIsPickle) {
     apyRecommended = 'N/A';
     apyTooltip =
       'Please migrate funds to yvBOOST-ETH to continue earning maximum yield.';
+  } else if (retired.includes(address)) {
+    apyRecommended = 'N/A';
+    apyTooltip = retiredTooltips[address];
   }
 
   const contractType = getContractType(vault);
@@ -1268,10 +1274,69 @@ const Vault = (props) => {
       );
     }
   }
-  return (
-    ((vault.balanceOf > 0 &&
-      migrationVaultsFrom.includes(vault.address.toLowerCase())) ||
-      !migrationVaultsFrom.includes(vault.address.toLowerCase())) && (
+  const showCrvUSDN = ['crvUSDN'].includes(vaultName);
+  let crvUSDNNotice = null;
+  if (showCrvUSDN) {
+    crvUSDNNotice = (
+      <Notice>
+        <NoticeIcon type="info" />
+        <span>
+          50% of USDN CRV harvest is locked to boost yield. APY displayed
+          reflects this.
+        </span>
+      </Notice>
+    );
+  }
+  let migratableBox = null;
+  if (isMigratable) {
+    migratableBox = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <span>{vaultMigrationData.migrationMessage}</span>
+      </Box>
+    );
+  }
+
+  let zapBox = null;
+  const showZapBox = isZappable && !vaultIsYvBoost && !isMigratable;
+  if (showZapBox) {
+    zapBox = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <span>
+          {`Deposit the underlying vault asset directly or zap in using
+                  almost any token in your wallet. Please be aware that for
+                  zaps, we use a default slippage limit of 1% and attempting
+                  zaps with low-liquidity tokens may fail. Withdrawals return
+                  the vault's underlying token or zap out into one of five
+                  supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
+        </span>
+      </Box>
+    );
+  }
+  let emergencyShutdownNotice = null;
+  if (emergencyShutdown) {
+    emergencyShutdownNotice = (
+      <Notice>
+        <NoticeIcon type="info" />
+        <span>This vault has been disabled temporarily.</span>
+      </Notice>
+    );
+  }
+  let amplifyVaultCard = null;
+  if (!amplifyVault)
+    amplifyVaultCard = (
+      <Card.Footer className={active && 'active'}>
+        <Footer small={!isScreenMd}>
+          {vaultControls}
+          {lazyApeButton}
+        </Footer>
+      </Card.Footer>
+    );
+  const showVaults =
+    (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
+    !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
+  let finalVaults = null;
+  if (showVaults) {
+    finalVaults = (
       <React.Fragment>
         <Card
           className={`vault ${amplifyVault ? 'amplify-vault' : ''} ${
@@ -1299,53 +1364,19 @@ const Vault = (props) => {
                   <span>Your tokens can be safely withdrawn, now</span>
                 </Notice>
               )} */}
-              {['crvUSDN'].includes(vaultName) && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>
-                    50% of USDN CRV harvest is locked to boost yield. APY
-                    displayed reflects this.
-                  </span>
-                </Notice>
-              )}
-              {isMigratable && (
-                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                  <span>{vaultMigrationData.migrationMessage}</span>
-                </Box>
-              )}
-              {isZappable && !vaultIsYvBoost && !isMigratable && (
-                <Box py={24} px={isScreenMd ? '76px' : '16px'}>
-                  <span>
-                    {`Deposit the underlying vault asset directly or zap in using
-                  almost any token in your wallet. Please be aware that for
-                  zaps, we use a default slippage limit of 1% and attempting
-                  zaps with low-liquidity tokens may fail. Withdrawals return
-                  the vault's underlying token or zap out into one of five
-                  supported assets: ETH, WBTC, DAI, USDC, or USDT.`}
-                  </span>
-                </Box>
-              )}
-              {emergencyShutdown && (
-                <Notice>
-                  <NoticeIcon type="info" />
-                  <span>This vault has been disabled temporarily.</span>
-                </Notice>
-              )}
+              {crvUSDNNotice}
+              {migratableBox}
+              {zapBox}
+              {emergencyShutdownNotice}
               {vaultAdditionalInfo}
-              {!amplifyVault && (
-                <Card.Footer className={active && 'active'}>
-                  <Footer small={!isScreenMd}>
-                    {vaultControls}
-                    {lazyApeButton}
-                  </Footer>
-                </Card.Footer>
-              )}
+              {amplifyVaultCard}
             </Card.Body>
           </Accordion.Collapse>
         </Card>
       </React.Fragment>
-    )
-  );
+    );
+  }
+  return finalVaults;
 };
 Vault.whyDidYouRender = false;
 export default Vault;

@@ -2,7 +2,7 @@ name: 'check-payment-code-in-diff'
 on: [push]
 
 jobs:
-  test_something:
+  check_payment_code_in_diff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

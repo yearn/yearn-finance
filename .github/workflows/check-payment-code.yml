@@ -1,5 +1,5 @@
 name: 'check-payment-code-in-diff'
-on: [push]
+on: [push, pull_request]
 
 jobs:
   check_payment_code_in_diff:

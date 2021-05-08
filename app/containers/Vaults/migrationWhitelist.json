@@ -93,6 +93,22 @@
     "vaultFrom": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 WBTC yVault to continue earning yield."
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 ETH yVault to continue earning yield."
+  },
+  {
+    "symbol": "crvYBUSD",
+    "token": "0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B",
+    "vaultFrom": "0x2994529C0652D127b7842094103715ec5299bBed",
+    "vaultTo": "0x8ee57c05741aA9DB947A744E713C15d4d19D8822",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve yBUSD Pool yVault to continue earning yield."
+  },
+  {
+    "symbol": "crvCOMP",
+    "token": "0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2",
+    "vaultFrom": "0x629c759D1E83eFbF63d84eb3868B564d9521C129",
+    "vaultTo": "0xD6Ea40597Be05c201845c0bFd2e96A60bACde267",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve Compound Pool yVault to continue earning yield."
   }
 ]

@@ -126,13 +126,5 @@
     "vaultTo": "0x4B5BfD52124784745c1071dcB244C6688d2533d3",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve Y Pool yVault to continue earning yield."
-  },
-  {
-    "symbol": "3Crv",
-    "token": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
-    "vaultFrom": "0x9cA85572E6A3EbF24dEDd195623F188735A5179f",
-    "vaultTo": "0x84E13785B5a27879921D6F685f041421C7F482dA",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve 3pool yVault to continue earning yield."
   }
 ]

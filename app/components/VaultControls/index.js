@@ -938,7 +938,25 @@ export default function VaultControls(props) {
             <Grid container spacing={1}>
               <Grid item xs={12} md={12}>
                 <Box>
-                  <Balance amount={vaultBalance} prefix="Vault balance: " />
+                  <Typography
+                    variant="h5"
+                    style={{
+                      fontSize: '30px',
+                      fontWeight: 700,
+                      fontStyle: 'normal',
+                      textAlign: 'left',
+                    }}
+                  >
+                    Withdraw {selectedWithdrawToken.label}{' '}
+                    {selectedWithdrawToken.label === vault.displayName
+                      ? null
+                      : `denominated to ${vault.displayName}`}
+                  </Typography>
+                  <Balance
+                    amount={vaultBalance}
+                    prefix="Vault balance: "
+                    suffix="yveCRV"
+                  />
                 </Box>
               </Grid>
               <Grid item xs={12} md={5}>
@@ -962,7 +980,7 @@ export default function VaultControls(props) {
                       gweiAmountSetter={setWithdrawalGweiAmount}
                       maxAmount={vaultBalanceOf}
                       decimals={decimals}
-                      left="yveCRV"
+                      suffix="yveCRV"
                     />
                   </Box>
                 </ButtonGroup>
@@ -1029,7 +1047,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
                 <ButtonGroup width={1}>
-                  <Box width={isScreenMd ? '210px' : '100%'}>
+                  <Box width={isScreenMd ? '230px' : '100%'}>
                     <AmountField
                       amount={depositAmount}
                       amountSetter={setDepositAmount}
@@ -1077,11 +1095,20 @@ export default function VaultControls(props) {
             <Box display="flex" flexDirection="column">
               <Box
                 style={{
-                  marginTop: isScreenMd ? null : '20px',
+                  marginTop: isScreenMd ? '30px' : null,
+                  marginBottom: isScreenMd ? '15px' : null,
                   weight: 'bold',
                 }}
               >
-                <Typography variant="h5">
+                <Typography
+                  variant="h5"
+                  style={{
+                    fontSize: '30px',
+                    fontWeight: 700,
+                    fontStyle: 'normal',
+                    textAlign: 'left',
+                  }}
+                >
                   Withdraw {selectedWithdrawToken.label}{' '}
                   {selectedWithdrawToken.label === vault.displayName
                     ? null
@@ -1093,6 +1120,7 @@ export default function VaultControls(props) {
                   amount={vaultBalance}
                   prefix="Vault balance: "
                   decimalPlaces={balanceDecimalPlacesCount}
+                  suffix={vault.displayName}
                 />
               </Box>
               <Box
@@ -1113,12 +1141,12 @@ export default function VaultControls(props) {
                     gweiAmountSetter={setWithdrawalGweiAmount}
                     maxAmount={vaultBalanceOf}
                     decimals={decimals}
-                    left={vault.displayName}
+                    suffix={vault.displayName}
                   />
                 </Box>
                 <ButtonGroup width={1}>
                   {isScreenMd ? (
-                    <Box center mr={10} style={{ width: '15px' }}>
+                    <Box center mr={20} ml={10} style={{ width: '15px' }}>
                       {' ❯❯ '}
                     </Box>
                   ) : null}
@@ -1210,7 +1238,7 @@ function AmountField({
   disabled,
   hideMaxButton,
   disabledStyle,
-  left,
+  suffix,
 }) {
   return (
     <StyledRoundedInput
@@ -1226,7 +1254,7 @@ function AmountField({
           />
         )
       }
-      left={left}
+      suffix={suffix}
       placeholder={placeholder}
       disabled={disabled}
       onChange={(evt) => {
@@ -1264,11 +1292,12 @@ function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
   );
 }
 
-function Balance({ amount, prefix, decimalPlaces = 2, hideBalance }) {
+function Balance({ amount, prefix, decimalPlaces = 2, hideBalance, suffix }) {
   return (
     <div>
       {prefix}
-      {hideBalance ? null : new BigNumber(amount).toFixed(decimalPlaces)}
+      {hideBalance ? null : new BigNumber(amount).toFixed(decimalPlaces)}{' '}
+      {suffix}
     </div>
   );
 }

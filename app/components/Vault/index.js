@@ -9,7 +9,6 @@ import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
 import styled from 'styled-components';
 import AnimatedNumber from 'components/AnimatedNumber';
-import ButtonFilled from 'components/ButtonFilled';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
@@ -18,7 +17,6 @@ import BigNumber from 'bignumber.js';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import retiredJson from 'containers/Vaults/retiredWhitelist.json';
 import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
-import LazyApeLogo from 'images/lazy-ape-logo.svg';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
 import {
@@ -33,7 +31,6 @@ import {
   MASTER_CHEF_ADDRESS,
   PICKLEJAR_ADDRESS,
   ZAP_YVE_CRV_ETH_PICKLE_ADDRESS,
-  LAZY_APE_ADDRESSES,
   YVBOOST_ADDRESS,
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
@@ -46,21 +43,6 @@ import Icon from 'components/Icon';
 import { useModal } from 'containers/ModalProvider/hooks';
 import Text from 'components/Text';
 import Box from 'components/Box';
-
-const ButtonLinkIcon = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  padding-top: 5px;
-
-  img {
-    margin-right: 10px;
-  }
-  span {
-    text-decoration: none;
-  }
-`;
 
 const IconAndName = styled.div`
   display: flex;
@@ -814,38 +796,6 @@ const Vault = (props) => {
     openModal('contractStatistics', { vault });
   };
 
-  let lazyApeButton;
-  if (LAZY_APE_ADDRESSES.find((a) => a === vault.address)) {
-    lazyApeButton = (
-      <Box
-        display="flex"
-        flexDirection="column"
-        width={1}
-        mt={8}
-        ml={isScreenMd ? '60px' : '0px'}
-      >
-        <span>
-          Head to PowerPool and deposit {vault.tokenAlias} for additional yield
-          in the Yearn Lazy Ape pool.
-          <br />
-          This pool allows you to earn swap fees on top of your yVault yield.
-        </span>
-        <Box mt={20} width="240px">
-          <ButtonFilled color="primary">
-            <ButtonLinkIcon
-              className="wrapper"
-              href="https://powerindex.io/#/mainnet/0x9ba60ba98413a60db4c651d4afe5c937bbd8044b/supply"
-              target="_blank"
-            >
-              <img src={LazyApeLogo} alt="LazyApe" width="32" />
-              <span>Join lazy ape</span>
-            </ButtonLinkIcon>
-          </ButtonFilled>
-        </Box>
-      </Box>
-    );
-  }
-
   if (showDevVaults) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -1326,10 +1276,7 @@ const Vault = (props) => {
   if (!amplifyVault)
     amplifyVaultCard = (
       <Card.Footer className={active && 'active'}>
-        <Footer small={!isScreenMd}>
-          {vaultControls}
-          {lazyApeButton}
-        </Footer>
+        <Footer small={!isScreenMd}>{vaultControls}</Footer>
       </Card.Footer>
     );
   const showVaults =

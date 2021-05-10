@@ -39,7 +39,15 @@ const Right = styled.div`
   align-items: center;
   top: 0px;
 `;
-
+const Left = styled.div`
+  position: absolute;
+  left: 13px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  color: black;
+  top: 0px;
+`;
 const isValidValue = (value, maxValue = Number.MAX_SAFE_INTEGER) =>
   !value || toNumber(value) <= toNumber(maxValue) || value === '.';
 
@@ -56,10 +64,23 @@ export const RoundedInput = React.forwardRef((props, ref) => {
     maxValue,
     placeholder,
     disabledStyle,
+    left,
   } = props;
   const invalid = !isValidValue(value, maxValue);
+  let padding = {};
+  let leftBox = null;
+  if (left && left.length > 0) {
+    padding = { paddingLeft: 50 + 9 * (left.length - 3) };
+    leftBox = (
+      <Left>
+        <span>{left}</span>
+      </Left>
+    );
+  }
+
   return (
     <Wrapper className={className}>
+      {leftBox}
       <Input
         type="text"
         inputmode="decimal"
@@ -69,7 +90,7 @@ export const RoundedInput = React.forwardRef((props, ref) => {
         spellCheck="false"
         value={value}
         disabled={disabled}
-        style={disabledStyle}
+        style={{ ...disabledStyle, ...padding }}
         placeholder={placeholder}
         onChange={(event) => {
           const input = event.target.value;

@@ -48,6 +48,7 @@ import Label from 'components/Label';
 import PickleJarAbi2 from 'abi/pickleJar2.json';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import ZapPickleMigrateAbi from 'abi/zapPickleMigrate.json';
+import { Typography } from '@material-ui/core';
 const MaxWrapper = styled.div`
   cursor: pointer;
   display: flex;
@@ -961,6 +962,7 @@ export default function VaultControls(props) {
                       gweiAmountSetter={setWithdrawalGweiAmount}
                       maxAmount={vaultBalanceOf}
                       decimals={decimals}
+                      left="yveCRV"
                     />
                   </Box>
                 </ButtonGroup>
@@ -990,11 +992,7 @@ export default function VaultControls(props) {
       willZapIn;
     vaultControlsWrapper = (
       <Wrapper>
-        <Box
-          display="flex"
-          flexDirection={isScreenMd ? 'row' : 'column'}
-          width={1}
-        >
+        <Box display="flex" flexDirection="column" width={1}>
           <ActionGroup
             direction={isScreenMd ? 'row' : 'column'}
             ml={isScreenMd ? '60px' : '0px'}
@@ -1031,7 +1029,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
                 <ButtonGroup width={1}>
-                  <Box width={isScreenMd ? '185px' : '100%'}>
+                  <Box width={isScreenMd ? '210px' : '100%'}>
                     <AmountField
                       amount={depositAmount}
                       amountSetter={setDepositAmount}
@@ -1077,6 +1075,19 @@ export default function VaultControls(props) {
             direction={isScreenMd ? 'row' : 'column'}
           >
             <Box display="flex" flexDirection="column">
+              <Box
+                style={{
+                  marginTop: isScreenMd ? null : '20px',
+                  weight: 'bold',
+                }}
+              >
+                <Typography variant="h5">
+                  Withdraw {selectedWithdrawToken.label}{' '}
+                  {selectedWithdrawToken.label === vault.displayName
+                    ? null
+                    : `denominated to ${vault.displayName}`}
+                </Typography>
+              </Box>
               <Box>
                 <Balance
                   amount={vaultBalance}
@@ -1102,9 +1113,15 @@ export default function VaultControls(props) {
                     gweiAmountSetter={setWithdrawalGweiAmount}
                     maxAmount={vaultBalanceOf}
                     decimals={decimals}
+                    left={vault.displayName}
                   />
                 </Box>
                 <ButtonGroup width={1}>
+                  {isScreenMd ? (
+                    <Box center mr={10} style={{ width: '15px' }}>
+                      {' ❯❯ '}
+                    </Box>
+                  ) : null}
                   <Box
                     center
                     mr={5}
@@ -1193,6 +1210,7 @@ function AmountField({
   disabled,
   hideMaxButton,
   disabledStyle,
+  left,
 }) {
   return (
     <StyledRoundedInput
@@ -1208,6 +1226,7 @@ function AmountField({
           />
         )
       }
+      left={left}
       placeholder={placeholder}
       disabled={disabled}
       onChange={(evt) => {

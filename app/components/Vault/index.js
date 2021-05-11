@@ -768,10 +768,6 @@ const Vault = (props) => {
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = migratingTooltips[address];
-  } else if (address === '0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E') {
-    // hardcoded for new WBTC v2
-    apyRecommended = 'NEW ✨';
-    apyTooltip = 'This vault was just added or recently updated its strategy.';
   } else if (vaultIsPickle) {
     apyRecommended = 'N/A';
     apyTooltip =

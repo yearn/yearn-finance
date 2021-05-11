@@ -1108,10 +1108,10 @@ export default function VaultControls(props) {
                     textAlign: 'left',
                   }}
                 >
-                  Withdraw {selectedWithdrawToken.label}{' '}
+                  Withdraw {vault.displayName}{' '}
                   {selectedWithdrawToken.label === vault.displayName
                     ? null
-                    : `denominated to ${vault.displayName}`}
+                    : `denominated to ${selectedWithdrawToken.label}`}
                 </Typography>
               </Box>
               <Box>

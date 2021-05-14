@@ -1104,7 +1104,9 @@ export default function VaultControls(props) {
                   <Box width={isScreenMd ? '130px' : '100%'}>
                     <ActionButton
                       className="action-button bold outline"
-                      disabled={!vaultContract || !tokenContract}
+                      disabled={
+                        !vaultContract || !tokenContract || depositsDisabled
+                      }
                       handler={withdraw}
                       text="Withdraw"
                       title="Withdraw from vault"

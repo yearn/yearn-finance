@@ -297,6 +297,11 @@ export default function VaultControls(props) {
     'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
 
   const depositsDisabled = useMemo(() => {
+    if (vault.address === '0x19D3364A399d251E894aC732651be8B0E4e85001') {
+      // FIXME: v2 dai vault
+      return 'Vault deposits temporarily disabled.';
+    }
+
     if (vault.type === 'v2') {
       if (
         !willZapIn &&
@@ -320,7 +325,7 @@ export default function VaultControls(props) {
     }
 
     if (emergencyShutdown) {
-      return 'Vault deposits temporarily disabled';
+      return 'Vault deposits temporarily disabled.';
     }
 
     return undefined;

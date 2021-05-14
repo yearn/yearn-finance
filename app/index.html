@@ -25,9 +25,16 @@
     <script
       async
       defer
-      data-website-id="d4526afe-5bdc-4ea0-a98d-a876473d37dc"
-      src="https://analytics.yearn.finance/umami.js"
+      data-domain="yearn.finance"
+      src="https://analytics.yearn.finance/js/plausible.js"
     ></script>
+    <script>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
   </head>
 
   <body>

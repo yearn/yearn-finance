@@ -33,6 +33,8 @@ import {
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
+const crvSAaveAddress = '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC';
 
 const injectEthVaults = (vaults) => {
   const ethereumString = 'ETH';
@@ -130,6 +132,10 @@ function* withdrawFromVault(action) {
 
   const v2Vault = _.get(vaultContractData, 'pricePerShare');
 
+  const vaultAddress = _.get(vaultContractData, 'address');
+  const vaultIsAave =
+    vaultAddress === crvAaveAddress || vaultAddress === crvSAaveAddress;
+
   let sharesForWithdrawal;
   if (v2Vault) {
     const sharePrice = _.get(vaultContractData, 'pricePerShare');
@@ -146,8 +152,10 @@ function* withdrawFromVault(action) {
   }
 
   try {
+    // Vault is not eth
     if (!pureEthereum) {
       if (unstakePickle) {
+        // Pickle transaction
         yield call(
           vaultContract.methods.withdraw.cacheSend,
           26,
@@ -157,6 +165,19 @@ function* withdrawFromVault(action) {
           },
         );
       } else {
+        if (vaultIsAave) {
+          // Vault is AAVE
+          yield call(
+            vaultContract.methods.withdraw.cacheSend,
+            sharesForWithdrawal,
+            {
+              from: account,
+              gas: 2000000,
+            },
+          );
+          return;
+        }
+        // Vault is not AAVE
         yield call(
           vaultContract.methods.withdraw.cacheSend,
           sharesForWithdrawal,
@@ -166,6 +187,7 @@ function* withdrawFromVault(action) {
         );
       }
     } else {
+      // Vault is ETH
       const { zapContract } = vaultContract;
       if (zapContract) {
         let method;
@@ -195,9 +217,25 @@ function* withdrawFromVault(action) {
 function* withdrawAllFromVault(action) {
   const { vaultContract, balanceOf } = action.payload;
 
+  const vaultContractData = yield select(
+    selectContractData(vaultContract.address),
+  );
+
+  const vaultAddress = _.get(vaultContractData, 'address');
+  const vaultIsAave =
+    vaultAddress === crvAaveAddress || vaultAddress === crvSAaveAddress;
+
   const account = yield select(selectAccount());
 
   try {
+    if (vaultIsAave) {
+      yield call(vaultContract.methods.withdraw.cacheSend, balanceOf, {
+        from: account,
+        gas: 2000000,
+      });
+      return;
+    }
+
     // if (!pureEthereum) {
     yield call(vaultContract.methods.withdraw.cacheSend, balanceOf, {
       from: account,

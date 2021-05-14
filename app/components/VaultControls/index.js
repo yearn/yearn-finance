@@ -48,6 +48,8 @@ import Label from 'components/Label';
 import PickleJarAbi2 from 'abi/pickleJar2.json';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import ZapPickleMigrateAbi from 'abi/zapPickleMigrate.json';
+import { Typography } from '@material-ui/core';
+import SvgArrow from 'components/VaultControls/SvgArrow';
 const MaxWrapper = styled.div`
   cursor: pointer;
   display: flex;
@@ -931,7 +933,25 @@ export default function VaultControls(props) {
             <Grid container spacing={1}>
               <Grid item xs={12} md={12}>
                 <Box>
-                  <Balance amount={vaultBalance} prefix="Vault balance: " />
+                  <Typography
+                    variant="h5"
+                    style={{
+                      fontSize: '30px',
+                      fontWeight: 700,
+                      fontStyle: 'normal',
+                      textAlign: 'left',
+                    }}
+                  >
+                    Withdraw {vault.displayName}{' '}
+                    {selectedWithdrawToken.label === vault.displayName
+                      ? null
+                      : `denominated to ${selectedWithdrawToken.label}`}
+                  </Typography>
+                  <Balance
+                    amount={vaultBalance}
+                    prefix="Vault balance: "
+                    suffix="yveCRV"
+                  />
                 </Box>
               </Grid>
               <Grid item xs={12} md={5}>
@@ -984,11 +1004,7 @@ export default function VaultControls(props) {
       willZapIn;
     vaultControlsWrapper = (
       <Wrapper>
-        <Box
-          display="flex"
-          flexDirection={isScreenMd ? 'row' : 'column'}
-          width={1}
-        >
+        <Box display="flex" flexDirection="column" width={1}>
           <ActionGroup
             direction={isScreenMd ? 'row' : 'column'}
             ml={isScreenMd ? '60px' : '0px'}
@@ -1025,7 +1041,7 @@ export default function VaultControls(props) {
                   />
                 </Box>
                 <ButtonGroup width={1}>
-                  <Box width={isScreenMd ? '185px' : '100%'}>
+                  <Box width={isScreenMd ? '230px' : '100%'}>
                     <AmountField
                       amount={depositAmount}
                       amountSetter={setDepositAmount}
@@ -1071,11 +1087,34 @@ export default function VaultControls(props) {
             direction={isScreenMd ? 'row' : 'column'}
           >
             <Box display="flex" flexDirection="column">
+              <Box
+                style={{
+                  marginTop: isScreenMd ? '30px' : null,
+                  marginBottom: isScreenMd ? '15px' : null,
+                  weight: 'bold',
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  style={{
+                    fontSize: '30px',
+                    fontWeight: 700,
+                    fontStyle: 'normal',
+                    textAlign: 'left',
+                  }}
+                >
+                  Withdraw {vault.displayName}{' '}
+                  {selectedWithdrawToken.label === vault.displayName
+                    ? null
+                    : `denominated to ${selectedWithdrawToken.label}`}
+                </Typography>
+              </Box>
               <Box>
                 <Balance
                   amount={vaultBalance}
                   prefix="Vault balance: "
                   decimalPlaces={balanceDecimalPlacesCount}
+                  suffix={vault.displayName}
                 />
               </Box>
               <Box
@@ -1099,6 +1138,11 @@ export default function VaultControls(props) {
                   />
                 </Box>
                 <ButtonGroup width={1}>
+                  {isScreenMd ? (
+                    <Box center mr={15} ml={2} style={{ width: '15px' }}>
+                      <SvgArrow />
+                    </Box>
+                  ) : null}
                   <Box
                     center
                     mr={5}
@@ -1239,11 +1283,12 @@ function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
   );
 }
 
-function Balance({ amount, prefix, decimalPlaces = 2, hideBalance }) {
+function Balance({ amount, prefix, decimalPlaces = 2, hideBalance, suffix }) {
   return (
     <div>
       {prefix}
-      {hideBalance ? null : new BigNumber(amount).toFixed(decimalPlaces)}
+      {hideBalance ? null : new BigNumber(amount).toFixed(decimalPlaces)}{' '}
+      {suffix}
     </div>
   );
 }

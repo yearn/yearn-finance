@@ -1079,7 +1079,7 @@ const Vault = (props) => {
         vaultAdditionalInfo = (
           <Box my={50} mx={isScreenMd ? 50 : 20}>
             <Grid container spacing={isScreenMd ? 8 : 5}>
-              <Grid className="amplify-vault-controls" item xs={12} md={6}>
+              <Grid className="amplify-vault-controls" item xs={12} md={7}>
                 {amplifyVaultTitle}
                 {vaultControls}
               </Grid>
@@ -1089,7 +1089,7 @@ const Vault = (props) => {
                 direction="row"
                 alignItems="center"
                 xs={12}
-                md={6}
+                md={5}
               >
                 {amplifyVaultDesc}
               </Grid>

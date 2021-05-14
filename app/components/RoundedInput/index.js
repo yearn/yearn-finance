@@ -58,6 +58,7 @@ export const RoundedInput = React.forwardRef((props, ref) => {
     disabledStyle,
   } = props;
   const invalid = !isValidValue(value, maxValue);
+
   return (
     <Wrapper className={className}>
       <Input

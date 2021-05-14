@@ -136,14 +136,6 @@ export default function VaultControls(props) {
       .toFixed();
   }
 
-  let withdrawDisabled = false;
-  if (
-    vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
-    vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
-  ) {
-    withdrawDisabled = true;
-  }
-
   const isScreenMd = useMediaQuery('(min-width:960px)');
   const dispatch = useDispatch();
   let vaultContract = useContract(vaultAddress);
@@ -330,6 +322,22 @@ export default function VaultControls(props) {
 
     return undefined;
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
+
+  const withdrawDisabled = useMemo(() => {
+    if (
+      vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
+      vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC' ||
+      vault.address === '0x19D3364A399d251E894aC732651be8B0E4e85001' // FIXME: v2 dai vault
+    ) {
+      return 'Vault withdrawals temporarily disabled.';
+    }
+
+    if (emergencyShutdown) {
+      return 'Vault withdrawals temporarily disabled.';
+    }
+
+    return undefined;
+  }, [vault, emergencyShutdown]);
 
   useEffect(() => {
     setDepositAmount(0);
@@ -1116,13 +1124,16 @@ export default function VaultControls(props) {
                     <ActionButton
                       className="action-button bold outline"
                       disabled={
-                        !vaultContract || !tokenContract || withdrawDisabled
+                        !vaultContract || !tokenContract || !!withdrawDisabled
                       }
                       handler={withdraw}
                       text="Withdraw"
                       title="Withdraw from vault"
                       showTooltipWhenDisabled
-                      disabledTooltipText="Connect your wallet to withdraw from vault"
+                      disabledTooltipText={
+                        withdrawDisabled ||
+                        'Connect your wallet to withdraw from vault'
+                      }
                     />
                   </Box>
                 </ButtonGroup>

@@ -1,6 +1,9 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects';
+import abiDecoder from 'abi-decoder';
 import BigNumber from 'bignumber.js';
+import { first, get } from 'lodash';
 import request from 'utils/request';
+import erc20Abi from 'abi/erc20.json';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectContractData } from 'containers/App/selectors';
 import { MAX_UINT256 } from 'containers/Cover/constants';
@@ -16,7 +19,9 @@ import {
   ZAP_OUT,
   MIGRATE_PICKLE_GAUGE,
   DEFAULT_SLIPPAGE,
+  ZAPPER_WHITELIST,
 } from './constants';
+
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
 
@@ -37,6 +42,72 @@ const getZapperApi = (endpoint, params) =>
   `${ZAPPER_API}${endpoint}?api_key=${ZAPPER_APIKEY}${
     params ? `&${encodeParams(params)}` : ''
   }`;
+
+const validateSendTransactionData = (sendTransactionData) => {
+  const zapperContractData = first(
+    ZAPPER_WHITELIST.filter(
+      ({ contractAddress }) =>
+        contractAddress.toLowerCase() === sendTransactionData.to.toLowerCase(),
+    ),
+  );
+
+  if (!zapperContractData) {
+    throw new Error(
+      `${sendTransactionData.to} not whitelisted as Zapper Contract`,
+    );
+  }
+
+  abiDecoder.addABI(zapperContractData.abi);
+  const decodedData = abiDecoder.decodeMethod(sendTransactionData.data);
+
+  if (!decodedData) {
+    throw new Error(
+      `Validation error: Could not decode transaction data from ${sendTransactionData.to}`,
+    );
+  }
+
+  if (
+    decodedData.name.toLowerCase() !== zapperContractData.method.toLowerCase()
+  ) {
+    throw new Error(
+      `${decodedData.name} not whitelisted as Zapper Contract Method`,
+    );
+  }
+};
+
+const validateApproveTransactionData = (approveData) => {
+  abiDecoder.addABI(erc20Abi);
+  const decodedData = abiDecoder.decodeMethod(approveData.data);
+
+  if (!decodedData) {
+    throw new Error(
+      `Validation error: Could not decode approval data for ${approveData.to}`,
+    );
+  }
+
+  if (decodedData.name !== 'approve') {
+    throw new Error(`${decodedData.name} not a valid approve method`);
+  }
+
+  const spender = get(
+    first(decodedData.params.filter(({ name }) => name.includes('spender'))),
+    'value',
+  );
+
+  if (!spender) {
+    throw new Error(
+      `Validation error: Could not decode a valid spender param on ${decodedData.name} method`,
+    );
+  }
+
+  const spenderAddressesWhitelist = ZAPPER_WHITELIST.map(
+    ({ contractAddress }) => contractAddress.toLowerCase(),
+  );
+  const isSpenderValid = spenderAddressesWhitelist.includes(spender);
+  if (!isSpenderValid) {
+    throw new Error(`${spender} not whitelisted as Zapper Contract`);
+  }
+};
 
 function* initializeZapper() {
   const account = yield select(selectAccount());
@@ -175,6 +246,7 @@ function* zapIn(action) {
             ownerAddress,
           }),
         );
+        validateApproveTransactionData(approvalTransaction);
         yield call(web3.eth.sendTransaction, approvalTransaction);
       }
     }
@@ -190,6 +262,7 @@ function* zapIn(action) {
         ownerAddress,
       }),
     );
+    validateSendTransactionData(zapInTransaction);
     yield call(web3.eth.sendTransaction, zapInTransaction);
   } catch (error) {
     yield put(
@@ -258,6 +331,7 @@ function* zapOut(action) {
           ownerAddress,
         }),
       );
+      validateApproveTransactionData(approvalTransaction);
       yield call(web3.eth.sendTransaction, approvalTransaction);
     }
 
@@ -272,6 +346,7 @@ function* zapOut(action) {
         ownerAddress,
       }),
     );
+    validateSendTransactionData(zapOutTransaction);
     yield call(web3.eth.sendTransaction, zapOutTransaction);
   } catch (error) {
     console.log('Zap Failed', error);

@@ -90,6 +90,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "@welldone-software/why-did-you-render": "^5.0.0",
+    "abi-decoder": "^2.4.0",
     "ace-builds": "^1.4.12",
     "animated-number-react": "^0.1.1",
     "autoprefixer": "^9",

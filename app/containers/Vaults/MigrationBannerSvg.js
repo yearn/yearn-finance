@@ -8,6 +8,7 @@ const MigrationBannerSvg = (props) => {
       return v.displayName;
     })
     .join(', ');
+  const theseVaults = vaults.length > 1 ? 'These vaults' : 'This vault';
   return (
     <div
       style={{
@@ -75,11 +76,13 @@ const MigrationBannerSvg = (props) => {
             fontWeight="normal"
           >
             <tspan x="89.421" y="92.965" fill="#fff" fontSize="15.333">
-              Looks like you still have funds in {vaultTitles}. These vaults
-              will retire soon{' '}
+              Looks like you still have funds in {vaultTitles}.
             </tspan>
             <tspan x="89.421" y="112.131" fill="#fff" fontSize="15.333">
-              and if you want to keep making gains,{' '}
+              {theseVaults} will retire soon and if you want to keep making
+              gains,{' '}
+            </tspan>
+            <tspan x="89.421" y="131.297" fill="#fff" fontSize="15.333">
               <tspan fill="#fff" fontSize="15.333" fontWeight="bold">
                 we recommend migrating
               </tspan>

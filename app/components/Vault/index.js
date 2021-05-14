@@ -1286,6 +1286,11 @@ const Vault = (props) => {
     (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
     !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
   let finalVaults = null;
+  let showLabel = 'SHOW';
+  if (isMigratable) {
+    showLabel = 'MIGRATE';
+  }
+
   if (showVaults) {
     finalVaults = (
       <React.Fragment>
@@ -1303,7 +1308,7 @@ const Vault = (props) => {
             {vaultTop}
             {/* {vaultStats} */}
             <StyledText fontWeight={700} mr={16}>
-              {active ? 'HIDE' : 'SHOW'}
+              {active ? 'HIDE' : showLabel}
             </StyledText>
           </Accordion.Toggle>
           <Accordion.Collapse eventKey={accordionKey}>

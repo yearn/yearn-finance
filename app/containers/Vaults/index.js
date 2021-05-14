@@ -32,6 +32,8 @@ import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 import request from 'utils/request';
 import { ALIASES_API, YVBOOST_ETH_PJAR } from 'containers/Vaults/constants';
+import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import MigrationBannerSvg from './MigrationBannerSvg';
 
 const Wrapper = styled(Box)`
   margin-top: 20px;
@@ -123,6 +125,23 @@ const Vaults = (props) => {
 
   let vaultItems = showDevVaults ? localContracts : orderedVaults;
 
+  function extractMigratedVaults(vaults) {
+    const extractedVaults = [];
+    const nonMigratedVaults = [];
+    vaults.forEach((vault) => {
+      let found = false;
+      migrationWhitelist.forEach((migratedVault) => {
+        if (migratedVault.vaultFrom === vault.address) {
+          extractedVaults.push(vault);
+          found = true;
+        }
+      });
+      if (!found) {
+        nonMigratedVaults.push(vault);
+      }
+    });
+    return { extractedVaults, nonMigratedVaults };
+  }
   function parseVaults(vaults) {
     return _.map(vaults, (vault) => {
       const vaultContractData = allContracts[vault.address] || {};
@@ -221,8 +240,12 @@ const Vaults = (props) => {
 
   vaultItems = parseVaults(vaultItems);
   const amplifyVaultItems = parseVaults(amplifyVaults);
-
+  const migratedVaultsResults = extractMigratedVaults(vaultItems);
+  vaultItems = migratedVaultsResults.nonMigratedVaults;
+  const migratedVaultItems = migratedVaultsResults.extractedVaults;
   const { items, requestSort, sortConfig } = useSortableData(vaultItems);
+  const migratedSortedData = useSortableData(migratedVaultItems);
+  const migratedItems = migratedSortedData.items;
 
   useEffect(() => {
     requestSort('valueDeposited');
@@ -349,6 +372,19 @@ const Vaults = (props) => {
         {warning}
         {amplifyVaultsWrapper}
         <WrapTable center width={1}>
+          <StyledAccordion
+            onSelect={linkToVault}
+            defaultActiveKey={showAccordionKey}
+          >
+            <VaultsWrapper
+              vaultItems={migratedItems}
+              showDevVaults={showDevVaults}
+              walletConnected={walletConnected}
+              isMigrated
+            />
+          </StyledAccordion>
+        </WrapTable>
+        <WrapTable center width={1}>
           <Hidden smDown>{columnHeader}</Hidden>
           <StyledAccordion
             onSelect={linkToVault}
@@ -425,24 +461,46 @@ const AmplifyWrapper = (props) => {
 };
 
 const VaultsWrapper = (props) => {
-  const { showDevVaults, walletConnected, vaultItems } = props;
+  const { showDevVaults, walletConnected, vaultItems, isMigrated } = props;
   const currentEventKey = useContext(AccordionContext);
   const web3 = useWeb3();
-
+  let hasBeenShown = false;
+  const migratedVaultsWithBalance = [];
+  if (isMigrated) {
+    vaultItems.forEach((vault) => {
+      if (vault && vault.balanceOf && vault.balanceOf[0].value > 0) {
+        migratedVaultsWithBalance.push(vault);
+      }
+    });
+  }
   const renderVault = (vault) => {
     let vaultKey = vault.address;
     if (vault.pureEthereum) {
       vaultKey = `${vault.address}-eth`;
     }
+    let banner = null;
+    if (
+      vault &&
+      vault.balanceOf &&
+      vault.balanceOf[0].value > 0 &&
+      isMigrated &&
+      !hasBeenShown
+    ) {
+      banner = <MigrationBannerSvg vaults={migratedVaultsWithBalance} />;
+      hasBeenShown = true;
+    }
     return (
-      <Vault
-        vault={vault}
-        key={vaultKey}
-        accordionKey={vaultKey}
-        active={currentEventKey === vaultKey}
-        showDevVaults={showDevVaults}
-        web3={web3}
-      />
+      <>
+        {banner}
+        <Vault
+          vault={vault}
+          key={vaultKey}
+          accordionKey={vaultKey}
+          active={currentEventKey === vaultKey}
+          showDevVaults={showDevVaults}
+          web3={web3}
+        />
+      </>
     );
   };
 

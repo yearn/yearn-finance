@@ -136,6 +136,14 @@ export default function VaultControls(props) {
       .toFixed();
   }
 
+  let withdrawDisabled = false;
+  if (
+    vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
+    vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
+  ) {
+    withdrawDisabled = true;
+  }
+
   const isScreenMd = useMediaQuery('(min-width:960px)');
   const dispatch = useDispatch();
   let vaultContract = useContract(vaultAddress);
@@ -1103,7 +1111,7 @@ export default function VaultControls(props) {
                     <ActionButton
                       className="action-button bold outline"
                       disabled={
-                        !vaultContract || !tokenContract || depositsDisabled
+                        !vaultContract || !tokenContract || withdrawDisabled
                       }
                       handler={withdraw}
                       text="Withdraw"

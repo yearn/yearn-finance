@@ -134,5 +134,13 @@
     "vaultTo": "0x84E13785B5a27879921D6F685f041421C7F482dA",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve 3pool yVault to continue earning yield."
+  },
+  {
+    "symbol": "crvDUSD",
+    "token": "0x3a664Ab939FD8482048609f652f9a0B0677337B9",
+    "vaultFrom": "0x8e6741b456a074F0Bc45B8b82A755d4aF7E965dF",
+    "vaultTo": "0x30FCf7c6cDfC46eC237783D94Fc78553E79d4E9C",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve DUSD yVault to continue earning yield."
   }
 ]

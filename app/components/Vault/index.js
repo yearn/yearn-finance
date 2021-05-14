@@ -266,7 +266,7 @@ const Vault = (props) => {
 
   if (
     vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
-    '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
+    vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
   ) {
     vault.emergencyShutdown = true;
   }

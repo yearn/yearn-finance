@@ -312,10 +312,8 @@ export default function VaultControls(props) {
     }
 
     if (emergencyShutdown) {
-      console.log('emergency', vault.symbol);
       return 'Vault deposits temporarily disabled';
     }
-    console.log('ok deposit', vault.symbol, depositAmount);
 
     return undefined;
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);

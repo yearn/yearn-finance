@@ -432,6 +432,14 @@ export default function VaultControls(props) {
       selectedWithdrawToken.address.toLowerCase() ===
       vault.token.address.toLowerCase()
     ) {
+      plausible('withdraw', {
+        props: {
+          vault: vault.address,
+          token: token.address,
+          amount: withdrawalGweiAmount,
+          zap: false,
+        },
+      });
       dispatch(
         withdrawFromVault({
           vaultContract,
@@ -441,6 +449,14 @@ export default function VaultControls(props) {
         }),
       );
     } else {
+      plausible('withdraw', {
+        props: {
+          vault: vault.address,
+          token: selectedWithdrawToken.address,
+          amount: withdrawalGweiAmount,
+          zap: true,
+        },
+      });
       dispatch(
         zapOut({
           web3,
@@ -486,7 +502,14 @@ export default function VaultControls(props) {
   };
 
   const deposit = () => {
-    console.log(`Depositing:`, depositGweiAmount);
+    plausible('deposit', {
+      props: {
+        vault: vault.address,
+        token: token.address,
+        amount: depositGweiAmount,
+        zap: false,
+      },
+    });
     dispatch(
       depositToVault({
         vaultContract,
@@ -500,6 +523,14 @@ export default function VaultControls(props) {
   };
 
   const zapperZap = () => {
+    plausible('deposit', {
+      props: {
+        vault: vault.address,
+        token: sellToken.address,
+        amount: depositGweiAmount,
+        zap: true,
+      },
+    });
     dispatch(
       zapIn({
         web3,

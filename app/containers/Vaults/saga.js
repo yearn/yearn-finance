@@ -33,6 +33,9 @@ import {
 // TODO: Do better... never hard-code vault addresses
 const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
 const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
+const crvSAaveV2Address = '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC';
+const crvSAaveV1Address = '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1';
 
 const injectEthVaults = (vaults) => {
   const ethereumString = 'ETH';
@@ -130,6 +133,12 @@ function* withdrawFromVault(action) {
 
   const v2Vault = _.get(vaultContractData, 'pricePerShare');
 
+  const vaultAddress = _.get(vaultContractData, 'address');
+  const vaultIsAave =
+    vaultAddress === crvAaveAddress ||
+    vaultAddress === crvSAaveV2Address ||
+    vaultAddress === crvSAaveV1Address;
+
   let sharesForWithdrawal;
   if (v2Vault) {
     const sharePrice = _.get(vaultContractData, 'pricePerShare');
@@ -194,6 +203,16 @@ function* withdrawFromVault(action) {
 
 function* withdrawAllFromVault(action) {
   const { vaultContract, balanceOf } = action.payload;
+
+  const vaultContractData = yield select(
+    selectContractData(vaultContract.address),
+  );
+
+  const vaultAddress = _.get(vaultContractData, 'address');
+  const vaultIsAave =
+    vaultAddress === crvAaveAddress ||
+    vaultAddress === crvSAaveV2Address ||
+    vaultAddress === crvSAaveV1Address;
 
   const account = yield select(selectAccount());
 
@@ -396,6 +415,12 @@ function* migrateVault(action) {
     return;
   }
 
+  const vaultAddress = vaultContract.address;
+  const vaultIsAave =
+    vaultAddress === crvAaveAddress ||
+    vaultAddress === crvSAaveV2Address ||
+    vaultAddress === crvSAaveV1Address;
+
   const spendTokenApproved = new BigNumber(allowance).gt(0);
 
   try {
@@ -407,6 +432,17 @@ function* migrateVault(action) {
         trustedMigratorContract.address,
       );
     }
+
+    yield call(
+      trustedMigratorContract.methods.migrateAll.cacheSend,
+      vaultMigrationData.vaultFrom,
+      vaultMigrationData.vaultTo,
+      {
+        from: account,
+        gas: 2800000,
+      },
+    );
+
     yield call(
       trustedMigratorContract.methods.migrateAll.cacheSend,
       vaultMigrationData.vaultFrom,

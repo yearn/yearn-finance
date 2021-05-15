@@ -12,23 +12,23 @@
     "token": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
     "vaultFrom": "0x7Ff566E1d69DEfF32a7b244aE7276b9f90e9D0f6",
     "vaultTo": "0x8414Db07a7F743dEbaFb402070AB01a4E0d2E45e",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sBTC Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve sBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvRENBTC",
     "token": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
     "vaultFrom": "0x5334e150B938dd2b6bd040D9c4a03Cff0cED3765",
     "vaultTo": "0x7047F90229a057C13BF847C0744D646CFb6c9E1A",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve renBTC Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve renBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvHBTC",
     "token": "0xb19059ebb43466C323583928285a49f558E572Fd",
     "vaultFrom": "0x46AFc2dfBd1ea0c0760CAD8262A5838e803A37e5",
     "vaultTo": "0x625b7DF2fa8aBe21B0A976736CDa4775523aeD1E",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Migrate your balance to the v2 Curve HBTC Pool yVault to continue earning boosted yield."
   },
   {
@@ -44,16 +44,16 @@
     "token": "0x02d341CcB60fAaf662bC0554d13778015d1b285C",
     "vaultFrom": "0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1",
     "vaultTo": "0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve sAave Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve sAave Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvOBTC",
     "token": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
     "vaultFrom": "0x7F83935EcFe4729c4Ea592Ab2bC1A32588409797",
     "vaultTo": "0xe9Dc63083c464d6EDcCFf23444fF3CFc6886f6FB",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve oBTC Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve oBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvTBTC",
@@ -61,15 +61,15 @@
     "vaultFrom": "0x07FB4756f67bD46B748b16119E802F1f880fb2CC",
     "vaultTo": "0x23D3D0f1c697247d5e0a9efB37d8b0ED0C464f7f",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve tBTC Pool yVault to continue earning yield."
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve tBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvBBTC",
     "token": "0x410e3E86ef427e30B9235497143881f717d93c2A",
     "vaultFrom": "0xA8B1Cb4ed612ee179BDeA16CCa6Ba596321AE52D",
     "vaultTo": "0x8fA3A9ecd9EFb07A8CE90A6eb014CF3c0E3B32Ef",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve BBTC Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve BBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvPBTC",
@@ -77,7 +77,7 @@
     "vaultFrom": "0x123964EbE096A920dae00Fb795FFBfA0c9Ff4675",
     "vaultTo": "0x3c5DF3077BcF800640B5DAE8c91106575a4826E6",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 Curve pBTC Pool yVault to continue earning yield."
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the v2 Curve pBTC Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "WBTC",
@@ -100,47 +100,47 @@
     "token": "0x3B3Ac5386837Dc563660FB6a0937DFAa5924333B",
     "vaultFrom": "0x2994529C0652D127b7842094103715ec5299bBed",
     "vaultTo": "0x8ee57c05741aA9DB947A744E713C15d4d19D8822",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve yBUSD Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve yBUSD Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvCOMP",
     "token": "0x845838DF265Dcd2c412A1Dc9e959c7d08537f8a2",
     "vaultFrom": "0x629c759D1E83eFbF63d84eb3868B564d9521C129",
     "vaultTo": "0xD6Ea40597Be05c201845c0bFd2e96A60bACde267",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve Compound Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve Compound Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvGUSD",
     "token": "0xD2967f45c4f384DEEa880F807Be904762a3DeA07",
     "vaultFrom": "0xcC7E70A958917cCe67B4B87a8C30E6297451aE98",
     "vaultTo": "0x2a38B9B0201Ca39B17B460eD2f11e4929559071E",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve GUSD Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve GUSD Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "yCRV",
     "token": "0xdF5e0e81Dff6FAF3A7e52BA697820c5e32D806A8",
     "vaultFrom": "0x5dbcF33D8c2E976c6b560249878e6F1491Bca25c",
     "vaultTo": "0x4B5BfD52124784745c1071dcB244C6688d2533d3",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve Y Pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve Y Pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "3Crv",
     "token": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
     "vaultFrom": "0x9cA85572E6A3EbF24dEDd195623F188735A5179f",
     "vaultTo": "0x84E13785B5a27879921D6F685f041421C7F482dA",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve 3pool yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve 3pool yVault to continue earning boosted yield."
   },
   {
     "symbol": "crvDUSD",
     "token": "0x3a664Ab939FD8482048609f652f9a0B0677337B9",
     "vaultFrom": "0x8e6741b456a074F0Bc45B8b82A755d4aF7E965dF",
     "vaultTo": "0x30FCf7c6cDfC46eC237783D94Fc78553E79d4E9C",
-    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the new v2 Curve DUSD yVault to continue earning yield."
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve DUSD yVault to continue earning boosted yield."
   }
 ]

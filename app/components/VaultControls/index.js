@@ -117,7 +117,7 @@ export default function VaultControls(props) {
     zapAddress,
     emergencyShutdown,
   } = vault;
-  // const yvBoostContract = useContract(vaultAddress);
+  const yvBoostContract = useContract(vaultAddress);
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
   const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
@@ -906,7 +906,7 @@ export default function VaultControls(props) {
                       setSelectedSellToken(value);
                     }}
                     flexGrow={1}
-                    options={supportedTokenOptions}
+                    options={[first(supportedTokenOptions)]}
                   />
                 </Box>
               </Grid>
@@ -933,22 +933,23 @@ export default function VaultControls(props) {
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
                   <ActionButton
                     className="action-button dark"
-                    disabled
-                    // disabled={
-                    //   !yvBoostContract || !tokenContract || !!depositsDisabled
-                    // }
-                    handler={() => (willZapIn ? zapperZap() : deposit())}
-                    text="Disabled"
-                    // text={
-                    //   vault.hasAllowance || pureEthereum > 0 || willZapIn
-                    //     ? 'Deposit'
-                    //     : 'Approve'
-                    // }
-                    title="Temporarily Disabled"
+                    disabled={
+                      !yvBoostContract || !tokenContract || !!depositsDisabled
+                    }
+                    // TEMPORARILY DISABLE ZAPS
+                    // handler={() => (willZapIn ? zapperZap() : deposit())}
+                    handler={() => deposit()}
+                    text={
+                      vault.hasAllowance || pureEthereum > 0 || willZapIn
+                        ? 'Deposit'
+                        : 'Approve'
+                    }
+                    title="Deposit into vault"
                     showTooltip
-                    tooltipText="Temporarily Disabled"
-                    // depositsDisabled ||
-                    // 'Connect your wallet to deposit into vault'
+                    tooltipText={
+                      depositsDisabled ||
+                      'Connect your wallet to deposit into vault'
+                    }
                   />
                   {zapperError &&
                     zapperError.poolAddress === vaultAddress.toLowerCase() && (

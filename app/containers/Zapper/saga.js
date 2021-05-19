@@ -1,5 +1,6 @@
 import { takeLatest, select, put, call } from 'redux-saga/effects';
 import BigNumber from 'bignumber.js';
+import { first, get } from 'lodash';
 import request from 'utils/request';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectContractData } from 'containers/App/selectors';
@@ -51,18 +52,26 @@ function* initializeZapper() {
       }),
     );
     const vaults = yvaults.concat(pickleVaults);
-    const balances = yield call(
+    const balancesResponse = yield call(
       request,
-      getZapperApi('/balances/tokens', {
+      getZapperApi('/protocols/tokens/balances', {
         addresses: [account],
       }),
+    );
+    const balances = get(
+      first(
+        balancesResponse[account].products.filter(
+          ({ label }) => label === 'Tokens',
+        ),
+      ),
+      'assets',
     );
 
     yield put(
       zapperDataLoaded({
         tokens,
         vaults,
-        balances: balances[account],
+        balances,
         pickleVaults,
       }),
     );

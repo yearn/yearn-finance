@@ -775,6 +775,12 @@ const Vault = (props) => {
   } else if (retired.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = retiredTooltips[address];
+  } else if (address === '0xa9fE4601811213c340e850ea305481afF02f5b28') {
+    apyRecommended = 'N/A';
+    apyTooltip = 'Vault is temporarily disabled';
+  } else if (address === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') {
+    apyRecommended = 'N/A';
+    apyTooltip = 'Vault is temporarily disabled';
   }
 
   const contractType = getContractType(vault);

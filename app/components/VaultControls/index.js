@@ -291,10 +291,6 @@ export default function VaultControls(props) {
     'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
 
   const depositsDisabled = useMemo(() => {
-    if (vault.address === '0xa9fE4601811213c340e850ea305481afF02f5b28') {
-      return 'Vault deposits temporarily disabled.';
-    }
-
     if (vault.type === 'v2') {
       if (
         !willZapIn &&
@@ -326,7 +322,6 @@ export default function VaultControls(props) {
 
   const withdrawDisabled = useMemo(() => {
     if (
-      vault.address === '0xa9fE4601811213c340e850ea305481afF02f5b28' ||
       vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
       vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
     ) {
@@ -1199,9 +1194,7 @@ export default function VaultControls(props) {
                   <Box width={isScreenMd ? '130px' : '100%'}>
                     <ActionButton
                       className="action-button bold outline"
-                      disabled={
-                        !vaultContract || !tokenContract || !!withdrawDisabled
-                      }
+                      disabled={!vaultContract || !tokenContract}
                       handler={withdraw}
                       text="Withdraw"
                       title="Withdraw from vault"

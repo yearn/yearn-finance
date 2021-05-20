@@ -1152,6 +1152,12 @@ const Vault = (props) => {
         </ColumnListAmplify>
       );
     } else {
+      const vaultIsWethV2 =
+        vault.address === '0xa9fE4601811213c340e850ea305481afF02f5b28';
+      if (vaultIsWethV2) {
+        apyRecommended = 'N/A';
+        apyTooltip = 'Temporarily disabled.';
+      }
       vaultTop = (
         <ColumnList gridTemplate={isScreenMd ? null : '210px'}>
           <IconAndName>

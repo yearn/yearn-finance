@@ -1221,6 +1221,9 @@ const Vault = (props) => {
     }
   }
   const showCrvUSDN = ['crvUSDN'].includes(vaultName);
+  const vaultIsWethV2 =
+    vault.address === '0xa9fE4601811213c340e850ea305481afF02f5b28';
+
   let crvUSDNNotice = null;
   if (showCrvUSDN) {
     crvUSDNNotice = (
@@ -1230,6 +1233,25 @@ const Vault = (props) => {
           50% of USDN CRV harvest is locked to boost yield. APY displayed
           reflects this.
         </span>
+      </Notice>
+    );
+  }
+  if (vaultIsWethV2) {
+    crvUSDNNotice = (
+      <Notice>
+        <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+          <span>
+            {`
+          We have taken steps to increase the safety factor on our strategies
+          that have LTV ratios that must be maintained. In the process of doing
+          this, an accounting issue was uncovered with artifical losses reported
+          that drove down the price of the yvWETH vault significantly. We are
+          taking actions to resolve this accounting error and return the vault
+          to normal. Please do not withdraw until the issue has been patched, as
+          you currently will receive WETH at the artificially lowered share
+          price of ~0.90.`}
+          </span>
+        </Box>
       </Notice>
     );
   }
@@ -1248,7 +1270,8 @@ const Vault = (props) => {
     zapBox = (
       <Box py={24} px={isScreenMd ? '76px' : '16px'}>
         <span>
-          {`Deposit the underlying vault asset directly or zap in using
+          {!crvUSDNNotice &&
+            `Deposit the underlying vault asset directly or zap in using
                   almost any token in your wallet. Please be aware that for
                   zaps, we use a default slippage limit of 1% and attempting
                   zaps with low-liquidity tokens may fail. Withdrawals return

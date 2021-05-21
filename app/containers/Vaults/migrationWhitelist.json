@@ -165,6 +165,6 @@
     "vaultFrom": "0xE0db48B4F71752C4bEf16De1DBD042B82976b8C7",
     "vaultTo": "0x8cc94ccd0f3841a468184aCA3Cc478D2148E1757",
     "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
-    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 mUSD yVault to continue earning boosted yield."
+    "migrationMessage": "This vault is no longer boosted and is not earning yield anymore. Withdraw funds or migrate your balance to the new v2 mUSD yVault to continue earning boosted yield."
   }
 ]

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { keyBy } from 'lodash';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -313,11 +314,10 @@ const Vault = (props) => {
 
   const [userInfoYvBoostEth, setUserInfoYvBoostEth] = React.useState(0);
   const [oldPickleGaugeBalance, setOldPickleGaugeBalance] = React.useState(0);
-  const [
-    apyYvBoostEthRecommended,
-    setApyYvBoostEthRecommended,
-  ] = React.useState('NEW ✨');
-  const [vaultAssetsYvBoostEth, setVaultAssetsYvBoostEth] = React.useState(
+  const [apyPickleRecommended, setApyPickleRecommended] = React.useState(
+    'NEW ✨',
+  );
+  const [vaultAssetsPickle, setVaultAssetsPickle] = React.useState(
     truncateUsd(0),
   );
 
@@ -360,44 +360,47 @@ const Vault = (props) => {
   }, [userInfoYvBoostEth]);
 
   React.useEffect(() => {
-    const getYvBoostEthAPY = async () => {
-      if (vault.isYVBoost) {
+    const getPickleAPY = async () => {
+      if (vault.isYVBoost || vaultIsPickle) {
         try {
+          const jarId = vault.isYVBoost ? 'yvboost-eth' : 'yvecrv-eth';
           const resp = await fetch(
-            'https://api.pickle-jar.info/protocol/jar/yvboost-eth/performance',
+            `https://stkpowy01i.execute-api.us-west-1.amazonaws.com/prod/protocol/jar/${jarId}/performance`,
           );
           const apy = await resp.json();
           if (apy && apy.sevenDayFarm) {
             const amount = `${apy.sevenDayFarm.toFixed(2)}%`;
-            setApyYvBoostEthRecommended(amount);
+            setApyPickleRecommended(amount);
           }
         } catch (error) {
           console.log(error);
         }
       }
     };
-    getYvBoostEthAPY();
-  }, [apyYvBoostEthRecommended]);
+    getPickleAPY();
+  }, [apyPickleRecommended]);
 
   React.useEffect(() => {
-    const getYvBoostEthAssets = async () => {
-      if (vault.isYVBoost) {
+    const getPickleAssets = async () => {
+      if (vault.isYVBoost || vaultIsPickle) {
         try {
+          const jarId = vault.isYVBoost ? 'yvboost-eth' : 'yvecrv-eth';
           const resp = await fetch(
-            'https://api.pickle-jar.info/protocol/value',
+            'https://stkpowy01i.execute-api.us-west-1.amazonaws.com/prod/protocol/pools',
           );
-          const asset = await resp.json();
-          if (asset && asset['yvboost-eth']) {
-            const assetRounded = parseInt(asset['yvboost-eth'], 10);
-            setVaultAssetsYvBoostEth(truncateUsd(assetRounded));
+          const pools = await resp.json();
+          const asset = keyBy(pools, 'identifier');
+          if (asset && asset[jarId]) {
+            const assetRounded = parseInt(asset[jarId].liquidity_locked, 10);
+            setVaultAssetsPickle(truncateUsd(assetRounded));
           }
         } catch (error) {
           console.log(error);
         }
       }
     };
-    getYvBoostEthAssets();
-  }, [vaultAssetsYvBoostEth]);
+    getPickleAssets();
+  }, [vaultAssetsPickle]);
 
   let tokenBalance = _.get(tokenContractData, 'balanceOf');
   if (pureEthereum) {
@@ -944,8 +947,8 @@ const Vault = (props) => {
       if (vault.isYVBoost) {
         apyTooltip = null;
         vaultAssetsTooltip = null;
-        apyRecommended = apyYvBoostEthRecommended;
-        vaultAssets = vaultAssetsYvBoostEth;
+        apyRecommended = apyPickleRecommended;
+        vaultAssets = vaultAssetsPickle;
         //        vaultBalanceOf = 200000330;
         amplifyVaultTitle = (
           <Text bold fontSize={4} mb={40}>
@@ -1020,6 +1023,7 @@ const Vault = (props) => {
           : pickleContractsData.pickleMasterChefDeposited;
         // TODOoooo
         apyTooltip = null;
+        vaultAssets = vaultAssetsPickle;
         vaultAssetsTooltip = null;
         amplifyVaultTitle = (
           <Text bold fontSize={4} mb={40}>

@@ -1,0 +1,42 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  sync:
+    name: Deploy to IPFS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Use Node 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Install deps (with cache)
+        uses: bahmutov/npm-install@v1
+
+      - name: Generate build artifact
+        run: npm build
+        env:
+          API_ENV: ${{ secrets.API_ENV }}
+          BLOCKNATIVE_DAPP_ID: ${{ secrets.BLOCKNATIVE_DAPP_ID }}
+          ETHERSCAN_APIKEY: ${{ secrets.ETHERSCAN_APIKEY }}
+          FORTMATIC_APIKEY: ${{ secrets.FORTMATIC_APIKEY }}
+          PORTIS_APIKEY: ${{ secrets.PORTIS_APIKEY }}
+          WEB3_PROVIDER_HTTPS: ${{ secrets.WEB3_PROVIDER_HTTPS }}
+          WEB3_PROVIDER_WSS: ${{ secrets.WEB3_PROVIDER_WSS }}
+          ZAPPER_APIKEY: ${{ secrets.ZAPPER_APIKEY }}
+
+      - name: Deploy to IPFS
+        id: deployment
+        uses: nymmrx/ipfs-deploy@master
+        with:
+          path: "./build"
+          pin-name: Yearn Finance V2
+          pinata-key: ${{ secrets.PINATA_KEY }}
+          pinata-secret: ${{ secrets.PINATA_SECRET }}

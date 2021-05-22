@@ -88,6 +88,10 @@ function* loadVaultContracts(clear) {
           name: 'supplyIndex',
           args: [account],
         },
+        {
+          name: 'claimable',
+          args: [account],
+        },
       ],
       writeMethods: [
         {

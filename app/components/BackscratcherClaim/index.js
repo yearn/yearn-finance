@@ -39,12 +39,14 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const index = get(vaultContractData, 'index');
   const supplyIndex = get(vaultContractData, 'supplyIndex');
   const balance = get(vaultContractData, 'balanceOf');
+  const cached = get(vaultContractData, 'claimable');
   const claimable = formatAmount(
     weiToUnits(
       new BigNumber(index)
         .minus(supplyIndex)
         .times(balance)
-        .div(10 ** 18),
+        .div(10 ** 18)
+        .plus(cached),
       18,
     ),
     2,

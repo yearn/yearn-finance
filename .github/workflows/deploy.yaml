@@ -21,7 +21,7 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Generate build artifact
-        run: npm build
+        run: yarn build
         env:
           API_ENV: ${{ secrets.API_ENV }}
           BLOCKNATIVE_DAPP_ID: ${{ secrets.BLOCKNATIVE_DAPP_ID }}

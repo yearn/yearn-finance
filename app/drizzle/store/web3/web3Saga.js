@@ -19,7 +19,7 @@ export function* initializeWeb3(options) {
 
     if (window.ethereum) {
       const { ethereum } = window;
-      const provider = process.env.WEB3_PROVIDER_WSS;
+      const provider = process.env.WEB3_PROVIDER_HTTPS;
       web3 = new Web3(provider);
       try {
         // ethereum.enable() will return the selected account

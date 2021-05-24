@@ -16,5 +16,11 @@
     "apyTooltip": "This vault is no longer active. Please withdraw any funds.",
     "vault": "HEGIC v2",
     "type": "v2"
+  },
+  {
+    "address": "0xE0db48B4F71752C4bEf16De1DBD042B82976b8C7",
+    "vault": "mUSD",
+    "apyTooltip": "This vault is no longer active and its strategy is unwinding.",
+    "type": "v1"
   }
 ]

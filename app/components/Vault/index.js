@@ -25,6 +25,7 @@ import LazyApeLogo from 'images/lazy-ape-logo.svg';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import futureMigrationWhitelist from 'containers/Vaults/futureMigrationWhitelist.json';
 import retiredJson from 'containers/Vaults/retiredWhitelist.json';
 import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
@@ -778,6 +779,7 @@ const Vault = (props) => {
 
   // Vaults that we're migrating to a new version.
   const migrating = migrationWhitelist.map((v) => v.vaultFrom);
+  const futureMigrating = futureMigrationWhitelist.map((v) => v.vaultFrom);
   const migratingTooltips = {};
   const retiredTooltips = {};
   migrationWhitelist.forEach((v) => {
@@ -787,7 +789,7 @@ const Vault = (props) => {
     retiredTooltips[v.vaultFrom] = v.apyTooltip;
   });
   // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
-  const vaultsToHide = migrating.concat(retired);
+  const vaultsToHide = migrating.concat(retired).concat(futureMigrating);
 
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';

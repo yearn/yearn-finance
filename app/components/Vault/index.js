@@ -1,25 +1,35 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { keyBy } from 'lodash';
+import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import ColumnListAmplify from 'components/Vault/amplifyColumns';
 import VaultButtons from 'components/VaultButtons';
 import VaultControls from 'components/VaultControls';
-import styled from 'styled-components';
+import ButtonFilled from 'components/ButtonFilled';
 import AnimatedNumber from 'components/AnimatedNumber';
-import Accordion from 'react-bootstrap/Accordion';
-import Card from 'react-bootstrap/Card';
 import ColumnList from 'components/Vault/columns';
 import ColumnListDev from 'components/Vault/columnsDev';
-import BigNumber from 'bignumber.js';
+import TokenIcon from 'components/TokenIcon';
+import Icon from 'components/Icon';
+import Text from 'components/Text';
+import Box from 'components/Box';
+
+import LazyApeLogo from 'images/lazy-ape-logo.svg';
+
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import retiredJson from 'containers/Vaults/retiredWhitelist.json';
 import hackedOrToBeAbsolutelyRemovedJson from 'containers/Vaults/hackedEmergencyWhitelist.json';
 import PickleGaugeAbi from 'abi/pickleGauge.json';
 import OldPickleGaugeAbi from 'abi/oldPickleGauge.json';
+
 import {
   selectContractData,
   selectEthBalance,
@@ -35,15 +45,26 @@ import {
   YVBOOST_ADDRESS,
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
+  LAZY_APE_ADDRESSES,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
 import { getContractType } from 'utils/contracts';
-import TokenIcon from 'components/TokenIcon';
-import Icon from 'components/Icon';
+
 import { useModal } from 'containers/ModalProvider/hooks';
-import Text from 'components/Text';
-import Box from 'components/Box';
+
+const ButtonLinkIcon = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  img {
+    margin-right: 10px;
+  }
+  span {
+    text-decoration: none;
+  }
+`;
 
 const IconAndName = styled.div`
   display: flex;
@@ -795,6 +816,38 @@ const Vault = (props) => {
     openModal('contractStatistics', { vault });
   };
 
+  let lazyApeButton;
+  if (LAZY_APE_ADDRESSES.find((a) => a === vault.address)) {
+    lazyApeButton = (
+      <Box
+        display="flex"
+        flexDirection="column"
+        width={1}
+        mt={8}
+        ml={isScreenMd ? '60px' : '0px'}
+      >
+        <span>
+          Head to PowerPool and deposit {vault.symbol} for additional yield in
+          the Yearn Lazy Ape pool.
+          <br />
+          This pool allows you to earn swap fees on top of your yVault yield.
+        </span>
+        <Box mt={20} width="240px">
+          <ButtonFilled color="primary">
+            <ButtonLinkIcon
+              className="wrapper"
+              href="https://powerindex.io/#/mainnet/0x9ba60ba98413a60db4c651d4afe5c937bbd8044b/supply"
+              target="_blank"
+            >
+              <img src={LazyApeLogo} alt="LazyApe" width="32" />
+              <span>Join lazy ape</span>
+            </ButtonLinkIcon>
+          </ButtonFilled>
+        </Box>
+      </Box>
+    );
+  }
+
   if (showDevVaults) {
     const renderField = (val, key) => {
       let newVal = _.toString(val);
@@ -1277,7 +1330,10 @@ const Vault = (props) => {
   if (!amplifyVault)
     amplifyVaultCard = (
       <Card.Footer className={active && 'active'}>
-        <Footer small={!isScreenMd}>{vaultControls}</Footer>
+        <Footer small={!isScreenMd}>
+          {vaultControls}
+          {lazyApeButton}
+        </Footer>
       </Card.Footer>
     );
   const showVaults =

@@ -827,8 +827,8 @@ const Vault = (props) => {
         ml={isScreenMd ? '60px' : '0px'}
       >
         <span>
-          Head to PowerPool and deposit {vault.tokenAlias} for additional yield
-          in the Yearn Lazy Ape pool.
+          Head to PowerPool and deposit {vault.symbol} for additional yield in
+          the Yearn Lazy Ape pool.
           <br />
           This pool allows you to earn swap fees on top of your yVault yield.
         </span>

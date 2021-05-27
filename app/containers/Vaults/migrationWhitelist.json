@@ -190,5 +190,21 @@
     "vaultTo": "0x3B96d491f067912D18563d56858Ba7d6EC67a6fa",
     "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve USDN yVault to continue earning boosted yield."
+  },
+  {
+    "symbol": "crvAAVE",
+    "token": "0xFd2a8fA60Abd58Efe3EeE34dd494cD491dC14900",
+    "vaultFrom": "0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab",
+    "vaultTo": "0x39CAF13a104FF567f71fd2A4c68C026FDB6E740B",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve Aave yVault to continue earning boosted yield."
+  },
+  {
+    "symbol": "crvAETH",
+    "token": "0xaA17A236F2bAdc98DDc0Cf999AbB47D47Fc0A6Cf",
+    "vaultFrom": "0xE625F5923303f1CE7A43ACFEFd11fd12f30DbcA4",
+    "vaultTo": "0x132d8D2C76Db3812403431fAcB00F3453Fc42125",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve ankrETH yVault to continue earning boosted yield."
   }
 ]

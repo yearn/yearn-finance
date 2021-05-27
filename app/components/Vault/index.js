@@ -507,8 +507,16 @@ const Vault = (props) => {
       ? truncateApy(_.get(apy, 'recommended'))
       : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
 
-  const grossApy = _.get(apy, 'data.grossApy');
-  const netApy = _.get(apy, 'data.netApy');
+  let grossApy = _.get(apy, 'data.grossApy');
+  let netApy = _.get(apy, 'data.netApy');
+
+  const vaultIsV2Weth =
+    vault.address === '0xa9fE4601811213c340e850ea305481afF02f5b28';
+  if (vaultIsV2Weth) {
+    apyRecommended = truncateApy(_.get(apy, 'data.oneMonthSample'));
+    grossApy = _.get(apy, 'data.oneMonthSample');
+    netApy = _.get(apy, 'data.oneMonthSample');
+  }
 
   let apyTooltip = (
     <div>

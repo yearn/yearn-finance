@@ -464,7 +464,7 @@ function* migrateVault(action) {
         vaultMigrationData.vaultTo,
         {
           from: account,
-          gas: 2800000,
+          gas: 2000000,
         },
       );
       return;

@@ -201,8 +201,15 @@ function* zapIn(action) {
     );
     yield call(web3.eth.sendTransaction, zapInTransaction);
   } catch (error) {
+    let errorMessage = '';
+    if (error && error.message) {
+      errorMessage = error.message;
+    } else {
+      errorMessage =
+        'This means there is not enough liquidity for this token or Zapper may be down. Try with DAI, ETH, USDC or USDT as they offer the more liquidity. ';
+    }
     yield put(
-      zapInError({ message: `Zap Failed. ${error.message}`, poolAddress }),
+      zapInError({ message: `Zap Failed. ${errorMessage}`, poolAddress }),
     );
   }
 }
@@ -284,8 +291,15 @@ function* zapOut(action) {
     yield call(web3.eth.sendTransaction, zapOutTransaction);
   } catch (error) {
     console.log('Zap Failed', error);
+    let errorMessage = '';
+    if (error && error.message) {
+      errorMessage = error.message;
+    } else {
+      errorMessage =
+        'This means there is not enough liquidity for this token or Zapper may be down. Try with DAI, ETH, USDC or USDT as they offer the more liquidity. ';
+    }
     yield put(
-      zapOutError({ message: `Zap Failed. ${error.message}`, vaultContract }),
+      zapOutError({ message: `Zap Failed. ${errorMessage}`, vaultContract }),
     );
   }
 }

@@ -88,7 +88,11 @@ const Wrapper = styled.div`
 `;
 
 const StyledErrorMessage = styled(Text)`
-  color: ${(props) => props.theme.blocksRed};
+  background: #450e2b;
+  padding: 20px !important;
+  color: #ff0000;
+  border-radius: 5px;
+  margin-top: 20px;
 `;
 
 const getNormalizedAmount = (amount, decimals) =>

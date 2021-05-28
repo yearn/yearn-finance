@@ -468,7 +468,15 @@ const VaultsWrapper = (props) => {
   const migratedVaultsWithBalance = [];
   if (isMigrated) {
     vaultItems.forEach((vault) => {
-      if (vault && vault.balanceOf && vault.balanceOf[0].value > 0) {
+      let decimals = 18;
+      if (vault && vault.token && vault.token.decimals > 0) {
+        decimals = vault.token.decimals - 4;
+      }
+      if (
+        vault &&
+        vault.balanceOf &&
+        vault.balanceOf[0].value >= 10 ** decimals
+      ) {
         migratedVaultsWithBalance.push(vault);
       }
     });
@@ -479,10 +487,14 @@ const VaultsWrapper = (props) => {
       vaultKey = `${vault.address}-eth`;
     }
     let banner = null;
+    let decimals = 18;
+    if (vault && vault.token && vault.token.decimals > 0) {
+      decimals = vault.token.decimals - 4;
+    }
     if (
       vault &&
       vault.balanceOf &&
-      vault.balanceOf[0].value > 0 &&
+      vault.balanceOf[0].value >= 10 ** decimals &&
       isMigrated &&
       !hasBeenShown
     ) {

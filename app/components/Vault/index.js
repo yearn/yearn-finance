@@ -1346,8 +1346,9 @@ const Vault = (props) => {
         </Footer>
       </Card.Footer>
     );
+  const minDecimals = decimals - 4;
   const showVaults =
-    (!vaultsToHide.includes(vault.address) || vaultBalanceOf > 0) &&
+    (!vaultsToHide.includes(vault.address) || balanceOf > 10 ** minDecimals) &&
     !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
   let finalVaults = null;
   let showLabel = 'SHOW';

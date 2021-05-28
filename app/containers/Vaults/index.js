@@ -470,7 +470,13 @@ const VaultsWrapper = (props) => {
     vaultItems.forEach((vault) => {
       let decimals = 18;
       if (vault && vault.token && vault.token.decimals > 0) {
-        decimals = vault.token.decimals - 4;
+        if (vault.token.decimals > 6) {
+          decimals = vault.token.decimals - 4;
+        } else if (vault.tokens >= 5) {
+          decimals = vault.token.decimals - 2;
+        } else {
+          decimals = 0;
+        }
       }
       if (
         vault &&
@@ -489,7 +495,13 @@ const VaultsWrapper = (props) => {
     let banner = null;
     let decimals = 18;
     if (vault && vault.token && vault.token.decimals > 0) {
-      decimals = vault.token.decimals - 4;
+      if (vault.token.decimals > 6) {
+        decimals = vault.token.decimals - 4;
+      } else if (vault.tokens >= 5) {
+        decimals = vault.token.decimals - 2;
+      } else {
+        decimals = 0;
+      }
     }
     if (
       vault &&

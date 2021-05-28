@@ -1346,7 +1346,15 @@ const Vault = (props) => {
         </Footer>
       </Card.Footer>
     );
-  const minDecimals = decimals - 4;
+
+  let minDecimals = decimals;
+  if (vault.token.decimals > 6) {
+    minDecimals = decimals - 4;
+  } else if (vault.tokens >= 5) {
+    minDecimals = decimals - 2;
+  } else {
+    minDecimals = 0;
+  }
   const showVaults =
     (!vaultsToHide.includes(vault.address) || balanceOf > 10 ** minDecimals) &&
     !hackedOrToBeAbsolutelyRemoved.includes(vault.address);

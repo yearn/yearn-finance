@@ -206,5 +206,13 @@
     "vaultTo": "0x132d8D2C76Db3812403431fAcB00F3453Fc42125",
     "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
     "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve ankrETH yVault to continue earning boosted yield."
+  },
+  {
+    "symbol": "crvEURS",
+    "token": "0x194eBd173F6cDacE046C53eACcE9B953F28411d1",
+    "vaultFrom": "0x98B058b2CBacF5E99bC7012DF757ea7CFEbd35BC",
+    "vaultTo": "0x25212Df29073FfFA7A67399AcEfC2dd75a831A1A",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning boosted yield.",
+    "migrationMessage": "This vault is no longer boosted, but is still earning yield. Withdraw funds or migrate your balance to the new v2 Curve EURS yVault to continue earning boosted yield."
   }
 ]

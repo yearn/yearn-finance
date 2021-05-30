@@ -1348,9 +1348,9 @@ const Vault = (props) => {
     );
 
   let minDecimals = decimals;
-  if (vault.token.decimals > 6) {
+  if (decimals > 6) {
     minDecimals = decimals - 4;
-  } else if (vault.tokens >= 5) {
+  } else if (decimals >= 4) {
     minDecimals = decimals - 2;
   } else {
     minDecimals = 0;

@@ -32,6 +32,7 @@ import BigNumber from 'bignumber.js';
 import Box from 'components/Box';
 import request from 'utils/request';
 import { ALIASES_API, YVBOOST_ETH_PJAR } from 'containers/Vaults/constants';
+import setDecimals from 'utils/setDecimals';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import MigrationBannerSvg from './MigrationBannerSvg';
 
@@ -470,13 +471,7 @@ const VaultsWrapper = (props) => {
     vaultItems.forEach((vault) => {
       let decimals = 18;
       if (vault && vault.token && vault.token.decimals > 0) {
-        if (vault.token.decimals > 6) {
-          decimals = vault.token.decimals - 4;
-        } else if (vault.tokens.decimals >= 4) {
-          decimals = vault.token.decimals - 2;
-        } else {
-          decimals = 0;
-        }
+        decimals = setDecimals(vault.token.decimals);
       }
       if (
         vault &&
@@ -495,14 +490,9 @@ const VaultsWrapper = (props) => {
     let banner = null;
     let decimals = 18;
     if (vault && vault.token && vault.token.decimals > 0) {
-      if (vault.token.decimals > 6) {
-        decimals = vault.token.decimals - 4;
-      } else if (vault.tokens.decimals >= 4) {
-        decimals = vault.token.decimals - 2;
-      } else {
-        decimals = 0;
-      }
+      decimals = setDecimals(vault.token.decimals);
     }
+
     if (
       vault &&
       vault.balanceOf &&

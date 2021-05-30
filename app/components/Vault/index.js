@@ -51,6 +51,7 @@ import {
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
 import { getContractType } from 'utils/contracts';
+import setDecimals from 'utils/setDecimals';
 
 import { useModal } from 'containers/ModalProvider/hooks';
 
@@ -1347,16 +1348,9 @@ const Vault = (props) => {
       </Card.Footer>
     );
 
-  let minDecimals = decimals;
-  if (decimals > 6) {
-    minDecimals = decimals - 4;
-  } else if (decimals >= 4) {
-    minDecimals = decimals - 2;
-  } else {
-    minDecimals = 0;
-  }
+  const minDecimals = setDecimals(decimals);
   const showVaults =
-    (!vaultsToHide.includes(vault.address) || balanceOf > 10 ** minDecimals) &&
+    (!vaultsToHide.includes(vault.address) || balanceOf >= 10 ** minDecimals) &&
     !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
   let finalVaults = null;
   let showLabel = 'SHOW';

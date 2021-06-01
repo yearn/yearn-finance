@@ -706,6 +706,9 @@ export default function VaultControls(props) {
       </Wrapper>
     );
   } else if (vault.isYVBoost) {
+    const balance = sellToken ? sellToken.balanceRaw : tokenBalance;
+    const disabled = new BigNumber(depositGweiAmount).isGreaterThan(new BigNumber(balance));
+
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
@@ -755,10 +758,7 @@ export default function VaultControls(props) {
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
                   <ActionButton
                     className="action-button dark"
-                    disabled={
-                      depositGweiAmount >
-                      (sellToken ? sellToken.balanceRaw : tokenBalance)
-                    }
+                    disabled={disabled}
                     handler={() => zapperZapYvBoostEthLP()}
                     text={
                       (tokenAllowance !== undefined &&

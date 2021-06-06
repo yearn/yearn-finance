@@ -11,11 +11,11 @@ export const menuLinks = {
       description: '',
     },
   ],
-  protect: {
-    href: '/cover',
-    title: 'Protect',
-    description: '',
-  },
+  // protect: {
+  //  href: '/cover',
+  //  title: 'Protect',
+  //  description: '',
+  //},
   // earn: {
   //   href: 'https://yearn.finance/earn',
   //   title: 'yUSD',

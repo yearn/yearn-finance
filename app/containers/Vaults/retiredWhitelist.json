@@ -2,13 +2,7 @@
   {
     "address": "0x29E240CFD7946BA20895a7a02eDb25C210f9f324",
     "vault": "aLINK v1",
-    "apyTooltip": "This vault is no longer active and its strategy is unwinding. Withdrawals will incur a 1% withdrawal fee during this process.",
-    "type": "v1"
-  },
-  {
-    "address": "0x881b06da56BB5675c54E4Ed311c21E54C5025298",
-    "vault": "LINK v1",
-    "apyTooltip": "This vault is no longer active and its strategy is unwinding. Withdrawals will incur a 1% withdrawal fee during this process.",
+    "apyTooltip": "This vault is no longer active and its strategy is unwinding.",
     "type": "v1"
   },
   {

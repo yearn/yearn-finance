@@ -6,12 +6,6 @@
     "type": "v1"
   },
   {
-    "address": "0x881b06da56BB5675c54E4Ed311c21E54C5025298",
-    "vault": "LINK v1",
-    "apyTooltip": "This vault is no longer active and its strategy is unwinding.",
-    "type": "v1"
-  },
-  {
     "address": "0xe11ba472F74869176652C35D30dB89854b5ae84D",
     "apyTooltip": "This vault is no longer active. Please withdraw any funds.",
     "vault": "HEGIC v2",

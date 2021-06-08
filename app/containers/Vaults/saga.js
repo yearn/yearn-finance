@@ -45,7 +45,7 @@ const injectEthVaults = (vaults) => {
   v1EthVault.pureEthereum = true;
   v1EthVault.token.address = ethAddress;
   v1EthVault.token.symbol = 'ETH';
-  v1EthVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
+  v1EthVault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
 
   const v2WethVault = _.find(vaults, { address: V2_WETH_VAULT_ADDRESS });
   const v2EthVault = _.cloneDeep(v2WethVault);
@@ -54,7 +54,7 @@ const injectEthVaults = (vaults) => {
   v2EthVault.pureEthereum = true;
   v2EthVault.token.address = ethAddress;
   v2EthVault.token.symbol = 'ETH';
-  v2EthVault.token.icon = `https://rawcdn.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
+  v2EthVault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
   v2EthVault.zapAddress = V2_ETH_ZAP_ADDRESS;
 
   vaults.push(v1EthVault, v2EthVault);

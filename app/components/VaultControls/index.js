@@ -182,7 +182,7 @@ export default function VaultControls(props) {
       : token.displayName
       ? token.displayName
       : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
-    icon: `https://raw.githack.com/iearn-finance/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
+    icon: `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
   });
   const [selectedSellToken, setSelectedSellToken] = useState(
     first(supportedTokenOptions),
@@ -263,7 +263,7 @@ export default function VaultControls(props) {
       address: vault.token.address,
       isVault: true,
       icon:
-        'https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/tokens/0xc5bDdf9843308380375a611c18B50Fb9341f502A/logo-128.png',
+        'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xc5bDdf9843308380375a611c18B50Fb9341f502A/logo-128.png',
       value: vault.displayName,
     });
   } else {
@@ -707,7 +707,9 @@ export default function VaultControls(props) {
     );
   } else if (vault.isYVBoost) {
     const balance = sellToken ? sellToken.balanceRaw : tokenBalance;
-    const disabled = new BigNumber(depositGweiAmount).isGreaterThan(new BigNumber(balance));
+    const disabled = new BigNumber(depositGweiAmount).isGreaterThan(
+      new BigNumber(balance),
+    );
 
     vaultControlsWrapper = (
       <Wrapper>

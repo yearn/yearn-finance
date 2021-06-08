@@ -10,7 +10,7 @@ export const CLAIM_BACKSCRATCHER_REWARDS = 'CLAIM_BACKSCRATCHER_REWARDS';
 export const MIGRATE_VAULT = 'MIGRATE_VAULT';
 export const EXIT_OLD_PICKLE = 'EXIT_OLD_PICKLE';
 export const ALIASES_API =
-  'https://raw.githubusercontent.com/iearn-finance/yearn-assets/master/icons/aliases.json';
+  'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/aliases.json';
 
 export const ETHEREUM_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 export const TRUSTED_MIGRATOR_ADDRESS =

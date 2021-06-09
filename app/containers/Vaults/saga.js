@@ -262,6 +262,7 @@ function* depositToVault(action) {
     depositAmount,
     pureEthereum,
     hasAllowance,
+    giftAddress,
   } = action.payload;
 
   const account = yield select(selectAccount());
@@ -281,9 +282,20 @@ function* depositToVault(action) {
           vaultContract.address,
         );
       }
-      yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
-        from: account,
-      });
+      if (giftAddress) {
+        yield call(
+          vaultContract.methods.deposit.cacheSend,
+          depositAmount,
+          giftAddress,
+          {
+            from: account,
+          },
+        );
+      } else {
+        yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
+          from: account,
+        });
+      }
     } else {
       const { zapContract } = vaultContract;
       if (zapContract) {

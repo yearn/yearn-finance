@@ -507,7 +507,7 @@ const Vault = (props) => {
       ? truncateApy(_.get(apy, 'net_apy'))
       : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
 
-  const grossApy = _.get(apy, 'gross_apy');
+  const grossApy = _.get(apy, 'gross_apr');
   const netApy = _.get(apy, 'net_apy');
 
   let apyTooltip = (
@@ -582,7 +582,7 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Total APY</td>
-              <td>{truncateApy(apy.gross_apy)}</td>
+              <td>{truncateApy(apy.gross_apr)}</td>
             </tr>
             <tr>
               <td>Net APY</td>

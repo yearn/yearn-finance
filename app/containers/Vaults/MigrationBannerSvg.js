@@ -5,7 +5,7 @@ const MigrationBannerSvg = (props) => {
   const { vaults } = props;
   const vaultTitles = vaults
     .map((v) => {
-      return v.displayName;
+      return v.display_name;
     })
     .join(', ');
   const theseVaults = vaults.length > 1 ? 'These vaults' : 'This vault';

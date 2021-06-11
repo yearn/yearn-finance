@@ -21,7 +21,7 @@ const amplifyVaultColumns = [
 ];
 
 const vaultColumns = [
-  { name: 'Asset', sort: 'displayName' },
+  { name: 'Asset', sort: 'display_name' },
   {
     name: 'Version',
     sort: 'type',

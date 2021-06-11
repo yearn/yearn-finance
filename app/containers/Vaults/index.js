@@ -196,20 +196,20 @@ const Vaults = (props) => {
       }
 
       // Growth
-      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
+      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apr', 0))
         .times(100)
         .toNumber();
 
       // USDN VAULT GROWTH
       if (vault.address === usdnVaultAddress) {
-        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apr', 0))
           .times(100)
           .toNumber();
       }
 
       if (vault.address === daiV1VaultAddress) {
         // Temporary one week sample APY for DAI v1 vault
-        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apr', 0))
           .times(100)
           .toNumber();
       }

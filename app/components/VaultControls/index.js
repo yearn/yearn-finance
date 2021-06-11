@@ -179,8 +179,8 @@ export default function VaultControls(props) {
     // eslint-disable-next-line no-nested-ternary
     label: pureEthereum
       ? 'ETH'
-      : token.displayName
-      ? token.displayName
+      : token.display_name
+      ? token.display_name
       : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
     icon: `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
   });
@@ -245,26 +245,26 @@ export default function VaultControls(props) {
       value: 'WBTC',
     },
   ].map((t) => {
-    if (t.label !== vault.displayName) {
+    if (t.label !== vault.display_name) {
       tmpWithdrawTokens.push(t);
     }
     return t;
   });
   const currentVaultToken = {
-    label: vault.displayName,
+    label: vault.display_name,
     address: vault.token.address,
     isVault: true,
     icon: vault.token.icon,
-    value: vault.displayName,
+    value: vault.display_name,
   };
-  if (vault.displayName === 'yvBOOST') {
+  if (vault.display_name === 'yvBOOST') {
     tmpWithdrawTokens.unshift({
       label: 'yveCRV',
       address: vault.token.address,
       isVault: true,
       icon:
         'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xc5bDdf9843308380375a611c18B50Fb9341f502A/logo-128.png',
-      value: vault.displayName,
+      value: vault.display_name,
     });
   } else {
     tmpWithdrawTokens.unshift(currentVaultToken);
@@ -981,8 +981,8 @@ export default function VaultControls(props) {
                       textAlign: 'left',
                     }}
                   >
-                    Withdraw {vault.displayName}{' '}
-                    {selectedWithdrawToken.label === vault.displayName
+                    Withdraw {vault.display_name}{' '}
+                    {selectedWithdrawToken.label === vault.display_name
                       ? null
                       : `denominated to ${selectedWithdrawToken.label}`}
                   </Typography>
@@ -1142,8 +1142,8 @@ export default function VaultControls(props) {
                     textAlign: 'left',
                   }}
                 >
-                  Withdraw {vault.displayName}{' '}
-                  {selectedWithdrawToken.label === vault.displayName
+                  Withdraw {vault.display_name}{' '}
+                  {selectedWithdrawToken.label === vault.display_name
                     ? null
                     : `denominated to ${selectedWithdrawToken.label}`}
                 </Typography>
@@ -1153,7 +1153,7 @@ export default function VaultControls(props) {
                   amount={vaultBalance}
                   prefix="Vault balance: "
                   decimalPlaces={balanceDecimalPlacesCount}
-                  suffix={vault.displayName}
+                  suffix={vault.display_name}
                 />
               </Box>
               <Box

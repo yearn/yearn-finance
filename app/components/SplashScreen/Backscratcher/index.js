@@ -46,7 +46,7 @@ const StyledLink = styled(Link)`
 
 export const Backscratcher = () => {
   const backscratcherVault = useSelector(selectBackscratcherVault());
-  const currentBoost = _.get(backscratcherVault, 'apy.data.currentBoost');
+  const currentBoost = _.get(backscratcherVault, 'apy.composite.boost');
   const weeklyRewardBoost = `${((currentBoost - 1) * 100).toFixed(0)}%`;
   const boostText = currentBoost
     ? `Earn ${weeklyRewardBoost} more in weekly fees staking with yearn`

@@ -164,7 +164,7 @@ const Vaults = (props) => {
       const pricePerFullShare = _.get(getPricePerFullShare, '[0].value') || 1;
 
       // Value Deposited
-      const v2Vault = vault.type === 'v2' || vault.apiVersion;
+      const v2Vault = vault.type === 'v2' || vault.version;
       let vaultBalanceOf;
       if (v2Vault) {
         vaultBalanceOf = balanceOf
@@ -196,22 +196,20 @@ const Vaults = (props) => {
       }
 
       // Growth
-      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.recommended', 0))
+      newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
         .times(100)
         .toNumber();
 
       // USDN VAULT GROWTH
       if (vault.address === usdnVaultAddress) {
-        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.data.netApy', 0))
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
           .times(100)
           .toNumber();
       }
 
       if (vault.address === daiV1VaultAddress) {
         // Temporary one week sample APY for DAI v1 vault
-        newVault.valueApy = new BigNumber(
-          _.get(newVault, 'apy.data.oneWeekSample', 0),
-        )
+        newVault.valueApy = new BigNumber(_.get(newVault, 'apy.gross_apy', 0))
           .times(100)
           .toNumber();
       }
@@ -232,9 +230,10 @@ const Vaults = (props) => {
         : 0;
       newVault.valueAvailableToDeposit = tokenBalanceOf || 0;
 
-      newVault.alias = get(aliasByVault[vault.address], 'name') || vault.name;
+      newVault.alias =
+        get(aliasByVault[vault.token.address], 'symbol') || vault.token.symbol;
       newVault.tokenAlias =
-        get(aliasByVault[vault.address], 'symbol') || vault.displayName;
+        get(aliasByVault[vault.address], 'symbol') || vault.display_name;
       return Object(newVault);
     });
   }
@@ -311,7 +310,7 @@ const Vaults = (props) => {
         ...yboostLPVault,
         ...{
           type: 'v2',
-          displayName: 'yvBOOST - ETH',
+          display_name: 'yvBOOST - ETH',
           isYVBoost: true,
           symbol: 'yvBOOST-ETH',
           address: '0xc695f73c1862e050059367B2E64489E66c525983',
@@ -418,19 +417,22 @@ const AmplifyWrapper = (props) => {
   const web3 = useWeb3();
 
   const currentEventKey = useContext(AccordionContext);
-  const multiplier = _.get(backscratcherVault, 'apy.data.currentBoost', 0);
+  const multiplier = _.get(backscratcherVault, 'apy.composite.boost', 0);
   const multiplierText = `${multiplier.toFixed(2)}x`;
   // TODO Check to remove this
   backscratcherVault.multiplier = multiplierText;
-  backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
+  // backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
   backscratcherVault.alias = backscratcherAlias;
 
   pickleVault.alias = pickleVaultAlias;
 
   const renderVault = (vault) => {
-    if (vault.displayName === 'SLP') {
+    if (!vault) {
+      return null;
+    }
+    if (vault.display_name === 'SLP') {
       // eslint-disable-next-line no-param-reassign
-      vault.displayName = 'yveCRV - ETH';
+      vault.display_name = 'yveCRV - ETH';
     }
     const vaultKey = vault.address;
     return (

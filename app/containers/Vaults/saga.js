@@ -41,7 +41,7 @@ const injectEthVaults = (vaults) => {
   const ethereumString = 'ETH';
   const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
   const v1EthVault = _.cloneDeep(v1WethVault);
-  v1EthVault.displayName = ethereumString;
+  v1EthVault.display_name = ethereumString;
   v1EthVault.pureEthereum = true;
   v1EthVault.token.address = ethAddress;
   v1EthVault.token.symbol = 'ETH';
@@ -50,7 +50,7 @@ const injectEthVaults = (vaults) => {
   const v2WethVault = _.find(vaults, { address: V2_WETH_VAULT_ADDRESS });
   const v2EthVault = _.cloneDeep(v2WethVault);
 
-  v2EthVault.displayName = ethereumString;
+  v2EthVault.display_name = ethereumString;
   v2EthVault.pureEthereum = true;
   v2EthVault.token.address = ethAddress;
   v2EthVault.token.symbol = 'ETH';
@@ -62,11 +62,7 @@ const injectEthVaults = (vaults) => {
 };
 
 function* fetchVaults() {
-  const endpoint =
-    process.env.API_ENV === 'development' ||
-    process.env.NODE_ENV === 'development'
-      ? `https://dev.vaults.finance/all`
-      : `https://vaults.finance/all`;
+  const endpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
   try {
     const vaults = yield call(request, endpoint);
     const vaultsWithEth = injectEthVaults(vaults);

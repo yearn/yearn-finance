@@ -345,7 +345,7 @@ export default function TransactionModal(props) {
                 <VaultIconWrapper>
                   <StyledTokenIcon address={vault.address} />
                 </VaultIconWrapper>
-                {`${vault.displayName} - ${vault.name}`}
+                {`${vault.display_name} - ${vault.name}`}
               </VaultTitle>
               <ModalData>
                 {vault.strategyName}: {linkTo(vault.strategyAddress)}

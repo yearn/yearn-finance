@@ -271,7 +271,6 @@ const Vault = (props) => {
     tokenAddress,
     tokenSymbolAlias,
     decimals,
-    displayName,
     // totalAssets,
     // balance,
     balanceOf,
@@ -495,7 +494,7 @@ const Vault = (props) => {
   if (vault.isYVBoost) {
     vaultName = 'yvBOOST - ETH';
   } else {
-    vaultName = displayName || name || address;
+    vaultName = alias || name || address;
   }
 
   const v2Vault = vault.type === 'v2' || vault.apiVersion;
@@ -505,11 +504,11 @@ const Vault = (props) => {
   const apyType = apy && apy.type;
   let apyRecommended =
     apyType !== 'error'
-      ? truncateApy(_.get(apy, 'recommended'))
+      ? truncateApy(_.get(apy, 'net_apy'))
       : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
 
-  const grossApy = _.get(apy, 'data.grossApy');
-  const netApy = _.get(apy, 'data.netApy');
+  const grossApy = _.get(apy, 'gross_apy');
+  const netApy = _.get(apy, 'net_apy');
 
   let apyTooltip = (
     <div>
@@ -530,7 +529,7 @@ const Vault = (props) => {
   if (apyType === 'error') {
     apyTooltip = _.get(ApyErrorDescriptions, `[${apy.description}].tooltip`);
   } else if (vaultIsBackscratcher) {
-    const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
+    const currentBoost = _.get(apy, 'composite.current_boost', 0).toFixed(2);
     apyTooltip = (
       <div>
         Boosted yveCRV APY
@@ -540,7 +539,7 @@ const Vault = (props) => {
           <tbody>
             <tr>
               <td>veCRV APY</td>
-              <td>{truncateApy(apy.data.poolApy)}</td>
+              <td>{truncateApy(apy.composite.pool_apy)}</td>
             </tr>
             <tr>
               <td>Boost</td>
@@ -548,34 +547,34 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Total APY</td>
-              <td>{truncateApy(apy.data.totalApy)}</td>
+              <td>{truncateApy(apy.composite.pool_apy)}</td>
             </tr>
           </tbody>
         </TooltipTable>
       </div>
     );
-  } else if (apyType === 'curve') {
-    const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
+  } else if (apyType === 'crv') {
+    const currentBoost = _.get(apy, 'composite.boost', 0).toFixed(2);
     apyTooltip = (
       <div>
-        {apy.description}
+        Pool APY + Boosted CRV APY
         <br />
         <br />
         <TooltipTable>
           <tbody>
             <tr>
               <td>Pool APY</td>
-              <td>{truncateApy(apy.data.poolApy)}</td>
+              <td>{truncateApy(apy.composite.pool_apy)}</td>
             </tr>
-            {apy.data.tokenRewardsApr > 0 && (
+            {apy.composite.rewards_apr > 0 && (
               <tr>
                 <td>Bonus Rewards APR</td>
-                <td>{truncateApy(apy.data.tokenRewardsApr)}</td>
+                <td>{truncateApy(apy.composite.rewards_apr)}</td>
               </tr>
             )}
             <tr>
               <td>Base CRV APR</td>
-              <td>{truncateApy(apy.data.baseApr)}</td>
+              <td>{truncateApy(apy.composite.base_apr)}</td>
             </tr>
             <tr>
               <td>Boost</td>
@@ -583,11 +582,11 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Total APY</td>
-              <td>{truncateApy(apy.data.totalApy)}</td>
+              <td>{truncateApy(apy.gross_apy)}</td>
             </tr>
             <tr>
               <td>Net APY</td>
-              <td>{truncateApy(apy.data.netApy)}</td>
+              <td>{truncateApy(apy.net_apy)}</td>
             </tr>
           </tbody>
         </TooltipTable>
@@ -702,7 +701,7 @@ const Vault = (props) => {
     );
   } else if (vault.tvl) {
     vaultAssets = truncateUsd(vault.tvl.value);
-    const totalAssets = new BigNumber(vault.tvl.totalAssets)
+    const totalAssets = new BigNumber(vault.tvl.total)
       .dividedBy(10 ** decimals)
       .toFixed(2);
     if (v2Vault && depositLimit) {
@@ -711,7 +710,7 @@ const Vault = (props) => {
         .toFixed(2);
       const limitUsd = new BigNumber(depositLimit)
         .dividedBy(10 ** decimals)
-        .times(vault.tvl.price)
+        .times(vault.token.price)
         .toFixed(2);
       const shouldBeInfinite = new BigNumber(depositLimit).gte(2 ** 255);
       vaultAssetsTooltip = (
@@ -721,14 +720,14 @@ const Vault = (props) => {
               <tr>
                 <td>Total assets</td>
                 <td>
-                  {truncateToken(totalAssets)} {token.displayName}
+                  {truncateToken(totalAssets)} {token.display_name}
                 </td>
               </tr>
               {shouldBeInfinite ? (
                 <tr>
                   <td>Deposit limit</td>
                   <td>
-                    <BigChar>&#x221e;</BigChar> {token.displayName}
+                    <BigChar>&#x221e;</BigChar> {token.display_name}
                   </td>
                 </tr>
               ) : (
@@ -736,7 +735,7 @@ const Vault = (props) => {
                   <tr>
                     <td>Deposit limit</td>
                     <td>
-                      {truncateToken(limit)} {token.displayName}
+                      {truncateToken(limit)} {token.display_name}
                     </td>
                   </tr>
                   <tr>
@@ -757,7 +756,7 @@ const Vault = (props) => {
               <tr>
                 <td>Total assets</td>
                 <td>
-                  {truncateToken(totalAssets)} {token.displayName}
+                  {truncateToken(totalAssets)} {token.display_name}
                 </td>
               </tr>
             </tbody>

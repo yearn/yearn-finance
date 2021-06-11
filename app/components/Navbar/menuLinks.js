@@ -15,7 +15,7 @@ export const menuLinks = {
   //  href: '/cover',
   //  title: 'Protect',
   //  description: '',
-  //},
+  // },
   // earn: {
   //   href: 'https://yearn.finance/earn',
   //   title: 'yUSD',

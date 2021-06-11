@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { keyBy, get } from 'lodash';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import blacklist from 'containers/Vaults/blacklist.json';
@@ -61,14 +62,65 @@ const injectEthVaults = (vaults) => {
   return vaults;
 };
 
+const mapNewApiToOldApi = (oldVaults, newVaults) => {
+  const newVaultsMap = keyBy(newVaults, 'address');
+  const result = oldVaults.map((vault) => {
+    const newApy = get(newVaultsMap[vault.address], 'apy');
+    console.log({ oldAPI: vault });
+    console.log({ newAPI: newVaultsMap[vault.address] });
+    if (!newApy) {
+      console.log('------------');
+      return vault;
+    }
+
+    const mergedVault = {
+      ...vault,
+      apy: {
+        ...vault.apy,
+        recommended: newApy.net_apy,
+        data: {
+          ...vault.apy.data,
+          grossApy: newApy.gross_apr,
+          netApy: newApy.net_apy,
+          ...(newApy.composite && {
+            totalApy: newApy.composite.pool_apy
+              ? newApy.composite.pool_apy
+              : newApy.composite.totalApy,
+            currentBoost: newApy.composite.boost
+              ? newApy.composite.boost
+              : newApy.composite.currentBoost,
+            poolApy: newApy.composite.pool_apy
+              ? newApy.composite.pool_apy
+              : newApy.composite.poolApy,
+            boostedApr: newApy.composite.boosted_apr
+              ? newApy.composite.boosted_apr
+              : newApy.composite.boostedApy,
+            baseApr: newApy.composite.base_apr
+              ? newApy.composite.base_apr
+              : newApy.composite.baseApr,
+            cvx_apr: newApy.composite.cvx_apr,
+            tokenRewardsApr: newApy.composite.rewards_apr,
+          }),
+        },
+      },
+    };
+    console.log({ mergedVault });
+    console.log('------------');
+    return mergedVault;
+  });
+  return result;
+};
+
 function* fetchVaults() {
   const endpoint =
     process.env.API_ENV === 'development' ||
     process.env.NODE_ENV === 'development'
       ? `https://dev.vaults.finance/all`
       : `https://vaults.finance/all`;
+  const newEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
   try {
     const vaults = yield call(request, endpoint);
+    const newVaults = yield call(request, newEndpoint);
     const vaultsWithEth = injectEthVaults(vaults);
 
     // TODO: Remove UI hacks...
@@ -85,8 +137,8 @@ function* fetchVaults() {
       correctedVaults,
       (vault) => _.includes(blacklist, vault.address) === false,
     );
-
-    yield put(vaultsLoaded(filteredVaults));
+    const vaultsWithNewApiData = mapNewApiToOldApi(filteredVaults, newVaults);
+    yield put(vaultsLoaded(vaultsWithNewApiData));
   } catch (err) {
     console.log('Error reading vaults', err);
   }

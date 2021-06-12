@@ -62,13 +62,17 @@ const injectEthVaults = (vaults) => {
   return vaults;
 };
 
+const YVBOOST = '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a';
+const YVUNI = '0xFBEB78a723b8087fD2ea7Ef1afEc93d35E8Bed42';
+
 const mapNewApiToOldApi = (oldVaults, newVaults) => {
   const newVaultsMap = keyBy(newVaults, 'address');
   const result = oldVaults.map((vault) => {
     const newApy = get(newVaultsMap[vault.address], 'apy');
     console.log({ oldAPI: vault });
     console.log({ newAPI: newVaultsMap[vault.address] });
-    if (!newApy) {
+    // TODO: FIX YVBOOST AND YVUNI ON NEW API
+    if (!newApy || vault.address === YVBOOST || vault.address === YVUNI) {
       console.log('------------');
       return vault;
     }

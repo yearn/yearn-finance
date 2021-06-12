@@ -69,11 +69,8 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
   const newVaultsMap = keyBy(newVaults, 'address');
   const result = oldVaults.map((vault) => {
     const newApy = get(newVaultsMap[vault.address], 'apy');
-    console.log({ oldAPI: vault });
-    console.log({ newAPI: newVaultsMap[vault.address] });
     // TODO: FIX YVBOOST AND YVUNI ON NEW API
     if (!newApy || vault.address === YVBOOST || vault.address === YVUNI) {
-      console.log('------------');
       return vault;
     }
 
@@ -106,8 +103,6 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
         },
       },
     };
-    console.log({ mergedVault });
-    console.log('------------');
     return mergedVault;
   });
   return result;
@@ -484,7 +479,6 @@ function* migrateVault(action) {
     selectTokenAllowance(vaultContract.address, TRUSTED_MIGRATOR_ADDRESS),
   );
   const migrationData = yield select(selectMigrationData);
-  console.log(account);
 
   const vaultMigrationData = migrationData[vaultContract.address];
   const isMigratable = !!vaultMigrationData;

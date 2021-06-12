@@ -548,7 +548,7 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Total APY</td>
-              <td>{truncateApy(apy.data.totalApy)}</td>
+              <td>{truncateApy(apy.data.boostedApr)}</td>
             </tr>
           </tbody>
         </TooltipTable>

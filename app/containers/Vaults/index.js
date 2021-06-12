@@ -422,7 +422,7 @@ const AmplifyWrapper = (props) => {
   const multiplierText = `${multiplier.toFixed(2)}x`;
   // TODO Check to remove this
   backscratcherVault.multiplier = multiplierText;
-  backscratcherVault.apy.recommended = backscratcherVault.apy.data.totalApy;
+  backscratcherVault.apy.recommended = backscratcherVault.apy.data.boostedApr;
   backscratcherVault.alias = backscratcherAlias;
 
   pickleVault.alias = pickleVaultAlias;

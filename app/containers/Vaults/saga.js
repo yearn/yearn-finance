@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { keyBy, get } from 'lodash';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import blacklist from 'containers/Vaults/blacklist.json';
@@ -61,14 +62,62 @@ const injectEthVaults = (vaults) => {
   return vaults;
 };
 
+const YVBOOST = '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a';
+const YVUNI = '0xFBEB78a723b8087fD2ea7Ef1afEc93d35E8Bed42';
+
+const mapNewApiToOldApi = (oldVaults, newVaults) => {
+  const newVaultsMap = keyBy(newVaults, 'address');
+  const result = oldVaults.map((vault) => {
+    const newApy = get(newVaultsMap[vault.address], 'apy');
+    // TODO: FIX YVBOOST AND YVUNI ON NEW API
+    if (!newApy || vault.address === YVBOOST || vault.address === YVUNI) {
+      return vault;
+    }
+
+    const mergedVault = {
+      ...vault,
+      apy: {
+        ...vault.apy,
+        recommended: newApy.net_apy,
+        data: {
+          ...vault.apy.data,
+          grossApy: newApy.gross_apr,
+          netApy: newApy.net_apy,
+          ...(newApy.composite && {
+            totalApy: newApy.gross_apr,
+            currentBoost: newApy.composite.boost
+              ? newApy.composite.boost
+              : newApy.composite.currentBoost,
+            poolApy: newApy.composite.pool_apy
+              ? newApy.composite.pool_apy
+              : newApy.composite.poolApy,
+            boostedApr: newApy.composite.boosted_apr
+              ? newApy.composite.boosted_apr
+              : newApy.composite.boostedApy,
+            baseApr: newApy.composite.base_apr
+              ? newApy.composite.base_apr
+              : newApy.composite.baseApr,
+            cvx_apr: newApy.composite.cvx_apr,
+            tokenRewardsApr: newApy.composite.rewards_apr,
+          }),
+        },
+      },
+    };
+    return mergedVault;
+  });
+  return result;
+};
+
 function* fetchVaults() {
   const endpoint =
     process.env.API_ENV === 'development' ||
     process.env.NODE_ENV === 'development'
       ? `https://dev.vaults.finance/all`
       : `https://vaults.finance/all`;
+  const newEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
   try {
     const vaults = yield call(request, endpoint);
+    const newVaults = yield call(request, newEndpoint);
     const vaultsWithEth = injectEthVaults(vaults);
 
     // TODO: Remove UI hacks...
@@ -85,8 +134,8 @@ function* fetchVaults() {
       correctedVaults,
       (vault) => _.includes(blacklist, vault.address) === false,
     );
-
-    yield put(vaultsLoaded(filteredVaults));
+    const vaultsWithNewApiData = mapNewApiToOldApi(filteredVaults, newVaults);
+    yield put(vaultsLoaded(vaultsWithNewApiData));
   } catch (err) {
     console.log('Error reading vaults', err);
   }
@@ -430,7 +479,6 @@ function* migrateVault(action) {
     selectTokenAllowance(vaultContract.address, TRUSTED_MIGRATOR_ADDRESS),
   );
   const migrationData = yield select(selectMigrationData);
-  console.log(account);
 
   const vaultMigrationData = migrationData[vaultContract.address];
   const isMigratable = !!vaultMigrationData;

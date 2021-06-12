@@ -97,7 +97,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
               ? newApy.composite.base_apr
               : newApy.composite.baseApr,
             cvx_apr: newApy.composite.cvx_apr,
-            // tokenRewardsApr: newApy.composite.rewards_apr, // TODO: FIX ON NEW API
+            tokenRewardsApr: newApy.composite.rewards_apr,
           }),
         },
       },

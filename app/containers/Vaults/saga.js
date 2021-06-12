@@ -83,9 +83,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
           grossApy: newApy.gross_apr,
           netApy: newApy.net_apy,
           ...(newApy.composite && {
-            totalApy: newApy.composite.pool_apy
-              ? newApy.composite.pool_apy
-              : newApy.composite.totalApy,
+            totalApy: newApy.gross_apr,
             currentBoost: newApy.composite.boost
               ? newApy.composite.boost
               : newApy.composite.currentBoost,

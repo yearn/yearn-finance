@@ -503,10 +503,10 @@ const Vault = (props) => {
   const { apy } = vault;
 
   const apyType = apy && apy.type;
-  let apyRecommended =
-    apyType !== 'error'
-      ? truncateApy(_.get(apy, 'recommended'))
-      : _.get(ApyErrorDescriptions, `[${apy.description}].recommended`);
+  const apyError = apy && apy.error;
+  let apyRecommended = !apyError
+    ? truncateApy(_.get(apy, 'recommended'))
+    : _.get(ApyErrorDescriptions, `[${apyError.description}].recommended`);
 
   const grossApy = _.get(apy, 'data.grossApy');
   const netApy = _.get(apy, 'data.netApy');
@@ -516,7 +516,7 @@ const Vault = (props) => {
       <TooltipTable>
         <tbody>
           <tr>
-            <td>Gross APY</td>
+            <td>Gross APR</td>
             <td>{truncateApy(grossApy)}</td>
           </tr>
           <tr>
@@ -527,8 +527,11 @@ const Vault = (props) => {
       </TooltipTable>
     </div>
   );
-  if (apyType === 'error') {
-    apyTooltip = _.get(ApyErrorDescriptions, `[${apy.description}].tooltip`);
+  if (apyError) {
+    apyTooltip = _.get(
+      ApyErrorDescriptions,
+      `[${apyError.description}].tooltip`,
+    );
   } else if (vaultIsBackscratcher) {
     const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
     apyTooltip = (
@@ -547,14 +550,14 @@ const Vault = (props) => {
               <td>{currentBoost}x</td>
             </tr>
             <tr>
-              <td>Total APY</td>
+              <td>Gross APR</td>
               <td>{truncateApy(apy.data.boostedApr)}</td>
             </tr>
           </tbody>
         </TooltipTable>
       </div>
     );
-  } else if (apyType === 'curve') {
+  } else if (apyType === 'crv') {
     const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
     apyTooltip = (
       <div>
@@ -582,7 +585,7 @@ const Vault = (props) => {
               <td>{currentBoost}x</td>
             </tr>
             <tr>
-              <td>Total APY</td>
+              <td>Gross APR</td>
               <td>{truncateApy(apy.data.totalApy)}</td>
             </tr>
             <tr>

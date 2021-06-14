@@ -25,42 +25,14 @@ import {
   RESTAKE_BACKSCRATCHER_REWARDS,
   MIGRATE_VAULT,
   TRUSTED_MIGRATOR_ADDRESS,
-  V2_WETH_VAULT_ADDRESS,
-  V2_ETH_ZAP_ADDRESS,
   ZAP_PICKLE,
   DEPOSIT_PICKLE_SLP_IN_FARM,
   EXIT_OLD_PICKLE,
 } from './constants';
 // TODO: Do better... never hard-code vault addresses
-const v1WethVaultAddress = '0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7';
-const ethAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
 const crvSAaveV2Address = '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC';
 const crvSAaveV1Address = '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1';
-
-const injectEthVaults = (vaults) => {
-  const ethereumString = 'ETH';
-  const v1WethVault = _.find(vaults, { address: v1WethVaultAddress });
-  const v1EthVault = _.cloneDeep(v1WethVault);
-  v1EthVault.displayName = ethereumString;
-  v1EthVault.pureEthereum = true;
-  v1EthVault.token.address = ethAddress;
-  v1EthVault.token.symbol = 'ETH';
-  v1EthVault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
-
-  const v2WethVault = _.find(vaults, { address: V2_WETH_VAULT_ADDRESS });
-  const v2EthVault = _.cloneDeep(v2WethVault);
-
-  v2EthVault.displayName = ethereumString;
-  v2EthVault.pureEthereum = true;
-  v2EthVault.token.address = ethAddress;
-  v2EthVault.token.symbol = 'ETH';
-  v2EthVault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${ethAddress}/logo-128.png`;
-  v2EthVault.zapAddress = V2_ETH_ZAP_ADDRESS;
-
-  vaults.push(v1EthVault, v2EthVault);
-  return vaults;
-};
 
 const YVBOOST = '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a';
 const YVUNI = '0xFBEB78a723b8087fD2ea7Ef1afEc93d35E8Bed42';
@@ -120,11 +92,10 @@ function* fetchVaults() {
   try {
     const vaults = yield call(request, endpoint);
     const newVaults = yield call(request, newEndpoint);
-    const vaultsWithEth = injectEthVaults(vaults);
 
     // TODO: Remove UI hacks...
     const masterChefAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
-    const correctedVaults = _.map(vaultsWithEth, (vault) => {
+    const correctedVaults = _.map(vaults, (vault) => {
       const newVault = vault;
       if (vault.address === masterChefAddress) {
         newVault.type = 'masterChef';

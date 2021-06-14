@@ -34,6 +34,7 @@ import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
+  V2_WETH_VAULT_ADDRESS_042,
   YVBOOST_ADDRESS,
   YVBOOST_ETH_PJAR,
   PICKLE_GAUGE_ADDRESS,
@@ -164,8 +165,8 @@ export default function VaultControls(props) {
   const isSupportedToken = ({ address, hide }) =>
     address !== token.address && !hide && !!zapperTokens[address];
   const isSameToken = ({ label, address }) =>
-    (vaultAddress === V2_WETH_VAULT_ADDRESS &&
-      (label === 'ETH' || label === 'WETH')) ||
+    (vaultAddress === V2_WETH_VAULT_ADDRESS && label === 'WETH') ||
+    (vaultAddress === V2_WETH_VAULT_ADDRESS_042 && label === 'WETH') ||
     address === token.address.toLowerCase();
   const supportedTokenOptions = Object.values(zapperBalances)
     .filter(isSupportedToken)
@@ -177,13 +178,14 @@ export default function VaultControls(props) {
     }));
   supportedTokenOptions.unshift({
     value: token.address,
-    // eslint-disable-next-line no-nested-ternary
-    label: pureEthereum
-      ? 'ETH'
-      : token.displayName
-      ? token.displayName
-      : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
-    icon: `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/${token.address}/logo-128.png`,
+    label:
+      // eslint-disable-next-line no-nested-ternary
+      token.displayName === 'ETH'
+        ? 'WETH'
+        : token.displayName
+        ? token.displayName
+        : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
+    icon: token.icon,
   });
   const [selectedSellToken, setSelectedSellToken] = useState(
     first(supportedTokenOptions),
@@ -247,17 +249,17 @@ export default function VaultControls(props) {
       value: 'WBTC',
     },
   ].map((t) => {
-    if (t.label !== vault.displayName) {
+    if (t.label !== vault.displayName || vault.displayName === 'ETH') {
       tmpWithdrawTokens.push(t);
     }
     return t;
   });
   const currentVaultToken = {
-    label: vault.displayName,
+    label: token.displayName === 'ETH' ? 'WETH' : token.displayName,
     address: vault.token.address,
     isVault: true,
     icon: vault.token.icon,
-    value: vault.displayName,
+    value: vault.displayName === 'ETH' ? 'WETH' : token.displayName,
   };
   if (vault.displayName === 'yvBOOST') {
     tmpWithdrawTokens.unshift({

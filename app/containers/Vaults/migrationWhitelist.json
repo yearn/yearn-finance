@@ -35,7 +35,7 @@
     "symbol": "WETH",
     "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "vaultFrom": "0xe1237aA7f535b0CC33Fd973D66cBf830354D16c7",
-    "vaultTo": "0xa9fE4601811213c340e850ea305481afF02f5b28",
+    "vaultTo": "0xa258C4606Ca8206D8aA700cE2143D7db854D168c",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield."
   },

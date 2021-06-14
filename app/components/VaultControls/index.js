@@ -1012,7 +1012,7 @@ export default function VaultControls(props) {
                       ) {
                         const approvalStateRes = await fetch(
                           `https://api.zapper.fi/v1/zap-out/yearn/approval-state?` +
-                            `api_key=${ZAPPER_APIKEY}` +
+                            `api_key=${ZAPPER_APIKEY}&sellTokenAddress=` +
                             `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
                         );
                         const approvalState = await approvalStateRes.json();
@@ -1227,7 +1227,7 @@ export default function VaultControls(props) {
                         ) {
                           const approvalStateRes = await fetch(
                             `https://api.zapper.fi/v1/zap-out/yearn/approval-state?` +
-                              `api_key=${ZAPPER_APIKEY}` +
+                              `api_key=${ZAPPER_APIKEY}&sellTokenAddress=` +
                               `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
                           );
                           const approvalState = await approvalStateRes.json();

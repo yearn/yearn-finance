@@ -34,6 +34,7 @@ import {
   BACKSCRATCHER_ADDRESS,
   MASTER_CHEF_ADDRESS,
   V2_WETH_VAULT_ADDRESS,
+  V2_WETH_VAULT_ADDRESS_042,
   YVBOOST_ADDRESS,
   YVBOOST_ETH_PJAR,
   PICKLE_GAUGE_ADDRESS,
@@ -165,6 +166,7 @@ export default function VaultControls(props) {
   const isSameToken = ({ label, address }) =>
     (vaultAddress === V2_WETH_VAULT_ADDRESS &&
       (label === 'ETH' || label === 'WETH')) ||
+    (vaultAddress === V2_WETH_VAULT_ADDRESS_042 && label === 'WETH') ||
     address === token.address.toLowerCase();
   const supportedTokenOptions = Object.values(zapperBalances)
     .filter(isSupportedToken)

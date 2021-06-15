@@ -183,7 +183,7 @@ const truncateFee = (fee) => {
 
 const truncateApy = (apy) => {
   if (!apy) {
-    return 'N/A';
+    return 'NEW ✨';
   }
   const truncatedApy = (apy * 100).toFixed(2);
   const apyStr = `${truncatedApy}%`;

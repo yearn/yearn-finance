@@ -60,7 +60,7 @@ function* initializeZapper() {
     );
     const balances = get(
       first(
-        balancesResponse[account].products.filter(
+        balancesResponse[account.toLowerCase()].products.filter(
           ({ label }) => label === 'Tokens',
         ),
       ),

@@ -27,7 +27,7 @@ import {
   selectZapperError,
 } from 'containers/Zapper/selectors';
 import { zapIn, zapOut, migratePickleGauge } from 'containers/Zapper/actions';
-import { DEFAULT_SLIPPAGE } from 'containers/Zapper/constants';
+import { DEFAULT_SLIPPAGE, ETH_ADDRESS } from 'containers/Zapper/constants';
 import BackscratcherClaim from 'components/BackscratcherClaim';
 import MigrateVault from 'components/MigrateVault';
 import {
@@ -165,8 +165,8 @@ export default function VaultControls(props) {
   const isSupportedToken = ({ address, hide }) =>
     address !== token.address && !hide && !!zapperTokens[address];
   const isSameToken = ({ label, address }) =>
-    (vaultAddress === V2_WETH_VAULT_ADDRESS && label === 'WETH') ||
-    (vaultAddress === V2_WETH_VAULT_ADDRESS_042 && label === 'WETH') ||
+    (vaultAddress === V2_WETH_VAULT_ADDRESS && label === 'ETH') ||
+    (vaultAddress === V2_WETH_VAULT_ADDRESS_042 && label === 'ETH') ||
     address === token.address.toLowerCase();
   const supportedTokenOptions = Object.values(zapperBalances)
     .filter(isSupportedToken)
@@ -185,8 +185,18 @@ export default function VaultControls(props) {
         : token.displayName
         ? token.displayName
         : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
-    icon: token.icon,
+    icon:
+      token.displayName === 'ETH'
+        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
+        : token.icon,
   });
+  if (token.displayName === 'ETH') {
+    supportedTokenOptions.unshift({
+      value: ETH_ADDRESS,
+      label: 'ETH',
+      icon: token.icon,
+    });
+  }
   const [selectedSellToken, setSelectedSellToken] = useState(
     first(supportedTokenOptions),
   );
@@ -249,7 +259,7 @@ export default function VaultControls(props) {
       value: 'WBTC',
     },
   ].map((t) => {
-    if (t.label !== vault.displayName || vault.displayName === 'ETH') {
+    if (t.label !== vault.displayName) {
       tmpWithdrawTokens.push(t);
     }
     return t;
@@ -258,7 +268,10 @@ export default function VaultControls(props) {
     label: token.displayName === 'ETH' ? 'WETH' : token.displayName,
     address: vault.token.address,
     isVault: true,
-    icon: vault.token.icon,
+    icon:
+      token.displayName === 'ETH'
+        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
+        : vault.token.icon,
     value: vault.displayName === 'ETH' ? 'WETH' : token.displayName,
   };
   if (vault.displayName === 'yvBOOST') {
@@ -272,6 +285,14 @@ export default function VaultControls(props) {
     });
   } else {
     tmpWithdrawTokens.unshift(currentVaultToken);
+    if (token.displayName === 'ETH') {
+      tmpWithdrawTokens.unshift({
+        label: 'ETH',
+        address: ETH_ADDRESS,
+        icon: vault.token.icon,
+        value: 'ETH',
+      });
+    }
   }
   const withdrawTokens = hideZapOut ? [currentVaultToken] : tmpWithdrawTokens;
 

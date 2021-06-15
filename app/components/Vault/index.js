@@ -1270,7 +1270,13 @@ const Vault = (props) => {
               )}
             </Text>
             <Text large bold>
-              <AnimatedNumber value={tokenBalanceOf} />{' '}
+              <AnimatedNumber
+                value={
+                  vault.displayName === 'ETH'
+                    ? parsedEthBalance
+                    : tokenBalanceOf
+                }
+              />{' '}
               <LinkWrap devMode={devMode} address={tokenAddress}>
                 {tokenSymbol}
               </LinkWrap>

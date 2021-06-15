@@ -46,15 +46,17 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
       return vault;
     }
 
+    const vaultApy = _.get(vault, 'apy', {});
+    const vaultApyData = _.get(vault, 'apy.data', {});
     const mergedVault = {
       ...vault,
       apy: {
-        ...vault.apy,
+        ...vaultApy,
         recommended: newApy.net_apy,
         error: newApy.error,
         type: newApy.type,
         data: {
-          ...vault.apy.data,
+          ...vaultApyData,
           grossApy: newApy.gross_apr,
           netApy: newApy.net_apy,
           ...(newApy.composite && {

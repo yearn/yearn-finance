@@ -18,6 +18,7 @@ export default function ConnectionProvider(props) {
   const [onboard, setOnboard] = useState(null);
   const [notify, setNotify] = useState(null);
   const [web3, setWeb3] = useState(null);
+  const [network, setNetwork] = useState(null);
 
   const dispatchConnectionConnected = () => {
     dispatch(connectionConnected(account));
@@ -39,6 +40,7 @@ export default function ConnectionProvider(props) {
     const onboardConfig = {
       address: setAccount,
       wallet: selectWallet,
+      network: setNetwork,
     };
     const newOnboard = initOnboard(onboardConfig, darkMode);
     setNotify(initNotify(darkMode));
@@ -66,10 +68,17 @@ export default function ConnectionProvider(props) {
     }
   };
 
+  const networkChanged = () => {
+    if (onboard && network) {
+      onboard.walletCheck();
+    }
+  };
+
   useEffect(initializeWallet, []);
   useEffect(reconnectWallet, [onboard]);
   useEffect(accountChanged, [account]);
   useEffect(changeDarkMode, [darkMode]);
+  useEffect(networkChanged, [network]);
 
   const selectWallet = async () => {
     // Open wallet modal

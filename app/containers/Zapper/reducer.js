@@ -1,12 +1,18 @@
 import produce from 'immer';
 import { keyBy } from 'lodash';
-import { ZAPPER_DATA_LOADED, ZAP_IN_ERROR, ZAP_OUT_ERROR } from './constants';
+import {
+  ZAPPER_DATA_LOADED,
+  ZAP_IN_ERROR,
+  ZAP_OUT_ERROR,
+  ZAP_OUT_ALLOWANCE,
+} from './constants';
 
 export const initialState = {
   tokens: {},
   vaults: {},
   balances: {},
   error: null,
+  zapOutAllowance: {},
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -25,6 +31,10 @@ const zapperReducer = (state = initialState, action) =>
       }
       case ZAP_OUT_ERROR: {
         draft.error = action.payload;
+        break;
+      }
+      case ZAP_OUT_ALLOWANCE: {
+        draft.zapOutAllowance = action.payload;
         break;
       }
     }

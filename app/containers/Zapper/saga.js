@@ -10,12 +10,18 @@ import {
   YVBOOST_ETH_PJAR,
   PICKLEJAR_ADDRESS,
 } from 'containers/Vaults/constants';
-import { zapperDataLoaded, zapInError, zapOutError } from './actions';
+import {
+  zapperDataLoaded,
+  zapInError,
+  zapOutError,
+  zapOutAllowance,
+} from './actions';
 import {
   INIT_ZAPPER,
   ZAP_IN,
   ETH_ADDRESS,
-  ZAP_OUT,
+  ZAP_OUT_APPROVE,
+  ZAP_OUT_WITHDRAW,
   MIGRATE_PICKLE_GAUGE,
   DEFAULT_SLIPPAGE,
 } from './constants';
@@ -257,7 +263,65 @@ export function* watchForTransactions() {
   }
 }
 
-function* zapOut(action) {
+function* zapOutApprove(action) {
+  const { web3, vaultContract, protocol } = action.payload;
+
+  const zapProtocol = protocol || 'yearn';
+
+  const ownerAddress = yield select(selectAccount());
+
+  const poolAddress = vaultContract.address.toLowerCase();
+
+  try {
+    const gasPrices = yield call(
+      request,
+      getZapperApi('/gas-price', {
+        sellTokenAddress: vaultContract.address.toLowerCase(),
+        ownerAddress,
+      }),
+    );
+    const gasPrice = new BigNumber(gasPrices.fast).times(10 ** 9);
+
+    const approvalState = yield call(
+      request,
+      getZapperApi(`/zap-out/${zapProtocol}/approval-state`, {
+        sellTokenAddress: vaultContract.address.toLowerCase(),
+        ownerAddress,
+      }),
+    );
+
+    if (!approvalState.isApproved || approvalState.allowance === '0') {
+      const approvalTransaction = yield call(
+        request,
+        getZapperApi(`/zap-out/${zapProtocol}/approval-transaction`, {
+          gasPrice,
+          sellTokenAddress: vaultContract.address.toLowerCase(),
+          ownerAddress,
+        }),
+      );
+
+      const broadcastTransaction = (err, transactionHash) => {
+        if (err) {
+          return;
+        }
+        transactionChannel.put({
+          transactionHash,
+          contractAddress: poolAddress,
+        });
+      };
+      yield call(
+        web3.eth.sendTransaction,
+        approvalTransaction,
+        broadcastTransaction,
+      );
+      yield put(zapOutAllowance({ allowance: true, vaultContract }));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function* zapOutWithdraw(action) {
   const {
     web3,
     vaultContract,
@@ -311,29 +375,7 @@ function* zapOut(action) {
     );
 
     if (!approvalState.isApproved || approvalState.allowance === '0') {
-      const approvalTransaction = yield call(
-        request,
-        getZapperApi(`/zap-out/${zapProtocol}/approval-transaction`, {
-          gasPrice,
-          sellTokenAddress: vaultContract.address.toLowerCase(),
-          ownerAddress,
-        }),
-      );
-
-      const broadcastTransaction = (err, transactionHash) => {
-        if (err) {
-          return;
-        }
-        transactionChannel.put({
-          transactionHash,
-          contractAddress: poolAddress,
-        });
-      };
-      yield call(
-        web3.eth.sendTransaction,
-        approvalTransaction,
-        broadcastTransaction,
-      );
+      return;
     }
 
     const zapOutTransaction = yield call(
@@ -381,6 +423,7 @@ export default function* rootSaga() {
   yield takeLatest(INIT_ZAPPER, initializeZapper);
   yield takeLatest(INIT_ZAPPER, watchForTransactions);
   yield takeLatest(ZAP_IN, zapIn);
-  yield takeLatest(ZAP_OUT, zapOut);
+  yield takeLatest(ZAP_OUT_APPROVE, zapOutApprove);
+  yield takeLatest(ZAP_OUT_WITHDRAW, zapOutWithdraw);
   yield takeLatest(MIGRATE_PICKLE_GAUGE, migratePickleGauge);
 }

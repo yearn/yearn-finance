@@ -25,8 +25,15 @@ import {
   selectZapperTokens,
   selectZapperBalances,
   selectZapperError,
+  selectZapperOutAllowance,
 } from 'containers/Zapper/selectors';
-import { zapIn, zapOut, migratePickleGauge } from 'containers/Zapper/actions';
+import {
+  zapIn,
+  zapOutApprove,
+  zapOutWithdraw,
+  zapOutAllowance,
+  migratePickleGauge,
+} from 'containers/Zapper/actions';
 import { DEFAULT_SLIPPAGE, ETH_ADDRESS } from 'containers/Zapper/constants';
 import BackscratcherClaim from 'components/BackscratcherClaim';
 import MigrateVault from 'components/MigrateVault';
@@ -160,6 +167,7 @@ export default function VaultControls(props) {
   const zapperTokens = useSelector(selectZapperTokens());
   const zapperBalances = useSelector(selectZapperBalances());
   const zapperError = useSelector(selectZapperError());
+  const zapperOutAllowance = useSelector(selectZapperOutAllowance());
   const zapperVaultData = zapperVaults[vaultAddress.toLowerCase()];
   const isZappable = !!zapperVaultData;
   const isSupportedToken = ({ address, hide }) =>
@@ -200,7 +208,6 @@ export default function VaultControls(props) {
   const [selectedSellToken, setSelectedSellToken] = useState(
     first(supportedTokenOptions),
   );
-  const [withdrawLabel, setWithdrawLabel] = useState('Withdraw');
   const sellToken = zapperBalances[selectedSellToken.value];
 
   const willZapIn =
@@ -481,25 +488,54 @@ export default function VaultControls(props) {
         }),
       );
     } else {
-      plausible('withdraw', {
-        props: {
-          vault: vault.address,
-          token: selectedWithdrawToken.address,
-          amount: withdrawalGweiAmount,
-          zap: true,
-        },
-      });
-      dispatch(
-        zapOut({
-          web3,
-          slippagePercentage: DEFAULT_SLIPPAGE,
-          vaultContract,
-          withdrawalAmount: withdrawalGweiAmount,
-          decimals,
-          selectedWithdrawToken,
-          pureEthereum,
-        }),
-      );
+      /* eslint no-lonely-if: off */
+      if (
+        !zapperOutAllowance.allowance ||
+        zapperOutAllowance.vaultContract.address !== vault.address
+      ) {
+        plausible('approve', {
+          props: {
+            vault: vault.address,
+            token: selectedWithdrawToken.address,
+            amount: withdrawalGweiAmount,
+            zap: true,
+          },
+        });
+        dispatch(
+          zapOutApprove({
+            web3,
+            slippagePercentage: DEFAULT_SLIPPAGE,
+            vaultContract,
+            withdrawalAmount: withdrawalGweiAmount,
+            decimals,
+            selectedWithdrawToken,
+            pureEthereum,
+          }),
+        );
+      } else if (
+        zapperOutAllowance.allowance &&
+        zapperOutAllowance.vaultContract.address === vault.address
+      ) {
+        plausible('withdraw', {
+          props: {
+            vault: vault.address,
+            token: selectedWithdrawToken.address,
+            amount: withdrawalGweiAmount,
+            zap: true,
+          },
+        });
+        dispatch(
+          zapOutWithdraw({
+            web3,
+            slippagePercentage: DEFAULT_SLIPPAGE,
+            vaultContract,
+            withdrawalAmount: withdrawalGweiAmount,
+            decimals,
+            selectedWithdrawToken,
+            pureEthereum,
+          }),
+        );
+      }
     }
   };
 
@@ -1045,10 +1081,15 @@ export default function VaultControls(props) {
                           (!approvalState.isApproved ||
                             approvalState.allowance === '0')
                         ) {
-                          setWithdrawLabel('Approve');
+                          // setWithdrawLabel('Approve');
+                        } else {
+                          dispatch(
+                            zapOutAllowance({
+                              allowance: true,
+                              vaultContract,
+                            }),
+                          );
                         }
-                      } else {
-                        setWithdrawLabel('Withdraw');
                       }
                     }}
                   />
@@ -1071,9 +1112,24 @@ export default function VaultControls(props) {
                 <ButtonGroup width={1} style={{ marginTop: '-10px' }}>
                   <ActionButton
                     className="action-button dark"
-                    disabled={!vaultContract || !tokenContract}
+                    disabled={
+                      !vaultContract ||
+                      !tokenContract ||
+                      withdrawalAmount === 0 ||
+                      withdrawalAmount === '0' ||
+                      withdrawalAmount === ''
+                    }
                     handler={withdraw}
-                    text={withdrawLabel}
+                    text={
+                      currentVaultToken.address ===
+                        selectedWithdrawToken.address ||
+                      (zapperOutAllowance &&
+                        zapperOutAllowance.allowance &&
+                        zapperOutAllowance.vaultContract.address.toLowerCase() ===
+                          vaultAddress.toLowerCase())
+                        ? 'Withdraw'
+                        : 'Approve'
+                    }
                     title="Withdraw from vault"
                     showTooltip
                     tooltipText="Connect your wallet to withdraw from vault"
@@ -1243,7 +1299,6 @@ export default function VaultControls(props) {
                       options={withdrawTokens}
                       onChange={async (newValue) => {
                         setSelectedWithdrawToken(newValue);
-
                         if (
                           web3Account &&
                           newValue.address !== currentVaultToken.address
@@ -1254,16 +1309,20 @@ export default function VaultControls(props) {
                               `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
                           );
                           const approvalState = await approvalStateRes.json();
-
                           if (
                             approvalState &&
                             (!approvalState.isApproved ||
                               approvalState.allowance === '0')
                           ) {
-                            setWithdrawLabel('Approve');
+                            // setWithdrawLabel('Approve');
+                          } else {
+                            dispatch(
+                              zapOutAllowance({
+                                allowance: true,
+                                vaultContract,
+                              }),
+                            );
                           }
-                        } else {
-                          setWithdrawLabel('Withdraw');
                         }
                       }}
                     />
@@ -1271,9 +1330,24 @@ export default function VaultControls(props) {
                   <Box width={isScreenMd ? '130px' : '100%'}>
                     <ActionButton
                       className="action-button bold outline"
-                      disabled={!vaultContract || !tokenContract}
+                      disabled={
+                        !vaultContract ||
+                        !tokenContract ||
+                        withdrawalAmount === 0 ||
+                        withdrawalAmount === '0' ||
+                        withdrawalAmount === ''
+                      }
                       handler={withdraw}
-                      text={withdrawLabel}
+                      text={
+                        currentVaultToken.address ===
+                          selectedWithdrawToken.address ||
+                        (zapperOutAllowance &&
+                          zapperOutAllowance.allowance &&
+                          zapperOutAllowance.vaultContract.address.toLowerCase() ===
+                            vaultAddress.toLowerCase())
+                          ? 'Withdraw'
+                          : 'Approve'
+                      }
                       title="Withdraw from vault"
                       showTooltipWhenDisabled
                       disabledTooltipText={

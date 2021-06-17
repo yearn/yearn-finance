@@ -16,3 +16,6 @@ export const selectZapperBalances = () =>
 
 export const selectZapperError = () =>
   createSelector(selectZapper, (substate) => substate.error);
+
+export const selectZapperOutAllowance = () =>
+  createSelector(selectZapper, (substate) => substate.zapOutAllowance);

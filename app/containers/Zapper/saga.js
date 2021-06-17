@@ -1,4 +1,5 @@
-import { takeLatest, select, put, call } from 'redux-saga/effects';
+import { takeLatest, take, select, put, call } from 'redux-saga/effects';
+import { channel } from 'redux-saga';
 import BigNumber from 'bignumber.js';
 import { first, get } from 'lodash';
 import request from 'utils/request';
@@ -20,6 +21,8 @@ import {
 } from './constants';
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
+
+const transactionChannel = channel();
 
 const isEth = (address) => address === ETH_ADDRESS;
 
@@ -175,7 +178,7 @@ function* zapIn(action) {
         }),
       );
 
-      if (!approvalState.isApproved) {
+      if (!approvalState.isApproved || approvalState.allowance === '0') {
         const approvalTransaction = yield call(
           request,
           getZapperApi(`/zap-in/${zapProtocol}/approval-transaction`, {
@@ -184,7 +187,20 @@ function* zapIn(action) {
             ownerAddress,
           }),
         );
-        yield call(web3.eth.sendTransaction, approvalTransaction);
+        const broadcastTransaction = (err, transactionHash) => {
+          if (err) {
+            return;
+          }
+          transactionChannel.put({
+            transactionHash,
+            contractAddress: approvalTransaction.to,
+          });
+        };
+        yield call(
+          web3.eth.sendTransaction,
+          approvalTransaction,
+          broadcastTransaction,
+        );
       }
     }
 
@@ -199,7 +215,22 @@ function* zapIn(action) {
         ownerAddress,
       }),
     );
-    yield call(web3.eth.sendTransaction, zapInTransaction);
+
+    const broadcastTransaction = (err, transactionHash) => {
+      if (err) {
+        return;
+      }
+      transactionChannel.put({
+        transactionHash,
+        contractAddress: poolAddress,
+      });
+    };
+
+    yield call(
+      web3.eth.sendTransaction,
+      zapInTransaction,
+      broadcastTransaction,
+    );
   } catch (error) {
     let errorMessage = '';
     if (error && error.message) {
@@ -211,6 +242,18 @@ function* zapIn(action) {
     yield put(
       zapInError({ message: `Zap Failed. ${errorMessage}`, poolAddress }),
     );
+  }
+}
+
+export function* watchForTransactions() {
+  while (true) {
+    const action = yield take(transactionChannel);
+    const { transactionHash, contractAddress } = action;
+    yield put({
+      type: 'TX_BROADCASTED',
+      txHash: transactionHash,
+      contractAddress,
+    });
   }
 }
 
@@ -230,6 +273,8 @@ function* zapOut(action) {
   const vaultContractData = yield select(
     selectContractData(vaultContract.address),
   );
+
+  const poolAddress = vaultContract.address.toLowerCase();
 
   const v2Vault = _.get(vaultContractData, 'pricePerShare');
   let sharesForWithdrawal;
@@ -265,7 +310,7 @@ function* zapOut(action) {
       }),
     );
 
-    if (!approvalState.isApproved) {
+    if (!approvalState.isApproved || approvalState.allowance === '0') {
       const approvalTransaction = yield call(
         request,
         getZapperApi(`/zap-out/${zapProtocol}/approval-transaction`, {
@@ -274,7 +319,21 @@ function* zapOut(action) {
           ownerAddress,
         }),
       );
-      yield call(web3.eth.sendTransaction, approvalTransaction);
+
+      const broadcastTransaction = (err, transactionHash) => {
+        if (err) {
+          return;
+        }
+        transactionChannel.put({
+          transactionHash,
+          contractAddress: poolAddress,
+        });
+      };
+      yield call(
+        web3.eth.sendTransaction,
+        approvalTransaction,
+        broadcastTransaction,
+      );
     }
 
     const zapOutTransaction = yield call(
@@ -282,13 +341,27 @@ function* zapOut(action) {
       getZapperApi(`/zap-out/${zapProtocol}/transaction`, {
         slippagePercentage: DEFAULT_SLIPPAGE,
         gasPrice,
-        poolAddress: vaultContract.address.toLowerCase(),
+        poolAddress,
         toTokenAddress: selectedWithdrawToken.address.toLowerCase(),
         sellAmount: sharesForWithdrawal,
         ownerAddress,
       }),
     );
-    yield call(web3.eth.sendTransaction, zapOutTransaction);
+
+    const broadcastTransaction = (err, transactionHash) => {
+      if (err) {
+        return;
+      }
+      transactionChannel.put({
+        transactionHash,
+        contractAddress: poolAddress,
+      });
+    };
+    yield call(
+      web3.eth.sendTransaction,
+      zapOutTransaction,
+      broadcastTransaction,
+    );
   } catch (error) {
     console.log('Zap Failed', error);
     let errorMessage = '';
@@ -306,6 +379,7 @@ function* zapOut(action) {
 
 export default function* rootSaga() {
   yield takeLatest(INIT_ZAPPER, initializeZapper);
+  yield takeLatest(INIT_ZAPPER, watchForTransactions);
   yield takeLatest(ZAP_IN, zapIn);
   yield takeLatest(ZAP_OUT, zapOut);
   yield takeLatest(MIGRATE_PICKLE_GAUGE, migratePickleGauge);

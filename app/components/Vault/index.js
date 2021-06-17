@@ -597,6 +597,9 @@ const Vault = (props) => {
       </div>
     );
   }
+  if (apyRecommended === 'NEW ✨') {
+    apyTooltip = null;
+  }
 
   let versionTooltip = null;
   if (vault.fees && vault.fees.general) {

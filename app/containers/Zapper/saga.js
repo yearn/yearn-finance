@@ -375,6 +375,12 @@ function* zapOutWithdraw(action) {
     );
 
     if (!approvalState.isApproved || approvalState.allowance === '0') {
+      yield put(
+        zapOutError({
+          message: `This token has not been approved yet. Please refresh the page and try again.`,
+          vaultContract,
+        }),
+      );
       return;
     }
 

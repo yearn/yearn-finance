@@ -1132,7 +1132,19 @@ export default function VaultControls(props) {
                     }
                     title="Withdraw from vault"
                     showTooltip
-                    tooltipText="Connect your wallet to withdraw from vault"
+                    tooltipText={
+                      /* eslint no-nested-ternary: off */
+                      web3Account
+                        ? currentVaultToken.address ===
+                            selectedWithdrawToken.address ||
+                          (zapperOutAllowance &&
+                            zapperOutAllowance.allowance &&
+                            zapperOutAllowance.vaultContract.address.toLowerCase() ===
+                              vaultAddress.toLowerCase())
+                          ? 'Withdraw from vault'
+                          : 'Approve'
+                        : 'Connect your wallet to withdraw from vault'
+                    }
                   />
                 </ButtonGroup>
               </Grid>
@@ -1351,8 +1363,16 @@ export default function VaultControls(props) {
                       title="Withdraw from vault"
                       showTooltipWhenDisabled
                       disabledTooltipText={
-                        withdrawDisabled ||
-                        'Connect your wallet to withdraw from vault'
+                        withdrawDisabled || web3Account
+                          ? currentVaultToken.address ===
+                              selectedWithdrawToken.address ||
+                            (zapperOutAllowance &&
+                              zapperOutAllowance.allowance &&
+                              zapperOutAllowance.vaultContract.address.toLowerCase() ===
+                                vaultAddress.toLowerCase())
+                            ? 'Withdraw from vault'
+                            : 'Approve'
+                          : 'Connect your wallet to withdraw from vault'
                       }
                     />
                   </Box>

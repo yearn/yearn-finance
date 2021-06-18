@@ -388,6 +388,36 @@ export default function VaultControls(props) {
     if (account !== web3Account && account) {
       setWeb3Account(account);
     }
+    const getZapperAllowance = async () => {
+      if (vaultContract)
+        if (
+          web3Account &&
+          currentVaultToken &&
+          selectedWithdrawToken &&
+          currentVaultToken.address !== selectedWithdrawToken.address
+        ) {
+          const approvalStateRes = await fetch(
+            `https://api.zapper.fi/v1/zap-out/yearn/approval-state?` +
+              `api_key=${ZAPPER_APIKEY}&sellTokenAddress=` +
+              `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
+          );
+          const approvalState = await approvalStateRes.json();
+          if (
+            approvalState &&
+            (!approvalState.isApproved || approvalState.allowance === '0')
+          ) {
+            // setWithdrawLabel('Approve');
+          } else {
+            dispatch(
+              zapOutAllowance({
+                allowance: true,
+                vaultContract,
+              }),
+            );
+          }
+        }
+    };
+    getZapperAllowance();
     const getBalance = async () => {
       if (
         pickleContractsData &&
@@ -946,6 +976,14 @@ export default function VaultControls(props) {
       </Wrapper>
     );
   } else if (vaultIsYvBoost) {
+    const withdrawLabel =
+      currentVaultToken.address === selectedWithdrawToken.address ||
+      (zapperOutAllowance &&
+        zapperOutAllowance.allowance &&
+        zapperOutAllowance.vaultContract.address.toLowerCase() ===
+          vaultAddress.toLowerCase())
+        ? 'Withdraw'
+        : 'Approve';
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column">
@@ -1065,32 +1103,6 @@ export default function VaultControls(props) {
                     options={withdrawTokens}
                     onChange={async (newValue) => {
                       setSelectedWithdrawToken(newValue);
-                      if (
-                        web3Account &&
-                        newValue.address !== currentVaultToken.address
-                      ) {
-                        const approvalStateRes = await fetch(
-                          `https://api.zapper.fi/v1/zap-out/yearn/approval-state?` +
-                            `api_key=${ZAPPER_APIKEY}&sellTokenAddress=` +
-                            `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
-                        );
-                        const approvalState = await approvalStateRes.json();
-
-                        if (
-                          approvalState &&
-                          (!approvalState.isApproved ||
-                            approvalState.allowance === '0')
-                        ) {
-                          // setWithdrawLabel('Approve');
-                        } else {
-                          dispatch(
-                            zapOutAllowance({
-                              allowance: true,
-                              vaultContract,
-                            }),
-                          );
-                        }
-                      }
                     }}
                   />
                 </Box>
@@ -1120,29 +1132,13 @@ export default function VaultControls(props) {
                       withdrawalAmount === ''
                     }
                     handler={withdraw}
-                    text={
-                      currentVaultToken.address ===
-                        selectedWithdrawToken.address ||
-                      (zapperOutAllowance &&
-                        zapperOutAllowance.allowance &&
-                        zapperOutAllowance.vaultContract.address.toLowerCase() ===
-                          vaultAddress.toLowerCase())
-                        ? 'Withdraw'
-                        : 'Approve'
-                    }
+                    text={withdrawLabel}
                     title="Withdraw from vault"
                     showTooltip
                     tooltipText={
                       /* eslint no-nested-ternary: off */
                       web3Account
-                        ? currentVaultToken.address ===
-                            selectedWithdrawToken.address ||
-                          (zapperOutAllowance &&
-                            zapperOutAllowance.allowance &&
-                            zapperOutAllowance.vaultContract.address.toLowerCase() ===
-                              vaultAddress.toLowerCase())
-                          ? 'Withdraw from vault'
-                          : 'Approve'
+                        ? withdrawLabel
                         : 'Connect your wallet to withdraw from vault'
                     }
                   />
@@ -1158,6 +1154,14 @@ export default function VaultControls(props) {
       (tokenAllowance !== undefined && tokenAllowance !== '0') ||
       pureEthereum > 0 ||
       willZapIn;
+    const withdrawLabel =
+      currentVaultToken.address === selectedWithdrawToken.address ||
+      (zapperOutAllowance &&
+        zapperOutAllowance.allowance &&
+        zapperOutAllowance.vaultContract.address.toLowerCase() ===
+          vaultAddress.toLowerCase())
+        ? 'Withdraw'
+        : 'Approve';
     vaultControlsWrapper = (
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
@@ -1311,31 +1315,6 @@ export default function VaultControls(props) {
                       options={withdrawTokens}
                       onChange={async (newValue) => {
                         setSelectedWithdrawToken(newValue);
-                        if (
-                          web3Account &&
-                          newValue.address !== currentVaultToken.address
-                        ) {
-                          const approvalStateRes = await fetch(
-                            `https://api.zapper.fi/v1/zap-out/yearn/approval-state?` +
-                              `api_key=${ZAPPER_APIKEY}&sellTokenAddress=` +
-                              `${vaultContract.address.toLowerCase()}&ownerAddress=${web3Account}`,
-                          );
-                          const approvalState = await approvalStateRes.json();
-                          if (
-                            approvalState &&
-                            (!approvalState.isApproved ||
-                              approvalState.allowance === '0')
-                          ) {
-                            // setWithdrawLabel('Approve');
-                          } else {
-                            dispatch(
-                              zapOutAllowance({
-                                allowance: true,
-                                vaultContract,
-                              }),
-                            );
-                          }
-                        }
                       }}
                     />
                   </Box>
@@ -1350,28 +1329,12 @@ export default function VaultControls(props) {
                         withdrawalAmount === ''
                       }
                       handler={withdraw}
-                      text={
-                        currentVaultToken.address ===
-                          selectedWithdrawToken.address ||
-                        (zapperOutAllowance &&
-                          zapperOutAllowance.allowance &&
-                          zapperOutAllowance.vaultContract.address.toLowerCase() ===
-                            vaultAddress.toLowerCase())
-                          ? 'Withdraw'
-                          : 'Approve'
-                      }
+                      text={withdrawLabel}
                       title="Withdraw from vault"
                       showTooltipWhenDisabled
                       disabledTooltipText={
                         withdrawDisabled || web3Account
-                          ? currentVaultToken.address ===
-                              selectedWithdrawToken.address ||
-                            (zapperOutAllowance &&
-                              zapperOutAllowance.allowance &&
-                              zapperOutAllowance.vaultContract.address.toLowerCase() ===
-                                vaultAddress.toLowerCase())
-                            ? 'Withdraw from vault'
-                            : 'Approve'
+                          ? withdrawLabel
                           : 'Connect your wallet to withdraw from vault'
                       }
                     />

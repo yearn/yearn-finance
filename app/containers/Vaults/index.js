@@ -381,7 +381,6 @@ const Vaults = (props) => {
               vaultItems={migratedItems}
               showDevVaults={showDevVaults}
               walletConnected={walletConnected}
-              account={account}
               isMigrated
             />
           </StyledAccordion>
@@ -395,7 +394,6 @@ const Vaults = (props) => {
             <VaultsWrapper
               vaultItems={items}
               showDevVaults={showDevVaults}
-              account={account}
               walletConnected={walletConnected}
             />
           </StyledAccordion>
@@ -464,13 +462,7 @@ const AmplifyWrapper = (props) => {
 };
 
 const VaultsWrapper = (props) => {
-  const {
-    showDevVaults,
-    walletConnected,
-    vaultItems,
-    isMigrated,
-    account,
-  } = props;
+  const { showDevVaults, walletConnected, vaultItems, isMigrated } = props;
   const currentEventKey = useContext(AccordionContext);
   const web3 = useWeb3();
   let hasBeenShown = false;
@@ -520,7 +512,6 @@ const VaultsWrapper = (props) => {
           accordionKey={vaultKey}
           active={currentEventKey === vaultKey}
           showDevVaults={showDevVaults}
-          account={account}
           web3={web3}
         />
       </>

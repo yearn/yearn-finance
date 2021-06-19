@@ -343,7 +343,9 @@ const Vault = (props) => {
   const [vaultAssetsPickle, setVaultAssetsPickle] = React.useState(
     truncateUsd(0),
   );
-
+  const [showVaultControls, setShowVaultControls] = React.useState({
+    address: '',
+  });
   React.useEffect(() => {
     const getOldGaugeBalance = async () => {
       if (!vault.isYVBoost && vaultIsPickle && account) {
@@ -816,7 +818,6 @@ const Vault = (props) => {
   let vaultTop;
   // eslint-disable-next-line no-unused-vars
   let vaultStats;
-  let vaultControls;
   let vaultAdditionalInfo;
 
   const openContractStatisticsModal = (evt) => {
@@ -824,7 +825,41 @@ const Vault = (props) => {
     evt.stopPropagation();
     openModal('contractStatistics', { vault });
   };
-
+  const getVaultControls = () => {
+    if (active || showVaultControls.address === vault.address) {
+      if (showDevVaults) {
+        return (
+          <VaultButtons
+            vault={vault}
+            token={tokenContractData}
+            showDevVaults={showDevVaults}
+            vaultBalance={vaultBalanceOf}
+            walletBalance={tokenBalanceOf}
+            balanceOf={balanceOf}
+            tokenBalance={tokenBalance}
+          />
+        );
+      }
+      return (
+        <VaultControls
+          vault={vault}
+          token={tokenContractData}
+          showDevVaults={showDevVaults}
+          vaultBalance={vaultBalanceOf}
+          walletBalance={tokenBalanceOf}
+          balanceOf={balanceOf}
+          tokenBalance={tokenBalance}
+          pickleContractsData={pickleContractsData}
+          balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
+          account={account}
+          walletConnected={walletConnected}
+          oldPickleGaugeBalance={oldPickleGaugeBalance}
+          yvBOOSTBalance={yvBOOSTBalance}
+        />
+      );
+    }
+    return null;
+  };
   let lazyApeButton;
   if (LAZY_APE_ADDRESSES.find((a) => a === vault.address)) {
     lazyApeButton = (
@@ -884,18 +919,6 @@ const Vault = (props) => {
       );
     };
 
-    vaultControls = (
-      <VaultButtons
-        vault={vault}
-        token={tokenContractData}
-        showDevVaults={showDevVaults}
-        vaultBalance={vaultBalanceOf}
-        walletBalance={tokenBalanceOf}
-        balanceOf={balanceOf}
-        tokenBalance={tokenBalance}
-      />
-    );
-
     const strippedVault = _.omit(vault, ['group']);
     const fields = _.map(strippedVault, renderField);
     vaultBottom = (
@@ -930,23 +953,6 @@ const Vault = (props) => {
       </ColumnListDev>
     );
   } else {
-    vaultControls = (
-      <VaultControls
-        vault={vault}
-        token={tokenContractData}
-        showDevVaults={showDevVaults}
-        vaultBalance={vaultBalanceOf}
-        walletBalance={tokenBalanceOf}
-        balanceOf={balanceOf}
-        tokenBalance={tokenBalance}
-        pickleContractsData={pickleContractsData}
-        balanceDecimalPlacesCount={vaultBalanceDecimalPlacesCount}
-        account={account}
-        walletConnected={walletConnected}
-        oldPickleGaugeBalance={oldPickleGaugeBalance}
-        yvBOOSTBalance={yvBOOSTBalance}
-      />
-    );
     const tokenIconAddress = vaultIsBackscratcher
       ? BACKSCRATCHER_ADDRESS
       : tokenContractAddress;
@@ -990,7 +996,7 @@ const Vault = (props) => {
             <Grid container spacing={isScreenMd ? 8 : 5}>
               <Grid className="amplify-vault-controls" item xs={12} md={6}>
                 {amplifyVaultTitle}
-                {vaultControls}
+                {getVaultControls()}
               </Grid>
               <Grid
                 container
@@ -1029,7 +1035,7 @@ const Vault = (props) => {
             <Grid container spacing={isScreenMd ? 8 : 5}>
               <Grid item xs={12} md={6} className="amplify-vault-controls">
                 {amplifyVaultTitle}
-                {vaultControls}
+                {getVaultControls()}
               </Grid>
               <Grid
                 container
@@ -1104,7 +1110,7 @@ const Vault = (props) => {
             <Grid container spacing={isScreenMd ? 8 : 5}>
               <Grid item xs={12} md={12}>
                 {amplifyVaultTitle}
-                {vaultControls}
+                {getVaultControls()}
               </Grid>
             </Grid>
           </Box>
@@ -1140,7 +1146,7 @@ const Vault = (props) => {
             <Grid container spacing={isScreenMd ? 8 : 5}>
               <Grid className="amplify-vault-controls" item xs={12} md={7}>
                 {amplifyVaultTitle}
-                {vaultControls}
+                {getVaultControls()}
               </Grid>
               <Grid
                 container
@@ -1346,7 +1352,7 @@ const Vault = (props) => {
     amplifyVaultCard = (
       <Card.Footer className={active && 'active'}>
         <Footer small={!isScreenMd}>
-          {vaultControls}
+          {getVaultControls()}
           {lazyApeButton}
         </Footer>
       </Card.Footer>
@@ -1378,7 +1384,13 @@ const Vault = (props) => {
           >
             {vaultTop}
             {/* {vaultStats} */}
-            <StyledText fontWeight={700} mr={16}>
+            <StyledText
+              fontWeight={700}
+              mr={16}
+              onClick={() => {
+                setShowVaultControls({ address: vault.address });
+              }}
+            >
               {active ? 'HIDE' : showLabel}
             </StyledText>
           </Accordion.Toggle>

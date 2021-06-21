@@ -9,13 +9,11 @@ import { APP_INITIALIZED } from 'containers/App/constants';
 import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { call, put, takeLatest, select, all, take } from 'redux-saga/effects';
 import {
-  selectSelectedAccount,
-  selectVaults,
   selectTokenAllowance,
   selectContractData,
 } from 'containers/App/selectors';
 import { MAX_UINT256 } from 'containers/Cover/constants';
-import { vaultsLoaded, userVaultStatisticsLoaded } from './actions';
+import { vaultsLoaded } from './actions';
 import {
   VAULTS_LOADED,
   WITHDRAW_FROM_VAULT,
@@ -111,30 +109,6 @@ function* fetchVaults() {
     );
     const vaultsWithNewApiData = mapNewApiToOldApi(filteredVaults, newVaults);
     yield put(vaultsLoaded(vaultsWithNewApiData));
-  } catch (err) {
-    console.log('Error reading vaults', err);
-  }
-}
-
-function* fetchUserVaultStatistics() {
-  try {
-    const selectedAccount = yield select(selectSelectedAccount());
-    const vaults = yield select(selectVaults());
-
-    const userVaultStatisticsUrl = `https://api.yearn.tools/user/${selectedAccount}/vaults?statistics=true&apy=true`;
-    const userVaultStatistics = yield call(request, userVaultStatisticsUrl);
-    const vaultsWithUserStatistics = vaults.reduce((current, next) => {
-      const userDepositedInNextVault = userVaultStatistics.find(
-        (userVaultStatistic) =>
-          next.vaultAlias === userVaultStatistic.vaultAlias,
-      );
-      if (userDepositedInNextVault) {
-        return current.concat({ ...next, ...userDepositedInNextVault });
-      }
-      return current.concat(next);
-    }, []);
-    // console.log(vaultsWithUserStatistics);
-    yield put(userVaultStatisticsLoaded(vaultsWithUserStatistics));
   } catch (err) {
     console.log('Error reading vaults', err);
   }
@@ -510,7 +484,6 @@ export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
   yield all([take(ACCOUNT_UPDATED), take(VAULTS_LOADED)]);
-  yield fetchUserVaultStatistics();
   yield takeLatest(WITHDRAW_FROM_VAULT, withdrawFromVault);
   yield takeLatest(WITHDRAW_ALL_FROM_VAULT, withdrawAllFromVault);
   yield takeLatest(DEPOSIT_TO_VAULT, depositToVault);

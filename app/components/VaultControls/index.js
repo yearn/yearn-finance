@@ -673,10 +673,10 @@ export default function VaultControls(props) {
       <Wrapper>
         <Box display="flex" flexDirection="column" width={1}>
           {pickleDescriptions.map((description) => (
-            <>
+            <div key={description.main}>
               <Label fontSize={16}>{description.main}</Label>
               <PickleControl>
-                <Grid xs={12} md={6}>
+                <Grid item xs={12} md={6}>
                   <Balance
                     amount={description.balance}
                     prefix={description.sub}
@@ -721,7 +721,7 @@ export default function VaultControls(props) {
                   </ActionGroup>
                 </Grid>
               </PickleControl>
-            </>
+            </div>
           ))}
           <Label fontSize={16}> {pickleNote} </Label>
           <a href={pickleNoteLink}> {pickleNoteLink} </a>

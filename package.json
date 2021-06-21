@@ -85,7 +85,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.4.3",
-    "@material-ui/core": "^4.11.0",
+    "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",

@@ -29,14 +29,16 @@ const StyledBox = styled('div')(
   ),
 );
 
-const Box = ({ center, ...props }) => (
+const Box = ({ center, children, ...props }) => (
   <StyledBox
     display={center ? 'flex' : null}
     flexDirection={center ? 'column' : null}
     justifyContent={center ? 'center' : null}
     alignItems={center ? 'center' : null}
     {...props}
-  />
+  >
+    {children}
+  </StyledBox>
 );
 
 export default Box;

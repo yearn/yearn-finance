@@ -930,7 +930,7 @@ const Vault = (props) => {
       </ColumnListDev>
     );
   } else {
-    vaultControls = (
+    vaultControls = active && (
       <VaultControls
         vault={vault}
         token={tokenContractData}

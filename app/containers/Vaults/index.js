@@ -465,7 +465,7 @@ const VaultsWrapper = (props) => {
   const { showDevVaults, walletConnected, vaultItems, isMigrated } = props;
   const currentEventKey = useContext(AccordionContext);
   const web3 = useWeb3();
-  let hasBeenShown = false;
+  let banner;
   const migratedVaultsWithBalance = [];
   if (isMigrated) {
     vaultItems.forEach((vault) => {
@@ -487,41 +487,33 @@ const VaultsWrapper = (props) => {
     if (vault.pureEthereum) {
       vaultKey = `${vault.address}-eth`;
     }
-    let banner = null;
-    let decimals = 18;
-    if (vault && vault.token && vault.token.decimals > 0) {
-      decimals = setDecimals(vault.token.decimals);
-    }
-
-    if (
-      vault &&
-      vault.balanceOf &&
-      vault.balanceOf[0].value >= 10 ** decimals &&
-      isMigrated &&
-      !hasBeenShown
-    ) {
-      banner = <MigrationBannerSvg vaults={migratedVaultsWithBalance} />;
-      hasBeenShown = true;
-    }
     return (
-      <>
-        {banner}
-        <Vault
-          vault={vault}
-          key={vaultKey}
-          accordionKey={vaultKey}
-          active={currentEventKey === vaultKey}
-          showDevVaults={showDevVaults}
-          web3={web3}
-        />
-      </>
+      <Vault
+        vault={vault}
+        key={vaultKey}
+        accordionKey={vaultKey}
+        active={currentEventKey === vaultKey}
+        showDevVaults={showDevVaults}
+        web3={web3}
+      />
     );
   };
+
+  const showBanner = !!migratedVaultsWithBalance.length;
+
+  if (showBanner) {
+    banner = <MigrationBannerSvg vaults={migratedVaultsWithBalance} />;
+  }
 
   // Show Linear progress when orderedvaults is empty
   if (walletConnected && vaultItems == null) return <LinearProgress />;
   const vaultRows = _.map(vaultItems, renderVault);
-  return <React.Fragment>{vaultRows}</React.Fragment>;
+  return (
+    <React.Fragment>
+      {banner}
+      {vaultRows}
+    </React.Fragment>
+  );
 };
 
 Vaults.whyDidYouRender = true;

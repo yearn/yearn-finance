@@ -29,8 +29,8 @@ const CustomSelectOption = ({ data, ...rest }) => (
   </Option>
 );
 
-const CustomSelectValue = ({ data, ...rest }) => (
-  <Line {...rest}>
+const CustomSelectValue = ({ data, options }) => (
+  <Line options={options}>
     <InlineIcon src={data.icon} alt={data.label} />
     <span>{data.label}</span>
   </Line>
@@ -59,7 +59,7 @@ const customStyles = {
   menuPortal: (styles) => ({ ...styles, zIndex: 999 }),
 };
 
-export const RoundedSelect = React.forwardRef((props) => {
+export const RoundedSelect = React.forwardRef((props, ref) => {
   const { className, onChange, defaultValue, options, disabled } = props;
 
   return (
@@ -68,6 +68,7 @@ export const RoundedSelect = React.forwardRef((props) => {
         styles={customStyles}
         options={options}
         isSearchable={false}
+        ref={ref}
         defaultValue={defaultValue}
         onChange={onChange}
         disabled={disabled}

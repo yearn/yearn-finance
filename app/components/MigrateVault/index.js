@@ -19,17 +19,19 @@ const MigrateVault = ({ vaultAddress }) => {
 
   return (
     <Tooltip title="Migrate your balance to v2 Vault">
-      <ButtonFilled
-        onClick={() =>
-          dispatch(migrateVault({ vaultContract, trustedMigratorContract }))
-        }
-        color="primary"
-        disabled={!vaultContract || !trustedMigratorContract}
-        disabledTooltipText="Connect your wallet to migrate vault"
-        showTooltipWhenDisabled
-      >
-        Migrate all
-      </ButtonFilled>
+      <>
+        <ButtonFilled
+          onClick={() =>
+            dispatch(migrateVault({ vaultContract, trustedMigratorContract }))
+          }
+          color="primary"
+          disabled={!vaultContract || !trustedMigratorContract}
+          disabledTooltipText="Connect your wallet to migrate vault"
+          showTooltipWhenDisabled
+        >
+          Migrate all
+        </ButtonFilled>
+      </>
     </Tooltip>
   );
 };

@@ -610,10 +610,14 @@ const Vault = (props) => {
   if (vault.fees && vault.fees.general) {
     if (v2Vault) {
       const { managementFee, performanceFee } = vault.fees.general;
-      const keepCrv =
-        vault.apy && vault.apy.fees && vault.apy.fees.keep_crv > 0
+      let keepCrv =
+        vault.apy &&
+        vault.apy.fees &&
+        vault.apy.fees.keep_crv &&
+        vault.apy.fees.keep_crv >= 0
           ? vault.apy.fees.keep_crv
           : null;
+      if (!keepCrv && vault.apy && vault.apy.type === 'crv') keepCrv = '0.00';
 
       versionTooltip = (
         <div>
@@ -639,10 +643,14 @@ const Vault = (props) => {
       );
     } else {
       const { withdrawalFee, performanceFee } = vault.fees.general;
-      const keepCrv =
-        vault.apy && vault.apy.fees && vault.apy.fees.keep_crv > 0
+      let keepCrv =
+        vault.apy &&
+        vault.apy.fees &&
+        vault.apy.fees.keep_crv &&
+        vault.apy.fees.keep_crv >= 0
           ? vault.apy.fees.keep_crv
           : null;
+      if (!keepCrv && vault.apy && vault.apy.type === 'crv') keepCrv = '0.00';
 
       versionTooltip = (
         <div>

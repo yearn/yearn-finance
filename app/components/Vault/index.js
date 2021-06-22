@@ -587,7 +587,7 @@ const Vault = (props) => {
             </tr>
             <tr>
               <td>Convex APR</td>
-              <td>{currentCVXBoost}x</td>
+              <td>{truncateApy(currentCVXBoost)}</td>
             </tr>
             <tr>
               <td>Gross APR</td>

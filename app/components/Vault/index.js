@@ -559,6 +559,7 @@ const Vault = (props) => {
     );
   } else if (apyType === 'crv') {
     const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
+    const currentCVXBoost = _.get(apy, 'data.cvx_apr', 0).toFixed(2);
     apyTooltip = (
       <div>
         {apy.description}
@@ -585,6 +586,10 @@ const Vault = (props) => {
               <td>{currentBoost}x</td>
             </tr>
             <tr>
+              <td>Convex APR</td>
+              <td>{truncateApy(currentCVXBoost)}</td>
+            </tr>
+            <tr>
               <td>Gross APR</td>
               <td>{truncateApy(apy.data.totalApy)}</td>
             </tr>
@@ -605,10 +610,15 @@ const Vault = (props) => {
   if (vault.fees && vault.fees.general) {
     if (v2Vault) {
       const { managementFee, performanceFee } = vault.fees.general;
-      const keepCrv =
-        vault.fees && vault.fees.special.keepCrv > 0
-          ? vault.fees.special.keepCrv
+      let keepCrv =
+        vault.apy &&
+        vault.apy.fees &&
+        vault.apy.fees.keep_crv &&
+        vault.apy.fees.keep_crv >= 0
+          ? vault.apy.fees.keep_crv
           : null;
+      if (!keepCrv && vault.apy && vault.apy.type === 'crv') keepCrv = '0.00';
+
       versionTooltip = (
         <div>
           <TooltipTable>
@@ -624,7 +634,7 @@ const Vault = (props) => {
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{truncateFee(keepCrv)}</td>
+                  <td>{truncateApy(keepCrv)}</td>
                 </tr>
               )}
             </tbody>
@@ -633,10 +643,15 @@ const Vault = (props) => {
       );
     } else {
       const { withdrawalFee, performanceFee } = vault.fees.general;
-      const keepCrv =
-        vault.fees && vault.fees.special.keepCrv > 0
-          ? vault.fees.special.keepCrv
+      let keepCrv =
+        vault.apy &&
+        vault.apy.fees &&
+        vault.apy.fees.keep_crv &&
+        vault.apy.fees.keep_crv >= 0
+          ? vault.apy.fees.keep_crv
           : null;
+      if (!keepCrv && vault.apy && vault.apy.type === 'crv') keepCrv = '0.00';
+
       versionTooltip = (
         <div>
           <TooltipTable>

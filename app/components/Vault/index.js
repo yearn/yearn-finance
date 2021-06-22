@@ -630,7 +630,7 @@ const Vault = (props) => {
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{keepCrv}%</td>
+                  <td>{truncateApy(keepCrv)}</td>
                 </tr>
               )}
             </tbody>

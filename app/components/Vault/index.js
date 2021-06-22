@@ -613,7 +613,7 @@ const Vault = (props) => {
       const keepCrv =
         vault.apy && vault.apy.fees && vault.apy.fees.keep_crv > 0
           ? vault.apy.fees.keep_crv
-          : '0';
+          : null;
 
       versionTooltip = (
         <div>
@@ -642,7 +642,7 @@ const Vault = (props) => {
       const keepCrv =
         vault.apy && vault.apy.fees && vault.apy.fees.keep_crv > 0
           ? vault.apy.fees.keep_crv
-          : '0';
+          : null;
 
       versionTooltip = (
         <div>

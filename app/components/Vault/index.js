@@ -559,6 +559,7 @@ const Vault = (props) => {
     );
   } else if (apyType === 'crv') {
     const currentBoost = _.get(apy, 'data.currentBoost', 0).toFixed(2);
+    const currentCVXBoost = _.get(apy, 'data.cvx_apr', 0).toFixed(2);
     apyTooltip = (
       <div>
         {apy.description}
@@ -583,6 +584,10 @@ const Vault = (props) => {
             <tr>
               <td>Boost</td>
               <td>{currentBoost}x</td>
+            </tr>
+            <tr>
+              <td>Convex APR</td>
+              <td>{currentCVXBoost}x</td>
             </tr>
             <tr>
               <td>Gross APR</td>

@@ -53,6 +53,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
         recommended: newApy.net_apy,
         error: newApy.error,
         type: newApy.type,
+        fees: newApy.fees,
         data: {
           ...vaultApyData,
           grossApy: newApy.gross_apr,

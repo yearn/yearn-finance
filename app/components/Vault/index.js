@@ -606,9 +606,10 @@ const Vault = (props) => {
     if (v2Vault) {
       const { managementFee, performanceFee } = vault.fees.general;
       const keepCrv =
-        vault.fees && vault.fees.special.keepCrv > 0
-          ? vault.fees.special.keepCrv
+        vault.apy && vault.apy.fees && vault.apy.fees.keep_crv > 0
+          ? vault.apy.fees.keep_crv
           : null;
+
       versionTooltip = (
         <div>
           <TooltipTable>
@@ -624,7 +625,7 @@ const Vault = (props) => {
               {keepCrv && (
                 <tr>
                   <td>Locked CRV</td>
-                  <td>{truncateFee(keepCrv)}</td>
+                  <td>{keepCrv}%</td>
                 </tr>
               )}
             </tbody>

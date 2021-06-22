@@ -14,7 +14,9 @@ export const drizzleWeb3Middleware = (drizzleWeb3) => (store) => (next) => (
   if (type === 'APP_READY') {
     // eslint-disable-next-line no-param-reassign
     const apiKey = process.env.ETHERSCAN_API_KEY;
-    const provider = process.env.WEB3_PROVIDER_HTTPS;
+    const provider =
+      localStorage.getItem('WEB3_PROVIDER_HTTPS') ||
+      process.env.WEB3_PROVIDER_HTTPS;
 
     const providerKey =
       process.env.USE_LOCAL_RPC === 'TRUE'

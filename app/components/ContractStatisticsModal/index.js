@@ -132,7 +132,9 @@ export default function TransactionModal(props) {
   const [data, setData] = useState();
   const [days, setDays] = useState(defaultDays);
 
-  const provider = process.env.WEB3_PROVIDER_HTTPS;
+  const provider =
+    localStorage.getItem('WEB3_PROVIDER_HTTPS') ||
+    process.env.WEB3_PROVIDER_HTTPS;
   const apiKey = process.env.ETHERSCAN_APIKEY;
   const batchCall = new BatchCall({
     provider,

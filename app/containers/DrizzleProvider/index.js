@@ -6,7 +6,9 @@ import saga from './saga';
 const DrizzleProvider = (props) => {
   useInjectSaga({ key: 'drizzleSaga', saga });
   const { children, store } = props;
-  const customProvider = process.env.WEB3_PROVIDER_HTTPS;
+  const customProvider =
+    localStorage.getItem('WEB3_PROVIDER_HTTPS') ||
+    process.env.WEB3_PROVIDER_HTTPS;
   const options = {
     disableReduxDevTools: false,
     web3: {

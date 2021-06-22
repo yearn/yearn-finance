@@ -2,7 +2,9 @@ import Onboard from 'bnc-onboard';
 import Notify from 'bnc-notify';
 
 const networkId = 1;
-const rpcUrl = process.env.WEB3_PROVIDER_HTTPS;
+const rpcUrl =
+  localStorage.getItem('WEB3_PROVIDER_HTTPS') ||
+  process.env.WEB3_PROVIDER_HTTPS;
 const dappId = process.env.BLOCKNATIVE_DAPP_ID;
 const portisKey = process.env.PORTIS_APIKEY;
 const fortmaticKey = process.env.FORTMATIC_APIKEY;

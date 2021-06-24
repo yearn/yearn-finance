@@ -70,3 +70,7 @@ $ yarn start
 ## Contributing
 
 Code style follows prettier conventions (`yarn prettier`). Commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) spec.
+
+## Linear
+
+We use Linear to manage tickets, configured via a two-way sync with GitHub. 

@@ -372,7 +372,7 @@ function* zapOut(action) {
         'This means there is not enough liquidity for this token or Zapper may be down. Try with DAI, ETH, USDC or USDT as they offer the more liquidity. ';
     }
     yield put(
-      zapOutError({ message: `Zap Failed. ${errorMessage}`, vaultContract }),
+      zapOutError({ message: `Zap Failed. ${errorMessage}`, poolAddress }),
     );
   }
 }

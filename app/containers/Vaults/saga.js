@@ -32,16 +32,12 @@ const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
 const crvSAaveV2Address = '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC';
 const crvSAaveV1Address = '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1';
 
-const YVBOOST = '0x9d409a0A012CFbA9B15F6D4B36Ac57A46966Ab9a';
-const YVUNI = '0xFBEB78a723b8087fD2ea7Ef1afEc93d35E8Bed42';
-
 const mapNewApiToOldApi = (oldVaults, newVaults) => {
   const newVaultsMap = keyBy(newVaults, 'address');
   const result = oldVaults.map((vault) => {
     const newApy = get(newVaultsMap[vault.address], 'apy');
     const newTvl = get(newVaultsMap[vault.address], 'tvl');
-    // TODO: FIX YVBOOST AND YVUNI ON NEW API
-    if (!newApy || vault.address === YVBOOST || vault.address === YVUNI) {
+    if (!newApy) {
       return vault;
     }
 

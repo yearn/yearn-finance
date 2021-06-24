@@ -39,6 +39,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
   const newVaultsMap = keyBy(newVaults, 'address');
   const result = oldVaults.map((vault) => {
     const newApy = get(newVaultsMap[vault.address], 'apy');
+    const newTvl = get(newVaultsMap[vault.address], 'tvl');
     // TODO: FIX YVBOOST AND YVUNI ON NEW API
     if (!newApy || vault.address === YVBOOST || vault.address === YVUNI) {
       return vault;
@@ -48,6 +49,11 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
     const vaultApyData = _.get(vault, 'apy.data', {});
     const mergedVault = {
       ...vault,
+      tvl: {
+        totalAssets: newTvl.total_assets,
+        price: newTvl.price,
+        value: newTvl.tvl,
+      },
       apy: {
         ...vaultApy,
         recommended: newApy.net_apy,

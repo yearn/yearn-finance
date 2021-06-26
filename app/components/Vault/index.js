@@ -47,6 +47,7 @@ import {
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
   LAZY_APE_ADDRESSES,
+  TRICRYPTO_VAULT,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -1329,7 +1330,27 @@ const Vault = (props) => {
       </Box>
     );
   }
+  let ilWarning = null;
+  if (vault.address === TRICRYPTO_VAULT) {
+    ilWarning = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <div
+          style={{
+            width: '100%',
+            height: '59px',
+            padding: '15px',
 
+            background: '#082c60',
+            borderRadius: ' 5px',
+            color: '#00a3ff',
+          }}
+        >
+          Remember that the underlying assets inside your LP tokens for
+          crvTricrypto can be subject to impermanent loss.
+        </div>
+      </Box>
+    );
+  }
   let zapBox = null;
   const showZapBox = isZappable && !vaultIsYvBoost && !isMigratable;
   if (showZapBox) {
@@ -1409,6 +1430,7 @@ const Vault = (props) => {
               {crvUSDNNotice}
               {migratableBox}
               {zapBox}
+              {ilWarning}
               {emergencyShutdownNotice}
               {vaultAdditionalInfo}
               {amplifyVaultCard}

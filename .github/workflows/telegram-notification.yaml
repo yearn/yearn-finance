@@ -1,6 +1,7 @@
 name: Telegram notifications on events
 on:
   pull_request:
+    types: [opened]
     branches:
       - master
       - develop

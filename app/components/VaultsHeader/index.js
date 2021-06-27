@@ -13,22 +13,27 @@ const Underlined = styled.span`
 
 const amplifyVaultColumns = [
   { name: 'Asset' },
-  { name: 'Version' },
-  { name: 'Deposited' },
+  { name: 'Version & Fees' },
+  { name: 'Holdings' },
   { name: 'Growth' },
-  { name: 'Total Assets' },
+  { name: 'Vault Assets' },
   { name: 'Available to deposit' },
 ];
 
 const vaultColumns = [
   { name: 'Asset', sort: 'displayName' },
   {
-    name: 'Version',
+    name: 'Version & Fees',
     sort: 'type',
     tooltip:
-      'Vault fees are shown below. For more details about fees, refer to our docs.',
+      'Vault version and fees are shown below. For more details about fees, refer to our docs.',
   },
-  { name: 'Deposited', sort: 'valueDeposited' },
+  {
+    name: 'Holdings',
+    sort: 'valueDeposited',
+    tooltip:
+      `Your vault holdings are shown below. This is denominated in the underlying token and includes your initial deposit and earnings.`,
+  },
   {
     name: 'Growth',
     sort: 'valueApy',
@@ -36,7 +41,7 @@ const vaultColumns = [
       'Net APY (annualized yield after fees) is displayed below. Most vaults report annualized weekly yield, though a vault will default to monthly if weekly is less reliable. Gross APY (total yield before fees) is shown on hover.',
   },
   {
-    name: 'Total Assets',
+    name: 'Vault Assets',
     sort: 'valueTotalAssets',
     tooltip:
       'Total assets held in the vault and strategy. Total token holdings and deposit limits, if present, are shown on hover.',

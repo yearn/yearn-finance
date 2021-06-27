@@ -13,7 +13,7 @@ const Underlined = styled.span`
 
 const amplifyVaultColumns = [
   { name: 'Asset' },
-  { name: 'Version & Fees' },
+  { name: 'Fees' },
   { name: 'Holdings' },
   { name: 'Growth' },
   { name: 'Vault Assets' },
@@ -23,7 +23,7 @@ const amplifyVaultColumns = [
 const vaultColumns = [
   { name: 'Asset', sort: 'displayName' },
   {
-    name: 'Version & Fees',
+    name: 'Fees',
     sort: 'type',
     tooltip:
       'Vault version and fees are shown below. For more details about fees, refer to our docs.',

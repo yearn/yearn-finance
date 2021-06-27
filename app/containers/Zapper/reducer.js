@@ -7,6 +7,7 @@ export const initialState = {
   vaults: {},
   balances: {},
   error: null,
+  errorOut: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -24,7 +25,7 @@ const zapperReducer = (state = initialState, action) =>
         break;
       }
       case ZAP_OUT_ERROR: {
-        draft.error = action.payload;
+        draft.errorOut = action.payload;
         break;
       }
     }

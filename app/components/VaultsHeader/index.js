@@ -26,7 +26,7 @@ const vaultColumns = [
     name: 'Fees',
     sort: 'type',
     tooltip:
-      'Vault version and fees are shown below. For more details about fees, refer to our docs.',
+      'Vault and fee model version with individual fee values are shown below. For more details about fees, please refer to our docs.',
   },
   {
     name: 'Holdings',

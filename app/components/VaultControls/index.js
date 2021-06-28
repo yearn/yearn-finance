@@ -25,6 +25,7 @@ import {
   selectZapperTokens,
   selectZapperBalances,
   selectZapperError,
+  selectZapperOutError,
 } from 'containers/Zapper/selectors';
 import { zapIn, zapOut, migratePickleGauge } from 'containers/Zapper/actions';
 import { DEFAULT_SLIPPAGE, ETH_ADDRESS } from 'containers/Zapper/constants';
@@ -159,6 +160,7 @@ export default function VaultControls(props) {
   const zapperTokens = useSelector(selectZapperTokens());
   const zapperBalances = useSelector(selectZapperBalances());
   const zapperError = useSelector(selectZapperError());
+  const zapperOutError = useSelector(selectZapperOutError());
   const zapperVaultData = zapperVaults[vaultAddress.toLowerCase()];
   const isZappable = !!zapperVaultData;
   const isSupportedToken = ({ address, hide }) =>
@@ -1056,6 +1058,10 @@ export default function VaultControls(props) {
               </Grid>
             </Grid>
           </ActionGroup>
+          {zapperOutError &&
+            zapperOutError.poolAddress === vaultAddress.toLowerCase() && (
+              <StyledErrorMessage>{zapperOutError.message}</StyledErrorMessage>
+            )}
         </Box>
       </Wrapper>
     );
@@ -1236,6 +1242,12 @@ export default function VaultControls(props) {
                   </Box>
                 </ButtonGroup>
               </Box>
+              {zapperOutError &&
+                zapperOutError.poolAddress === vaultAddress.toLowerCase() && (
+                  <StyledErrorMessage>
+                    {zapperOutError.message}
+                  </StyledErrorMessage>
+                )}
             </Box>
           </ActionGroup>
         </Box>

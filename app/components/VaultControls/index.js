@@ -1344,7 +1344,7 @@ function MaxButton({ maxAmount, amountSetter, gweiAmountSetter, decimals }) {
       onClick={() => {
         const normalizedAmount = new BigNumber(maxAmount)
           .dividedBy(10 ** decimals)
-          .toFixed(4, 1);
+          .toFixed(2);
 
         amountSetter(normalizedAmount);
         gweiAmountSetter(maxAmount);

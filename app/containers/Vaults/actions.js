@@ -56,6 +56,13 @@ export function restakeBackscratcherRewards(payload) {
   };
 }
 
+export function restakeBackscratcherRewardsV2(payload) {
+  return {
+    type: c.RESTAKE_BACKSCRATCHER_REWARDS_V2,
+    payload,
+  };
+}
+
 export function claimBackscratcherRewards(payload) {
   return {
     type: c.CLAIM_BACKSCRATCHER_REWARDS,

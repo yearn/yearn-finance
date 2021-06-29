@@ -31,8 +31,7 @@ const vaultColumns = [
   {
     name: 'Holdings',
     sort: 'valueDeposited',
-    tooltip:
-      `Your vault holdings are shown below. This is denominated in the underlying token and includes your initial deposit and earnings.`,
+    tooltip: `Your vault holdings are shown below. This is denominated in the underlying token and includes your initial deposit and earnings.`,
   },
   {
     name: 'Net APY',

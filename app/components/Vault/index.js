@@ -384,27 +384,6 @@ const Vault = (props) => {
   }, [userInfoYvBoostEth]);
 
   React.useEffect(() => {
-    const getPickleAPY = async () => {
-      if (vault.isYVBoost || vaultIsPickle) {
-        try {
-          const jarId = vault.isYVBoost ? 'yvboost-eth' : 'yvecrv-eth';
-          const resp = await fetch(
-            `https://stkpowy01i.execute-api.us-west-1.amazonaws.com/prod/protocol/jar/${jarId}/performance`,
-          );
-          const apy = await resp.json();
-          if (apy && apy.sevenDayFarm) {
-            const amount = `${apy.sevenDayFarm.toFixed(2)}%`;
-            setApyPickleRecommended(amount);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    getPickleAPY();
-  }, [apyPickleRecommended]);
-
-  React.useEffect(() => {
     const getPickleAssets = async () => {
       if (vault.isYVBoost || vaultIsPickle) {
         try {
@@ -417,6 +396,8 @@ const Vault = (props) => {
           if (asset && asset[jarId]) {
             const assetRounded = parseInt(asset[jarId].liquidity_locked, 10);
             setVaultAssetsPickle(truncateUsd(assetRounded));
+            const pjarApy = `${asset[jarId].apy.toFixed(2)}%`;
+            setApyPickleRecommended(pjarApy);
           }
         } catch (error) {
           console.log(error);

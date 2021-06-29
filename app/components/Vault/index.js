@@ -1337,7 +1337,6 @@ const Vault = (props) => {
         <div
           style={{
             width: '100%',
-            height: '59px',
             padding: '15px',
 
             background: '#082c60',

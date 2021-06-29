@@ -987,8 +987,8 @@ const Vault = (props) => {
           <Text>
             <b>Note:</b> yveCRV was replaced with more powerful yvBOOST vault.
             Consider yvBOOST instead of using &quot;Restake&quot; button every
-            week. Additionally, yveCRV may be cheaper on the secondary
-            marketthan if minted directly using CRV. You can check the current
+            week. Additionally, yveCRV may be cheaper on the secondary market
+            than if minted directly using CRV. You can check the current
             exchange rate at Sushi by clicking{' '}
             <a
               href="https://app.sushi.com/swap?inputCurrency=0xd533a949740bb3306d119cc777fa900ba034cd52&outputCurrency=0xc5bddf9843308380375a611c18b50fb9341f502a"

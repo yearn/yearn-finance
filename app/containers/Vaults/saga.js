@@ -91,8 +91,7 @@ function* fetchVaults() {
     process.env.NODE_ENV === 'development'
       ? `https://dev.vaults.finance/all`
       : `https://vaults.finance/all`;
-  const newEndpoint =
-    'https://yearn-static-api.s3.amazonaws.com/v1/chains/1/vaults/all';
+  const newEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
   try {
     const vaults = yield call(request, endpoint);
     const newVaults = yield call(request, newEndpoint);

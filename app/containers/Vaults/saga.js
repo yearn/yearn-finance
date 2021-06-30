@@ -26,6 +26,7 @@ import {
   ZAP_PICKLE,
   DEPOSIT_PICKLE_SLP_IN_FARM,
   EXIT_OLD_PICKLE,
+  RESTAKE_BACKSCRATCHER_REWARDS_V2,
 } from './constants';
 // TODO: Do better... never hard-code vault addresses
 const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
@@ -409,6 +410,36 @@ function* restakeBackscratcherRewards(action) {
   }
 }
 
+function* restakeBackscratcherRewardsV2(action) {
+  const { zapv2ThreeCrvContract, threeCrvContract } = action.payload;
+
+  const account = yield select(selectAccount());
+  const allowance = yield select(
+    selectTokenAllowance(
+      threeCrvContract.address,
+      zapv2ThreeCrvContract.address,
+    ),
+  );
+
+  const spendTokenApproved = new BigNumber(allowance).gt(0);
+
+  try {
+    if (!spendTokenApproved) {
+      yield call(
+        approveTxSpend,
+        threeCrvContract,
+        account,
+        zapv2ThreeCrvContract.address,
+      );
+    }
+    yield call(zapv2ThreeCrvContract.methods.zap.cacheSend, {
+      from: account,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function* claimBackscratcherRewards(action) {
   const { vaultContract } = action.payload;
 
@@ -493,6 +524,10 @@ export default function* initialize() {
   yield takeLatest(ZAP_PICKLE, zapPickle);
   yield takeLatest(DEPOSIT_PICKLE_SLP_IN_FARM, depositPickleSLPInFarm);
   yield takeLatest(RESTAKE_BACKSCRATCHER_REWARDS, restakeBackscratcherRewards);
+  yield takeLatest(
+    RESTAKE_BACKSCRATCHER_REWARDS_V2,
+    restakeBackscratcherRewardsV2,
+  );
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
   yield takeLatest(EXIT_OLD_PICKLE, exitOldPickleGauge);

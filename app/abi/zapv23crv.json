@@ -1,0 +1,40 @@
+[
+  {
+    "stateMutability": "nonpayable",
+    "type": "constructor",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "zap",
+    "inputs": [],
+    "outputs": [],
+    "gas": 40936
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "threeCrv",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address" }],
+    "gas": 2418
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "threeCrvVault",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address" }],
+    "gas": 2448
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "vecrvVault",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address" }],
+    "gas": 2478
+  }
+]

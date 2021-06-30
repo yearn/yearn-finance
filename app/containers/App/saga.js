@@ -12,6 +12,7 @@ import pickleJarAbi from 'abi/pickleJar.json';
 import pickleJarAbi2 from 'abi/pickleJar2.json';
 import masterChefAbi from 'abi/masterChef.json';
 import zapViperAbi from 'abi/zapViper.json';
+import zapv2ThreeCrvAbi from 'abi/zapv23crv.json';
 
 import { addContracts } from 'containers/DrizzleProvider/actions';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
@@ -36,6 +37,7 @@ import {
   THREECRV_ADDRESS,
   YVBOOST_ADDRESS,
   YVBOOST_ETH_PJAR,
+  ZAP_V2_3CRV,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -58,6 +60,16 @@ function* loadVaultContracts(clear) {
   const gaugeAddress = '0xF147b8125d2ef93FB6965Db97D6746952a133934';
   v2VaultAddresses.push(YVBOOST_ADDRESS);
   const contracts = [
+    {
+      namespace: 'zapv2ThreeCrv',
+      abi: zapv2ThreeCrvAbi,
+      addresses: [ZAP_V2_3CRV],
+      writeMethods: [
+        {
+          name: 'zap',
+        },
+      ],
+    },
     {
       namespace: 'veCrv',
       abi: veCrvAbi,
@@ -295,6 +307,19 @@ function* loadVaultContracts(clear) {
     ],
   };
 
+  const threeCrvAllowanceV2Subscription = {
+    namespace: 'tokens',
+    abi: erc20Abi,
+    syncOnce: true,
+    addresses: [THREECRV_ADDRESS],
+    readMethods: [
+      {
+        name: 'allowance',
+        args: [account, ZAP_V2_3CRV],
+      },
+    ],
+  };
+
   const pickleJarSubscription = {
     namespace: 'picklejar',
     abi: pickleJarAbi,
@@ -356,6 +381,7 @@ function* loadVaultContracts(clear) {
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
   contracts.push(threeCrvAllowanceSubscription);
+  contracts.push(threeCrvAllowanceV2Subscription);
   yield put(addContracts(contracts, clear));
 }
 

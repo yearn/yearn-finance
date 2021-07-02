@@ -107,7 +107,7 @@ export const menuLinks = {
     title: 'Back to the old v1 UI',
   },
   'woof?': {
-    href: 'https://stg.galaxy.eco/yearn',
+    href: 'https://galaxy.eco/yearn',
     title: 'Woof?',
   },
 };

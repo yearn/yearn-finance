@@ -98,7 +98,7 @@ const StyledErrorMessage = styled(Text)`
 `;
 
 const getNormalizedAmount = (amount, decimals) =>
-  new BigNumber(amount).dividedBy(10 ** decimals).toFixed(2);
+  new BigNumber(amount).dividedBy(10 ** decimals).toFixed(4, 1);
 
 export default function VaultControls(props) {
   const {

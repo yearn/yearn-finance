@@ -47,6 +47,7 @@ import {
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
   LAZY_APE_ADDRESSES,
+  TRICRYPTO_VAULT,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
@@ -383,27 +384,6 @@ const Vault = (props) => {
   }, [userInfoYvBoostEth]);
 
   React.useEffect(() => {
-    const getPickleAPY = async () => {
-      if (vault.isYVBoost || vaultIsPickle) {
-        try {
-          const jarId = vault.isYVBoost ? 'yvboost-eth' : 'yvecrv-eth';
-          const resp = await fetch(
-            `https://stkpowy01i.execute-api.us-west-1.amazonaws.com/prod/protocol/jar/${jarId}/performance`,
-          );
-          const apy = await resp.json();
-          if (apy && apy.sevenDayFarm) {
-            const amount = `${apy.sevenDayFarm.toFixed(2)}%`;
-            setApyPickleRecommended(amount);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-    getPickleAPY();
-  }, [apyPickleRecommended]);
-
-  React.useEffect(() => {
     const getPickleAssets = async () => {
       if (vault.isYVBoost || vaultIsPickle) {
         try {
@@ -416,6 +396,8 @@ const Vault = (props) => {
           if (asset && asset[jarId]) {
             const assetRounded = parseInt(asset[jarId].liquidity_locked, 10);
             setVaultAssetsPickle(truncateUsd(assetRounded));
+            const pjarApy = `${asset[jarId].apy.toFixed(2)}%`;
+            setApyPickleRecommended(pjarApy);
           }
         } catch (error) {
           console.log(error);
@@ -986,7 +968,18 @@ const Vault = (props) => {
           <Text>
             <b>Note:</b> yveCRV was replaced with more powerful yvBOOST vault.
             Consider yvBOOST instead of using &quot;Restake&quot; button every
-            week.
+            week. Additionally, yveCRV may be cheaper on the secondary market
+            than if minted directly using CRV. You can check the current
+            exchange rate at Sushi by clicking{' '}
+            <b>
+              <a
+                href="https://app.sushi.com/swap?inputCurrency=0xd533a949740bb3306d119cc777fa900ba034cd52&outputCurrency=0xc5bddf9843308380375a611c18b50fb9341f502a"
+                target="_blank"
+              >
+                here
+              </a>
+            </b>
+            .
             <br />
             <br />
             This vault converts your CRV into yveCRV, earning you a continuous
@@ -1329,7 +1322,26 @@ const Vault = (props) => {
       </Box>
     );
   }
+  let ilWarning = null;
+  if (vault.address === TRICRYPTO_VAULT) {
+    ilWarning = (
+      <Box py={24} px={isScreenMd ? '76px' : '16px'}>
+        <div
+          style={{
+            width: '100%',
+            padding: '15px',
 
+            background: '#082c60',
+            borderRadius: ' 5px',
+            color: '#00a3ff',
+          }}
+        >
+          Remember that the underlying assets inside your LP tokens for
+          crvTricrypto can be subject to impermanent loss.
+        </div>
+      </Box>
+    );
+  }
   let zapBox = null;
   const showZapBox = isZappable && !vaultIsYvBoost && !isMigratable;
   if (showZapBox) {
@@ -1409,6 +1421,7 @@ const Vault = (props) => {
               {crvUSDNNotice}
               {migratableBox}
               {zapBox}
+              {ilWarning}
               {emergencyShutdownNotice}
               {vaultAdditionalInfo}
               {amplifyVaultCard}

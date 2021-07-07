@@ -465,7 +465,6 @@ export default function VaultControls(props) {
         props: {
           vault: vault.address,
           token: token.address,
-          amount: withdrawalGweiAmount,
           zap: false,
         },
       });
@@ -482,7 +481,6 @@ export default function VaultControls(props) {
         props: {
           vault: vault.address,
           token: selectedWithdrawToken.address,
-          amount: withdrawalGweiAmount,
           zap: true,
         },
       });
@@ -535,7 +533,6 @@ export default function VaultControls(props) {
       props: {
         vault: vault.address,
         token: token.address,
-        amount: depositGweiAmount,
         zap: false,
       },
     });
@@ -556,7 +553,6 @@ export default function VaultControls(props) {
       props: {
         vault: vault.address,
         token: sellToken.address,
-        amount: depositGweiAmount,
         zap: true,
       },
     });

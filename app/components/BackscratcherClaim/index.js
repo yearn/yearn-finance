@@ -6,12 +6,12 @@ import { useContract } from 'containers/DrizzleProvider/hooks';
 import { selectContractData } from 'containers/App/selectors';
 import {
   claimBackscratcherRewards,
-  restakeBackscratcherRewards,
+  restakeBackscratcherRewardsV2,
 } from 'containers/Vaults/actions';
 import styled from 'styled-components';
 import ButtonFilled from 'components/ButtonFilled';
 import RoundedInput from 'components/RoundedInput';
-import { VYPER_ADDRESS, THREECRV_ADDRESS } from 'containers/Vaults/constants';
+import { THREECRV_ADDRESS, ZAP_V2_3CRV } from 'containers/Vaults/constants';
 import Box from 'components/Box';
 import Text from 'components/Text';
 
@@ -30,8 +30,8 @@ const formatAmount = (amount) =>
 const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
   const dispatch = useDispatch();
   const vaultContract = useContract(vaultAddress);
-  const vyperContract = useContract(VYPER_ADDRESS);
   const threeCrvContract = useContract(THREECRV_ADDRESS);
+  const zapv2ThreeCrvContract = useContract(ZAP_V2_3CRV);
   const vaultContractData = useSelector(selectContractData(vaultAddress));
   if (!vaultContract) {
     // return null;
@@ -78,8 +78,8 @@ const BackscratcherClaim = ({ vaultAddress, isScreenMd }) => {
                 className="action-button light"
                 onClick={() =>
                   dispatch(
-                    restakeBackscratcherRewards({
-                      vyperContract,
+                    restakeBackscratcherRewardsV2({
+                      zapv2ThreeCrvContract,
                       threeCrvContract,
                     }),
                   )

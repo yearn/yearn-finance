@@ -289,8 +289,6 @@ const Vault = (props) => {
     emergencyShutdown,
   } = vault;
 
-  console.log('AAAAAAAAA', vault.new);
-
   const { openModal } = useModal();
   const isScreenMd = useMediaQuery('(min-width:960px)');
 

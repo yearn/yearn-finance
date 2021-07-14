@@ -230,5 +230,13 @@
     "vaultTo": "0xa258C4606Ca8206D8aA700cE2143D7db854D168c",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 WETH yVault to continue earning yield."
+  },
+  {
+    "symbol": "DAI",
+    "token": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    "vaultFrom": "0x19D3364A399d251E894aC732651be8B0E4e85001",
+    "vaultTo": "0xdA816459F1AB5631232FE5e97a05BBBb94970c95",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is winding down. Withdraw funds or migrate your balance to the new v2 DAI yVault to continue earning yield."
   }
 ]

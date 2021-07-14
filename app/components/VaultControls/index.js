@@ -933,7 +933,7 @@ export default function VaultControls(props) {
                       setSelectedSellToken(value);
                     }}
                     flexGrow={1}
-                    options={[first(supportedTokenOptions)]}
+                    options={supportedTokenOptions}
                   />
                 </Box>
               </Grid>
@@ -963,9 +963,7 @@ export default function VaultControls(props) {
                     disabled={
                       !yvBoostContract || !tokenContract || !!depositsDisabled
                     }
-                    // TEMPORARILY DISABLE ZAPS
-                    // handler={() => (willZapIn ? zapperZap() : deposit())}
-                    handler={() => deposit()}
+                    handler={() => (willZapIn ? zapperZap() : deposit())}
                     text={
                       vault.hasAllowance || pureEthereum > 0 || willZapIn
                         ? 'Deposit'
@@ -978,16 +976,17 @@ export default function VaultControls(props) {
                       'Connect your wallet to deposit into vault'
                     }
                   />
-                  {zapperError &&
-                    zapperError.poolAddress === vaultAddress.toLowerCase() && (
-                      <StyledErrorMessage>
-                        {zapperError.message}
-                      </StyledErrorMessage>
-                    )}
                 </ButtonGroup>
               </Grid>
             </Grid>
           </ActionGroup>
+
+          {zapperError &&
+            zapperError.poolAddress === vaultAddress.toLowerCase() && (
+              <Box mb={5}>
+                <StyledErrorMessage>{zapperError.message}</StyledErrorMessage>
+              </Box>
+            )}
 
           <ActionGroup direction={isScreenMd ? 'row' : 'column'}>
             <Grid container spacing={1}>

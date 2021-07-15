@@ -38,6 +38,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
   const result = oldVaults.map((vault) => {
     const newApy = get(newVaultsMap[vault.address], 'apy');
     const newTvl = get(newVaultsMap[vault.address], 'tvl');
+    const isNew = get(newVaultsMap[vault.address], 'new');
     if (!newApy) {
       return vault;
     }
@@ -80,6 +81,7 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
           }),
         },
       },
+      new: isNew,
     };
     return mergedVault;
   });

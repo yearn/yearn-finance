@@ -183,7 +183,7 @@ const truncateFee = (fee) => {
 };
 
 const truncateApy = (apy) => {
-  if (!apy) {
+  if (apy === undefined || apy === null || Number.isNaN(apy)) {
     return 'NEW ✨';
   }
   const truncatedApy = (apy * 100).toFixed(2);
@@ -492,6 +492,10 @@ const Vault = (props) => {
 
   const grossApy = _.get(apy, 'data.grossApy');
   const netApy = _.get(apy, 'data.netApy');
+
+  if (vault.new) {
+    apyRecommended = 'NEW ✨';
+  }
 
   let apyTooltip = (
     <div>

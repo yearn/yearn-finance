@@ -94,7 +94,7 @@ function Footer() {
             >
               <Logo src={GithubLogo} alt="" />
             </a>
-            <a href="https://discord.com/invite/6PNv2nF/" target="_blank">
+            <a href="https://discord.com/invite/6PNv2nF" target="_blank">
               <InvertedLogo src={DiscordLogo} alt="" />
             </a>
             <a href="https://medium.com/iearn" target="_blank">

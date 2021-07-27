@@ -5,6 +5,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+
+const outputPath = path.resolve(process.cwd(), 'build');
+const appPath = path.resolve(process.cwd(), 'app');
 
 module.exports = (options) => ({
   mode: options.mode,
@@ -12,7 +16,7 @@ module.exports = (options) => ({
   output: Object.assign(
     {
       // Compile into js/build.js
-      path: path.resolve(process.cwd(), 'build'),
+      path: outputPath,
       publicPath: '/',
     },
     options.output,
@@ -116,6 +120,9 @@ module.exports = (options) => ({
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
+    new CopyPlugin([
+      { from: path.resolve(appPath, 'manifest.json'), to: outputPath },
+    ]),
   ]),
   resolve: {
     modules: ['node_modules', 'app'],

@@ -1,0 +1,13 @@
+{
+  "short_name": "Yearn",
+  "name": "Yearn",
+  "description": "Lending aggregation, yield generation, and insurance on the Ethereum blockchain",
+  "iconPath": "icon_180x180.611d863b87f8968a002b0b039b478a2e.png",
+  "icons": [
+    {
+      "src": "icon_180x180.611d863b87f8968a002b0b039b478a2e.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

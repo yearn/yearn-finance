@@ -19,6 +19,7 @@ export function initOnboard(subscriptions, darkMode) {
     subscriptions,
     walletSelect: {
       wallets: [
+        { walletName: 'detectedwallet' },
         { walletName: 'metamask' },
         {
           walletName: 'walletConnect',

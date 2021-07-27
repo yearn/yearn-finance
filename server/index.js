@@ -35,6 +35,17 @@ app.get('*.js', (req, res, next) => {
   next();
 });
 
+app.get('manifest.json', (req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Headers':
+      'X-Requested-With, content-type, Authorization',
+  });
+
+  next();
+});
+
 // Start your app.
 app.listen(port, host, async (err) => {
   if (err) {

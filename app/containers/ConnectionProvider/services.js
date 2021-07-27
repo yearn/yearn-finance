@@ -56,6 +56,7 @@ export function initOnboard(subscriptions, darkMode) {
         { walletName: 'operaTouch' },
         { walletName: 'imToken', rpcUrl },
         { walletName: 'meetone' },
+        { walletName: 'gnosis' },
       ],
     },
     walletCheck: [

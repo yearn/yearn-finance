@@ -17,7 +17,7 @@ const ManifestPlugin = new WebpackPwaManifest({
   theme_color: '#b1624d',
   inject: true,
   ios: true,
-  iconPath: '/icon_192x192.png',
+  iconPath: 'icon_192x192.png',
   icons: [
     {
       src: path.resolve('app/images/icon-512x512.png'),

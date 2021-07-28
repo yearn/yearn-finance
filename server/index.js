@@ -17,6 +17,20 @@ const app = express();
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 
+app.get('/manifest.json', (req, res, next) => {
+  // This is needed for Gnosis Safe Apps support, if fetches the information
+  // about the app (name, logo, description) on the client side and we need to support CORS
+  // It has to be above setup() function because it will overwrite this with express estatic middleware
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Headers':
+      'X-Requested-With, content-type, Authorization',
+  });
+
+  next();
+});
+
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
   outputPath: resolve(process.cwd(), 'build'),

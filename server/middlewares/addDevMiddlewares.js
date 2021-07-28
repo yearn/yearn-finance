@@ -31,6 +31,13 @@ module.exports = function addDevMiddlewares(app, webpackConfig) {
       if (err) {
         res.sendStatus(404);
       } else {
+        res.set({
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Headers':
+            'X-Requested-With, content-type, Authorization',
+        });
+
         res.send(file.toString());
       }
     });

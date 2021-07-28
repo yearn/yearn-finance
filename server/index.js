@@ -35,7 +35,8 @@ app.get('*.js', (req, res, next) => {
   next();
 });
 
-app.get('manifest.json', (req, res, next) => {
+app.get('manifest.json', (req, res) => {
+  console.log('getting manifest');
   res.set({
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET',
@@ -43,7 +44,7 @@ app.get('manifest.json', (req, res, next) => {
       'X-Requested-With, content-type, Authorization',
   });
 
-  next();
+  res.send();
 });
 
 // Start your app.

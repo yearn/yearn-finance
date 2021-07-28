@@ -7,8 +7,6 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 
-const outputPath = path.resolve(process.cwd(), 'build');
-
 const ManifestPlugin = new WebpackPwaManifest({
   name: 'yearn.finance',
   short_name: 'yearn.finance',
@@ -38,7 +36,7 @@ module.exports = (options) => ({
   output: Object.assign(
     {
       // Compile into js/build.js
-      path: outputPath,
+      path: path.resolve(process.cwd(), 'build'),
       publicPath: '/',
     },
     options.output,

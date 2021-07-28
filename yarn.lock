@@ -6995,27 +6995,6 @@
     "unique-filename" "^1.1.1"
     "y18n" "^4.0.0"
 
-"cacache@^12.0.3":
-  "integrity" "sha512-a0tMB40oefvuInr4Cwb3GerbL9xTj1D5yg0T5xrjGCGyfvbxseIXX7BAO/u/hIXdafzOI5JC3wDwHyf24buOAQ=="
-  "resolved" "https://registry.npmjs.org/cacache/-/cacache-12.0.4.tgz"
-  "version" "12.0.4"
-  dependencies:
-    "bluebird" "^3.5.5"
-    "chownr" "^1.1.1"
-    "figgy-pudding" "^3.5.1"
-    "glob" "^7.1.4"
-    "graceful-fs" "^4.1.15"
-    "infer-owner" "^1.0.3"
-    "lru-cache" "^5.1.1"
-    "mississippi" "^3.0.0"
-    "mkdirp" "^0.5.1"
-    "move-concurrently" "^1.0.1"
-    "promise-inflight" "^1.0.1"
-    "rimraf" "^2.6.3"
-    "ssri" "^6.0.1"
-    "unique-filename" "^1.1.1"
-    "y18n" "^4.0.0"
-
 "cacache@^15.0.5":
   "integrity" "sha512-uKoJSHmnrqXgthDFx/IU6ED/5xd+NNGe+Bb+kLZy7Ku4P+BaiWEUflAKPZ7eAzsYGcsAGASJZsybXp+quEcHTw=="
   "resolved" "https://registry.npmjs.org/cacache/-/cacache-15.2.0.tgz"
@@ -8114,24 +8093,6 @@
   dependencies:
     "toggle-selection" "^1.0.6"
 
-"copy-webpack-plugin@^5.1.1":
-  "integrity" "sha512-Uh7crJAco3AjBvgAy9Z75CjK8IG+gxaErro71THQ+vv/bl4HaQcpkexAY8KVW/T6D2W2IRr+couF/knIRkZMIQ=="
-  "resolved" "https://registry.npmjs.org/copy-webpack-plugin/-/copy-webpack-plugin-5.1.2.tgz"
-  "version" "5.1.2"
-  dependencies:
-    "cacache" "^12.0.3"
-    "find-cache-dir" "^2.1.0"
-    "glob-parent" "^3.1.0"
-    "globby" "^7.1.1"
-    "is-glob" "^4.0.1"
-    "loader-utils" "^1.2.3"
-    "minimatch" "^3.0.4"
-    "normalize-path" "^3.0.0"
-    "p-limit" "^2.2.1"
-    "schema-utils" "^1.0.0"
-    "serialize-javascript" "^4.0.0"
-    "webpack-log" "^2.0.0"
-
 "core-js-compat@^3.0.0", "core-js-compat@^3.14.0":
   "integrity" "sha512-R4NS2eupxtiJU+VwgkF9WTpnSfZW4pogwKHd8bclWU2sp93Pr5S1uYJI84cMOubJRou7bcfL0vmwtLslWN5p3A=="
   "resolved" "https://registry.npmjs.org/core-js-compat/-/core-js-compat-3.14.0.tgz"
@@ -9115,7 +9076,7 @@
   "resolved" "https://registry.npmjs.org/dijkstrajs/-/dijkstrajs-1.0.2.tgz"
   "version" "1.0.2"
 
-"dir-glob@^2.0.0", "dir-glob@^2.2.2":
+"dir-glob@^2.2.2":
   "integrity" "sha512-f9LBi5QWzIW3I6e//uxZoLBlUt9kcp66qo0sSCxL6YZKc75R1c4MFCoe/LaZiBGmgujvQdxc5Bn3QhfyvK5Hsw=="
   "resolved" "https://registry.npmjs.org/dir-glob/-/dir-glob-2.2.2.tgz"
   "version" "2.2.2"
@@ -12274,18 +12235,6 @@
     "object-assign" "^4.0.1"
     "pify" "^2.0.0"
     "pinkie-promise" "^2.0.0"
-
-"globby@^7.1.1":
-  "integrity" "sha1-+yzP+UAfhgCUXfral0QMypcrhoA="
-  "resolved" "https://registry.npmjs.org/globby/-/globby-7.1.1.tgz"
-  "version" "7.1.1"
-  dependencies:
-    "array-union" "^1.0.1"
-    "dir-glob" "^2.0.0"
-    "glob" "^7.1.2"
-    "ignore" "^3.3.5"
-    "pify" "^3.0.0"
-    "slash" "^1.0.0"
 
 "globby@^8.0.0":
   "integrity" "sha512-yTzMmKygLp8RUpG1Ymu2VXPSJQZjNAZPD4ywgYEaG7e4tBJeUQBO8OpXrf1RCNcEs5alsoJYPAMiIHP0cmeC7w=="
@@ -17590,7 +17539,7 @@
   dependencies:
     "p-try" "^1.0.0"
 
-"p-limit@^2.0.0", "p-limit@^2.2.0", "p-limit@^2.2.1":
+"p-limit@^2.0.0", "p-limit@^2.2.0":
   "integrity" "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w=="
   "resolved" "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz"
   "version" "2.3.0"

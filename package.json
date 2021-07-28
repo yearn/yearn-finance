@@ -175,7 +175,6 @@
     "commitlint": "^11.0.0",
     "compare-versions": "3.4.0",
     "compression-webpack-plugin": "2.0.0",
-    "copy-webpack-plugin": "^5.1.1",
     "coveralls": "3.0.3",
     "css-loader": "^5.0.1",
     "dotenv-webpack": "^6.0.0",

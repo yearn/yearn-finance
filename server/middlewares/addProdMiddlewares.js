@@ -24,7 +24,6 @@ module.exports = function addProdMiddlewares(app, options) {
       });
     }
 
-    console.log(req.url);
     return res.sendFile(path.resolve(outputPath, 'index.html'));
   });
 };

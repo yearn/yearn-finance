@@ -31,12 +31,16 @@ module.exports = function addDevMiddlewares(app, webpackConfig) {
       if (err) {
         res.sendStatus(404);
       } else {
-        res.set({
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET',
-          'Access-Control-Allow-Headers':
-            'X-Requested-With, content-type, Authorization',
-        });
+        if (req.url === '/manifest.json') {
+          // This is needed for Gnosis Safe Apps support, if fetches the information
+          // about the app (name, logo, description) on the client side and we need to support CORS
+          res.set({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers':
+              'X-Requested-With, content-type, Authorization',
+          });
+        }
 
         res.send(file.toString());
       }

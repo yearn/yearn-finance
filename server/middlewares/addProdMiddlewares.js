@@ -12,7 +12,19 @@ module.exports = function addProdMiddlewares(app, options) {
   app.use(compression());
   app.use(publicPath, express.static(outputPath));
 
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(outputPath, 'index.html')),
-  );
+  app.get('*', (req, res) => {
+    if (req.url === '/manifest.json') {
+      // This is needed for Gnosis Safe Apps support, if fetches the information
+      // about the app (name, logo, description) on the client side and we need to support CORS
+      res.set({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers':
+          'X-Requested-With, content-type, Authorization',
+      });
+    }
+
+    console.log(req.url);
+    return res.sendFile(path.resolve(outputPath, 'index.html'));
+  });
 };

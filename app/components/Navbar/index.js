@@ -15,8 +15,21 @@ import YearnLogo from 'images/yearn-logo.svg';
 import MobileMenu from './MobileMenu';
 import { menuLinks, menuLinksMeta } from './menuLinks';
 
+const StyledIcon = styled(Icon)`
+  width: 19px;
+  &:hover {
+    filter: brightness(120%);
+  }
+`;
+
+const StyledFlyingMenu = styled(Box)`
+  bottom: 0;
+  transform: translateY(100%);
+`;
+
 const StyledItem = styled.li`
-  display: inline-block;
+  display: flex;
+  align-items: center;
 `;
 
 const ItemStyle = css`
@@ -101,7 +114,7 @@ const BoxedItems = styled(Box)`
 `;
 
 const FlyingMenu = ({ isActive, links, meta }) => (
-  <Box
+  <StyledFlyingMenu
     position="absolute"
     pt={0.8}
     zIndex={10}
@@ -183,10 +196,15 @@ const FlyingMenu = ({ isActive, links, meta }) => (
         ),
       )}
     </BoxedItems>
-  </Box>
+  </StyledFlyingMenu>
 );
 
-const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
+const MenuItem = ({ text, isActive, setIsActive, links, icon, selected }) => {
+  let label = text;
+  if (icon) {
+    label = <StyledIcon type={icon} />;
+  }
+
   if (Array.isArray(links)) {
     let isSelected = false;
     if (
@@ -216,7 +234,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
           hoverable={1}
           isActive={text === isActive}
         >
-          {text}
+          {label}
         </StyledLink>
         <FlyingMenu
           isActive={text === isActive}
@@ -238,7 +256,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
         tw="no-underline"
         hoverable={1}
       >
-        {text}
+        {label}
       </StyledLink>
     </StyledItem>
   ) : (
@@ -249,7 +267,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, selected }) => {
         selected={links.href.toLowerCase() === selected.toLowerCase()}
         hoverable={1}
       >
-        {text}
+        {label}
       </LinkWrapper>
     </StyledItem>
   );
@@ -307,6 +325,7 @@ const Navbar = () => {
               isActive={isActive}
               text={menuLink}
               links={links}
+              icon={links.icon}
               selected={pathname}
             />
           );

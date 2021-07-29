@@ -111,8 +111,7 @@ export const menuLinks = {
     title: 'Woof?',
   },
   bluePill: {
-    // TODO Add correct blue pill link
-    href: 'https://bluePill-placeholder-link',
+    href: 'https://galaxy.eco/yearn',
     title: 'BluePill',
     icon: 'bluePill',
   },

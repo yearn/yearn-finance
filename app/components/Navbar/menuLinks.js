@@ -110,6 +110,12 @@ export const menuLinks = {
     href: 'https://galaxy.eco/yearn',
     title: 'Woof?',
   },
+  bluePill: {
+    // TODO Add correct blue pill link
+    href: 'https://bluePill-placeholder-link',
+    title: 'BluePill',
+    icon: 'bluePill',
+  },
 };
 
 export const menuLinksMeta = {

@@ -5,6 +5,30 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
+
+const ManifestPlugin = new WebpackPwaManifest({
+  name: 'yearn.finance',
+  short_name: 'yearn.finance',
+  description: 'numba go up',
+  background_color: '#fafafa',
+  theme_color: '#b1624d',
+  inject: true,
+  ios: true,
+  iconPath: 'icon_192x192.png',
+  icons: [
+    {
+      src: path.resolve('app/images/icon-512x512.png'),
+      sizes: [72, 96, 128, 144, 192, 384, 512],
+    },
+    {
+      src: path.resolve('app/images/icon-512x512.png'),
+      sizes: [120, 152, 167, 180],
+      ios: true,
+    },
+  ],
+  fingerprints: false,
+});
 
 module.exports = (options) => ({
   mode: options.mode,
@@ -116,6 +140,7 @@ module.exports = (options) => ({
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
+    ManifestPlugin,
   ]),
   resolve: {
     modules: ['node_modules', 'app'],

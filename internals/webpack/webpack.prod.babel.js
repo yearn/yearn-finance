@@ -1,7 +1,6 @@
 // Important modules this config uses
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
 const { HashedModuleIdsPlugin } = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
@@ -124,27 +123,6 @@ module.exports = require('./webpack.base.babel')({
       test: /\.js$|\.css$|\.html$/,
       threshold: 10240,
       minRatio: 0.8,
-    }),
-
-    new WebpackPwaManifest({
-      name: 'yearn.finance',
-      short_name: 'yearn finance',
-      description: 'numba go up',
-      background_color: '#fafafa',
-      theme_color: '#b1624d',
-      inject: true,
-      ios: true,
-      icons: [
-        {
-          src: path.resolve('app/images/icon-512x512.png'),
-          sizes: [72, 96, 128, 144, 192, 384, 512],
-        },
-        {
-          src: path.resolve('app/images/icon-512x512.png'),
-          sizes: [120, 152, 167, 180],
-          ios: true,
-        },
-      ],
     }),
 
     new HashedModuleIdsPlugin({

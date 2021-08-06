@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-case-declarations */
 import { call, put } from 'redux-saga/effects';
 import * as Action from './constants';
 
@@ -52,7 +54,7 @@ export function* initializeWeb3(options) {
       // Attempt fallback if no web3 injection.
       switch (options.fallback.type) {
         case 'ws':
-          var provider = new Web3.providers.WebsocketProvider(
+          const provider = new Web3.providers.WebsocketProvider(
             options.fallback.url,
           );
           web3 = new Web3(provider);

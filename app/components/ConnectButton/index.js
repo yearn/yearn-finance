@@ -9,6 +9,7 @@ import Text from 'components/Text';
 import ConnectedAccount from './ConnectedAccount';
 
 const StyledButton = styled.button`
+  cursor: pointer;
   border: 1px solid
     ${(props) => (props.inverted ? props.theme.primary : '#fff')};
   border-radius: 33px;

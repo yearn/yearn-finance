@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 class DrizzleContract {
   constructor(
     web3Contract,
@@ -25,10 +26,10 @@ class DrizzleContract {
     // Merge web3 contract instance into DrizzleContract instance.
     Object.assign(this, web3Contract);
 
-    for (var i = 0; i < this.abi.length; i++) {
+    for (let i = 0; i < this.abi.length; i++) {
       const item = this.abi[i];
 
-      if (item.type == 'function' && !item.constant) {
+      if (item.type === 'function' && !item.constant) {
         this.methods[item.name].cacheSend = this.cacheSendFunction(
           item.name,
           i,
@@ -38,7 +39,7 @@ class DrizzleContract {
 
     // Register event listeners if any events.
     if (events.length > 0) {
-      for (i = 0; i < events.length; i++) {
+      for (let i = 0; i < events.length; i++) {
         const event = events[i];
 
         if (typeof event === 'object') {

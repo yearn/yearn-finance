@@ -113,6 +113,28 @@ const BoxedItems = styled(Box)`
   }
 `;
 
+const StyledNavbar = styled.nav`
+  display: ${({ visible }) => (visible ? 'flex' : 'none')};
+  flex: 1 1 0%;
+  -webkit-box-pack: end;
+  justify-content: flex-end;
+  -webkit-box-align: center;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-right: 1.25rem;
+
+  > * {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1.25rem * var(--tw-space-x-reverse));
+    margin-left: calc(1.25rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+`;
+
+const StyledNavbarMobile = styled.nav`
+  display: ${({ visible }) => (visible ? 'flex' : 'none')};
+`;
+
 const FlyingMenu = ({ isActive, links, meta }) => (
   <StyledFlyingMenu
     position="absolute"
@@ -315,7 +337,7 @@ const Navbar = () => {
 
       {isMobileOpen && <MobileMenu close={() => setIsMobileOpen(false)} />}
 
-      <nav tw="flex flex-1 justify-end space-x-5 hidden md:flex items-center px-4 mr-5">
+      <StyledNavbar visible={isScreenMd}>
         {Object.keys(menuLinks).map((menuLink) => {
           const links = menuLinks[menuLink];
           return (
@@ -330,11 +352,11 @@ const Navbar = () => {
             />
           );
         })}
-      </nav>
+      </StyledNavbar>
 
-      <nav tw="flex invisible md:visible">
+      <StyledNavbarMobile visible={isScreenMd}>
         <ConnectButton />
-      </nav>
+      </StyledNavbarMobile>
 
       {isMobileOpen && (
         <div tw="flex flex-1 justify-end -mr-1">

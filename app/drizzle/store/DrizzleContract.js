@@ -104,6 +104,7 @@ class DrizzleContract {
         console.log(error);
       }
       if (estimatedPrice) {
+        delete sendArgs.gasPrice;
         sendArgs.maxPriorityFeePerGas = web3.utils.toWei(
           estimatedPrice.maxPriorityFeePerGas.toString(),
           'gwei',
@@ -113,7 +114,7 @@ class DrizzleContract {
           'gwei',
         );
       }
-      console.log({ sendArgs });
+
       return call
         .send(sendArgs)
         .on('transactionHash', (txHash) => {

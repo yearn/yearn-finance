@@ -277,6 +277,7 @@ function* depositToVault(action) {
 
   try {
     if (!pureEthereum) {
+      console.log('approveTxx', approveTxSpend);
       if (!vaultAllowedToSpendToken) {
         yield call(
           approveTxSpend,
@@ -285,8 +286,11 @@ function* depositToVault(action) {
           vaultContract.address,
         );
       }
+
+      console.log('depositTx');
       yield call(vaultContract.methods.deposit.cacheSend, depositAmount, {
         from: account,
+        type: '0x2',
       });
     } else {
       const { zapContract } = vaultContract;

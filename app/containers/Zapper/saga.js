@@ -187,6 +187,8 @@ function* zapIn(action) {
             ownerAddress,
           }),
         );
+        console.log('APPROVAL TX');
+        console.log({ approvalTransaction });
         const broadcastTransaction = (err, transactionHash) => {
           if (err) {
             return;
@@ -216,6 +218,18 @@ function* zapIn(action) {
       }),
     );
 
+    console.log('old', { ...zapInTransaction });
+
+    delete zapInTransaction.gasPrice;
+    delete zapInTransaction.gas;
+    zapInTransaction.type = '0x2';
+
+    // maxFeePerGas = 77,735265704
+    // maxPriorityFeePerGas = 4,611824386
+
+    console.log('middleTx', { ...zapInTransaction });
+    console.log('asd', zapInTransaction);
+
     const broadcastTransaction = (err, transactionHash) => {
       if (err) {
         return;
@@ -226,6 +240,9 @@ function* zapIn(action) {
       });
     };
 
+    // delete zapInTransaction.maxFeePerGas;
+    // delete zapInTransaction.maxPriorityFeePerGas;
+    console.log('lastTX', { ...zapInTransaction });
     yield call(
       web3.eth.sendTransaction,
       zapInTransaction,

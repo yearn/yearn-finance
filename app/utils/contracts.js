@@ -131,5 +131,6 @@ export function getReadMethods(abi) {
 export function approveTxSpend(contract, ownerAddress, spenderAddress) {
   return contract.methods.approve.cacheSend(spenderAddress, MAX_UINT256, {
     from: ownerAddress,
+    type: '0x2',
   });
 }

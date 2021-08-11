@@ -215,7 +215,6 @@ function* zapIn(action) {
         ownerAddress,
       }),
     );
-
     const broadcastTransaction = (err, transactionHash) => {
       if (err) {
         return;
@@ -225,7 +224,6 @@ function* zapIn(action) {
         contractAddress: poolAddress,
       });
     };
-
     yield call(
       web3.eth.sendTransaction,
       zapInTransaction,

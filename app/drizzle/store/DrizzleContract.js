@@ -5,6 +5,7 @@ const GASPRICES_API = 'https://api.blocknative.com/gasprices/blockprices';
 const HEADERS = {
   Authorization: process.env.BLOCKNATIVE_DAPP_ID,
 };
+const DEFAULT_CONFIDENCE_LEVEL = 95;
 
 class DrizzleContract {
   constructor(
@@ -97,7 +98,7 @@ class DrizzleContract {
       try {
         const response = await request(GASPRICES_API, { headers: HEADERS });
         estimatedPrice = _.first(response.blockPrices).estimatedPrices.find(
-          ({ confidence }) => confidence === 90,
+          ({ confidence }) => confidence === DEFAULT_CONFIDENCE_LEVEL,
         );
       } catch (error) {
         console.log(error);

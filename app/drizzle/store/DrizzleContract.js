@@ -1,4 +1,11 @@
 /* eslint-disable no-plusplus */
+import request from 'utils/request';
+
+const GASPRICES_API = 'https://api.blocknative.com/gasprices/blockprices';
+const HEADERS = {
+  Authorization: process.env.BLOCKNATIVE_DAPP_ID,
+};
+
 class DrizzleContract {
   constructor(
     web3Contract,
@@ -62,8 +69,8 @@ class DrizzleContract {
 
   cacheSendFunction(fnName, fnIndex) {
     const contract = this;
-
-    return function test(...args) {
+    const { web3 } = this;
+    return async function test(...args) {
       const newArgs = args;
       contract.store.dispatch({
         type: 'SEND_CONTRACT_TX',
@@ -86,6 +93,26 @@ class DrizzleContract {
       const call = contract.methods[fnName](...newArgs);
       let persistTxHash;
 
+      let estimatedPrice;
+      try {
+        const response = await request(GASPRICES_API, { headers: HEADERS });
+        estimatedPrice = _.first(response.blockPrices).estimatedPrices.find(
+          ({ confidence }) => confidence === 90,
+        );
+      } catch (error) {
+        console.log(error);
+      }
+      if (estimatedPrice) {
+        sendArgs.maxPriorityFeePerGas = web3.utils.toWei(
+          estimatedPrice.maxPriorityFeePerGas.toString(),
+          'gwei',
+        );
+        sendArgs.maxFeePerGas = web3.utils.toWei(
+          estimatedPrice.maxFeePerGas.toString(),
+          'gwei',
+        );
+      }
+      console.log({ sendArgs });
       return call
         .send(sendArgs)
         .on('transactionHash', (txHash) => {

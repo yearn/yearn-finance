@@ -25,6 +25,7 @@ import { DARK_MODE } from 'containers/ThemeProvider/constants';
 import { TX_BROADCASTED } from 'containers/DrizzleProvider/constants';
 
 import trustedMigratorAbi from 'abi/trustedMigrator.json';
+import triCryptoVaultMigratorAbi from 'abi/triCryptoVaultMigrator.json';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
 import {
   TRUSTED_MIGRATOR_ADDRESS,
@@ -38,6 +39,8 @@ import {
   YVBOOST_ADDRESS,
   YVBOOST_ETH_PJAR,
   ZAP_V2_3CRV,
+  TRICRYPTO_VAULT_MIGRATOR,
+  TRICRYPTO_VAULT,
 } from 'containers/Vaults/constants';
 import { processAdressesToUpdate } from '../../drizzle/store/contracts/contractsActions';
 // import { websocketConnect } from 'middleware/websocket/actions';
@@ -371,6 +374,9 @@ function* loadVaultContracts(clear) {
   };
 
   const trustedMigratorSubscriptions = getTrustedMigratorSubscriptions(account);
+  const triCryptoVaultMigratorSubscriptions = getTriCryptoVaultMigratorSubscriptions(
+    account,
+  );
   const zapSubscriptions = getZapSubscriptions();
 
   contracts.push(pickleJarSubscription);
@@ -378,6 +384,7 @@ function* loadVaultContracts(clear) {
   contracts.push(masterChefSubscription);
   contracts.push(...zapSubscriptions);
   contracts.push(...trustedMigratorSubscriptions);
+  contracts.push(...triCryptoVaultMigratorSubscriptions);
   contracts.push(...vaultTokenAllowanceSubscriptions);
   contracts.push(backscratcherAllowanceSubscription);
   contracts.push(threeCrvAllowanceSubscription);
@@ -406,6 +413,29 @@ function getTrustedMigratorSubscriptions(account) {
   );
 
   return [trustedMigratorSubscription, allowanceSubscription];
+}
+
+function getTriCryptoVaultMigratorSubscriptions(account) {
+  const triCryptoVaultMigratorSubscription = {
+    namespace: 'triCryptoVaultMigrator',
+    abi: triCryptoVaultMigratorAbi,
+    addresses: [TRICRYPTO_VAULT_MIGRATOR],
+    writeMethods: [
+      {
+        name: 'migrate_to_new_vault',
+      },
+    ],
+  };
+
+  const allowanceSubscription = getAllowanceSubscription(
+    'vaults',
+    'triCryptoVaultMigratorVaults',
+    [TRICRYPTO_VAULT],
+    account,
+    TRICRYPTO_VAULT_MIGRATOR,
+  );
+
+  return [triCryptoVaultMigratorSubscription, allowanceSubscription];
 }
 
 const getAllowanceSubscription = (

@@ -245,6 +245,6 @@
     "vaultFrom": "0x3D980E50508CFd41a13837A60149927a11c03731",
     "vaultTo": "0xE537B5cc158EB71037D4125BDD7538421981E6AA",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "Curve identified an issue with this pool and has deployed a new 3Crypto pool. Please withdraw and deposit to our new 3Crypto vault to earn higher yield."
+    "migrationMessage": "Curve identified an issue with this pool and has deployed a new 3Crypto pool. Please migrate to our new 3Crypto vault to earn higher yield."
   }
 ]

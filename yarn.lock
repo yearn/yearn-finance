@@ -5607,9 +5607,10 @@ bnb-javascript-sdk-nobroadcast@^2.16.14:
     uuid "^3.3.2"
     websocket-stream "^5.5.0"
 
-bnc-notify@^1.5.1:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.7.0.tgz#5576ddb96c5f3c56dbe96affb87c3d1be6db07ca"
+bnc-notify@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.8.0.tgz#d9f4e557888092a157ca0f8e65f4575738cffc90"
+  integrity sha512-v/zVc1k1dLipZDN35eriT/sRwRx0LPgxSAyDS+Kn63947+H0/pi+5zNYTaV370JsYluvezZcHTod2u5DstLeFg==
   dependencies:
     bignumber.js "^9.0.0"
     bnc-sdk "^3.4.1"
@@ -5617,9 +5618,10 @@ bnc-notify@^1.5.1:
     regenerator-runtime "^0.13.3"
     uuid "^3.3.3"
 
-bnc-onboard@^1.30.0:
+bnc-onboard@^1.33.0:
   version "1.33.0"
   resolved "https://registry.yarnpkg.com/bnc-onboard/-/bnc-onboard-1.33.0.tgz#324249af603c88a3837e75911ad08f5e87885817"
+  integrity sha512-21pBZmmVIz9t3613vErvBHpiQxyp7b6BPUUs80zGpIMq27rGCXolzSNv51WH1khm4DI9afcBIfoLX+vWg2nIbQ==
   dependencies:
     "@cvbb/eth-keyring" "^1.1.0"
     "@ensdomains/ensjs" "^2.0.1"

@@ -8,6 +8,7 @@ const rpcUrl =
 const dappId = process.env.BLOCKNATIVE_DAPP_ID;
 const portisKey = process.env.PORTIS_APIKEY;
 const fortmaticKey = process.env.FORTMATIC_APIKEY;
+const appName = 'Yearn Finance';
 // const apiUrl = 'wss://api.blocknative.com/v0';
 
 export function initOnboard(subscriptions, darkMode) {
@@ -41,7 +42,7 @@ export function initOnboard(subscriptions, darkMode) {
         { walletName: 'status' },
         {
           walletName: 'lattice',
-          appName: 'Yearn Finance',
+          appName,
           rpcUrl,
         },
         { walletName: 'walletLink', rpcUrl },
@@ -58,6 +59,11 @@ export function initOnboard(subscriptions, darkMode) {
         { walletName: 'imToken', rpcUrl },
         { walletName: 'meetone' },
         { walletName: 'gnosis' },
+        {
+          walletName: 'keystone',
+          rpcUrl,
+          appName,
+        },
       ],
     },
     walletCheck: [

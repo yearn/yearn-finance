@@ -47,7 +47,6 @@ import {
   PICKLE_GAUGE_ADDRESS,
   OLD_PICKLE_GAUGE_ADDRESS,
   LAZY_APE_ADDRESSES,
-  TRICRYPTO_VAULT,
   TRICRYPTO_VAULT_V2,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
@@ -1328,10 +1327,7 @@ const Vault = (props) => {
     );
   }
   let ilWarning = null;
-  if (
-    vault.address === TRICRYPTO_VAULT ||
-    vault.address === TRICRYPTO_VAULT_V2
-  ) {
+  if (vault.address === TRICRYPTO_VAULT_V2) {
     ilWarning = (
       <Box py={24} px={isScreenMd ? '76px' : '16px'}>
         <div

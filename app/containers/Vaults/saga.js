@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { keyBy, get } from 'lodash';
 import { selectAccount } from 'containers/ConnectionProvider/selectors';
-import { selectMigrationData } from 'containers/Vaults/selectors';
+import {
+  selectMigrationData,
+  selectTriCryptoMigrationData,
+} from 'containers/Vaults/selectors';
 import blacklist from 'containers/Vaults/blacklist.json';
 import { approveTxSpend } from 'utils/contracts';
 import request from 'utils/request';
@@ -27,6 +30,8 @@ import {
   DEPOSIT_PICKLE_SLP_IN_FARM,
   EXIT_OLD_PICKLE,
   RESTAKE_BACKSCRATCHER_REWARDS_V2,
+  MIGRATE_TRYCRIPTO_VAULT,
+  TRICRYPTO_VAULT_MIGRATOR,
 } from './constants';
 // TODO: Do better... never hard-code vault addresses
 const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
@@ -516,6 +521,44 @@ function* migrateVault(action) {
   }
 }
 
+function* migrateTriCryptoVault(action) {
+  const { vaultContract, triCryptoVaultMigratorContract } = action.payload;
+
+  const account = yield select(selectAccount());
+  const allowance = yield select(
+    selectTokenAllowance(vaultContract.address, TRICRYPTO_VAULT_MIGRATOR),
+  );
+  const vaultMigrationData = yield select(selectTriCryptoMigrationData);
+
+  const isMigratable = !!vaultMigrationData;
+  if (!isMigratable) {
+    console.error(`Cant migrate vault ${vaultContract.address}`);
+    return;
+  }
+
+  const spendTokenApproved = new BigNumber(allowance).gt(0);
+
+  try {
+    if (!spendTokenApproved) {
+      yield call(
+        approveTxSpend,
+        vaultContract,
+        account,
+        triCryptoVaultMigratorContract.address,
+      );
+    }
+
+    yield call(
+      triCryptoVaultMigratorContract.methods.migrate_to_new_vault.cacheSend,
+      {
+        from: account,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function* initialize() {
   yield takeLatest([APP_INITIALIZED], fetchVaults);
   // Wait for these two to have already executed
@@ -532,5 +575,6 @@ export default function* initialize() {
   );
   yield takeLatest(CLAIM_BACKSCRATCHER_REWARDS, claimBackscratcherRewards);
   yield takeLatest(MIGRATE_VAULT, migrateVault);
+  yield takeLatest(MIGRATE_TRYCRIPTO_VAULT, migrateTriCryptoVault);
   yield takeLatest(EXIT_OLD_PICKLE, exitOldPickleGauge);
 }

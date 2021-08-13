@@ -77,6 +77,13 @@ export function migrateVault(payload) {
   };
 }
 
+export function migrateTriCryptoVault(payload) {
+  return {
+    type: c.MIGRATE_TRYCRIPTO_VAULT,
+    payload,
+  };
+}
+
 export function exitOldPickleGauge(payload) {
   return {
     type: c.EXIT_OLD_PICKLE,

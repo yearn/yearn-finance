@@ -238,5 +238,13 @@
     "vaultTo": "0xdA816459F1AB5631232FE5e97a05BBBb94970c95",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is winding down. Withdraw funds or migrate your balance to the new v2 DAI yVault to continue earning yield."
+  },
+  {
+    "symbol": "crvTriCrypto",
+    "token": "0xcA3d75aC011BF5aD07a98d02f18225F9bD9A6BDF",
+    "vaultFrom": "0x3D980E50508CFd41a13837A60149927a11c03731",
+    "vaultTo": "0xE537B5cc158EB71037D4125BDD7538421981E6AA",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "Curve identified an issue with this pool and has deployed a new 3Crypto pool. Please migrate to our new 3Crypto vault to earn higher yield."
   }
 ]

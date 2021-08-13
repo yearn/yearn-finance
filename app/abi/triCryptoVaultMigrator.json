@@ -1,0 +1,16 @@
+[
+  {
+    "stateMutability": "nonpayable",
+    "type": "constructor",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "migrate_to_new_vault",
+    "inputs": [],
+    "outputs": [],
+    "gas": 59336
+  }
+]

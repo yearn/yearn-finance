@@ -18,6 +18,7 @@ import {
   ZAP_OUT,
   MIGRATE_PICKLE_GAUGE,
   DEFAULT_SLIPPAGE,
+  ZAPPER_AFFILIATE_ADDRESS,
 } from './constants';
 const ZAPPER_API = 'https://api.zapper.fi/v1';
 const { ZAPPER_APIKEY } = process.env;
@@ -213,6 +214,7 @@ function* zapIn(action) {
         sellTokenAddress,
         sellAmount,
         ownerAddress,
+        affiliateAddress: ZAPPER_AFFILIATE_ADDRESS,
       }),
     );
     const broadcastTransaction = (err, transactionHash) => {
@@ -343,6 +345,7 @@ function* zapOut(action) {
         toTokenAddress: selectedWithdrawToken.address.toLowerCase(),
         sellAmount: sharesForWithdrawal,
         ownerAddress,
+        affiliateAddress: ZAPPER_AFFILIATE_ADDRESS,
       }),
     );
 

@@ -10,7 +10,7 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const ManifestPlugin = new WebpackPwaManifest({
   name: 'yearn.finance',
   short_name: 'yearn.finance',
-  description: 'DeFi made simple',
+  description: 'Put your assets to work.',
   background_color: '#fafafa',
   theme_color: '#b1624d',
   inject: true,

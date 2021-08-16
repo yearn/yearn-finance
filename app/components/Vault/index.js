@@ -389,7 +389,7 @@ const Vault = (props) => {
         try {
           const jarId = vault.isYVBoost ? 'yvboost-eth' : 'yvecrv-eth';
           const resp = await fetch(
-            'https://stkpowy01i.execute-api.us-west-1.amazonaws.com/prod/protocol/pools',
+            'https://api.pickle.finance/prod/protocol/pools',
           );
           const pools = await resp.json();
           const asset = keyBy(pools, 'identifier');

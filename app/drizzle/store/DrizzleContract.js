@@ -94,6 +94,7 @@ class DrizzleContract {
       const call = contract.methods[fnName](...newArgs);
       let persistTxHash;
 
+      const gasPrice = await web3.eth.getGasPrice();
       let estimatedPrice;
       try {
         const response = await request(GASPRICES_API, { headers: HEADERS });
@@ -115,43 +116,54 @@ class DrizzleContract {
         );
       }
 
-      return call
-        .send(sendArgs)
-        .on('transactionHash', (txHash) => {
-          persistTxHash = txHash;
+      const sendTx = (txCall) =>
+        txCall
+          .send(sendArgs)
+          .on('transactionHash', (txHash) => {
+            persistTxHash = txHash;
+            contract.store.dispatch({
+              type: 'TX_BROADCASTED',
+              txHash,
+              contractAddress: contract.address,
+            });
+          })
+          .on('confirmation', (confirmationNumber, receipt) => {
+            contract.store.dispatch({
+              type: 'TX_CONFIRMAITON',
+              confirmationReceipt: receipt,
+              txHash: persistTxHash,
+            });
+            return Promise.resolve();
+          })
+          .on('receipt', (receipt) => {
+            contract.store.dispatch({
+              type: 'TX_SUCCESSFUL',
+              receipt,
+              txHash: persistTxHash,
+              contractAddress: contract.address,
+            });
+          })
+          .on('error', (error) => {
+            contract.store.dispatch({
+              type: 'TX_ERROR',
+              error,
+            });
+          });
 
-          contract.store.dispatch({
-            type: 'TX_BROADCASTED',
-            txHash,
-            contractAddress: contract.address,
-          });
-        })
-        .on('confirmation', (confirmationNumber, receipt) => {
-          contract.store.dispatch({
-            type: 'TX_CONFIRMAITON',
-            confirmationReceipt: receipt,
-            txHash: persistTxHash,
-          });
-          return Promise.resolve();
-        })
-        .on('receipt', (receipt) => {
-          contract.store.dispatch({
-            type: 'TX_SUCCESSFUL',
-            receipt,
-            txHash: persistTxHash,
-            contractAddress: contract.address,
-          });
-        })
-        .on('error', (error, receipt) => {
-          console.error(error);
-          console.error(receipt);
+      return sendTx(call).catch((error) => {
+        // Retry as a legacy tx, for specific error in metamask v10 + ledger transactions
+        // Metamask RPC Error: Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559
+        if (error.code === -32602) {
+          delete sendArgs.maxPriorityFeePerGas;
+          delete sendArgs.maxFeePerGas;
+          sendArgs.gasPrice = estimatedPrice
+            ? web3.utils.toWei(estimatedPrice.price.toString(), 'gwei')
+            : gasPrice;
+          return sendTx(call);
+        }
 
-          contract.store.dispatch({
-            type: 'TX_ERROR',
-            error,
-          });
-          return Promise.reject(error);
-        });
+        return Promise.reject(error);
+      });
     };
   }
 }

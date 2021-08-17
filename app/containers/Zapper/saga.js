@@ -197,11 +197,7 @@ function* zapIn(action) {
             contractAddress: approvalTransaction.to,
           });
         };
-        yield call(
-          web3.eth.sendTransaction,
-          approvalTransaction,
-          broadcastTransaction,
-        );
+        yield call(sendTx, web3, approvalTransaction, broadcastTransaction);
       }
     }
 
@@ -226,11 +222,7 @@ function* zapIn(action) {
         contractAddress: poolAddress,
       });
     };
-    yield call(
-      web3.eth.sendTransaction,
-      zapInTransaction,
-      broadcastTransaction,
-    );
+    yield call(sendTx, web3, zapInTransaction, broadcastTransaction);
   } catch (error) {
     let errorMessage = '';
     if (error && error.message) {
@@ -329,11 +321,7 @@ function* zapOut(action) {
           contractAddress: poolAddress,
         });
       };
-      yield call(
-        web3.eth.sendTransaction,
-        approvalTransaction,
-        broadcastTransaction,
-      );
+      yield call(sendTx, web3, approvalTransaction, broadcastTransaction);
     }
 
     const zapOutTransaction = yield call(
@@ -358,11 +346,7 @@ function* zapOut(action) {
         contractAddress: poolAddress,
       });
     };
-    yield call(
-      web3.eth.sendTransaction,
-      zapOutTransaction,
-      broadcastTransaction,
-    );
+    yield call(sendTx, web3, zapOutTransaction, broadcastTransaction);
   } catch (error) {
     console.log('Zap Failed', error);
     let errorMessage = '';
@@ -377,6 +361,53 @@ function* zapOut(action) {
     );
   }
 }
+
+const sendTx = async (web3, transactionObject, callback) => {
+  const txObj = transactionObject;
+  const GASPRICES_API = 'https://api.blocknative.com/gasprices/blockprices';
+  const HEADERS = {
+    Authorization: process.env.BLOCKNATIVE_DAPP_ID,
+  };
+  const DEFAULT_CONFIDENCE_LEVEL = 95;
+
+  const gasPrice = await web3.eth.getGasPrice();
+  let estimatedPrice;
+  try {
+    const response = await request(GASPRICES_API, { headers: HEADERS });
+    estimatedPrice = _.first(response.blockPrices).estimatedPrices.find(
+      ({ confidence }) => confidence === DEFAULT_CONFIDENCE_LEVEL,
+    );
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (estimatedPrice) {
+    delete txObj.gasPrice;
+    txObj.maxPriorityFeePerGas = web3.utils.toWei(
+      estimatedPrice.maxPriorityFeePerGas.toString(),
+      'gwei',
+    );
+    txObj.maxFeePerGas = web3.utils.toWei(
+      estimatedPrice.maxFeePerGas.toString(),
+      'gwei',
+    );
+  }
+
+  return web3.eth.sendTransaction(txObj, callback).catch((error) => {
+    // Retry as a legacy tx, for specific error in metamask v10 + ledger transactions
+    // Metamask RPC Error: Invalid transaction params: params specify an EIP-1559 transaction but the current network does not support EIP-1559
+    if (error.code === -32602) {
+      delete txObj.maxPriorityFeePerGas;
+      delete txObj.maxFeePerGas;
+      txObj.gasPrice = estimatedPrice
+        ? web3.utils.toWei(estimatedPrice.price.toString(), 'gwei')
+        : gasPrice;
+      return web3.eth.sendTransaction(txObj, callback);
+    }
+
+    return Promise.reject(error);
+  });
+};
 
 export default function* rootSaga() {
   yield takeLatest(INIT_ZAPPER, initializeZapper);

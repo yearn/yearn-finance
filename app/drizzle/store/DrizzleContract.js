@@ -94,6 +94,7 @@ class DrizzleContract {
       const call = contract.methods[fnName](...newArgs);
       let persistTxHash;
 
+      const gasPrice = await web3.eth.getGasPrice();
       let estimatedPrice;
       try {
         const response = await request(GASPRICES_API, { headers: HEADERS });
@@ -155,10 +156,9 @@ class DrizzleContract {
         if (error.code === -32602) {
           delete sendArgs.maxPriorityFeePerGas;
           delete sendArgs.maxFeePerGas;
-          sendArgs.gasPrice = web3.utils.toWei(
-            estimatedPrice.price.toString(),
-            'gwei',
-          );
+          sendArgs.gasPrice = estimatedPrice
+            ? web3.utils.toWei(estimatedPrice.price.toString(), 'gwei')
+            : gasPrice;
           return sendTx(call);
         }
 

@@ -370,6 +370,7 @@ const sendTx = async (web3, transactionObject, callback) => {
   };
   const DEFAULT_CONFIDENCE_LEVEL = 95;
 
+  const gasPrice = await web3.eth.getGasPrice();
   let estimatedPrice;
   try {
     const response = await request(GASPRICES_API, { headers: HEADERS });
@@ -398,10 +399,9 @@ const sendTx = async (web3, transactionObject, callback) => {
     if (error.code === -32602) {
       delete txObj.maxPriorityFeePerGas;
       delete txObj.maxFeePerGas;
-      txObj.gasPrice = web3.utils.toWei(
-        estimatedPrice.price.toString(),
-        'gwei',
-      );
+      txObj.gasPrice = estimatedPrice
+        ? web3.utils.toWei(estimatedPrice.price.toString(), 'gwei')
+        : gasPrice;
       return web3.eth.sendTransaction(txObj, callback);
     }
 

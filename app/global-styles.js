@@ -131,6 +131,14 @@ const GlobalStyle = createGlobalStyle`
     backdrop-filter: blur(10px) drop-shadow(0px 4px 4px rgba(0,0,0,0.25)) !important;
   }
 
+  .bn-onboard-custom .bn-onboard-account-select {
+    color: black;
+  }
+
+  .bn-onboard-custom {
+    font-size: 90%;
+  }
+
 .card {
   position: relative;
   display: -ms-flexbox;

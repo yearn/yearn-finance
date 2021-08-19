@@ -175,7 +175,7 @@ export default function VaultControls(props) {
     .map(({ address, label, img }) => ({
       value: address,
       label,
-      icon: `https://zapper.fi/images/${img}`,
+      icon: img,
     }));
   supportedTokenOptions.unshift({
     value: token.address,
@@ -224,45 +224,42 @@ export default function VaultControls(props) {
   const [depositAmount, setDepositAmount] = useState(0);
   const [withdrawalGweiAmount, setWithdrawalGweiAmount] = useState(0);
   const [depositGweiAmount, setDepositGweiAmount] = useState(0);
-  const zapperImgUrl = 'https://zapper.fi/images/';
+  const getZapperImgUrl = (address) =>
+    `https://storage.googleapis.com/zapper-fi-assets/tokens/ethereum/${address}.png`;
 
   const tmpWithdrawTokens = [];
   [
     {
       label: 'ETH',
       address: '0x0000000000000000000000000000000000000000',
-      icon: `${zapperImgUrl}ETH-icon.png`,
       value: 'ETH',
     },
     {
       label: 'DAI',
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      icon: `${zapperImgUrl}DAI-icon.png`,
       value: 'DAI',
     },
     {
       label: 'USDC',
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      icon: `${zapperImgUrl}USDC-icon.png`,
       value: 'USDC',
     },
     {
       label: 'USDT',
       address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      icon: `${zapperImgUrl}USDT-icon.png`,
       value: 'USDT',
     },
     {
       label: 'WBTC',
       address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-      icon: `${zapperImgUrl}WBTC-icon.png`,
       value: 'WBTC',
     },
   ].map((t) => {
-    if (t.label !== vault.displayName) {
-      tmpWithdrawTokens.push(t);
+    const zapOutToken = { ...t, icon: getZapperImgUrl(t.address) };
+    if (zapOutToken.label !== vault.displayName) {
+      tmpWithdrawTokens.push(zapOutToken);
     }
-    return t;
+    return zapOutToken;
   });
   const currentVaultToken = {
     label: token.displayName === 'ETH' ? 'WETH' : token.displayName,

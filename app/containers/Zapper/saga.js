@@ -10,6 +10,7 @@ import {
   YVBOOST_ETH_PJAR,
   PICKLEJAR_ADDRESS,
 } from 'containers/Vaults/constants';
+import { ACCOUNT_UPDATED } from 'containers/ConnectionProvider/constants';
 import { zapperDataLoaded, zapInError, zapOutError } from './actions';
 import {
   INIT_ZAPPER,
@@ -412,6 +413,7 @@ const sendTx = async (web3, transactionObject, callback) => {
 export default function* rootSaga() {
   yield takeLatest(INIT_ZAPPER, initializeZapper);
   yield takeLatest(INIT_ZAPPER, watchForTransactions);
+  yield takeLatest(ACCOUNT_UPDATED, initializeZapper);
   yield takeLatest(ZAP_IN, zapIn);
   yield takeLatest(ZAP_OUT, zapOut);
   yield takeLatest(MIGRATE_PICKLE_GAUGE, migratePickleGauge);

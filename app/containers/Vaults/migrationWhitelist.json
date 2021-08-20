@@ -246,5 +246,13 @@
     "vaultTo": "0xE537B5cc158EB71037D4125BDD7538421981E6AA",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "Curve identified an issue with this pool and has deployed a new 3Crypto pool. Please migrate to our new 3Crypto vault to earn higher yield."
+  },
+  {
+    "symbol": "TUSD",
+    "token": "0x0000000000085d4780B73119b644AE5ecd22b376",
+    "vaultFrom": "0x37d19d1c4E1fa9DC47bD1eA12f742a0887eDa74a",
+    "vaultTo": "0xFD0877d9095789cAF24c98F7CCe092fa8E120775",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 TUSD yVault to continue earning yield."
   }
 ]

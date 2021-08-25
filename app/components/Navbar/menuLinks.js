@@ -11,6 +11,11 @@ export const menuLinks = {
       description: '',
     },
   ],
+  swap: {
+    href: 'https://bowswap.finance',
+    title: 'Swap',
+    description: '',
+  },
   // protect: {
   //  href: '/cover',
   //  title: 'Protect',

@@ -296,7 +296,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, icon, selected }) => {
 };
 
 const Navbar = () => {
-  const isScreenMd = useMediaQuery('(min-width:768px)');
+  const isScreenMd = useMediaQuery('(min-width:850px)');
   const [isActive, setIsActive] = React.useState(undefined);
   const [isMobileOpen, setIsMobileOpen] = React.useState(false);
   const location = useSelector(selectLocation());

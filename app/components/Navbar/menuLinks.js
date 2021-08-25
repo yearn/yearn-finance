@@ -11,7 +11,7 @@ export const menuLinks = {
       description: '',
     },
   ],
-  Swap: {
+  swap: {
     href: 'https://bowswap.finance',
     title: 'Swap',
     description: 'Yearn finance documentation',

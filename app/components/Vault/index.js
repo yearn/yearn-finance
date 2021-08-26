@@ -1056,13 +1056,13 @@ const Vault = (props) => {
                   which:
                 </p>
                 <ol>
-                  <li>1. Makes a deposit into yvBOOST.</li>
+                  <li>Makes a deposit into yvBOOST.</li>
                   <li>
-                    {`2. Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
+                    {`Stakes this yvBOOST in the yvBOOST-ETH SLP on SushiSwap
                     for SUSHI 🍣 rewards.`}
                   </li>
                   <li>
-                    {`3. Deposits this SLP into the yvBOOST-ETH pJar on Pickle
+                    {`Deposits this SLP into the yvBOOST-ETH pJar on Pickle
                     Finance for PICKLE 🥒 rewards.`}
                   </li>
                 </ol>

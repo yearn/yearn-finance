@@ -64,6 +64,7 @@ export function initOnboard(subscriptions, darkMode) {
           rpcUrl,
           appName,
         },
+        { walletName: 'liquality' },
       ],
     },
     walletCheck: [

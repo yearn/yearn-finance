@@ -65,6 +65,10 @@ export function initOnboard(subscriptions, darkMode) {
           appName,
         },
         { walletName: 'liquality' },
+        {
+          walletName: 'mewwallet',
+          rpcUrl,
+        },
       ],
     },
     walletCheck: [

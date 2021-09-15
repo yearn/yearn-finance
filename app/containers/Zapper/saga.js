@@ -49,11 +49,15 @@ function* initializeZapper() {
 
   try {
     const tokens = yield call(request, getZapperApi('/prices'));
-    const yvaults = yield call(request, getZapperApi('/vault-stats/yearn'));
+    const yvaults = yield call(
+      request,
+      getZapperApi('/protocols/yearn/token-market-data', { type: 'vault' }),
+    );
     const pickleVaults = yield call(
       request,
-      getZapperApi('/vault-stats/pickle', {
+      getZapperApi('/protocols/pickle/token-market-data', {
         addresses: [account],
+        type: 'vault',
       }),
     );
     const vaults = yvaults.concat(pickleVaults);
@@ -110,7 +114,10 @@ function* migratePickleGauge(action) {
     }
     const picklePrices = yield call(
       request,
-      getZapperApi('/vault-stats/pickle', {}),
+      getZapperApi('/protocols/pickle/token-market-data', {
+        addresses: [account],
+        type: 'vault',
+      }),
     );
     //    incomingLP={quantity of pSUSHI ETH / yveCRV-DAO tokens sent by user}
     // minPTokens={(quantity of pSUSHI ETH / yveCRV-DAO tokens sent by user * pSUSHI ETH / yveCRV-DAO pricePerToken) /
@@ -128,8 +135,8 @@ function* migratePickleGauge(action) {
     });
     const minPTokens =
       (new BigNumber(pickleDepositAmount).dividedBy(10 ** 18) *
-        lpyveCRVDAO.pricePerToken) /
-      lpyveCRVVaultv2.pricePerToken;
+        lpyveCRVDAO.price) /
+      lpyveCRVVaultv2.price;
     console.log('minPTokens', minPTokens);
     console.log('minPTokens depositamout', pickleDepositAmount);
     const minPTokensFinal = new BigNumber(minPTokens)

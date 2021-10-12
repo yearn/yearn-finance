@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { keyBy, get } from 'lodash';
 import Hidden from '@material-ui/core/Hidden';
 import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
 import VaultsHeader from 'components/VaultsHeader';
 import VaultsHeaderDev from 'components/VaultsHeaderDev';
 import {
@@ -34,6 +35,8 @@ import request from 'utils/request';
 import { ALIASES_API, YVBOOST_ETH_PJAR } from 'containers/Vaults/constants';
 import setDecimals from 'utils/setDecimals';
 import migrationWhitelist from 'containers/Vaults/migrationWhitelist.json';
+import Icon from 'components/Icon';
+import Text from 'components/Text';
 import MigrationBannerSvg from './MigrationBannerSvg';
 
 const Wrapper = styled(Box)`
@@ -59,6 +62,38 @@ const Warning = styled.div`
 const StyledAccordion = styled(Accordion)`
   padding-bottom: 10px;
   width: 100%;
+`;
+
+const BetaText = styled(Text)`
+  flex: 1;
+`;
+
+const BetaStyledIcon = styled(Icon)`
+  width: 26px;
+  margin-right: 18px;
+`;
+
+const BetaRightArrow = styled.a`
+  display: flex;
+  align-items: center;
+  margin-left: 14px;
+  width: 10px;
+
+  ${BetaStyledIcon} {
+    width: 100%;
+  }
+`;
+
+const BetaBanner = styled(Card)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  background-color: ${(props) => props.theme.primary};
+  border-color: ${(props) => props.theme.primary};
+  min-height: 64px;
+  padding: 16px;
+  font-size: 17px;
 `;
 
 // TODO: Remove UI hacks...
@@ -366,10 +401,28 @@ const Vaults = (props) => {
         maxWidth={1200}
         center
       >
+        <BetaBanner>
+          <BetaStyledIcon type="shine" />
+
+          <BetaText>
+            We recently launched our new website at{' '}
+            <a href="https://beta.yearn.finance" target="_blank">
+              beta.yearn.finance
+            </a>
+            . Click here to test it out, including our new Vaults and Iron Bank
+            on Fantom.
+          </BetaText>
+
+          <BetaRightArrow href="https://beta.yearn.finance" target="_blank">
+            <BetaStyledIcon type="chevronRight" />
+          </BetaRightArrow>
+        </BetaBanner>
+
         {/* <DevHeader devMode={devMode}>
-        <VaultsNavLinks />
-        <AddVault devVaults={showDevVaults} />
-      </DevHeader> */}
+          <VaultsNavLinks />
+          <AddVault devVaults={showDevVaults} />
+        </DevHeader> */}
+
         {warning}
         {amplifyVaultsWrapper}
         <WrapTable center width={1}>

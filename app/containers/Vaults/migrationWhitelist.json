@@ -278,5 +278,13 @@
     "vaultTo": "0x7Da96a3891Add058AdA2E826306D812C638D87a7",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 USDT yVault to continue earning yield."
+  },
+  {
+    "symbol": "YFI",
+    "token": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
+    "vaultFrom": "0xE14d13d8B3b85aF791b2AADD661cDBd5E6097Db1",
+    "vaultTo": "0xdb25cA703181E7484a155DD612b06f57E12Be5F0",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 YFI yVault to continue earning yield."
   }
 ]

@@ -9,6 +9,7 @@ import React from 'react';
 import Copy from './copy.svg';
 import Clock from './clock.svg';
 import ChevronLeft from './chevronLeft.svg';
+import ChevronRight from './chevronRight.svg';
 import Stats from './stats.svg';
 import ExternalLink from './externalLink.svg';
 import ExternalLinkBlack from './externalLinkBlack.svg';
@@ -19,6 +20,7 @@ import Info from './info.svg';
 import Close from './close.svg';
 import ArrowRight from './arrowRight.svg';
 import BluePill from './bluePill.svg';
+import Shine from './shine.svg';
 
 export default function Icon(props) {
   const { onClick, disabled, className, type } = props;
@@ -27,6 +29,7 @@ export default function Icon(props) {
     clock: Clock,
     stats: Stats,
     chevronLeft: ChevronLeft,
+    chevronRight: ChevronRight,
     externalLink: ExternalLink,
     externalLinkBlack: ExternalLinkBlack,
     info: Info,
@@ -36,6 +39,7 @@ export default function Icon(props) {
     arrowRight: ArrowRight,
     close: Close,
     bluePill: BluePill,
+    shine: Shine,
   };
   const src = icons[type];
 

@@ -111,6 +111,10 @@ export const menuLinks = {
     href: 'https://v1.yearn.finance',
     title: 'Back to the old v1 UI',
   },
+  beta: {
+    href: 'https://beta.yearn.finance',
+    type: 'button',
+  },
   bluePill: {
     href: 'https://galaxy.eco/yearn',
     title: 'BluePill',

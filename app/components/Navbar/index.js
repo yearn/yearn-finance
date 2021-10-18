@@ -12,6 +12,7 @@ import Box from 'components/Box';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import YearnLogo from 'images/yearn-logo.svg';
+import ButtonFilled from 'components/ButtonFilled';
 import MobileMenu from './MobileMenu';
 import { menuLinks, menuLinksMeta } from './menuLinks';
 
@@ -30,6 +31,14 @@ const StyledFlyingMenu = styled(Box)`
 const StyledItem = styled.li`
   display: flex;
   align-items: center;
+
+  .beta-button {
+    height: 26px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 5px;
+  }
 `;
 
 const ItemStyle = css`
@@ -221,10 +230,21 @@ const FlyingMenu = ({ isActive, links, meta }) => (
   </StyledFlyingMenu>
 );
 
-const MenuItem = ({ text, isActive, setIsActive, links, icon, selected }) => {
+const MenuItem = ({
+  text,
+  isActive,
+  setIsActive,
+  links,
+  icon,
+  selected,
+  type,
+}) => {
   let label = text;
   if (icon) {
     label = <StyledIcon type={icon} />;
+  }
+  if (type === 'button') {
+    label = <ButtonFilled className="beta-button">V3 BETA</ButtonFilled>;
   }
 
   if (Array.isArray(links)) {
@@ -296,7 +316,7 @@ const MenuItem = ({ text, isActive, setIsActive, links, icon, selected }) => {
 };
 
 const Navbar = () => {
-  const isScreenMd = useMediaQuery('(min-width:850px)');
+  const isScreenMd = useMediaQuery('(min-width:960px)');
   const [isActive, setIsActive] = React.useState(undefined);
   const [isMobileOpen, setIsMobileOpen] = React.useState(false);
   const location = useSelector(selectLocation());
@@ -349,6 +369,7 @@ const Navbar = () => {
               links={links}
               icon={links.icon}
               selected={pathname}
+              type={links.type}
             />
           );
         })}

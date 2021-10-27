@@ -305,54 +305,54 @@ export default function VaultControls(props) {
     selectTokenAllowance(tokenContractAddress, vaultContractAddress),
   );
 
-  // const depositLimitBN = useMemo(() => new BigNumber(depositLimit), [
-  //   depositLimit,
-  // ]);
+  const depositLimitBN = useMemo(() => new BigNumber(depositLimit), [
+    depositLimit,
+  ]);
 
-  // const totalAssetsBN = useMemo(() => new BigNumber(totalAssets), [
-  //   totalAssets,
-  // ]);
+  const totalAssetsBN = useMemo(() => new BigNumber(totalAssets), [
+    totalAssets,
+  ]);
 
   const approvalExplainer =
     'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
 
   const depositsDisabled = useMemo(() => {
-    const disableAllMessage = 'Vault deposits temporarily disabled.';
-    return disableAllMessage;
+    // yUSD
+    if (vault.address === '0x4B5BfD52124784745c1071dcB244C6688d2533d3') {
+      return 'Vault deposits temporarily disabled.';
+    }
 
-    // if (vault.type === 'v2') {
-    //   if (
-    //     !willZapIn &&
-    //     totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)
-    //   ) {
-    //     console.log('vault limit reached', vault.symbol);
-    //     return 'Vault deposit limit reached.';
-    //   }
-    //   // fix: disable deposit button if value is 0
-    //   // note: resolves issue #252 from iearn-finance repo
-    //   // this issue only affects v2 & is mis-ticketed as v1 (iearn-finance)
-    //   if (depositGweiAmount <= 0) {
-    //     return 'Value must be greater than 0.';
-    //   }
-    // } else if (
-    //   vault.type === 'v1' &&
-    //   vault.address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1'
-    // ) {
-    //   console.log('vault address', vault.symbol);
-    //   return 'Inactive with YIP-56: Buyback and Build';
-    // }
+    if (vault.type === 'v2') {
+      if (
+        !willZapIn &&
+        totalAssetsBN.plus(depositGweiAmount).gte(depositLimitBN)
+      ) {
+        console.log('vault limit reached', vault.symbol);
+        return 'Vault deposit limit reached.';
+      }
+      // fix: disable deposit button if value is 0
+      // note: resolves issue #252 from iearn-finance repo
+      // this issue only affects v2 & is mis-ticketed as v1 (iearn-finance)
+      if (depositGweiAmount <= 0) {
+        return 'Value must be greater than 0.';
+      }
+    } else if (
+      vault.type === 'v1' &&
+      vault.address === '0xBA2E7Fed597fd0E3e70f5130BcDbbFE06bB94fe1'
+    ) {
+      console.log('vault address', vault.symbol);
+      return 'Inactive with YIP-56: Buyback and Build';
+    }
 
-    // if (emergencyShutdown) {
-    //   return 'Vault deposits temporarily disabled.';
-    // }
+    if (emergencyShutdown) {
+      return 'Vault deposits temporarily disabled.';
+    }
 
-    // return undefined;
+    return undefined;
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   const withdrawDisabled = useMemo(() => {
     if (
-      vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
-      vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC' ||
       vault.address === '0x4B5BfD52124784745c1071dcB244C6688d2533d3' // yUSD
     ) {
       return 'Vault withdrawals temporarily disabled.';

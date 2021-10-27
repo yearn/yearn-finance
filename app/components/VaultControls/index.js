@@ -352,7 +352,8 @@ export default function VaultControls(props) {
   const withdrawDisabled = useMemo(() => {
     if (
       vault.address === '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab' ||
-      vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC'
+      vault.address === '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC' ||
+      vault.address === '0x4B5BfD52124784745c1071dcB244C6688d2533d3' // yUSD
     ) {
       return 'Vault withdrawals temporarily disabled.';
     }
@@ -1224,7 +1225,9 @@ export default function VaultControls(props) {
                   <Box width={isScreenMd ? '130px' : '100%'}>
                     <ActionButton
                       className="action-button bold outline"
-                      disabled={!vaultContract || !tokenContract}
+                      disabled={
+                        !vaultContract || !tokenContract || withdrawDisabled
+                      }
                       handler={withdraw}
                       text="Withdraw"
                       title="Withdraw from vault"

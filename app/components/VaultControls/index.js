@@ -317,10 +317,6 @@ export default function VaultControls(props) {
     'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
 
   const depositsDisabled = useMemo(() => {
-    // yUSD
-    if (vault.address === '0x4B5BfD52124784745c1071dcB244C6688d2533d3') {
-      return 'Vault deposits temporarily disabled.';
-    }
 
     if (vault.type === 'v2') {
       if (
@@ -352,12 +348,6 @@ export default function VaultControls(props) {
   }, [depositAmount, totalAssets, depositLimit, emergencyShutdown]);
 
   const withdrawDisabled = useMemo(() => {
-    if (
-      vault.address === '0x4B5BfD52124784745c1071dcB244C6688d2533d3' // yUSD
-    ) {
-      return 'Vault withdrawals temporarily disabled.';
-    }
-
     if (emergencyShutdown) {
       return 'Vault withdrawals temporarily disabled.';
     }

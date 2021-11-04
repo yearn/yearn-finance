@@ -1384,9 +1384,23 @@ const Vault = (props) => {
     );
 
   const minDecimals = setDecimals(decimals);
-  const showVaults =
-    (!vaultsToHide.includes(vault.address) || balanceOf >= 10 ** minDecimals) &&
+  const migrationAvailable = _.get(vault, 'migration.available');
+  const userHasBalance = balanceOf >= 10 ** minDecimals;
+  const vaultIsV1Type = vault.type === 'v1';
+  const vaultIsSpecial = vault.special;
+
+  let showVaults =
+    (!vaultsToHide.includes(vault.address) || userHasBalance) &&
     !hackedOrToBeAbsolutelyRemoved.includes(vault.address);
+
+  if (migrationAvailable && !userHasBalance) {
+    showVaults = false;
+  }
+
+  if (vaultIsV1Type && !vaultIsSpecial && !userHasBalance) {
+    showVaults = false;
+  }
+
   let finalVaults = null;
   let showLabel = 'SHOW';
   if (isMigratable) {

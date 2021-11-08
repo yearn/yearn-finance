@@ -44,12 +44,20 @@ const customStyles = {
     height: 46,
     minHeight: 46,
   }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: '100%',
+    paddingTop: 0,
+    marginTop: -2,
+    overflow: 'visible',
+  }),
   control: (provided) => ({
     ...provided,
     color: 'black',
     // none of react-select's styles are passed to <Control />
     height: 46,
     minHeight: 46,
+    flexWrap: 'nowrap',
   }),
   dropdownIndicator: (provided) => ({
     ...provided,

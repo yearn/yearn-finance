@@ -317,7 +317,6 @@ export default function VaultControls(props) {
     'Before depositing for the first time, users must submit an approval transaction to allow Yearn to accept your funds. Once this approval transaction has confirmed, you can deposit any amount, forever, from this address.';
 
   const depositsDisabled = useMemo(() => {
-
     if (vault.type === 'v2') {
       if (
         !willZapIn &&

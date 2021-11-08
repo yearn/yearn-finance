@@ -13,6 +13,8 @@ import { VAULTS_LOADED, ROUTE_CHANGED } from './constants';
 import {
   USER_VAULT_STATISTICS_LOADED,
   AMPLIFY_VAULTS_ADDRESSES,
+  BACKSCRATCHER_ADDRESS,
+  YVBOOST_ADDRESS,
 } from '../Vaults/constants';
 
 const backscratcherAddress = '0xc5bDdf9843308380375a611c18B50Fb9341f502A';
@@ -55,6 +57,19 @@ const appReducer = (state = initialState, action) =>
       draft.ready = ready;
     };
 
+    const mapSpecialVaults = (vault) => {
+      const vaultIsBackscratcher = vault.address === BACKSCRATCHER_ADDRESS;
+      const vaultIsYvBoost = vault.address === YVBOOST_ADDRESS;
+      if (vaultIsBackscratcher) {
+        vault.displayName = 'yveCRV';
+        vault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${BACKSCRATCHER_ADDRESS}/logo-128.png`;
+      } else if (vaultIsYvBoost) {
+        vault.displayName = 'yvBOOST';
+        vault.token.icon = `https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${YVBOOST_ADDRESS}/logo-128.png`;
+      }
+      return vault;
+    };
+
     switch (action.type) {
       case USER_VAULT_STATISTICS_LOADED:
         draft.loading.vaults = false;
@@ -72,7 +87,9 @@ const appReducer = (state = initialState, action) =>
         draft.amplifyVaults = action.vaults.filter((vault) =>
           isAmplifyVault(vault),
         );
-        draft.vaults = action.vaults.filter((vault) => !isAmplifyVault(vault));
+        draft.vaults = action.vaults
+          .map(mapSpecialVaults)
+          .filter((vault) => !isAmplifyVault(vault));
         checkReadyState();
         break;
       }

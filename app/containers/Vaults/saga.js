@@ -38,24 +38,31 @@ const crvAaveAddress = '0x03403154afc09Ce8e44C3B185C82C6aD5f86b9ab';
 const crvSAaveV2Address = '0xb4D1Be44BfF40ad6e506edf43156577a3f8672eC';
 const crvSAaveV1Address = '0xBacB69571323575C6a5A3b4F9EEde1DC7D31FBc1';
 
-const mapNewApiToOldApi = (oldVaults, newVaults) => {
-  const newVaultsMap = keyBy(newVaults, 'address');
-  const result = oldVaults.map((vault) => {
-    const newApy = get(newVaultsMap[vault.address], 'apy');
-    const newTvl = get(newVaultsMap[vault.address], 'tvl');
-    const isNew = get(newVaultsMap[vault.address], 'new');
-    if (!newApy) {
-      return vault;
-    }
+const mapNewApiToOldApi = (vaults) => {
+  const vaultsMap = keyBy(vaults, 'address');
+  const result = vaults.map((vault) => {
+    const newApy = get(vaultsMap[vault.address], 'apy');
+    const newTvl = get(vaultsMap[vault.address], 'tvl');
+    const isNew = get(vaultsMap[vault.address], 'new');
 
     const vaultApy = _.get(vault, 'apy', {});
+    const vaultToken = _.get(vault, 'token', {});
     const vaultApyData = _.get(vault, 'apy.data', {});
+    const displayName = vault.display_name || vault.name;
+    const tokenDisplayName = vaultToken.display_name;
+    const name = vault.display_name || vault.name;
     const mergedVault = {
       ...vault,
       tvl: {
         totalAssets: newTvl.total_assets,
         price: newTvl.price,
         value: newTvl.tvl,
+      },
+      name,
+      displayName,
+      token: {
+        ...vaultToken,
+        displayName: tokenDisplayName,
       },
       apy: {
         ...vaultApy,
@@ -94,31 +101,15 @@ const mapNewApiToOldApi = (oldVaults, newVaults) => {
 };
 
 function* fetchVaults() {
-  const endpoint =
-    process.env.API_ENV === 'development' ||
-    process.env.NODE_ENV === 'development'
-      ? `https://dev.vaults.finance/all`
-      : `https://vaults.finance/all`;
   const newEndpoint = 'https://api.yearn.finance/v1/chains/1/vaults/all';
   try {
-    const vaults = yield call(request, endpoint);
     const newVaults = yield call(request, newEndpoint);
 
-    // TODO: Remove UI hacks...
-    const masterChefAddress = '0xbD17B1ce622d73bD438b9E658acA5996dc394b0d';
-    const correctedVaults = _.map(vaults, (vault) => {
-      const newVault = vault;
-      if (vault.address === masterChefAddress) {
-        newVault.type = 'masterChef';
-      }
-      return newVault;
-    });
-
     const filteredVaults = _.filter(
-      correctedVaults,
+      newVaults,
       (vault) => _.includes(blacklist, vault.address) === false,
     );
-    const vaultsWithNewApiData = mapNewApiToOldApi(filteredVaults, newVaults);
+    const vaultsWithNewApiData = mapNewApiToOldApi(filteredVaults);
     yield put(vaultsLoaded(vaultsWithNewApiData));
   } catch (err) {
     console.log('Error reading vaults', err);

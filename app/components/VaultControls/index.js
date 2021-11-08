@@ -188,7 +188,7 @@ export default function VaultControls(props) {
         : token.symbol.replace('yveCRV-DAO', 'yveCRV'),
     icon:
       token.displayName === 'ETH'
-        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
+        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
         : token.icon,
   });
   if (token.displayName === 'ETH') {
@@ -267,7 +267,7 @@ export default function VaultControls(props) {
     isVault: true,
     icon:
       token.displayName === 'ETH'
-        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
+        ? 'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo-alt-128.png'
         : vault.token.icon,
     value: vault.displayName === 'ETH' ? 'WETH' : token.displayName,
   };
@@ -277,7 +277,7 @@ export default function VaultControls(props) {
       address: vault.token.address,
       isVault: true,
       icon:
-        'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/tokens/0xc5bDdf9843308380375a611c18B50Fb9341f502A/logo-128.png',
+        'https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/0xc5bDdf9843308380375a611c18B50Fb9341f502A/logo-128.png',
       value: vault.displayName,
     });
   } else {

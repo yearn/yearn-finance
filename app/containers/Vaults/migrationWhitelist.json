@@ -267,7 +267,7 @@
     "symbol": "USDC",
     "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "vaultFrom": "0x597aD1e0c13Bfe8025993D9e79C69E1c0233522e",
-    "vaultTo": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
+    "vaultTo": "0xa354F35829Ae975e850e23e9615b11Da1B3dC4DE",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 USDC yVault to continue earning yield."
   },
@@ -286,5 +286,13 @@
     "vaultTo": "0xdb25cA703181E7484a155DD612b06f57E12Be5F0",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
     "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 YFI yVault to continue earning yield."
+  },
+  {
+    "symbol": "USDC",
+    "token": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "vaultFrom": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
+    "vaultTo": "0xa354F35829Ae975e850e23e9615b11Da1B3dC4DE",
+    "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 USDC yVault to continue earning yield."
   }
 ]

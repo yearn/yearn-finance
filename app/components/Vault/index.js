@@ -778,6 +778,7 @@ const Vault = (props) => {
 
   // These are our retired vaults, shutting down but not migrating.
   const retired = retiredJson.map((v) => v.address);
+  const vaultIsRetired = retired.indexOf(vault.address) !== -1;
 
   // These are emergency vaults that needs to be hidden immediatly
   // because of bug or hack regardless of balance
@@ -802,6 +803,9 @@ const Vault = (props) => {
   if (migrating.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = migratingTooltips[address];
+  } else if (vaultIsRetired) {
+    apyRecommended = 'N/A';
+    apyTooltip = null;
   } else if (vaultIsPickle) {
     apyRecommended = 'N/A';
     apyTooltip =

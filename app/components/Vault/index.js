@@ -590,7 +590,7 @@ const Vault = (props) => {
       </div>
     );
   }
-  if (apyRecommended === 'NEW ✨') {
+  if (apyRecommended === 'NEW ✨' || apyRecommended === 'N/A') {
     apyTooltip = null;
   }
 

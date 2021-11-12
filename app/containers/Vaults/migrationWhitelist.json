@@ -293,6 +293,6 @@
     "vaultFrom": "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9",
     "vaultTo": "0xa354F35829Ae975e850e23e9615b11Da1B3dC4DE",
     "apyTooltip": "Please migrate funds to our new vault to continue earning yield.",
-    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to the v2 USDC yVault to continue earning yield."
+    "migrationMessage": "This vault is no longer active. Withdraw funds or migrate your balance to continue earning yield."
   }
 ]

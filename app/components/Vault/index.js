@@ -495,6 +495,8 @@ const Vault = (props) => {
 
   if (vault.new) {
     apyRecommended = 'NEW ✨';
+  } else if (vault.address === '0x6FAfCA7f49B4Fd9dC38117469cd31A1E5aec91F5') {
+    apyRecommended = 'N/A';
   }
 
   let apyTooltip = (

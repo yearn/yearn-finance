@@ -48,12 +48,14 @@ import {
   OLD_PICKLE_GAUGE_ADDRESS,
   LAZY_APE_ADDRESSES,
   TRICRYPTO_VAULT_V2,
+  APY_NEW,
 } from 'containers/Vaults/constants';
 import { selectMigrationData } from 'containers/Vaults/selectors';
 import { selectZapperVaults } from 'containers/Zapper/selectors';
 import { getContractType } from 'utils/contracts';
 import setDecimals from 'utils/setDecimals';
 
+import apyOverrides from 'containers/Vaults/apyOverrides';
 import { useModal } from 'containers/ModalProvider/hooks';
 
 const ButtonLinkIcon = styled.a`
@@ -184,7 +186,7 @@ const truncateFee = (fee) => {
 
 const truncateApy = (apy) => {
   if (apy === undefined || apy === null || Number.isNaN(apy)) {
-    return 'NEW ✨';
+    return APY_NEW;
   }
   const truncatedApy = (apy * 100).toFixed(2);
   const apyStr = `${truncatedApy}%`;
@@ -227,7 +229,7 @@ const truncateToken = (value) => {
 
 const ApyErrorDescriptions = {
   'no harvests': {
-    recommended: 'NEW ✨',
+    recommended: APY_NEW,
     tooltip:
       'This vault was just added or recently updated its strategy. APY data will be displayed after the first four harvests.',
   },
@@ -339,7 +341,7 @@ const Vault = (props) => {
   const [userInfoYvBoostEth, setUserInfoYvBoostEth] = React.useState(0);
   const [oldPickleGaugeBalance, setOldPickleGaugeBalance] = React.useState(0);
   const [apyPickleRecommended, setApyPickleRecommended] = React.useState(
-    'NEW ✨',
+    APY_NEW,
   );
   const [vaultAssetsPickle, setVaultAssetsPickle] = React.useState(
     truncateUsd(0),
@@ -494,7 +496,7 @@ const Vault = (props) => {
   const netApy = _.get(apy, 'data.netApy');
 
   if (vault.new) {
-    apyRecommended = 'NEW ✨';
+    apyRecommended = APY_NEW;
   }
 
   let apyTooltip = (
@@ -588,7 +590,7 @@ const Vault = (props) => {
       </div>
     );
   }
-  if (apyRecommended === 'NEW ✨') {
+  if (apyRecommended === APY_NEW) {
     apyTooltip = null;
   }
 
@@ -780,6 +782,9 @@ const Vault = (props) => {
   const retired = retiredJson.map((v) => v.address);
   const vaultIsRetired = retired.indexOf(vault.address) !== -1;
 
+  // In rare instances we may need to temporarily set APY to "NEW" or "N/A"
+  const apyOverride = apyOverrides[vault.address];
+
   // These are emergency vaults that needs to be hidden immediatly
   // because of bug or hack regardless of balance
   const hackedOrToBeAbsolutelyRemoved = hackedOrToBeAbsolutelyRemovedJson.map(
@@ -800,7 +805,15 @@ const Vault = (props) => {
   // Add all vaults here that we only want current holders to see. Include migrating and retiring vaults.
   const vaultsToHide = migrating.concat(retired).concat(futureMigrating);
 
-  if (migrating.includes(address)) {
+  if (apyOverride) {
+    apyRecommended = apyOverride;
+    if (apyOverride === APY_NEW) {
+      apyTooltip =
+        'This vault is new and has not had enough harvests yet to calculate APY';
+    } else {
+      apyTooltip = null;
+    }
+  } else if (migrating.includes(address)) {
     apyRecommended = 'N/A';
     apyTooltip = migratingTooltips[address];
   } else if (vaultIsRetired) {

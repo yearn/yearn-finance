@@ -12,6 +12,12 @@
     "type": "v2"
   },
   {
+    "address": "0xa5cA62D95D24A4a350983D5B8ac4EB8638887396",
+    "apyTooltip": "This vault is no longer active. Please withdraw any funds.",
+    "vault": "sUSD",
+    "type": "v2"
+  },
+  {
     "address": "0xE0db48B4F71752C4bEf16De1DBD042B82976b8C7",
     "vault": "mUSD",
     "apyTooltip": "This vault is no longer active and its strategy is unwinding.",

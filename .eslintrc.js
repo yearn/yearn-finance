@@ -12,7 +12,6 @@ module.exports = {
   globals: {
     _: true,
     ace: true,
-    plausible: true,
   },
   env: {
     jest: true,
